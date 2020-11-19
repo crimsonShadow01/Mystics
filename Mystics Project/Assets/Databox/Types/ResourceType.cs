@@ -43,6 +43,15 @@ public class ResourceType : DataboxType
 	public ResourceType (string _path)
 	{
 		fullPath = _path;
+		
+		_path = Path.Combine(Path.GetDirectoryName(_path), Path.GetFileNameWithoutExtension(_path));
+			
+		var _fullPathWithoutExtension = _path;
+				
+		var _ind = _path.IndexOf("Resources");
+		
+		resourcePath = _path.Substring(_ind + 10, _fullPathWithoutExtension.Length-(_ind + 10));
+		
 	}
 	
 	public override void DrawEditor()

@@ -593,18 +593,23 @@ namespace Databox
 										for (int i = 0; i < DataboxEditor.allTypes.Count; i ++)
 										{
 											DataboxType _t = null;
-											if (_newDB[db].entries[entry].data[value].TryGetValue(System.Type.GetType(DataboxEditor.allTypes[i]), out _t))
+										
+											if (System.Type.GetType(DataboxEditor.allTypes[i]) != null)
 											{
-												DataboxType _e = null;
-												if (_oldDB[db].entries[entry].data[value].TryGetValue(System.Type.GetType(DataboxEditor.allTypes[i]), out _e))
+												if (_newDB[db].entries[entry].data[value].TryGetValue(System.Type.GetType(DataboxEditor.allTypes[i]), out _t))
 												{
-													var _results = _t.Equal(_e);
-													
-													if (!string.IsNullOrEmpty(_results))
+													DataboxType _e = null;
+													if (_oldDB[db].entries[entry].data[value].TryGetValue(System.Type.GetType(DataboxEditor.allTypes[i]), out _e))
 													{
-														_modifiedValues.Add(db + " -> " + entry + " -> " + value + " ( " + _results + " ) ");
+														var _results = _t.Equal(_e);
+														
+														if (!string.IsNullOrEmpty(_results))
+														{
+															_modifiedValues.Add(db + " -> " + entry + " -> " + value + " ( " + _results + " ) ");
+														}
 													}
 												}
+											
 											}
 										}
 													
