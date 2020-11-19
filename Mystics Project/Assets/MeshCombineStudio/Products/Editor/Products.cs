@@ -18,14 +18,14 @@ namespace MeshCombineStudio
 
         public Products()
         {
-			mcsInProject = (GetType("MeshCombineStudio.MeshCombiner") != null);
-			mcsCavesInProject = (GetType("MeshCombineStudio.RemoveOverlappingTris") != null);
-			deInProject = (GetType("DebuggingEssentials.RuntimeInspector") != null);
-			tcInProject = (GetType("TerrainComposer2.TC_Generate") != null);
-			wcInProject = (GetType("WorldComposer.terrain_area_class") != null);
-		}
+            mcsInProject = (GetType("MeshCombineStudio.MeshCombiner") != null);
+            mcsCavesInProject = (GetType("MeshCombineStudio.RemoveOverlappingTris") != null);
+            deInProject = (GetType("DebuggingEssentials.RuntimeInspector") != null);
+            tcInProject = (GetType("TerrainComposer2.TC_Generate") != null);
+            wcInProject = (GetType("WorldComposer.terrain_area_class") != null);
+        }
 
-		public static Type GetType(string typeName)
+        public static Type GetType(string typeName)
 		{
 			Type type = Type.GetType(typeName + ", Assembly-CSharp");
 			if (type != null) return type;
@@ -43,9 +43,9 @@ namespace MeshCombineStudio
                 mcsCavesIcon = AssetDatabase.LoadAssetAtPath(path + "MCSCavesIcon.jpg", typeof(Texture)) as Texture;
                 deIcon = AssetDatabase.LoadAssetAtPath(path + "deIcon.jpg", typeof(Texture)) as Texture;
                 tcIcon = AssetDatabase.LoadAssetAtPath(path + "tcIcon.jpg", typeof(Texture)) as Texture;
-                wcIcon = AssetDatabase.LoadAssetAtPath(path + "wcIcon.jpg", typeof(Texture)) as Texture; 
+                wcIcon = AssetDatabase.LoadAssetAtPath(path + "wcIcon.jpg", typeof(Texture)) as Texture;  
             }
-
+             
             Rect rect1 = GUILayoutUtility.GetLastRect();
 
             Rect rect = new Rect(rect1.x, rect1.y, 128, 128);
@@ -60,7 +60,7 @@ namespace MeshCombineStudio
 
             if (!mcsInProject)
             {
-                if (GUI.Button(rect, new GUIContent(string.Empty, mcsIcon, "Click to go to 'Mesh Combine Studio 2'.\n\nMesh Combine Studio is an automatic grid cell based mesh combiner which can dramatically improve the performance of your game. MCS can give up to 20x better performance compared to Unity’s static batching, while giving a more smooth and stable FPS.\n\nWe use MCS grid cell based combining in our game DRONE for the modular building in our arena editor and pre - made arenas, without MCS our game wouldn't run.\n\nInstead of manually combining meshes, which is very tedious, MCS will do this automatically for you sorted in grid cells, and the performance improvements it gives cannot be achieved with manual combining. Just simply drag and drop a MCS prefab in your Scene and tweak the many available conditions to your specific needs and you are ready to go.")))
+                if (GUI.Button(rect, new GUIContent(string.Empty, mcsIcon, "50% Discount on Unity's Super Sale NOW!\nFrom $45 only for $22.50!\n\nClick to go to 'Mesh Combine Studio 2'.\n\nMesh Combine Studio is an automatic grid cell based mesh combiner which can dramatically improve the performance of your game. MCS can give up to 20x better performance compared to Unity’s static batching, while giving a more smooth and stable FPS.\n\nWe use MCS grid cell based combining in our game DRONE for the modular building in our arena editor and pre - made arenas, without MCS our game wouldn't run.\n\nInstead of manually combining meshes, which is very tedious, MCS will do this automatically for you sorted in grid cells, and the performance improvements it gives cannot be achieved with manual combining. Just simply drag and drop a MCS prefab in your Scene and tweak the many available conditions to your specific needs and you are ready to go.")))
                 {
                     Application.OpenURL("https://assetstore.unity.com/packages/tools/modeling/mesh-combine-studio-2-101956?aid=1011le9dK&utm_source=aff");
                 }
@@ -78,7 +78,7 @@ namespace MeshCombineStudio
             }
             if (!deInProject)
             {
-                if (GUI.Button(rect, new GUIContent(string.Empty, deIcon, "Click to go to 'Debugging Essentials'.\n\nDebugging Essentials contains 5 crucial tools which will save you tons of time needed for coding while avoiding debugging headaches, making developing a lot more enjoyable!\n\n* Runtime Hierarchy.\n* Runtime Deep Inspector.\n* Runtime Camera Navigation.\n* Runtime Console.\n* HTML Debug Logs.")))
+                if (GUI.Button(rect, new GUIContent(string.Empty, deIcon, "50% Discount on Unity's Super Sale NOW!\nFrom $35 only for $17.50!\n\nClick to go to 'Debugging Essentials'.\n\nDebugging Essentials contains 5 crucial tools which will save you tons of time needed for coding while avoiding debugging headaches, making developing a lot more enjoyable!\n\n* Runtime Hierarchy.\n* Runtime Deep Inspector.\n* Runtime Camera Navigation.\n* Runtime Console.\n* HTML Debug Logs.")))
                 {
                     Application.OpenURL("https://assetstore.unity.com/packages/tools/utilities/debugging-essentials-170773?aid=1011le9dK");
                 }
@@ -96,7 +96,7 @@ namespace MeshCombineStudio
             }
             if (!wcInProject)
             {
-                if (GUI.Button(rect, new GUIContent(string.Empty, wcIcon, "Click to go to 'World Composer'.\n\nWorldComposer is a tool to extract heightmap data and satellite images from the real world. It uses Bing maps, like in the new Microsoft Flight Simulator 2020.\n\nWorldComposer can create terrains by itself, but the exported heightmaps(e.g. as stamps) and satellite images can also be used in other terrain tools like TerrainComposer 2, Gaia, WorldMachine, MapMapic, WorldCreator, etc.")))
+                if (GUI.Button(rect, new GUIContent(string.Empty, wcIcon, "50% Discount on Unity's Super Sale NOW!\nFrom $45 only for $22.50!\n\nClick to go to 'World Composer'.\n\nWorldComposer is a tool to extract heightmap data and satellite images from the real world. It uses Bing maps, like in the new Microsoft Flight Simulator 2020.\n\nWorldComposer can create terrains by itself, but the exported heightmaps(e.g. as stamps) and satellite images can also be used in other terrain tools like TerrainComposer 2, Gaia, WorldMachine, MapMapic, WorldCreator, etc.")))
                 {
                     Application.OpenURL("https://assetstore.unity.com/packages/tools/terrain/world-composer-13238?aid=1011le9dK");
                 }

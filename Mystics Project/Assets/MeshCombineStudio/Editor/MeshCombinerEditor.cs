@@ -424,6 +424,9 @@ namespace MeshCombineStudio
         // Unity Settings
         SerializedProperty unitySettingsFoldout;
 
+        // Original Objects Settings
+        SerializedProperty useHideFlags, hideFlags;
+
         // Output Settings
         SerializedProperty outputSettingsFoldout;
         SerializedProperty combineMode, cellSize, cellOffset, removeOriginalMeshReference, useVertexOutputLimit, vertexOutputLimit, makeMeshesUnreadable, excludeSingleMeshes;
@@ -479,6 +482,10 @@ namespace MeshCombineStudio
 
             // Search Conditions
             searchConditions.Init(serializedObject);
+
+            // Original Objects Settings
+            useHideFlags = serializedObject.FindProperty("useHideFlags");
+            hideFlags = serializedObject.FindProperty("hideFlags");
 
             // Combine Conditions
             combineConditions.Init(serializedObject);
@@ -743,6 +750,8 @@ namespace MeshCombineStudio
             GUIDraw.DrawSpacer(space, 5, space);
                 searchConditions.DrawSearchConditions(this, Color.red);
             GUIDraw.DrawSpacer(space, 5, space);
+                DrawOriginalObjectSettings(Color.red);
+            GUIDraw.DrawSpacer(space, 5, space);
                 combineConditions.Draw(this, Color.blue);
             GUIDraw.DrawSpacer(space, 5, space);
                 DrawOutputSettings(Color.blue);
@@ -808,6 +817,29 @@ namespace MeshCombineStudio
             vSyncCountMode = (VSyncCountMode)GUIDraw.EnumPopup(vSyncCountMode, new GUIContent("V Sync Count"));
             if (GUI.changed) QualitySettings.vSyncCount = (int)vSyncCountMode;
 
+            EditorGUI.indentLevel--;
+            EditorGUILayout.EndVertical();
+        }
+
+        void DrawOriginalObjectSettings(Color color)
+        {
+            GUIDraw.DrawHeader(outputSettingsFoldout, new GUIContent("Original Objects Settings", "The settings for the Original Objects."), color * editorSkinMulti);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Use HideFlags");
+            EditorGUILayout.PropertyField(useHideFlags, GUIContent.none, GUILayout.Width(25));
+            
+            if (useHideFlags.boolValue)
+            {
+                CustomHideFlags customHideFlags = Methods.HideFlagsToCustom((HideFlags)hideFlags.intValue);
+                GUI.changed = false;
+                customHideFlags = (CustomHideFlags)EditorGUILayout.EnumMaskPopup(GUIContent.none, customHideFlags);
+                if (GUI.changed)
+                {
+                    hideFlags.intValue = (int)Methods.CustomToHideFlags(customHideFlags);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
             EditorGUI.indentLevel--;
             EditorGUILayout.EndVertical();
         }
@@ -1372,11 +1404,19 @@ namespace MeshCombineStudio
             if (meshCombiner.combined)
             {
                 GUIDraw.DrawSpacer(2.5f, 5, 2.5f);
-                string buttonText;
-                if (activeOriginal.boolValue) { buttonText = "Disable Original Renderers and LODGroups"; GUI.backgroundColor = new Color(0.70f, 0.70f, 1); }
-                else { buttonText = "Enable Original Renderers and LODGroups"; GUI.backgroundColor = new Color(0.70f, 1, 0.70f); }
+                GUIContent guiContent;
+                if (activeOriginal.boolValue) 
+                { 
+                    guiContent = new GUIContent("Enable Combined Objects", "Enables the combined objects and disables the original objects."); 
+                    GUI.backgroundColor = new Color(0.70f, 0.70f, 1); 
+                }
+                else 
+                { 
+                    guiContent = new GUIContent("Enable Original Objects", "Enables the original objects and disables the combined objects."); 
+                    GUI.backgroundColor = new Color(0.70f, 1, 0.70f); 
+                }
 
-                if (GUILayout.Button(buttonText))
+                if (GUILayout.Button(guiContent))
                 {
                     activeOriginal.boolValue = !activeOriginal.boolValue;
                     foreach (var mcsCombiner in targets) ((MeshCombiner)mcsCombiner).ExecuteHandleObjects(activeOriginal.boolValue, MeshCombiner.HandleComponent.Disable, MeshCombiner.HandleComponent.Disable);

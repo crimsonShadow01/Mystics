@@ -141,6 +141,8 @@ namespace MeshCombineStudio
                     for (int j = 0; j < rs.Length; j++)
                     {
                         Renderer r = rs[j];
+                        if (r == null) continue;
+
                         GameObject go = r.gameObject;
 
                         if (r.enabled && go.activeInHierarchy)

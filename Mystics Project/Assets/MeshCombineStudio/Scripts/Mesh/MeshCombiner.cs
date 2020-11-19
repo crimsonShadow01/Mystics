@@ -13,7 +13,7 @@ namespace MeshCombineStudio
     {
         public static EventMethod onInit;
         public static List<MeshCombiner> instances = new List<MeshCombiner>();
-
+         
         public enum ObjectType { Normal, LodGroup, LodRenderer }
         public enum HandleComponent { Disable, Destroy };
         public enum ObjectCenter { BoundsCenter, TransformPosition };
@@ -40,6 +40,10 @@ namespace MeshCombineStudio
 
         // Search Conditions
         public SearchOptions searchOptions;
+
+        // Original Objects
+        public bool useHideFlags;
+        public HideFlags hideFlags;
 
         // Combine Conditions
         public CombineConditionSettings combineConditionSettings;
@@ -1104,6 +1108,9 @@ namespace MeshCombineStudio
                     if (cachedGO.mr && !cachedGO.excludeCombine)
                     {
                         cachedGO.mr.enabled = (cachedGO.mrEnabled & active);
+                        if (active) cachedGO.go.hideFlags = HideFlags.None;
+                        else if (useHideFlags) cachedGO.go.hideFlags = hideFlags;
+
                         if (useRemoveOriginalMeshReference) ExecuteMeshFilter(active, cachedGO);
                     }
                     else Methods.ListRemoveAt(foundObjects, i--);
@@ -1181,6 +1188,9 @@ namespace MeshCombineStudio
                     data.lodGroupLookup.TryGetValue(lodGroup, out cachedGO);
                     if (cachedGO == null || !cachedGO.excludeCombine)
                     {
+                        if (active) lodGroup.gameObject.hideFlags = HideFlags.None;
+                        else if (useHideFlags) lodGroup.gameObject.hideFlags = hideFlags;
+
                         if (handleOriginalLodGroups == HandleComponent.Disable) lodGroup.enabled = active; else Destroy(lodGroup);
                     }
                     else Methods.ListRemoveAt(foundLodGroups, i--);

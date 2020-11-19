@@ -7,8 +7,47 @@ using UnityEngine.SceneManagement;
 
 namespace MeshCombineStudio
 {
+    public enum CustomHideFlags
+    {
+        HideInHierarchy = 1,
+        HideInInspector = 2,
+        DontSaveInEditor = 4,
+        NotEditable = 8,
+        DontSaveInBuild = 16,
+        DontUnloadUnusedAsset = 32,
+    }
+
     static public class Methods
     {
+        public static HideFlags CustomToHideFlags(CustomHideFlags customHideFlags)
+        {
+            HideFlags hideFlags = HideFlags.None;
+
+            if ((customHideFlags & CustomHideFlags.HideInHierarchy) != 0) hideFlags |= HideFlags.HideInHierarchy;
+            if ((customHideFlags & CustomHideFlags.HideInInspector) != 0) hideFlags |= HideFlags.HideInInspector;
+            if ((customHideFlags & CustomHideFlags.DontSaveInEditor) != 0) hideFlags |= HideFlags.DontSaveInEditor;
+            if ((customHideFlags & CustomHideFlags.NotEditable) != 0) hideFlags |= HideFlags.NotEditable;
+
+            if ((customHideFlags & CustomHideFlags.DontSaveInBuild) != 0) hideFlags |= HideFlags.DontSaveInBuild;
+            if ((customHideFlags & CustomHideFlags.DontUnloadUnusedAsset) != 0) hideFlags |= HideFlags.DontUnloadUnusedAsset;
+
+            return hideFlags;
+        }
+
+        public static CustomHideFlags HideFlagsToCustom(HideFlags hideFlags)
+        {
+            CustomHideFlags customHideFlags = 0;
+            if ((hideFlags & HideFlags.HideInHierarchy) != 0) customHideFlags |= CustomHideFlags.HideInHierarchy;
+            if ((hideFlags & HideFlags.HideInInspector) != 0) customHideFlags |= CustomHideFlags.HideInInspector;
+            if ((hideFlags & HideFlags.DontSaveInEditor) != 0) customHideFlags |= CustomHideFlags.DontSaveInEditor;
+            if ((hideFlags & HideFlags.NotEditable) != 0) customHideFlags |= CustomHideFlags.NotEditable;
+
+            if ((hideFlags & HideFlags.DontSaveInBuild) != 0) customHideFlags |= CustomHideFlags.DontSaveInBuild;
+            if ((hideFlags & HideFlags.DontUnloadUnusedAsset) !=0) customHideFlags |= CustomHideFlags.DontUnloadUnusedAsset;
+
+            return customHideFlags;
+        }
+
         public static int GetFirstLayerOfLayerMask(LayerMask layerMask)
         {
             for (int i = 0; i < 32; i++)
