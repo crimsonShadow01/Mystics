@@ -1,10 +1,9 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace MeshCombineStudio
 {
-    [CustomEditor (typeof(ReadMe))]
+    [CustomEditor(typeof(ReadMe))]
     public class ReadMeEditor : Editor
     {
         public override void OnInspectorGUI()
@@ -20,7 +19,7 @@ namespace MeshCombineStudio
                 r.buttonEdit = !r.buttonEdit;
                 GUI.changed = true;
             }
-            
+
             GUILayout.Space(5);
 
             if (r.buttonEdit)
@@ -32,9 +31,9 @@ namespace MeshCombineStudio
             {
                 EditorGUILayout.TextArea(r.readme);
             }
-          
+
             if (GUI.changed) EditorUtility.SetDirty(target);
         }
-    
+
     }
 }

@@ -1,10 +1,8 @@
 ﻿// Cristian Pop - https://boxophobic.com/
 
-using UnityEngine;
 using Boxophobic.StyledGUI;
+using UnityEngine;
 #if UNITY_EDITOR
-using System.IO;
-using UnityEditor;
 #endif
 
 namespace TheVegetationEngine

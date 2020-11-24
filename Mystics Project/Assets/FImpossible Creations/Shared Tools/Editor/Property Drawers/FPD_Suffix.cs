@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace FIMSpace.FEditor
@@ -84,7 +83,7 @@ namespace FIMSpace.FEditor
                 case FPD_SuffixAttribute.SuffixMode.FromMinToMaxRounded:
 
                     pre = Mathf.Round(sliderVal);
-                    value = EditorGUI.FloatField(floatField, Mathf.Round(sliderVal) );
+                    value = EditorGUI.FloatField(floatField, Mathf.Round(sliderVal));
                     if (value != pre) sliderVal = value;
 
                     EditorGUI.LabelField(percField, Attribute.Suffix);

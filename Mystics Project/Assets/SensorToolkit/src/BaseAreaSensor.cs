@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace SensorToolkit
@@ -155,7 +154,7 @@ namespace SensorToolkit
                 return new List<Vector2>();
             }
         }
-        
+
         // Maps a GameObject to a list of it's colliders that have been detected.
         Dictionary<GameObject, List<Collider2D>> gameObjectColliders = new Dictionary<GameObject, List<Collider2D>>();
 
@@ -321,11 +320,11 @@ namespace SensorToolkit
                 disposeRayCastTarget(c.gameObject);
                 newColliderDetection = c.gameObject;
             }
-            if (c.attachedRigidbody != null) 
+            if (c.attachedRigidbody != null)
             {
                 attachedRigidBody[c] = c.attachedRigidbody.gameObject;
 
-                if (addColliderToMap(c, c.attachedRigidbody.gameObject, rigidBodyColliders)) 
+                if (addColliderToMap(c, c.attachedRigidbody.gameObject, rigidBodyColliders))
                 {
                     disposeRayCastTarget(c.attachedRigidbody.gameObject);
                     newRigidBodyDetection = c.attachedRigidbody.gameObject;
@@ -371,9 +370,9 @@ namespace SensorToolkit
             }
 
             GameObject rigidBody;
-            if (attachedRigidBody.TryGetValue(c, out rigidBody)) 
+            if (attachedRigidBody.TryGetValue(c, out rigidBody))
             {
-                if (removeColliderFromMap(c, rigidBody, rigidBodyColliders)) 
+                if (removeColliderFromMap(c, rigidBody, rigidBodyColliders))
                 {
                     disposeRayCastTarget(rigidBody);
                     rigidBodyDetectionLost = rigidBody;
@@ -390,9 +389,11 @@ namespace SensorToolkit
             else if (RequiresLineOfSight && detectionLost != null)
             {
                 float visibility;
-                if (objectVisibility.TryGetValue(detectionLost, out visibility)) {
+                if (objectVisibility.TryGetValue(detectionLost, out visibility))
+                {
                     objectVisibility.Remove(detectionLost);
-                    if (visibility >= MinimumVisibility) {
+                    if (visibility >= MinimumVisibility)
+                    {
                         return detectionLost;
                     }
                 }
@@ -428,7 +429,7 @@ namespace SensorToolkit
             for (int i = 0; i < gameObjectList.Count; i++)
             {
                 var colliderList = rigidBodyColliders[gameObjectList[i]];
-                for (int j = 0; j < colliderList.Count; j++) 
+                for (int j = 0; j < colliderList.Count; j++)
                 {
                     attachedRigidBody.Remove(colliderList[j]);
                 }
@@ -657,7 +658,8 @@ namespace SensorToolkit
                 colliderList = colliderListCache.Get();
                 dict[go] = colliderList;
             }
-            if (!colliderList.Contains(c)) {
+            if (!colliderList.Contains(c))
+            {
                 colliderList.Add(c);
             }
             return newDetection;
@@ -680,10 +682,10 @@ namespace SensorToolkit
             return detectionLost;
         }
 
-        void clearRayCastTargets() 
+        void clearRayCastTargets()
         {
             var rayCastTargetsEnumerator = rayCastTargets.GetEnumerator();
-            while (rayCastTargetsEnumerator.MoveNext()) 
+            while (rayCastTargetsEnumerator.MoveNext())
             {
                 var rayCastTarget = rayCastTargetsEnumerator.Current.Value;
                 rayCastTargetsCache.Dispose(rayCastTarget);

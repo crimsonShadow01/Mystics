@@ -24,11 +24,9 @@ namespace Databox.OdinSerializer.Editor
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
     using UnityEditor;
-    using UnityEditor.SceneManagement;
     using UnityEngine;
     using UnityEngine.Scripting;
 
@@ -159,7 +157,7 @@ namespace Databox.OdinSerializer.Editor
                 if (serializedType == null) continue;
 
                 bool isAbstract = serializedType.IsAbstract || serializedType.IsInterface;
-                
+
                 if (serializedType.IsGenericType && (serializedType.IsGenericTypeDefinition || !serializedType.IsFullyConstructedGenericType()))
                 {
                     Debug.LogError("Skipping type '" + serializedType.GetNiceFullName() + "'! Type is a generic type definition, or its arguments contain generic parameters; type must be a fully constructed generic type.");

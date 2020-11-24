@@ -214,7 +214,7 @@ namespace BrainFailProductions.PolyFew
         public int choiceTextureMap = 0;
         public int choiceDiffuseColorSpace = 0;
 
-        
+
         public readonly string[] textureMapsChoices = new[] { "Albedo", "Metallic", "Specular", "Normal", "Height", "Occlusion", "Emission", "Detail Mask", "Detail Albedo", "Detail Normal" };
         public readonly string[] compressionTypesChoices = new[] { "Uncompressed", "DXT1", "ETC2_RGB", "PVRTC_RGB4", "ASTC_RGB", "DXT1_CRUNCHED" };
         public readonly string[] resolutionsChoices = new[] { "32", "64", "128", "256", "512", "1024", "2048", "4096" };
@@ -263,7 +263,7 @@ namespace BrainFailProductions.PolyFew
         public bool foldoutAutoLOD;
         public bool foldoutBatchFew;
         public bool foldoutAutoLODMultiple;
-        public Vector3 objPositionPrevFrame; 
+        public Vector3 objPositionPrevFrame;
         public Vector3 objScalePrevFrame;
         public bool regardChildren = true;
         public string autoLODSavePath = "";

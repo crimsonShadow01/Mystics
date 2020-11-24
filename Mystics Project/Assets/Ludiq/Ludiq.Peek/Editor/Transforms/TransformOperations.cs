@@ -1,190 +1,188 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public static class TransformOperations
-	{
-		public static void Bake(Transform target)
-		{
-			Ensure.That(nameof(target)).IsNotNull(target);
-			
-			CacheChildrenTransforms(target, out var globalPositions, out var globalRotations, out var globalScales);
+    public static class TransformOperations
+    {
+        public static void Bake(Transform target)
+        {
+            Ensure.That(nameof(target)).IsNotNull(target);
 
-			Undo.RecordObject(target, $"Bake {target.name}");
-			target.localPosition = Vector3.zero;
-			target.localRotation = Quaternion.identity;
-			target.localScale = Vector3.one;
-			
-			ApplyChildrenTransforms(target, globalPositions, globalRotations, globalScales);
-		}
+            CacheChildrenTransforms(target, out var globalPositions, out var globalRotations, out var globalScales);
 
-		public static void CenterOnPivots(Transform target)
-		{
-			Ensure.That(nameof(target)).IsNotNull(target);
+            Undo.RecordObject(target, $"Bake {target.name}");
+            target.localPosition = Vector3.zero;
+            target.localRotation = Quaternion.identity;
+            target.localScale = Vector3.one;
 
-			CacheChildrenTransforms(target, out var globalPositions, out var globalRotations, out var globalScales);
-			
-			Undo.RecordObject(target, $"Center {target.name}");
+            ApplyChildrenTransforms(target, globalPositions, globalRotations, globalScales);
+        }
 
-			var center = Vector3.zero;
+        public static void CenterOnPivots(Transform target)
+        {
+            Ensure.That(nameof(target)).IsNotNull(target);
 
-			for (var i = 0; i < target.childCount; i++)
-			{
-				center += target.GetChild(i).position;
-			}
+            CacheChildrenTransforms(target, out var globalPositions, out var globalRotations, out var globalScales);
 
-			center /= target.childCount;
-			target.position = center;
+            Undo.RecordObject(target, $"Center {target.name}");
 
-			ApplyChildrenTransforms(target, globalPositions, globalRotations, globalScales);
-		}
+            var center = Vector3.zero;
 
-		public static void CenterOnBounds(Transform target)
-		{
-			Ensure.That(nameof(target)).IsNotNull(target);
+            for (var i = 0; i < target.childCount; i++)
+            {
+                center += target.GetChild(i).position;
+            }
 
-			var rectTransform = target.GetComponent<RectTransform>();
+            center /= target.childCount;
+            target.position = center;
 
-			if (rectTransform != null)
-			{
-				Debug.LogWarning("RectTransforms cannot be reliably centered on bounds.\nTry centering on pivots instead.");
-				return;
-			}
+            ApplyChildrenTransforms(target, globalPositions, globalRotations, globalScales);
+        }
 
-			CacheChildrenTransforms(target, out var globalPositions, out var globalRotations, out var globalScales);
+        public static void CenterOnBounds(Transform target)
+        {
+            Ensure.That(nameof(target)).IsNotNull(target);
 
-			target.gameObject.CalculateBounds(out var bounds, space: Space.World);
-			Undo.RecordObject(target, $"Center {target.name}");
-			target.position = bounds.center;
+            var rectTransform = target.GetComponent<RectTransform>();
 
-			ApplyChildrenTransforms(target, globalPositions, globalRotations, globalScales);
-		}
-		
-		public static bool IsRestructurable(Transform target)
-		{
-			var go = target.gameObject;
+            if (rectTransform != null)
+            {
+                Debug.LogWarning("RectTransforms cannot be reliably centered on bounds.\nTry centering on pivots instead.");
+                return;
+            }
 
-			if (PrefabUtility.IsPartOfPrefabInstance(go) && !PrefabUtility.IsOutermostPrefabInstanceRoot(go))
-			{
-				return false;
-			}
+            CacheChildrenTransforms(target, out var globalPositions, out var globalRotations, out var globalScales);
 
-			return true;
-		}
+            target.gameObject.CalculateBounds(out var bounds, space: Space.World);
+            Undo.RecordObject(target, $"Center {target.name}");
+            target.position = bounds.center;
 
-		public static bool IsRestructurable(Transform[] targets)
-		{
-			Ensure.That(nameof(targets)).IsNotNull(targets);
+            ApplyChildrenTransforms(target, globalPositions, globalRotations, globalScales);
+        }
 
-			foreach (var target in targets)
-			{
-				if (!IsRestructurable(target))
-				{
-					return false;
-				}
-			}
+        public static bool IsRestructurable(Transform target)
+        {
+            var go = target.gameObject;
 
-			return true;
-		}
-		
-		public static bool WarnRestructurable(Transform target)
-		{
-			if (!IsRestructurable(target))
-			{
-				EditorUtility.DisplayDialog("Cannot restructure Prefab instance", "Children of a Prefab instance cannot be deleted or moved, and components cannot be reordered.\n\nYou can open the Prefab in Prefab Mode to restructure the Prefab Asset itself, or unpack the Prefab instance to remove its prefab connection.", "OK");
-				return false;
-			}
+            if (PrefabUtility.IsPartOfPrefabInstance(go) && !PrefabUtility.IsOutermostPrefabInstanceRoot(go))
+            {
+                return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public static bool WarnRestructurable(Transform[] targets)
-		{
-			if (!IsRestructurable(targets))
-			{
-				EditorUtility.DisplayDialog("Cannot restructure Prefab instance", "Children of a Prefab instance cannot be deleted or moved, and components cannot be reordered.\n\nYou can open the Prefab in Prefab Mode to restructure the Prefab Asset itself, or unpack the Prefab instance to remove its prefab connection.", "OK");
-				return false;
-			}
+        public static bool IsRestructurable(Transform[] targets)
+        {
+            Ensure.That(nameof(targets)).IsNotNull(targets);
 
-			return true;
-		}
+            foreach (var target in targets)
+            {
+                if (!IsRestructurable(target))
+                {
+                    return false;
+                }
+            }
 
-		public static Transform FindShallowest(Transform[] targets)
-		{
-			var shallowest = int.MaxValue;
-			Transform shallowestTarget = null;
+            return true;
+        }
 
-			foreach (var target in targets)
-			{
-				var depth = 0;
-				var transform = target;
+        public static bool WarnRestructurable(Transform target)
+        {
+            if (!IsRestructurable(target))
+            {
+                EditorUtility.DisplayDialog("Cannot restructure Prefab instance", "Children of a Prefab instance cannot be deleted or moved, and components cannot be reordered.\n\nYou can open the Prefab in Prefab Mode to restructure the Prefab Asset itself, or unpack the Prefab instance to remove its prefab connection.", "OK");
+                return false;
+            }
 
-				while (transform != null)
-				{
-					depth++;
-					transform = transform.parent;
-				}
+            return true;
+        }
 
-				if (depth < shallowest)
-				{
-					shallowest = depth;
-					shallowestTarget = target;
-				}
-			}
+        public static bool WarnRestructurable(Transform[] targets)
+        {
+            if (!IsRestructurable(targets))
+            {
+                EditorUtility.DisplayDialog("Cannot restructure Prefab instance", "Children of a Prefab instance cannot be deleted or moved, and components cannot be reordered.\n\nYou can open the Prefab in Prefab Mode to restructure the Prefab Asset itself, or unpack the Prefab instance to remove its prefab connection.", "OK");
+                return false;
+            }
 
-			return shallowestTarget;
-		}
+            return true;
+        }
 
-		private static void CacheChildrenTransforms(Transform target, out Vector3[] globalPositions, out Quaternion[] globalRotations, out Vector3[] globalScales)
-		{
-			globalPositions = new Vector3[target.childCount];
-			globalRotations = new Quaternion[target.childCount];
-			globalScales = new Vector3[target.childCount];
+        public static Transform FindShallowest(Transform[] targets)
+        {
+            var shallowest = int.MaxValue;
+            Transform shallowestTarget = null;
 
-			for (var i = 0; i < target.childCount; i++)
-			{
-				var child = target.GetChild(i);
+            foreach (var target in targets)
+            {
+                var depth = 0;
+                var transform = target;
 
-				globalPositions[i] = target.TransformPoint(child.localPosition);
-				globalRotations[i] = target.TransformQuaternion(child.localRotation);
-				globalScales[i] = child.lossyScale;
-			}
-		}
+                while (transform != null)
+                {
+                    depth++;
+                    transform = transform.parent;
+                }
 
-		private static void ApplyChildrenTransforms(Transform target, Vector3[] globalPositions, Quaternion[] globalRotations, Vector3[] globalScales)
-		{
-			for (var i = 0; i < target.childCount; i++)
-			{
-				var child = target.GetChild(i);
+                if (depth < shallowest)
+                {
+                    shallowest = depth;
+                    shallowestTarget = target;
+                }
+            }
 
-				Undo.RecordObject(child, $"Realign {target.name}");
-				child.position = globalPositions[i];
-				child.rotation = globalRotations[i];
-				child.SetGlobalScale(globalScales[i]);
-			}
-		}
+            return shallowestTarget;
+        }
 
-		private static Quaternion TransformQuaternion(this Transform transform, Quaternion localRotation)
-		{
-			return transform.rotation * localRotation;
-		}
+        private static void CacheChildrenTransforms(Transform target, out Vector3[] globalPositions, out Quaternion[] globalRotations, out Vector3[] globalScales)
+        {
+            globalPositions = new Vector3[target.childCount];
+            globalRotations = new Quaternion[target.childCount];
+            globalScales = new Vector3[target.childCount];
 
-		// https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/#post-2356866
-		private static void SetGlobalScale(this Transform transform, Vector3 globalScale)
-		{
-			transform.localScale = Vector3.one;
-			var matrix = transform.worldToLocalMatrix;
-			matrix.SetColumn(0, new Vector4(matrix.GetColumn(0).magnitude, 0, 0, 0));
-			matrix.SetColumn(1, new Vector4(0, matrix.GetColumn(1).magnitude, 0, 0));
-			matrix.SetColumn(2, new Vector4(0, 0, matrix.GetColumn(2).magnitude, 0));
-			matrix.SetColumn(3, new Vector4(0, 0, 0, 1));
-			transform.localScale = matrix.MultiplyPoint(globalScale);
-		}
-	}
+            for (var i = 0; i < target.childCount; i++)
+            {
+                var child = target.GetChild(i);
+
+                globalPositions[i] = target.TransformPoint(child.localPosition);
+                globalRotations[i] = target.TransformQuaternion(child.localRotation);
+                globalScales[i] = child.lossyScale;
+            }
+        }
+
+        private static void ApplyChildrenTransforms(Transform target, Vector3[] globalPositions, Quaternion[] globalRotations, Vector3[] globalScales)
+        {
+            for (var i = 0; i < target.childCount; i++)
+            {
+                var child = target.GetChild(i);
+
+                Undo.RecordObject(child, $"Realign {target.name}");
+                child.position = globalPositions[i];
+                child.rotation = globalRotations[i];
+                child.SetGlobalScale(globalScales[i]);
+            }
+        }
+
+        private static Quaternion TransformQuaternion(this Transform transform, Quaternion localRotation)
+        {
+            return transform.rotation * localRotation;
+        }
+
+        // https://forum.unity.com/threads/solved-why-is-transform-lossyscale-readonly.363594/#post-2356866
+        private static void SetGlobalScale(this Transform transform, Vector3 globalScale)
+        {
+            transform.localScale = Vector3.one;
+            var matrix = transform.worldToLocalMatrix;
+            matrix.SetColumn(0, new Vector4(matrix.GetColumn(0).magnitude, 0, 0, 0));
+            matrix.SetColumn(1, new Vector4(0, matrix.GetColumn(1).magnitude, 0, 0));
+            matrix.SetColumn(2, new Vector4(0, 0, matrix.GetColumn(2).magnitude, 0));
+            matrix.SetColumn(3, new Vector4(0, 0, 0, 1));
+            transform.localScale = matrix.MultiplyPoint(globalScale);
+        }
+    }
 }

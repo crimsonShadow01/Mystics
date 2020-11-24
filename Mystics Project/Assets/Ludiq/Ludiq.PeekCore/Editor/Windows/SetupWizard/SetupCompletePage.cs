@@ -1,135 +1,134 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public class SetupCompletePage : Page
-	{
-		public SetupCompletePage(Product product, EditorWindow window) : base(window)
-		{
-			Ensure.That(nameof(product)).IsNotNull(product);
+    public class SetupCompletePage : Page
+    {
+        public SetupCompletePage(Product product, EditorWindow window) : base(window)
+        {
+            Ensure.That(nameof(product)).IsNotNull(product);
 
-			title = "Setup Complete";
-			shortTitle = "Finish";
-			icon = LudiqCore.Resources.LoadIcon("Icons/Windows/SetupWizard/SetupCompletePage.png");
-			
-			this.product = product;
-		}
+            title = "Setup Complete";
+            shortTitle = "Finish";
+            icon = LudiqCore.Resources.LoadIcon("Icons/Windows/SetupWizard/SetupCompletePage.png");
 
-		private readonly List<(GUIContent, Action)> buttons = new List<(GUIContent, Action)>();
+            this.product = product;
+        }
 
-		private readonly Product product;
+        private readonly List<(GUIContent, Action)> buttons = new List<(GUIContent, Action)>();
 
-		protected void AddButton(GUIContent label, Action action)
-		{
-			buttons.Add((label, action));
-		}
+        private readonly Product product;
 
-		protected void AddButton(string title, string subtitle, EditorTexture icon, Action action)
-		{
-			AddButton(new GUIContent(title, icon?[IconSize.Medium], subtitle), action);
-		}
+        protected void AddButton(GUIContent label, Action action)
+        {
+            buttons.Add((label, action));
+        }
 
-		protected virtual void SetupButtons()
-		{
-			AddButton
-			(
-				"Done",
-				$"Close the wizard and start using {product.name}!", 
-				LudiqCore.Resources.LoadIcon("Icons/Windows/SetupWizard/CompleteButton.png"),
-				Complete
-			);
-		}
+        protected void AddButton(string title, string subtitle, EditorTexture icon, Action action)
+        {
+            AddButton(new GUIContent(title, icon?[IconSize.Medium], subtitle), action);
+        }
 
-		protected override void OnShow()
-		{
-			base.OnShow();
+        protected virtual void SetupButtons()
+        {
+            AddButton
+            (
+                "Done",
+                $"Close the wizard and start using {product.name}!",
+                LudiqCore.Resources.LoadIcon("Icons/Windows/SetupWizard/CompleteButton.png"),
+                Complete
+            );
+        }
 
-			buttons.Clear();
-			SetupButtons();
+        protected override void OnShow()
+        {
+            base.OnShow();
 
-			foreach (var plugin in product.plugins.ResolveDependencies())
-			{
-				plugin.configuration.projectSetupCompleted = true;
-				plugin.configuration.editorSetupCompleted = true;
-				plugin.configuration.Save();
-			}
+            buttons.Clear();
+            SetupButtons();
 
-			AssetDatabase.SaveAssets();
+            foreach (var plugin in product.plugins.ResolveDependencies())
+            {
+                plugin.configuration.projectSetupCompleted = true;
+                plugin.configuration.editorSetupCompleted = true;
+                plugin.configuration.Save();
+            }
 
-			// Run the gizmo disabler. It's an expensive operation,
-			// so we don't do it on every assembly reload, but this way at least
-			// we make sure that the gizmos will be properly disabled on install.
-			AnnotationDisabler.DisableGizmos();
-		}
-		
-		protected override void OnContentGUI()
-		{
-			GUILayout.BeginVertical(Styles.background, GUILayout.ExpandHeight(true));
+            AssetDatabase.SaveAssets();
 
-			LudiqGUI.FlexibleSpace();
-			GUILayout.Label($"{product.name} has successfully been setup.", LudiqStyles.centeredLabel);
-			LudiqGUI.FlexibleSpace();
+            // Run the gizmo disabler. It's an expensive operation,
+            // so we don't do it on every assembly reload, but this way at least
+            // we make sure that the gizmos will be properly disabled on install.
+            AnnotationDisabler.DisableGizmos();
+        }
 
-			int index = 0;
+        protected override void OnContentGUI()
+        {
+            GUILayout.BeginVertical(Styles.background, GUILayout.ExpandHeight(true));
 
-			foreach (var button in buttons)
-			{
-				if (index % 2 == 0)
-				{
-					LudiqGUI.BeginHorizontal();
+            LudiqGUI.FlexibleSpace();
+            GUILayout.Label($"{product.name} has successfully been setup.", LudiqStyles.centeredLabel);
+            LudiqGUI.FlexibleSpace();
 
-					LudiqGUI.FlexibleSpace();
-				}
+            int index = 0;
 
-				EditorGUI.BeginDisabledGroup(button.Item2 == null);
+            foreach (var button in buttons)
+            {
+                if (index % 2 == 0)
+                {
+                    LudiqGUI.BeginHorizontal();
 
-				if (LudiqGUI.BigButtonLayout(button.Item1))
-				{
-					button.Item2?.Invoke();
-				}
+                    LudiqGUI.FlexibleSpace();
+                }
 
-				EditorGUI.EndDisabledGroup();
-				
-				if (index % 2 == 0)
-				{
-					LudiqGUI.FlexibleSpace();
-				}
-				else
-				{
-					LudiqGUI.FlexibleSpace();
+                EditorGUI.BeginDisabledGroup(button.Item2 == null);
 
-					LudiqGUI.EndHorizontal();
-					
-					LudiqGUI.Space(Styles.spaceBetweenButtons);
-				}
+                if (LudiqGUI.BigButtonLayout(button.Item1))
+                {
+                    button.Item2?.Invoke();
+                }
 
-				index++;
-			}
+                EditorGUI.EndDisabledGroup();
 
-			if (index % 2 == 1)
-			{
-				LudiqGUI.EndHorizontal();
-			}
-			
-			LudiqGUI.FlexibleSpace();
+                if (index % 2 == 0)
+                {
+                    LudiqGUI.FlexibleSpace();
+                }
+                else
+                {
+                    LudiqGUI.FlexibleSpace();
 
-			LudiqGUI.EndVertical();
-		}
+                    LudiqGUI.EndHorizontal();
 
-		public static class Styles
-		{
-			static Styles()
-			{
-				background = new GUIStyle(LudiqStyles.windowBackground);
-				background.padding = new RectOffset(10, 10, 10, 10);
-			}
+                    LudiqGUI.Space(Styles.spaceBetweenButtons);
+                }
 
-			public static readonly GUIStyle background;
-			public static readonly float spaceBetweenButtons = 12;
-		}
-	}
+                index++;
+            }
+
+            if (index % 2 == 1)
+            {
+                LudiqGUI.EndHorizontal();
+            }
+
+            LudiqGUI.FlexibleSpace();
+
+            LudiqGUI.EndVertical();
+        }
+
+        public static class Styles
+        {
+            static Styles()
+            {
+                background = new GUIStyle(LudiqStyles.windowBackground);
+                background.padding = new RectOffset(10, 10, 10, 10);
+            }
+
+            public static readonly GUIStyle background;
+            public static readonly float spaceBetweenButtons = 12;
+        }
+    }
 }

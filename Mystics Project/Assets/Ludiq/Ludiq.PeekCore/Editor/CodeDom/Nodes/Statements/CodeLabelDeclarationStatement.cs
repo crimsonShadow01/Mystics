@@ -13,15 +13,15 @@ namespace Ludiq.PeekCore.CodeDom
 
         public string Label { get; }
 
-		public override bool IsTerminator => false;
+        public override bool IsTerminator => false;
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			generator.WriteBlankLineIfJustExitedBlock();
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.WriteBlankLineIfJustExitedBlock();
             generator.Indent--;
             generator.OutputIdentifier(TokenType.Identifier, Label);
-			generator.Write(TokenType.Punctuation, ':');
+            generator.Write(TokenType.Punctuation, ':');
             generator.Indent++;
-		}
-	}
+        }
+    }
 }

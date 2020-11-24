@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using UnityEngine;
 
 namespace SensorToolkit
 {
@@ -15,7 +13,7 @@ namespace SensorToolkit
      * optmization. Otherwise it will use the RayCastAll method.
      */
     [ExecuteInEditMode]
-	public class RaySensor2D : Sensor
+    public class RaySensor2D : Sensor
     {
         // Specified whether the ray sensor will pulse automatically each frame or will be updated manually by having its Pulse() method called when needed.
         public enum UpdateMode { EachFrame, Manual }
@@ -133,18 +131,18 @@ namespace SensorToolkit
             return val;
         }
 
-        protected override void Awake() 
+        protected override void Awake()
         {
             base.Awake();
 
             CurrentBufferSize = 0;
 
-            if (OnObstruction == null) 
+            if (OnObstruction == null)
             {
                 OnObstruction = new SensorEventHandler();
             }
 
-            if (OnClear == null) 
+            if (OnClear == null)
             {
                 OnClear = new SensorEventHandler();
             }
@@ -222,7 +220,7 @@ namespace SensorToolkit
             {
                 hit = Physics2D.CircleCast(transform.position, Radius, direction, Length, ObstructedByLayers);
             }
-            else 
+            else
             {
                 hit = Physics2D.Raycast(transform.position, direction, Length, ObstructedByLayers);
             }
@@ -243,39 +241,39 @@ namespace SensorToolkit
             RaycastHit2D[] hits;
             int numberOfHits;
 
-            if (Radius > 0f) 
+            if (Radius > 0f)
             {
                 prepareHitsBuffer();
                 hits = hitsBuffer;
                 numberOfHits = Physics2D.CircleCastNonAlloc(transform.position, Radius, direction, hits, Length, combinedLayers);
-                if (numberOfHits == CurrentBufferSize) 
+                if (numberOfHits == CurrentBufferSize)
                 {
-                    if (DynamicallyIncreaseBufferSize) 
+                    if (DynamicallyIncreaseBufferSize)
                     {
                         CurrentBufferSize *= 2;
                         testRayMulti();
                         return;
                     }
-                    else 
+                    else
                     {
                         logInsufficientBufferSize();
                     }
                 }
             }
-            else 
+            else
             {
                 prepareHitsBuffer();
                 hits = hitsBuffer;
                 numberOfHits = Physics2D.RaycastNonAlloc(transform.position, direction, hits, Length, combinedLayers);
-                if (numberOfHits == CurrentBufferSize) 
+                if (numberOfHits == CurrentBufferSize)
                 {
-                    if (DynamicallyIncreaseBufferSize) 
+                    if (DynamicallyIncreaseBufferSize)
                     {
                         CurrentBufferSize *= 2;
                         testRayMulti();
                         return;
                     }
-                    else 
+                    else
                     {
                         logInsufficientBufferSize();
                     }
@@ -315,7 +313,7 @@ namespace SensorToolkit
             Debug.LogWarning("A ray sensor on " + name + " has an insufficient buffer size. Some objects may not be detected");
         }
 
-        void prepareHitsBuffer() 
+        void prepareHitsBuffer()
         {
             if (CurrentBufferSize == 0)
             {
@@ -364,7 +362,7 @@ namespace SensorToolkit
         }
 
         // Called by the RaySensorEditor in a SendMessage
-        void reset() 
+        void reset()
         {
             clearDetectedObjects();
             isObstructed = false;
@@ -384,11 +382,11 @@ namespace SensorToolkit
         protected static readonly Color GizmoColor = new Color(51 / 255f, 255 / 255f, 255 / 255f);
         protected static readonly Color GizmoBlockedColor = Color.red;
         private static Mesh primitiveBoxCache;
-        private static Mesh primitiveBox 
+        private static Mesh primitiveBox
         {
-            get 
+            get
             {
-                if (primitiveBoxCache == null) 
+                if (primitiveBoxCache == null)
                 {
                     var primitive = GameObject.CreatePrimitive(PrimitiveType.Quad);
                     primitiveBoxCache = primitive.GetComponent<MeshFilter>().sharedMesh;
@@ -414,13 +412,14 @@ namespace SensorToolkit
                 endPosition = transform.position + (Vector3)direction * Length;
             }
 
-            if (Radius > 0f) 
+            if (Radius > 0f)
             {
                 Gizmos.DrawWireSphere(transform.position, Radius);
                 Gizmos.DrawWireSphere(endPosition, Radius);
 
                 var line = endPosition - transform.position;
-                if (line == Vector3.zero) {
+                if (line == Vector3.zero)
+                {
                     line = Vector3.forward * Length;
                 }
                 var center = transform.position + line / 2f;
@@ -428,7 +427,7 @@ namespace SensorToolkit
                 var rotation = Quaternion.LookRotation(line.normalized, Vector3.back) * Quaternion.Euler(90f, 0f, 0f);
                 Gizmos.DrawWireMesh(primitiveBox, center, rotation, new Vector3(Radius * 2f, length, 1f));
             }
-            else 
+            else
             {
                 Gizmos.DrawLine(transform.position, endPosition);
             }

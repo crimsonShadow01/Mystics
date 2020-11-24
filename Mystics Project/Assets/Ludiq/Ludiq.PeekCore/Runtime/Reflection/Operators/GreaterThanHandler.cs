@@ -2,11 +2,11 @@
 
 namespace Ludiq.PeekCore
 {
-	public class GreaterThanHandler : BinaryOperatorHandler
-	{
-		public GreaterThanHandler() : base(OperatorCategory.Comparison, BinaryOperator.GreaterThan, "Greater Than", "Greater Than", ">", ">", "op_GreaterThan")
-		{
-			Handle<byte, byte>((a, b) => a > b, typeof(bool));
+    public class GreaterThanHandler : BinaryOperatorHandler
+    {
+        public GreaterThanHandler() : base(OperatorCategory.Comparison, BinaryOperator.GreaterThan, "Greater Than", "Greater Than", ">", ">", "op_GreaterThan")
+        {
+            Handle<byte, byte>((a, b) => a > b, typeof(bool));
             Handle<byte, sbyte>((a, b) => a > b, typeof(bool));
             Handle<byte, short>((a, b) => a > b, typeof(bool));
             Handle<byte, ushort>((a, b) => a > b, typeof(bool));
@@ -137,8 +137,8 @@ namespace Ludiq.PeekCore
             Handle<double, float>((a, b) => a > b, typeof(bool));
             //Handle<double, decimal>((a, b) => a > b, typeof(bool));
             Handle<double, double>((a, b) => a > b, typeof(bool));
-		}
+        }
 
-		public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine the first is greater than the second.";
-	}
+        public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine the first is greater than the second.";
+    }
 }

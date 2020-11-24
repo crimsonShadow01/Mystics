@@ -10,8 +10,8 @@ namespace Ludiq.PeekCore.CodeDom
     {
         public CodeIndexExpression(CodeExpression targetObject, IEnumerable<CodeExpression> indices)
         {
-			Ensure.That(nameof(targetObject)).IsNotNull(targetObject);
-			Ensure.That(nameof(indices)).IsNotNull(indices);
+            Ensure.That(nameof(targetObject)).IsNotNull(targetObject);
+            Ensure.That(nameof(indices)).IsNotNull(indices);
 
             TargetObject = targetObject;
             Indices.AddRange(indices);
@@ -20,23 +20,23 @@ namespace Ludiq.PeekCore.CodeDom
         public CodeExpression TargetObject { get; }
         public List<CodeExpression> Indices { get; } = new List<CodeExpression>();
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (TargetObject != null) yield return TargetObject;
-				foreach (var child in Indices) yield return child;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (TargetObject != null) yield return TargetObject;
+                foreach (var child in Indices) yield return child;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
-			if (TargetObject.Precedence > PrecedenceGroup.Primary) generator.Write(TokenType.Punctuation, '(');
+        protected override void GenerateInner(CodeGenerator generator)
+        {
+            if (TargetObject.Precedence > PrecedenceGroup.Primary) generator.Write(TokenType.Punctuation, '(');
             TargetObject.Generate(generator);
-			if (TargetObject.Precedence > PrecedenceGroup.Primary) generator.Write(TokenType.Punctuation, ')');
+            if (TargetObject.Precedence > PrecedenceGroup.Primary) generator.Write(TokenType.Punctuation, ')');
 
             generator.Write(TokenType.Punctuation, '[');
 
@@ -50,12 +50,12 @@ namespace Ludiq.PeekCore.CodeDom
                 else
                 {
                     generator.Write(TokenType.Punctuation, ',');
-					generator.Write(TokenType.Space, ' ');
+                    generator.Write(TokenType.Space, ' ');
                 }
                 index.Generate(generator);
             }
 
             generator.Write(TokenType.Punctuation, ']');
-		}
-	}
+        }
+    }
 }

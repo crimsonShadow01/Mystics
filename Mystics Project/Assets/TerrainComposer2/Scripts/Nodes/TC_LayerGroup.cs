@@ -1,7 +1,5 @@
-﻿using UnityEngine;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -9,7 +7,7 @@ namespace TerrainComposer2
     {
         [NonSerialized] public TC_NodeGroup maskNodeGroup;
         [NonSerialized] public TC_LayerGroupResult groupResult;
-        
+
         public bool doNormalize;
         public float placeLimit = 0.5f;
         public Vector2 nodePos;
@@ -25,7 +23,7 @@ namespace TerrainComposer2
             TC_Compute compute = TC_Compute.instance;
 
             float seedTotal = seed + seedParent;
-            
+
             totalBuffer = groupResult.ComputeSingle(seedTotal, first);
 
             // Debug.Log("layerMaskBuffer " + layerMaskBuffer == null);
@@ -81,7 +79,7 @@ namespace TerrainComposer2
                 rtDisplay = rtPreview;
             }
             else rtDisplay = groupResult.rtDisplay;
-            
+
             return computed;
         }
 
@@ -95,7 +93,7 @@ namespace TerrainComposer2
             placed = groupResult.CalcPlaced();
             return placed;
         }
-        
+
         public void LinkClone(TC_LayerGroup layerGroupS)
         {
             preview = layerGroupS.preview;
@@ -135,11 +133,11 @@ namespace TerrainComposer2
 
             active = visible;
             if (resetTextures) DisposeTextures();
-            
+
             maskNodeGroup = GetGroup<TC_NodeGroup>(0, refresh, resetTextures);
 
             if (maskNodeGroup == null) active = false;
-            else 
+            else
             {
                 maskNodeGroup.type = NodeGroupType.Mask;
                 if (maskNodeGroup.active)
@@ -186,12 +184,12 @@ namespace TerrainComposer2
             if (arg.Length == 0) return -1;
 
             int returnValue = -1;
-            
+
             if (arg[0] == "LayerGroup" || arg[0] == "All")
             {
 
             }
-            
+
             if (arg[0] != "LayerGroup")
             {
                 if (arg.Length <= 1) return -1;

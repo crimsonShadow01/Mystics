@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
 namespace SensorToolkit
 {
@@ -88,7 +86,8 @@ namespace SensorToolkit
 
             EditorGUILayout.Space();
 
-            if (showEvents = EditorGUILayout.Foldout(showEvents, "Events")) {
+            if (showEvents = EditorGUILayout.Foldout(showEvents, "Events"))
+            {
                 EditorGUILayout.PropertyField(onDetected);
                 EditorGUILayout.PropertyField(onLostDetection);
                 EditorGUILayout.PropertyField(onObstructed);
@@ -99,7 +98,8 @@ namespace SensorToolkit
 
             EditorGUILayout.PropertyField(initialBufferSize);
             EditorGUILayout.PropertyField(dynamicallyIncreaseBufferSize);
-            if (raySensor.CurrentBufferSize != 0 && raySensor.CurrentBufferSize != raySensor.InitialBufferSize) {
+            if (raySensor.CurrentBufferSize != 0 && raySensor.CurrentBufferSize != raySensor.InitialBufferSize)
+            {
                 EditorGUILayout.HelpBox("Buffer size expanded to: " + raySensor.CurrentBufferSize, MessageType.Info);
             }
 

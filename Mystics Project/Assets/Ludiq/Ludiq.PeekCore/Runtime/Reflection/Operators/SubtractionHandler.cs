@@ -2,10 +2,10 @@
 
 namespace Ludiq.PeekCore
 {
-	public sealed class SubtractionHandler : BinaryOperatorHandler
-	{
-		public SubtractionHandler() : base(OperatorCategory.Math, BinaryOperator.Subtraction, "Subtraction", "Subtract", "-", "-", "op_Subtraction")
-		{
+    public sealed class SubtractionHandler : BinaryOperatorHandler
+    {
+        public SubtractionHandler() : base(OperatorCategory.Math, BinaryOperator.Subtraction, "Subtraction", "Subtract", "-", "-", "op_Subtraction")
+        {
             Handle<byte, byte>((a, b) => a - b, typeof(byte));
             Handle<byte, sbyte>((a, b) => a - b, typeof(int));
             Handle<byte, short>((a, b) => a - b, typeof(int));
@@ -137,8 +137,8 @@ namespace Ludiq.PeekCore
             Handle<double, float>((a, b) => a - b, typeof(double));
             //Handle<double, decimal>((a, b) => a - b, typeof(decimal));
             Handle<double, double>((a, b) => a - b, typeof(double));
-		}
+        }
 
-		public override string GetDescriptionFormat(Type leftType, Type rightType) => "Returns the difference between {0}.";
-	}
+        public override string GetDescriptionFormat(Type leftType, Type rightType) => "Returns the difference between {0}.";
+    }
 }

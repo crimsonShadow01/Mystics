@@ -2,11 +2,10 @@
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public interface IFollowingPopupWindow
-	{
-		Rect activatorPosition { set; }
-	}
+    public interface IFollowingPopupWindow
+    {
+        Rect activatorPosition { set; }
+    }
 }

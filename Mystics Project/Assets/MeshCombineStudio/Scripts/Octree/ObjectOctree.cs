@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace MeshCombineStudio
@@ -27,7 +27,7 @@ namespace MeshCombineStudio
             {
                 LOD[] lods = new LOD[lodLevels.Length];
                 int lodGroupParentIndex = lods.Length - 1;
-                
+
                 for (int i = 0; i < lodLevels.Length; i++)
                 {
                     LODLevel lodLevel = lodLevels[i];
@@ -54,7 +54,7 @@ namespace MeshCombineStudio
             public FastList<MeshObjectsHolder> changedMeshObjectsHolders;
             public FastList<MeshRenderer> newMeshRenderers = new FastList<MeshRenderer>();
             public int vertCount, objectCount = 0;
-           
+
             public void ApplyChanges(MeshCombiner meshCombiner)
             {
                 for (int i = 0; i < changedMeshObjectsHolders.Count; i++)
@@ -133,7 +133,7 @@ namespace MeshCombineStudio
 
                     LODParent lodParent = thisCell.lodParents[lodParentIndex];
                     LODLevel lod = lodParent.lodLevels[lodLevel];
-                    
+
                     lod.cachedGOs.Add(cachedGO);
                     if (isChangeMode)
                     {
@@ -166,7 +166,7 @@ namespace MeshCombineStudio
                     cells[index].AddObjectInternal(meshCombiner, cachedGO, position, lodParentIndex, lodLevel, isChangeMode);
                 }
             }
-            
+
             public void SortObjects(MeshCombiner meshCombiner)
             {
                 if (level == maxLevels)
@@ -183,7 +183,7 @@ namespace MeshCombineStudio
                         for (int j = 0; j < lodParent.lodLevels.Length; j++)
                         {
                             LODLevel lod = lodParent.lodLevels[j];
-                            
+
                             if (lod == null || lod.cachedGOs.Count == 0) return;
 
                             for (int k = 0; k < lod.cachedGOs.Count; ++k)
@@ -262,7 +262,7 @@ namespace MeshCombineStudio
                         lod.changedMeshObjectsHolders.Add(meshObjectHolder);
                     }
                 }
-                
+
                 return true;
             }
 
@@ -271,7 +271,7 @@ namespace MeshCombineStudio
                 if (level == maxLevels)
                 {
                     MaxCell thisCell = (MaxCell)this;
-                    
+
                     LODParent lodParent = thisCell.lodParents[lodParentIndex];
                     if (lodParent == null) return;
 
@@ -324,7 +324,7 @@ namespace MeshCombineStudio
                     }
                 }
             }
-            
+
             public void Draw(MeshCombiner meshCombiner, bool onlyMaxLevel, bool drawLevel0)
             {
                 if (!onlyMaxLevel || level == maxLevels || (drawLevel0 && level == 0))
@@ -363,7 +363,7 @@ namespace MeshCombineStudio
                 }
 
                 if (cells == null || cellsUsed == null) { return; }
-                
+
                 for (int i = 0; i < 8; i++)
                 {
                     if (cellsUsed[i]) cells[i].Draw(meshCombiner, onlyMaxLevel, drawLevel0);
@@ -382,8 +382,8 @@ namespace MeshCombineStudio
         public Material mat;
         public bool hasChanged;
         public CombineCondition combineCondition;
-        
-        
+
+
         public MeshObjectsHolder(ref CombineCondition combineCondition, Material mat)
         {
             // Debug.Log(useForLightmapping);
@@ -411,7 +411,7 @@ namespace MeshCombineStudio
         public ShadowCastingMode shadowCastingMode;
         public bool receiveShadows;
         public float lightmapScale;
-        
+
         public LightProbeUsage lightProbeUsage;
         public ReflectionProbeUsage reflectionProbeUsage;
         public Transform probeAnchor;
@@ -457,21 +457,33 @@ namespace MeshCombineStudio
 
         public static void MakeFoundReport(FoundCombineConditions fcc)
         {
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.matInstanceId); } fcc.matCount = countSet.Count;
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.lightmapIndex); } fcc.lightmapIndexCount = countSet.Count;
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.shadowCastingMode); } fcc.shadowCastingCount = countSet.Count;
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.receiveShadows); } fcc.receiveShadowsCount = countSet.Count;                
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.lightmapScale); } fcc.lightmapScale = countSet.Count; 
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.lightProbeUsage); } fcc.lightProbeUsageCount = countSet.Count;
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.reflectionProbeUsage); } fcc.reflectionProbeUsageCount = countSet.Count;
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.probeAnchor); } fcc.probeAnchorCount = countSet.Count;
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.motionVectorGenerationMode); } fcc.motionVectorGenerationModeCount = countSet.Count;
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.layer); } fcc.layerCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.matInstanceId); }
+            fcc.matCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.lightmapIndex); }
+            fcc.lightmapIndexCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.shadowCastingMode); }
+            fcc.shadowCastingCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.receiveShadows); }
+            fcc.receiveShadowsCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.lightmapScale); }
+            fcc.lightmapScale = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.lightProbeUsage); }
+            fcc.lightProbeUsageCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.reflectionProbeUsage); }
+            fcc.reflectionProbeUsageCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.probeAnchor); }
+            fcc.probeAnchorCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.motionVectorGenerationMode); }
+            fcc.motionVectorGenerationModeCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.layer); }
+            fcc.layerCount = countSet.Count;
 #if UNITY_EDITOR
 #if !UNITY_2017 && !UNITY_2018 && !UNITY_2019_1
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.receiveGI); } fcc.receiveGICount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.receiveGI); }
+            fcc.receiveGICount = countSet.Count;
 #endif           
-            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.staticEditorFlags); } fcc.staticEditorFlagsCount = countSet.Count;
+            countSet.Clear(); foreach (var combineCondition in fcc.combineConditions) { countSet.Add(combineCondition.staticEditorFlags); }
+            fcc.staticEditorFlagsCount = countSet.Count;
 #endif
             fcc.combineConditionsCount = fcc.combineConditions.Count;
         }
@@ -483,7 +495,7 @@ namespace MeshCombineStudio
             shadowCastingMode = (combineConditions.sameShadowCastingMode ? mr.shadowCastingMode : combineConditions.combineCondition.shadowCastingMode);
             receiveShadows = (combineConditions.sameReceiveShadows ? mr.receiveShadows : combineConditions.combineCondition.receiveShadows);
             lightmapScale = (combineConditions.sameLightmapScale ? GetLightmapScale(mr) : combineConditions.combineCondition.lightmapScale);
-            
+
             lightProbeUsage = (combineConditions.sameLightProbeUsage ? mr.lightProbeUsage : combineConditions.combineCondition.lightProbeUsage);
             reflectionProbeUsage = (combineConditions.sameReflectionProbeUsage ? mr.reflectionProbeUsage : combineConditions.combineCondition.reflectionProbeUsage);
             probeAnchor = (combineConditions.sameProbeAnchor ? mr.probeAnchor : combineConditions.combineCondition.probeAnchor);

@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEditor;
+using UnityEngine;
 
 public class RTP_MatPropStringParser
 {
@@ -40,7 +39,7 @@ public class RTP_CustomShaderGUI : MaterialEditor
 
 
     public string shaderCode;
-    public bool showFlag=true;
+    public bool showFlag = true;
     public bool inactiveFlag = false;
     public bool helperFlag = false;
     public int active_layer = 0;
@@ -52,12 +51,13 @@ public class RTP_CustomShaderGUI : MaterialEditor
     Texture2D _blankGreyTex;
     public Texture2D blankGreyTex
     {
-        get {
+        get
+        {
             if (_blankGreyTex == null)
             {
                 _blankGreyTex = new Texture2D(64, 64, TextureFormat.RGB24, false);
                 Color[] cols = new Color[_blankGreyTex.width * _blankGreyTex.height];
-                for(int i=0; i<cols.Length; i++)
+                for (int i = 0; i < cols.Length; i++)
                 {
                     cols[i] = Color.grey;
                 }
@@ -96,7 +96,7 @@ public class RTP_CustomShaderGUI : MaterialEditor
         cur_shader = (target as Material).shader;
         base.OnEnable();
     }
-    
+
     public override void OnInspectorGUI()
     {
         showFlag = true;
@@ -104,7 +104,7 @@ public class RTP_CustomShaderGUI : MaterialEditor
         helperFlag = false;
 
         MaterialProperty active_layerProp = MaterialEditor.GetMaterialProperty(targets, "active_layer");
-        if (active_layerProp!=null)
+        if (active_layerProp != null)
         {
             active_layer = (int)active_layerProp.floatValue;
         }
@@ -116,12 +116,12 @@ public class RTP_CustomShaderGUI : MaterialEditor
     public bool CheckDefine(string define, bool invertFlag)
     {
         bool result;
-        if (definesCache!=null)
+        if (definesCache != null)
         {
-            for(int i=0; i<definesCache.Count; i++)
+            for (int i = 0; i < definesCache.Count; i++)
             {
                 RTP_shaderDefineCacheItem item = definesCache[i] as RTP_shaderDefineCacheItem;
-                if (item.define==define && item.invertFlag == invertFlag)
+                if (item.define == define && item.invertFlag == invertFlag)
                 {
                     return item.result;
                 }
@@ -175,7 +175,7 @@ public class RTP_CustomShaderGUI : MaterialEditor
         MaterialProperty[] props = GetMaterialProperties(targets);
         for (int i = 0; i < props.Length; i++)
         {
-            if ((props[i].name.IndexOf("RTP_") == 0) || (Consists(features,props[i].name)))
+            if ((props[i].name.IndexOf("RTP_") == 0) || (Consists(features, props[i].name)))
             {
                 // feature toggle
                 ChangeShaderDef(ref _code, props[i].name, props[i].floatValue > 0);
@@ -237,7 +237,8 @@ public class RTP_CustomShaderGUI : MaterialEditor
 
     private bool Consists(string[] arr, string val)
     {
-        for(int i=0; i<arr.Length; i++) {
+        for (int i = 0; i < arr.Length; i++)
+        {
             if (arr[i] == val) return true;
         }
         return false;

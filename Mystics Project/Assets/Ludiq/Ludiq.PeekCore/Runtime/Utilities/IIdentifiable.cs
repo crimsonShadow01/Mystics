@@ -2,8 +2,8 @@
 
 namespace Ludiq.PeekCore
 {
-	public interface IIdentifiable
-	{
-		Guid guid { get; }
-	}
+    public interface IIdentifiable
+    {
+        Guid guid { get; }
+    }
 }

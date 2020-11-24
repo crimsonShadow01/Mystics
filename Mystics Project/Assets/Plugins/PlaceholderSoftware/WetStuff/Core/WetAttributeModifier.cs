@@ -14,7 +14,7 @@ namespace PlaceholderSoftware.WetStuff
     {
         private readonly Camera _camera;
         private readonly Material _gbufferMaterial;
-//        private readonly Material _normalsMaterial;
+        //        private readonly Material _normalsMaterial;
         private readonly Material _normalSmoothingMaterial;
         private readonly Material _blit;
 
@@ -32,20 +32,23 @@ namespace PlaceholderSoftware.WetStuff
         {
             if (!camera) throw new ArgumentNullException("camera");
 
-            _gbufferMaterial = new Material(Shader.Find("Hidden/WetSurfaceModifier")) {
+            _gbufferMaterial = new Material(Shader.Find("Hidden/WetSurfaceModifier"))
+            {
                 hideFlags = HideFlags.DontSave
             };
 
-//            _normalsMaterial = new Material(Shader.Find("Hidden/ReconstructNormals")) {
-//                hideFlags = HideFlags.DontSave
-//            };
+            //            _normalsMaterial = new Material(Shader.Find("Hidden/ReconstructNormals")) {
+            //                hideFlags = HideFlags.DontSave
+            //            };
 
             var shader = Shader.Find("Hidden/WS_BlurNormals");
-            _normalSmoothingMaterial = new Material(shader) {
+            _normalSmoothingMaterial = new Material(shader)
+            {
                 hideFlags = HideFlags.DontSave
             };
 
-            _blit = new Material(Shader.Find("Hidden/StereoBlit")) {
+            _blit = new Material(Shader.Find("Hidden/StereoBlit"))
+            {
                 hideFlags = HideFlags.DontSave
             };
 
@@ -56,7 +59,7 @@ namespace PlaceholderSoftware.WetStuff
         {
             Object.DestroyImmediate(_gbufferMaterial);
             Object.DestroyImmediate(_blit);
-//            Object.DestroyImmediate(_normalsMaterial);
+            //            Object.DestroyImmediate(_normalsMaterial);
             Object.DestroyImmediate(_normalSmoothingMaterial);
             Object.DestroyImmediate(_fullScreenQuad);
 
@@ -71,9 +74,9 @@ namespace PlaceholderSoftware.WetStuff
                 _fullScreenQuad = Primitives.CreateFullscreenQuad();
 
             // Reconstruct geometry normals
-//            cmd.SetRenderTarget(BuiltinRenderTextureType.GBuffer2, BuiltinRenderTextureType.CameraTarget);
-//            cmd.DrawMesh(fsq, Matrix4x4.identity, _normalsMaterial, 0, 0);
-            
+            //            cmd.SetRenderTarget(BuiltinRenderTextureType.GBuffer2, BuiltinRenderTextureType.CameraTarget);
+            //            cmd.DrawMesh(fsq, Matrix4x4.identity, _normalsMaterial, 0, 0);
+
             // Normal blur
             if (RenderSettings.Instance.EnableNormalSmoothing)
             {

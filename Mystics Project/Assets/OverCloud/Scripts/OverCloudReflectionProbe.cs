@@ -3,8 +3,6 @@
 // For additional details, see LICENSE in root directory //
 ///////////////////////////////////////////////////////////
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 #if UNITY_EDITOR
@@ -13,282 +11,282 @@ using UnityEditor;
 
 namespace OC
 {
-	/// <summary>
-	/// The OverCloudReflectionProbe component enables rendering of OverCloud in Reflection Probes.
-	/// It also offers controls for when and how to update the reflection probe,
-	/// whether to spread the workload over multiple frames or not,
-	/// and functionality for saving the cubemap to a file (using horizontal face layout).
-	/// </summary>
-	#if UNITY_EDITOR
-	[InitializeOnLoad]
-	#endif
-	[ExecuteInEditMode, RequireComponent(typeof(ReflectionProbe))]
-	public class OverCloudReflectionProbe : MonoBehaviour
-	{
-		[System.Serializable]
-		public enum UpdateMode
-		{
-			OnSkyChanged,
-			OnEnable,
-			Realtime,
-			ScriptOnly
-		}
-
-		[System.Serializable]
-		public enum SpreadMode
-		{
-			_7Frames,
-			_1Frame
-		}
-
-		private static Quaternion[] orientations = new Quaternion[]
+    /// <summary>
+    /// The OverCloudReflectionProbe component enables rendering of OverCloud in Reflection Probes.
+    /// It also offers controls for when and how to update the reflection probe,
+    /// whether to spread the workload over multiple frames or not,
+    /// and functionality for saving the cubemap to a file (using horizontal face layout).
+    /// </summary>
+#if UNITY_EDITOR
+    [InitializeOnLoad]
+#endif
+    [ExecuteInEditMode, RequireComponent(typeof(ReflectionProbe))]
+    public class OverCloudReflectionProbe : MonoBehaviour
+    {
+        [System.Serializable]
+        public enum UpdateMode
         {
-            Quaternion.LookRotation(Vector3.right,		Vector3.down),
-            Quaternion.LookRotation(Vector3.left,		Vector3.down),
-            Quaternion.LookRotation(Vector3.up,			Vector3.forward),
-            Quaternion.LookRotation(Vector3.down,		Vector3.back),
-            Quaternion.LookRotation(Vector3.forward,	Vector3.down),
-            Quaternion.LookRotation(Vector3.back,		Vector3.down)
-        };
-		private static Quaternion[] orientationsFlipped = new Quaternion[]
+            OnSkyChanged,
+            OnEnable,
+            Realtime,
+            ScriptOnly
+        }
+
+        [System.Serializable]
+        public enum SpreadMode
         {
-            Quaternion.LookRotation(Vector3.right,		Vector3.up),
-            Quaternion.LookRotation(Vector3.left,		Vector3.up),
-            Quaternion.LookRotation(Vector3.up,			Vector3.back),
-            Quaternion.LookRotation(Vector3.down,		Vector3.forward),
-            Quaternion.LookRotation(Vector3.forward,	Vector3.up),
-            Quaternion.LookRotation(Vector3.back,		Vector3.up)
+            _7Frames,
+            _1Frame
+        }
+
+        private static Quaternion[] orientations = new Quaternion[]
+        {
+            Quaternion.LookRotation(Vector3.right,      Vector3.down),
+            Quaternion.LookRotation(Vector3.left,       Vector3.down),
+            Quaternion.LookRotation(Vector3.up,         Vector3.forward),
+            Quaternion.LookRotation(Vector3.down,       Vector3.back),
+            Quaternion.LookRotation(Vector3.forward,    Vector3.down),
+            Quaternion.LookRotation(Vector3.back,       Vector3.down)
+        };
+        private static Quaternion[] orientationsFlipped = new Quaternion[]
+        {
+            Quaternion.LookRotation(Vector3.right,      Vector3.up),
+            Quaternion.LookRotation(Vector3.left,       Vector3.up),
+            Quaternion.LookRotation(Vector3.up,         Vector3.back),
+            Quaternion.LookRotation(Vector3.down,       Vector3.forward),
+            Quaternion.LookRotation(Vector3.forward,    Vector3.up),
+            Quaternion.LookRotation(Vector3.back,       Vector3.up)
         };
 
-		public bool hasFinishedRendering { get; private set;}
+        public bool hasFinishedRendering { get; private set; }
 
-		Camera					m_Camera;
-		OverCloudCamera			m_OverCloudCamera;
-		ReflectionProbe			m_Probe;
-		RenderTexture			m_Result;
-		RenderTexture			m_CubeMap;
-		Material				m_TransferMaterial;
-		int						m_CurrentFace			= -1;
+        Camera m_Camera;
+        OverCloudCamera m_OverCloudCamera;
+        ReflectionProbe m_Probe;
+        RenderTexture m_Result;
+        RenderTexture m_CubeMap;
+        Material m_TransferMaterial;
+        int m_CurrentFace = -1;
 
-		[Tooltip("If and when the reflection probe should be updated. If set to ScriptOnly, the reflection probe will not render unless RenderProbe is manually called.")]
-		public UpdateMode		updateMode				= UpdateMode.OnSkyChanged;
-		[Tooltip("How many frames to spread the reflection probe update over. 1 frame will make the result available immediately after calling RenderProbe. 7 frames will spread the render work over the first 6 frames, and calculate mip maps on the 7th.")]
-		public SpreadMode		spreadMode				= SpreadMode._7Frames;
+        [Tooltip("If and when the reflection probe should be updated. If set to ScriptOnly, the reflection probe will not render unless RenderProbe is manually called.")]
+        public UpdateMode updateMode = UpdateMode.OnSkyChanged;
+        [Tooltip("How many frames to spread the reflection probe update over. 1 frame will make the result available immediately after calling RenderProbe. 7 frames will spread the render work over the first 6 frames, and calculate mip maps on the 7th.")]
+        public SpreadMode spreadMode = SpreadMode._7Frames;
 
-		[Header("General")]
-		[Tooltip("The level of downsampling to use when rendering the volumetric clouds and volumetric lighting. This enables you to render the effects at 1/2, 1/4 or 1/8 resolution and can give you a big performance boost in exchange for fidelity.")]
-		public DownSampleFactor	downsampleFactor		= DownSampleFactor.Half;
+        [Header("General")]
+        [Tooltip("The level of downsampling to use when rendering the volumetric clouds and volumetric lighting. This enables you to render the effects at 1/2, 1/4 or 1/8 resolution and can give you a big performance boost in exchange for fidelity.")]
+        public DownSampleFactor downsampleFactor = DownSampleFactor.Half;
 
-		[Header("Volumetric Clouds")]
-		[Tooltip("Toggle the rendering of the volumetric clouds.")]
-		public bool				renderVolumetricClouds			= true;
-		[Tooltip("Toggle the rendering of the 2D fallback cloud plane for the volumetric clouds.")]
-		public bool				render2DFallback		= true;
-		[Tooltip("The number of samples to use when ray-marching the lighting for the volumetric clouds. A higher value will look nicer at the cost of performance.")]
-        public SampleCount      lightSampleCount        = SampleCount.Low;
-		[Tooltip("Use the high-resolution 3D noise for the light ray-marching for the volumetric clouds, which is normally only used for the alpha.")]
-        public bool				highQualityClouds		= false;
-		[Tooltip("Downsample the 2D clouds along with the volumetric ones. Can save performance at the cost of fidelity, especially around the horizon.")]
-        public bool				downsample2DClouds		= false;
+        [Header("Volumetric Clouds")]
+        [Tooltip("Toggle the rendering of the volumetric clouds.")]
+        public bool renderVolumetricClouds = true;
+        [Tooltip("Toggle the rendering of the 2D fallback cloud plane for the volumetric clouds.")]
+        public bool render2DFallback = true;
+        [Tooltip("The number of samples to use when ray-marching the lighting for the volumetric clouds. A higher value will look nicer at the cost of performance.")]
+        public SampleCount lightSampleCount = SampleCount.Low;
+        [Tooltip("Use the high-resolution 3D noise for the light ray-marching for the volumetric clouds, which is normally only used for the alpha.")]
+        public bool highQualityClouds = false;
+        [Tooltip("Downsample the 2D clouds along with the volumetric ones. Can save performance at the cost of fidelity, especially around the horizon.")]
+        public bool downsample2DClouds = false;
 
-		[Header("Atmosphere")]
-		[Tooltip("Toggle the rendering of atmospheric scattering and fog.")]
-		public bool				renderAtmosphere		= true;
-		[Tooltip("Enable the scattering mask (god rays).")]
-		public bool				renderScatteringMask	= false;
-		[Tooltip("Include the cascaded shadow map in the scattering mask.")]
-		public bool				includeCascadedShadows	= true;
-		[Tooltip("How many samples the scattering mask should use when rendering. More results in higher quality but slower rendering.")]
-		public SampleCount		scatteringMaskSamples = SampleCount.Normal;
+        [Header("Atmosphere")]
+        [Tooltip("Toggle the rendering of atmospheric scattering and fog.")]
+        public bool renderAtmosphere = true;
+        [Tooltip("Enable the scattering mask (god rays).")]
+        public bool renderScatteringMask = false;
+        [Tooltip("Include the cascaded shadow map in the scattering mask.")]
+        public bool includeCascadedShadows = true;
+        [Tooltip("How many samples the scattering mask should use when rendering. More results in higher quality but slower rendering.")]
+        public SampleCount scatteringMaskSamples = SampleCount.Normal;
 
-		[Header("Weather")]
-		[Tooltip("Enable the rain height mask.")]
-		public bool				renderRainMask			= false;
+        [Header("Weather")]
+        [Tooltip("Enable the rain height mask.")]
+        public bool renderRainMask = false;
 
-		[Header("Camera Settings")]
-		[Tooltip("Enable rendering of shadows in the reflection probe (shadows need to be enabled in quality settings also).")]
-		public bool		enableShadows = false;
+        [Header("Camera Settings")]
+        [Tooltip("Enable rendering of shadows in the reflection probe (shadows need to be enabled in quality settings also).")]
+        public bool enableShadows = false;
 
-		[Header("Misc")]
-		[Tooltip("Print debug information in the console.")]
-		public bool		debug = false;
+        [Header("Misc")]
+        [Tooltip("Print debug information in the console.")]
+        public bool debug = false;
 
-		[Header("Cubemap Saving")]
-		[Tooltip("The file path to store the cubemap .exr when saving (the filename will be OverCloudReflectionProbe.exr).")]
-		public string	filePath = "";
+        [Header("Cubemap Saving")]
+        [Tooltip("The file path to store the cubemap .exr when saving (the filename will be OverCloudReflectionProbe.exr).")]
+        public string filePath = "";
 
-		private bool	m_FlippedRendering = false;
+        private bool m_FlippedRendering = false;
 
-		private void OnEnable()
-		{
-			#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				EditorApplication.update += RenderUpdate;
-			#endif
+        private void OnEnable()
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                EditorApplication.update += RenderUpdate;
+#endif
 
-			Initialize();
+            Initialize();
 
-			RenderProbe();
-		}
+            RenderProbe();
+        }
 
-		private void OnValidate()
-		{
-			Reset();
-		}
+        private void OnValidate()
+        {
+            Reset();
+        }
 
-		private void Initialize ()
-		{
-			// Initialize the camera used to render reflections
-			if (!m_Camera)
-			{
-				var go					= new GameObject("ReflectionCamera");
-				go.transform.parent		= transform;
-				go.hideFlags			= HideFlags.HideAndDontSave;
-				m_Camera				= go.AddComponent<Camera>();
-				m_Camera.enabled		= false;
-				m_Camera.tag			= "Untagged";
-				m_OverCloudCamera		= m_Camera.gameObject.AddComponent<OverCloudCamera>();
-			}
-			m_Probe						= GetComponent<ReflectionProbe>();
-			var desc					= new RenderTextureDescriptor(m_Probe.resolution, m_Probe.resolution, RenderTextureFormat.DefaultHDR);
-			desc.useMipMap				= true;
-			desc.autoGenerateMips		= false;
-			desc.depthBufferBits		= 0;
+        private void Initialize()
+        {
+            // Initialize the camera used to render reflections
+            if (!m_Camera)
+            {
+                var go = new GameObject("ReflectionCamera");
+                go.transform.parent = transform;
+                go.hideFlags = HideFlags.HideAndDontSave;
+                m_Camera = go.AddComponent<Camera>();
+                m_Camera.enabled = false;
+                m_Camera.tag = "Untagged";
+                m_OverCloudCamera = m_Camera.gameObject.AddComponent<OverCloudCamera>();
+            }
+            m_Probe = GetComponent<ReflectionProbe>();
+            var desc = new RenderTextureDescriptor(m_Probe.resolution, m_Probe.resolution, RenderTextureFormat.DefaultHDR);
+            desc.useMipMap = true;
+            desc.autoGenerateMips = false;
+            desc.depthBufferBits = 0;
 
-			m_Result					= new RenderTexture(desc);
-			m_Result.dimension			= TextureDimension.Cube;
-			m_Result.antiAliasing		= 1;
-			m_Result.filterMode			= FilterMode.Trilinear;
-			m_CubeMap					= new RenderTexture(desc);
-			m_CubeMap.dimension			= TextureDimension.Cube;
-			m_CubeMap.antiAliasing		= 1;
-			m_CubeMap.filterMode		= FilterMode.Trilinear;
+            m_Result = new RenderTexture(desc);
+            m_Result.dimension = TextureDimension.Cube;
+            m_Result.antiAliasing = 1;
+            m_Result.filterMode = FilterMode.Trilinear;
+            m_CubeMap = new RenderTexture(desc);
+            m_CubeMap.dimension = TextureDimension.Cube;
+            m_CubeMap.antiAliasing = 1;
+            m_CubeMap.filterMode = FilterMode.Trilinear;
 
-			// Set up mip maps?
-			Graphics.Blit(Texture2D.whiteTexture, m_Result);
-			Graphics.Blit(Texture2D.whiteTexture, m_CubeMap);
-			m_Result.GenerateMips();
-			m_CubeMap.GenerateMips();
+            // Set up mip maps?
+            Graphics.Blit(Texture2D.whiteTexture, m_Result);
+            Graphics.Blit(Texture2D.whiteTexture, m_CubeMap);
+            m_Result.GenerateMips();
+            m_CubeMap.GenerateMips();
 
-			m_Probe.mode				= ReflectionProbeMode.Custom;
-			m_Probe.customBakedTexture	= m_CubeMap;
+            m_Probe.mode = ReflectionProbeMode.Custom;
+            m_Probe.customBakedTexture = m_CubeMap;
 
-			m_TransferMaterial			= new Material(Shader.Find("Hidden/OverCloud/Utilities"));
-			//m_ConvolutionMaterial		= new Material(Shader.Find("Hidden/CubeBlur"));
-		}
+            m_TransferMaterial = new Material(Shader.Find("Hidden/OverCloud/Utilities"));
+            //m_ConvolutionMaterial		= new Material(Shader.Find("Hidden/CubeBlur"));
+        }
 
-		public void RenderProbe ()
-		{
-			hasFinishedRendering = false;
-			m_CurrentFace = -1;
-			if (spreadMode == SpreadMode._1Frame)
-				RenderUpdate();
-		}
+        public void RenderProbe()
+        {
+            hasFinishedRendering = false;
+            m_CurrentFace = -1;
+            if (spreadMode == SpreadMode._1Frame)
+                RenderUpdate();
+        }
 
-		private void OnDisable()
-		{
-			#if UNITY_EDITOR
-			if (!Application.isPlaying)
-				EditorApplication.update -= RenderUpdate;
-			#endif
-			m_Probe.mode = ReflectionProbeMode.Baked;
-		}
+        private void OnDisable()
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                EditorApplication.update -= RenderUpdate;
+#endif
+            m_Probe.mode = ReflectionProbeMode.Baked;
+        }
 
-		private void Update()
-		{
-			if (Application.isPlaying)
-				RenderUpdate();
-		}
+        private void Update()
+        {
+            if (Application.isPlaying)
+                RenderUpdate();
+        }
 
-		/// <summary>
-		/// The main render update loop, where the script decides what to do based on currentFace
-		/// </summary>
-		private void RenderUpdate ()
-		{
-			if (m_CubeMap.width != m_Probe.resolution)
-			{
-				Initialize();
-				Reset();
-			}
+        /// <summary>
+        /// The main render update loop, where the script decides what to do based on currentFace
+        /// </summary>
+        private void RenderUpdate()
+        {
+            if (m_CubeMap.width != m_Probe.resolution)
+            {
+                Initialize();
+                Reset();
+            }
 
-			if (m_CurrentFace > 6)
-			{
-				// Rendering is considered "finished" when m_CurrentFace is larger than 6, but we might want to restart it depending on the update mode
-				if (updateMode == UpdateMode.OnSkyChanged && OverCloud.skyChanged)
-					m_CurrentFace = -1;
-				else
-					return;
-			}
+            if (m_CurrentFace > 6)
+            {
+                // Rendering is considered "finished" when m_CurrentFace is larger than 6, but we might want to restart it depending on the update mode
+                if (updateMode == UpdateMode.OnSkyChanged && OverCloud.skyChanged)
+                    m_CurrentFace = -1;
+                else
+                    return;
+            }
 
-			if (m_CurrentFace < 0)
-				Reset();
+            if (m_CurrentFace < 0)
+                Reset();
 
-			if (!m_Camera)
-				Initialize();
-			
-			while (m_CurrentFace < 6)
-			{
-				hasFinishedRendering = false;
+            if (!m_Camera)
+                Initialize();
 
-				// Frame 1-6: Render one face of the cubemap
+            while (m_CurrentFace < 6)
+            {
+                hasFinishedRendering = false;
 
-				if (debug)
-					Debug.Log("OverCloudReflectionProbe: Updating face " + (m_CurrentFace + 1).ToString() + ".");
+                // Frame 1-6: Render one face of the cubemap
 
-				UpdateCamera();
+                if (debug)
+                    Debug.Log("OverCloudReflectionProbe: Updating face " + (m_CurrentFace + 1).ToString() + ".");
 
-				// Render a single side of the cubemap
-				Shader.EnableKeyword("OVERCLOUD_REFLECTION");
-				var shadowsPrev = QualitySettings.shadows;
-				if (!enableShadows)
-					QualitySettings.shadows = ShadowQuality.Disable;
-				var desc = new RenderTextureDescriptor(m_CubeMap.width, m_CubeMap.height, m_CubeMap.format, 16);
-				desc.useMipMap = false;
-				var rt = RenderTexture.GetTemporary(desc);
-				m_Camera.targetTexture = rt;
-				m_Camera.Render();
-				QualitySettings.shadows = shadowsPrev;
-				Shader.DisableKeyword("OVERCLOUD_REFLECTION");
+                UpdateCamera();
 
-				// Transfer to cubemap face + mip maps
-				var wasActive = RenderTexture.active;
-				var face = (CubemapFace)m_CurrentFace;
-				//Graphics.SetRenderTarget(m_Result, 0, face);
-				Graphics.SetRenderTarget(m_CubeMap, 0, face);
-				m_TransferMaterial.SetTexture("_MainTex", rt);
-				m_TransferMaterial.SetInt("_Flip", m_FlippedRendering ? 0 : 1);
-				Graphics.Blit(rt, m_TransferMaterial, 2);
-				RenderTexture.ReleaseTemporary(rt);
-				RenderTexture.active = wasActive;
+                // Render a single side of the cubemap
+                Shader.EnableKeyword("OVERCLOUD_REFLECTION");
+                var shadowsPrev = QualitySettings.shadows;
+                if (!enableShadows)
+                    QualitySettings.shadows = ShadowQuality.Disable;
+                var desc = new RenderTextureDescriptor(m_CubeMap.width, m_CubeMap.height, m_CubeMap.format, 16);
+                desc.useMipMap = false;
+                var rt = RenderTexture.GetTemporary(desc);
+                m_Camera.targetTexture = rt;
+                m_Camera.Render();
+                QualitySettings.shadows = shadowsPrev;
+                Shader.DisableKeyword("OVERCLOUD_REFLECTION");
 
-				m_CurrentFace++;
+                // Transfer to cubemap face + mip maps
+                var wasActive = RenderTexture.active;
+                var face = (CubemapFace)m_CurrentFace;
+                //Graphics.SetRenderTarget(m_Result, 0, face);
+                Graphics.SetRenderTarget(m_CubeMap, 0, face);
+                m_TransferMaterial.SetTexture("_MainTex", rt);
+                m_TransferMaterial.SetInt("_Flip", m_FlippedRendering ? 0 : 1);
+                Graphics.Blit(rt, m_TransferMaterial, 2);
+                RenderTexture.ReleaseTemporary(rt);
+                RenderTexture.active = wasActive;
 
-				// If we are spreading updates across multiple frames, we break here
-				if (spreadMode == SpreadMode._7Frames)
-					return;
-			}
+                m_CurrentFace++;
 
-			// Frame 7: Generate mip maps
+                // If we are spreading updates across multiple frames, we break here
+                if (spreadMode == SpreadMode._7Frames)
+                    return;
+            }
 
-			if (debug)
-				Debug.Log("OverCloudReflectionProbe: Generating mip maps.");
+            // Frame 7: Generate mip maps
 
-			// This is a poor solution as the mip maps will not use specular convolution
-			// Unfortunately, Unity's shader for doing so is very complex and no info on it exists
-			// If you solve this, contact me and I will update the plugin
-			m_CubeMap.GenerateMips();
+            if (debug)
+                Debug.Log("OverCloudReflectionProbe: Generating mip maps.");
 
-			if (updateMode == UpdateMode.Realtime)
-				// Force a reset next frame
-				m_CurrentFace = -1;
-			else
-				m_CurrentFace++; // = 7
+            // This is a poor solution as the mip maps will not use specular convolution
+            // Unfortunately, Unity's shader for doing so is very complex and no info on it exists
+            // If you solve this, contact me and I will update the plugin
+            m_CubeMap.GenerateMips();
 
-			hasFinishedRendering = true;
+            if (updateMode == UpdateMode.Realtime)
+                // Force a reset next frame
+                m_CurrentFace = -1;
+            else
+                m_CurrentFace++; // = 7
 
-			return;
+            hasFinishedRendering = true;
 
-			/*
+            return;
+
+            /*
 			//m_CubeMap.GenerateMips();
 			//m_Result.GenerateMips();
 
@@ -423,100 +421,100 @@ namespace OC
 
 			hasFinishedRendering = true;
 			*/
-		}
+        }
 
-		/// <summary>
-		/// Start the rendering process over
-		/// </summary>
-		private void Reset()
-		{
-			m_CurrentFace = 0;
-		}
+        /// <summary>
+        /// Start the rendering process over
+        /// </summary>
+        private void Reset()
+        {
+            m_CurrentFace = 0;
+        }
 
-		/// <summary>
-		/// Update the reflection camera with the proper settings
-		/// </summary>
-		private void UpdateCamera ()
-		{
-			m_Camera.transform.position = transform.position;
-			if (m_FlippedRendering)
-				m_Camera.transform.rotation = orientationsFlipped[m_CurrentFace];
-			else
-				m_Camera.transform.rotation = orientations[m_CurrentFace];
+        /// <summary>
+        /// Update the reflection camera with the proper settings
+        /// </summary>
+        private void UpdateCamera()
+        {
+            m_Camera.transform.position = transform.position;
+            if (m_FlippedRendering)
+                m_Camera.transform.rotation = orientationsFlipped[m_CurrentFace];
+            else
+                m_Camera.transform.rotation = orientations[m_CurrentFace];
 
-			m_Camera.cameraType			= CameraType.Reflection;
-			m_Camera.fieldOfView		= 90;
-			m_Camera.cameraType			= CameraType.Reflection;
-            m_Camera.farClipPlane		= m_Probe.farClipPlane;
-            m_Camera.nearClipPlane		= m_Probe.nearClipPlane;
-            m_Camera.cullingMask		= m_Probe.cullingMask;
-            m_Camera.clearFlags			= (CameraClearFlags)m_Probe.clearFlags;
-            m_Camera.backgroundColor	= m_Probe.backgroundColor;
-            m_Camera.allowHDR			= m_Probe.hdr;
-			m_Camera.allowMSAA			= false;
+            m_Camera.cameraType = CameraType.Reflection;
+            m_Camera.fieldOfView = 90;
+            m_Camera.cameraType = CameraType.Reflection;
+            m_Camera.farClipPlane = m_Probe.farClipPlane;
+            m_Camera.nearClipPlane = m_Probe.nearClipPlane;
+            m_Camera.cullingMask = m_Probe.cullingMask;
+            m_Camera.clearFlags = (CameraClearFlags)m_Probe.clearFlags;
+            m_Camera.backgroundColor = m_Probe.backgroundColor;
+            m_Camera.allowHDR = m_Probe.hdr;
+            m_Camera.allowMSAA = false;
 
-			m_OverCloudCamera.renderVolumetricClouds	= renderVolumetricClouds;
-			m_OverCloudCamera.render2DFallback			= render2DFallback;
-			m_OverCloudCamera.renderAtmosphere			= renderAtmosphere;
-			m_OverCloudCamera.renderScatteringMask		= renderScatteringMask;
-			m_OverCloudCamera.includeCascadedShadows	= includeCascadedShadows;
-			m_OverCloudCamera.scatteringMaskSamples		= scatteringMaskSamples;
-			m_OverCloudCamera.renderRainMask			= renderRainMask;
-			m_OverCloudCamera.downsampleFactor			= downsampleFactor;
-			m_OverCloudCamera.lightSampleCount			= lightSampleCount;
-			m_OverCloudCamera.highQualityClouds			= highQualityClouds;
-			m_OverCloudCamera.downsample2DClouds		= downsample2DClouds;
-		}
+            m_OverCloudCamera.renderVolumetricClouds = renderVolumetricClouds;
+            m_OverCloudCamera.render2DFallback = render2DFallback;
+            m_OverCloudCamera.renderAtmosphere = renderAtmosphere;
+            m_OverCloudCamera.renderScatteringMask = renderScatteringMask;
+            m_OverCloudCamera.includeCascadedShadows = includeCascadedShadows;
+            m_OverCloudCamera.scatteringMaskSamples = scatteringMaskSamples;
+            m_OverCloudCamera.renderRainMask = renderRainMask;
+            m_OverCloudCamera.downsampleFactor = downsampleFactor;
+            m_OverCloudCamera.lightSampleCount = lightSampleCount;
+            m_OverCloudCamera.highQualityClouds = highQualityClouds;
+            m_OverCloudCamera.downsample2DClouds = downsample2DClouds;
+        }
 
-		public void SaveCubemap ()
-		{
-			var prevMode  = spreadMode;
-			var wasActive = RenderTexture.active;
-			if (filePath == "")
-				filePath = Application.dataPath + "/";
+        public void SaveCubemap()
+        {
+            var prevMode = spreadMode;
+            var wasActive = RenderTexture.active;
+            if (filePath == "")
+                filePath = Application.dataPath + "/";
 
-			// Force full refresh of cubemap
-			spreadMode			= SpreadMode._1Frame;
-			m_CurrentFace		= -1;
-			m_FlippedRendering	= true;
-			RenderUpdate();
-			m_FlippedRendering	= false;
+            // Force full refresh of cubemap
+            spreadMode = SpreadMode._1Frame;
+            m_CurrentFace = -1;
+            m_FlippedRendering = true;
+            RenderUpdate();
+            m_FlippedRendering = false;
 
-			// Create the output texture
-			Texture2D tex = new Texture2D(m_CubeMap.width * 6, m_CubeMap.height, UnityEngine.TextureFormat.RGBAHalf, false, false);
-			
-			// Copy each cubemap face
-			Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.PositiveX);
-			tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 0, 0);
-			Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.NegativeX);
-			tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 1, 0);
-			Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.PositiveY);
-			tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 2, 0);
-			Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.NegativeY);
-			tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 3, 0);
-			Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.PositiveZ);
-			tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 4, 0);
-			Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.NegativeZ);
-			tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 5, 0);
+            // Create the output texture
+            Texture2D tex = new Texture2D(m_CubeMap.width * 6, m_CubeMap.height, UnityEngine.TextureFormat.RGBAHalf, false, false);
 
-			// Encode and output to file
-			byte[] bytes;
-			bytes = tex.EncodeToEXR();
-			System.IO.File.WriteAllBytes(filePath + "OverCloudReflectionProbe.exr", bytes);
+            // Copy each cubemap face
+            Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.PositiveX);
+            tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 0, 0);
+            Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.NegativeX);
+            tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 1, 0);
+            Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.PositiveY);
+            tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 2, 0);
+            Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.NegativeY);
+            tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 3, 0);
+            Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.PositiveZ);
+            tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 4, 0);
+            Graphics.SetRenderTarget(m_CubeMap, 0, CubemapFace.NegativeZ);
+            tex.ReadPixels(new Rect(0, 0, m_CubeMap.width, m_CubeMap.height), m_CubeMap.width * 5, 0);
 
-			// Clean up
-			if (Application.isPlaying)
-				Destroy(tex);
-			else
-				DestroyImmediate(tex);
+            // Encode and output to file
+            byte[] bytes;
+            bytes = tex.EncodeToEXR();
+            System.IO.File.WriteAllBytes(filePath + "OverCloudReflectionProbe.exr", bytes);
 
-			Debug.Log("Cubemap saved to " + filePath);
+            // Clean up
+            if (Application.isPlaying)
+                Destroy(tex);
+            else
+                DestroyImmediate(tex);
 
-			// Need to render again after resetting so the probe doesn't show the potentially post-processed result
-			RenderProbe();
+            Debug.Log("Cubemap saved to " + filePath);
 
-			RenderTexture.active	= wasActive;
-			spreadMode				= prevMode;
-		}
-	}
+            // Need to render again after resetting so the probe doesn't show the potentially post-processed result
+            RenderProbe();
+
+            RenderTexture.active = wasActive;
+            spreadMode = prevMode;
+        }
+    }
 }

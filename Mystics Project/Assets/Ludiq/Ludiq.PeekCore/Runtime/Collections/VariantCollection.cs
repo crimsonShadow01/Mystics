@@ -4,93 +4,93 @@ using System.Collections.Generic;
 
 namespace Ludiq.PeekCore
 {
-	public class VariantCollection<TBase, TImplementation> : ICollection<TBase> where TImplementation : TBase
-	{
-		public VariantCollection(ICollection<TImplementation> implementation)
-		{
-			Ensure.That(nameof(implementation)).IsNotNull(implementation);
+    public class VariantCollection<TBase, TImplementation> : ICollection<TBase> where TImplementation : TBase
+    {
+        public VariantCollection(ICollection<TImplementation> implementation)
+        {
+            Ensure.That(nameof(implementation)).IsNotNull(implementation);
 
-			this.implementation = implementation;
-		}
+            this.implementation = implementation;
+        }
 
-		public ICollection<TImplementation> implementation { get; }
+        public ICollection<TImplementation> implementation { get; }
 
-		public int Count => implementation.Count;
+        public int Count => implementation.Count;
 
-		public bool IsReadOnly => implementation.IsReadOnly;
+        public bool IsReadOnly => implementation.IsReadOnly;
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-		public IEnumerator<TBase> GetEnumerator()
-		{
-			foreach (var i in implementation)
-			{
-				yield return i;
-			}
-		}
+        public IEnumerator<TBase> GetEnumerator()
+        {
+            foreach (var i in implementation)
+            {
+                yield return i;
+            }
+        }
 
-		public void Add(TBase item)
-		{
-			if (!(item is TImplementation))
-			{
-				throw new NotSupportedException();
-			}
+        public void Add(TBase item)
+        {
+            if (!(item is TImplementation))
+            {
+                throw new NotSupportedException();
+            }
 
-			implementation.Add((TImplementation)item);
-		}
+            implementation.Add((TImplementation)item);
+        }
 
-		public void Clear()
-		{
-			implementation.Clear();
-		}
+        public void Clear()
+        {
+            implementation.Clear();
+        }
 
-		public bool Contains(TBase item)
-		{
-			if (!(item is TImplementation))
-			{
-				throw new NotSupportedException();
-			}
+        public bool Contains(TBase item)
+        {
+            if (!(item is TImplementation))
+            {
+                throw new NotSupportedException();
+            }
 
-			return implementation.Contains((TImplementation)item);
-		}
+            return implementation.Contains((TImplementation)item);
+        }
 
-		public bool Remove(TBase item)
-		{
-			if (!(item is TImplementation))
-			{
-				throw new NotSupportedException();
-			}
+        public bool Remove(TBase item)
+        {
+            if (!(item is TImplementation))
+            {
+                throw new NotSupportedException();
+            }
 
-			return implementation.Remove((TImplementation)item);
-		}
+            return implementation.Remove((TImplementation)item);
+        }
 
-		public void CopyTo(TBase[] array, int arrayIndex)
-		{
-			if (array == null)
-			{
-				throw new ArgumentNullException(nameof(array));
-			}
+        public void CopyTo(TBase[] array, int arrayIndex)
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
 
-			if (arrayIndex < 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-			}
+            if (arrayIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            }
 
-			if (array.Length - arrayIndex < Count)
-			{
-				throw new ArgumentException();
-			}
+            if (array.Length - arrayIndex < Count)
+            {
+                throw new ArgumentException();
+            }
 
-			var implementationArray = new TImplementation[Count];
-			implementation.CopyTo(implementationArray, 0);
+            var implementationArray = new TImplementation[Count];
+            implementation.CopyTo(implementationArray, 0);
 
-			for (var i = 0; i < Count; i++)
-			{
-				array[i + arrayIndex] = implementationArray[i];
-			}
-		}
-	}
+            for (var i = 0; i < Count; i++)
+            {
+                array[i + arrayIndex] = implementationArray[i];
+            }
+        }
+    }
 }

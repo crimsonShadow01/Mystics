@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 
 namespace MeshCombineStudio
 {
@@ -15,7 +12,7 @@ namespace MeshCombineStudio
 
             // Debug.Log("MeshCombiner instances " + instances.Count);
 
-            MeshCombineJobManager.ResetMeshCache(); 
+            MeshCombineJobManager.ResetMeshCache();
         }
     }
 }

@@ -108,7 +108,7 @@ namespace PlaceholderSoftware.WetStuff
             if (obj.GetType() != GetType())
                 return false;
 
-            return Equals((SemanticVersion) obj);
+            return Equals((SemanticVersion)obj);
         }
 
         public override int GetHashCode()

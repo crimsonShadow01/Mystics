@@ -253,7 +253,7 @@ namespace UnityMeshSimplifier
 
                 blendShapes[blendShapeIndex] = new BlendShape(shapeName, frames);
             }
-            
+
             return blendShapes;
         }
         public static void LOG(string s) { Debug.Log(s); }

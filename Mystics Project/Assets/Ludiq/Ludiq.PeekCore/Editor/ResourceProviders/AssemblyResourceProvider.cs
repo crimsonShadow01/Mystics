@@ -7,314 +7,314 @@ using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class AssemblyResourceProvider : IResourceProvider
-	{
-		public const char DirectorySeparatorChar = '.';
+    public sealed class AssemblyResourceProvider : IResourceProvider
+    {
+        public const char DirectorySeparatorChar = '.';
 
-		public Assembly assembly { get; }
+        public Assembly assembly { get; }
 
-		public string root { get; }
+        public string root { get; }
 
-		private readonly string prefix;
+        private readonly string prefix;
 
-		public AssemblyResourceProvider(Assembly assembly, string @namespace, string root)
-		{
-			Ensure.That(nameof(assembly)).IsNotNull(assembly);
+        public AssemblyResourceProvider(Assembly assembly, string @namespace, string root)
+        {
+            Ensure.That(nameof(assembly)).IsNotNull(assembly);
 
-			this.assembly = assembly;
-			this.root = root;
+            this.assembly = assembly;
+            this.root = root;
 
-			prefix = string.Empty;
+            prefix = string.Empty;
 
-			var hasNamespace = !string.IsNullOrEmpty(@namespace);
-			var hasRoot = !string.IsNullOrEmpty(root);
+            var hasNamespace = !string.IsNullOrEmpty(@namespace);
+            var hasRoot = !string.IsNullOrEmpty(root);
 
-			if (hasNamespace)
-			{
-				prefix += @namespace;
-			}
+            if (hasNamespace)
+            {
+                prefix += @namespace;
+            }
 
-			if (hasNamespace && hasRoot)
-			{
-				prefix += ".";
-			}
+            if (hasNamespace && hasRoot)
+            {
+                prefix += ".";
+            }
 
-			if (hasRoot)
-			{
-				prefix += root;
-			}
+            if (hasRoot)
+            {
+                prefix += root;
+            }
 
-			Analyze();
-		}
+            Analyze();
+        }
 
 
 
-		#region Filesystem
+        #region Filesystem
 
-		public IEnumerable<string> GetAllFiles()
-		{
-			return assembly.GetManifestResourceNames();
-		}
+        public IEnumerable<string> GetAllFiles()
+        {
+            return assembly.GetManifestResourceNames();
+        }
 
-		public IEnumerable<string> GetFiles(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
+        public IEnumerable<string> GetFiles(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-			var normalizedDirectoryPath = NormalizeDirectoryPath(path);
+            var normalizedDirectoryPath = NormalizeDirectoryPath(path);
 
-			var directory = GetDirectory(normalizedDirectoryPath, true);
+            var directory = GetDirectory(normalizedDirectoryPath, true);
 
-			foreach (var file in directory.files)
-			{
-				yield return $"{directory.path}{DirectorySeparatorChar}{file}";
-			}
-		}
+            foreach (var file in directory.files)
+            {
+                yield return $"{directory.path}{DirectorySeparatorChar}{file}";
+            }
+        }
 
-		public IEnumerable<string> GetDirectories(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
+        public IEnumerable<string> GetDirectories(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-			var normalizedDirectoryPath = NormalizeDirectoryPath(path);
+            var normalizedDirectoryPath = NormalizeDirectoryPath(path);
 
-			var directory = GetDirectory(normalizedDirectoryPath, true);
+            var directory = GetDirectory(normalizedDirectoryPath, true);
 
-			foreach (var subDirectory in directory.subDirectories)
-			{
-				yield return subDirectory.Value.path;
-			}
-		}
+            foreach (var subDirectory in directory.subDirectories)
+            {
+                yield return subDirectory.Value.path;
+            }
+        }
 
-		public bool FileExists(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
+        public bool FileExists(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-			path = PreNormalizePath(path);
+            path = PreNormalizePath(path);
 
-			var normalizedDirectoryPath = NormalizeDirectoryPath(Path.GetDirectoryName(path));
-			var normalizedFileName = NormalizeFileName(Path.GetFileName(path));
+            var normalizedDirectoryPath = NormalizeDirectoryPath(Path.GetDirectoryName(path));
+            var normalizedFileName = NormalizeFileName(Path.GetFileName(path));
 
-			var directory = GetDirectory(normalizedDirectoryPath, false);
+            var directory = GetDirectory(normalizedDirectoryPath, false);
 
-			return directory != null && directory.files.Contains(normalizedFileName);
-		}
+            return directory != null && directory.files.Contains(normalizedFileName);
+        }
 
-		public bool DirectoryExists(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
-			
-			path = PreNormalizePath(path);
+        public bool DirectoryExists(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-			var normalizedDirectoryPath = NormalizeDirectoryPath(path);
+            path = PreNormalizePath(path);
 
-			return GetDirectory(normalizedDirectoryPath, false) != null;
-		}
+            var normalizedDirectoryPath = NormalizeDirectoryPath(path);
 
-		private string PreNormalizePath(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
+            return GetDirectory(normalizedDirectoryPath, false) != null;
+        }
 
-			var undottedPath = "";
+        private string PreNormalizePath(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-			var directory = Path.GetDirectoryName(path);
+            var undottedPath = "";
 
-			if (!string.IsNullOrEmpty(directory))
-			{
-				undottedPath += directory.Replace('.', Path.DirectorySeparatorChar);
-				undottedPath += Path.DirectorySeparatorChar;
-			}
+            var directory = Path.GetDirectoryName(path);
 
-			undottedPath += Path.GetFileNameWithoutExtension(path).Replace('.', Path.DirectorySeparatorChar);
-			undottedPath += Path.GetExtension(path);
+            if (!string.IsNullOrEmpty(directory))
+            {
+                undottedPath += directory.Replace('.', Path.DirectorySeparatorChar);
+                undottedPath += Path.DirectorySeparatorChar;
+            }
 
-			return undottedPath;
-		}
+            undottedPath += Path.GetFileNameWithoutExtension(path).Replace('.', Path.DirectorySeparatorChar);
+            undottedPath += Path.GetExtension(path);
 
-		private string NormalizeDirectoryPath(string directoryPath)
-		{
-			Ensure.That(nameof(directoryPath)).IsNotNull(directoryPath);
+            return undottedPath;
+        }
 
-			if (string.IsNullOrEmpty(directoryPath))
-			{
-				return prefix;
-			}
+        private string NormalizeDirectoryPath(string directoryPath)
+        {
+            Ensure.That(nameof(directoryPath)).IsNotNull(directoryPath);
 
-			return prefix 
-				   + "."
-			       + directoryPath.Replace(Path.DirectorySeparatorChar, DirectorySeparatorChar)
-			                      .Replace(Path.AltDirectorySeparatorChar, DirectorySeparatorChar)
-			                      .Replace(' ', '_');
-		}
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                return prefix;
+            }
 
-		private string NormalizeFileName(string fileName)
-		{
-			Ensure.That(nameof(fileName)).IsNotNull(fileName);
+            return prefix
+                   + "."
+                   + directoryPath.Replace(Path.DirectorySeparatorChar, DirectorySeparatorChar)
+                                  .Replace(Path.AltDirectorySeparatorChar, DirectorySeparatorChar)
+                                  .Replace(' ', '_');
+        }
 
-			return fileName;
-		}
+        private string NormalizeFileName(string fileName)
+        {
+            Ensure.That(nameof(fileName)).IsNotNull(fileName);
 
-		private string NormalizePath(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
+            return fileName;
+        }
 
-			path = PreNormalizePath(path);
+        private string NormalizePath(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-			return NormalizeDirectoryPath(Path.GetDirectoryName(path))
-			       + "."
-			       + NormalizeFileName(Path.GetFileName(path));
-		}
+            path = PreNormalizePath(path);
 
-		public string DebugPath(string path)
-		{
-			return NormalizePath(path);
-		}
+            return NormalizeDirectoryPath(Path.GetDirectoryName(path))
+                   + "."
+                   + NormalizeFileName(Path.GetFileName(path));
+        }
 
-		#endregion
+        public string DebugPath(string path)
+        {
+            return NormalizePath(path);
+        }
 
+        #endregion
 
 
-		#region Loading
 
-		public T LoadAsset<T>(string path) where T : UnityObject
-		{
-			throw new NotSupportedException("Assets cannot be loaded from assembly resources.");
-		}
+        #region Loading
 
-		public Texture2D LoadTexture(string path, CreateTextureOptions options)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
+        public T LoadAsset<T>(string path) where T : UnityObject
+        {
+            throw new NotSupportedException("Assets cannot be loaded from assembly resources.");
+        }
 
-			path = NormalizePath(path);
+        public Texture2D LoadTexture(string path, CreateTextureOptions options)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-			var stream = assembly.GetManifestResourceStream(path);
+            path = NormalizePath(path);
 
-			if (stream == null)
-			{
-				Debug.LogWarning("Failed to get assembly resource stream:\n" + path);
+            var stream = assembly.GetManifestResourceStream(path);
 
-				return null;
-			}
+            if (stream == null)
+            {
+                Debug.LogWarning("Failed to get assembly resource stream:\n" + path);
 
-			BinaryReader reader = null;
+                return null;
+            }
 
-			try
-			{
-				reader = new BinaryReader(stream);
-				var bytes = reader.ReadBytes((int)stream.Length);
-				
-				var texture = new Texture2D(0, 0, options.textureFormat, options.mipmaps, options.linear ?? LudiqGUIUtility.createLinearTextures);
-				texture.alphaIsTransparency = options.alphaIsTransparency;
-				texture.filterMode = options.filterMode;
-				texture.hideFlags = options.hideFlags;
-				texture.LoadImage(bytes);
+            BinaryReader reader = null;
 
-				return texture;
-			}
-			finally
-			{
-				reader?.Close();
-			}
-		}
+            try
+            {
+                reader = new BinaryReader(stream);
+                var bytes = reader.ReadBytes((int)stream.Length);
 
-		#endregion
+                var texture = new Texture2D(0, 0, options.textureFormat, options.mipmaps, options.linear ?? LudiqGUIUtility.createLinearTextures);
+                texture.alphaIsTransparency = options.alphaIsTransparency;
+                texture.filterMode = options.filterMode;
+                texture.hideFlags = options.hideFlags;
+                texture.LoadImage(bytes);
 
+                return texture;
+            }
+            finally
+            {
+                reader?.Close();
+            }
+        }
 
+        #endregion
 
-		#region Internals
 
-		private void Analyze()
-		{
-			foreach (var path in assembly.GetManifestResourceNames())
-			{
-				var directory = rootDirectory;
 
-				var parts = path.Split(DirectorySeparatorChar);
+        #region Internals
 
-				for (var i = 0; i < parts.Length; i++)
-				{
-					var isFile = i == parts.Length - 2;
-					var isExtension = i == parts.Length - 1;
-					var isDirectory = !isFile && !isExtension;
-					var part = parts[i];
+        private void Analyze()
+        {
+            foreach (var path in assembly.GetManifestResourceNames())
+            {
+                var directory = rootDirectory;
 
-					if (isDirectory)
-					{
-						Directory subDirectory;
+                var parts = path.Split(DirectorySeparatorChar);
 
-						if (!directory.subDirectories.TryGetValue(part, out subDirectory))
-						{
-							subDirectory = new Directory(directory, part);
-							directory.subDirectories.Add(part, subDirectory);
-						}
+                for (var i = 0; i < parts.Length; i++)
+                {
+                    var isFile = i == parts.Length - 2;
+                    var isExtension = i == parts.Length - 1;
+                    var isDirectory = !isFile && !isExtension;
+                    var part = parts[i];
 
-						directory = subDirectory;
-					}
-					else if (isFile)
-					{
-						var extension = parts[i + 1];
-						directory.files.Add(part + '.' + extension);
-					}
-				}
-			}
-		}
+                    if (isDirectory)
+                    {
+                        Directory subDirectory;
 
-		private Directory GetDirectory(string normalizedDirectoryPath, bool throwOnFail)
-		{
-			Ensure.That(nameof(normalizedDirectoryPath)).IsNotNull(normalizedDirectoryPath);
+                        if (!directory.subDirectories.TryGetValue(part, out subDirectory))
+                        {
+                            subDirectory = new Directory(directory, part);
+                            directory.subDirectories.Add(part, subDirectory);
+                        }
 
-			var parts = normalizedDirectoryPath.Split(DirectorySeparatorChar);
+                        directory = subDirectory;
+                    }
+                    else if (isFile)
+                    {
+                        var extension = parts[i + 1];
+                        directory.files.Add(part + '.' + extension);
+                    }
+                }
+            }
+        }
 
-			var directory = rootDirectory;
+        private Directory GetDirectory(string normalizedDirectoryPath, bool throwOnFail)
+        {
+            Ensure.That(nameof(normalizedDirectoryPath)).IsNotNull(normalizedDirectoryPath);
 
-			foreach (var part in parts)
-			{
-				Directory subDirectory;
+            var parts = normalizedDirectoryPath.Split(DirectorySeparatorChar);
 
-				if (!directory.subDirectories.TryGetValue(part, out subDirectory))
-				{
-					if (throwOnFail)
-					{
-						throw new FileNotFoundException("Assembly resource directory not found.", DebugPath(normalizedDirectoryPath));
-					}
+            var directory = rootDirectory;
 
-					return null;
-				}
+            foreach (var part in parts)
+            {
+                Directory subDirectory;
 
-				directory = subDirectory;
-			}
+                if (!directory.subDirectories.TryGetValue(part, out subDirectory))
+                {
+                    if (throwOnFail)
+                    {
+                        throw new FileNotFoundException("Assembly resource directory not found.", DebugPath(normalizedDirectoryPath));
+                    }
 
-			return directory;
-		}
+                    return null;
+                }
 
-		private readonly Directory rootDirectory = new Directory(null, null);
+                directory = subDirectory;
+            }
 
-		private class Directory
-		{
-			public Directory parent { get; }
+            return directory;
+        }
 
-			public string name { get; }
+        private readonly Directory rootDirectory = new Directory(null, null);
 
-			public string path { get; }
+        private class Directory
+        {
+            public Directory parent { get; }
 
-			public readonly Dictionary<string, Directory> subDirectories = new Dictionary<string, Directory>();
+            public string name { get; }
 
-			public readonly List<string> files = new List<string>();
+            public string path { get; }
 
-			public Directory(Directory parent, string name)
-			{
-				this.parent = parent;
-				this.name = name;
+            public readonly Dictionary<string, Directory> subDirectories = new Dictionary<string, Directory>();
 
-				if (string.IsNullOrEmpty(parent?.path))
-				{
-					path = name;
-				}
-				else
-				{
-					path = $"{parent.path}{DirectorySeparatorChar}{name}";
-				}
-			}
-		}
+            public readonly List<string> files = new List<string>();
 
-		#endregion
-	}
+            public Directory(Directory parent, string name)
+            {
+                this.parent = parent;
+                this.name = name;
+
+                if (string.IsNullOrEmpty(parent?.path))
+                {
+                    path = name;
+                }
+                else
+                {
+                    path = $"{parent.path}{DirectorySeparatorChar}{name}";
+                }
+            }
+        }
+
+        #endregion
+    }
 }

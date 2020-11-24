@@ -1,15 +1,14 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using System.Collections;
-using System;
-using System.Reflection;
 
-public class RTP_TooltipDecorator : MaterialPropertyDrawer {
+public class RTP_TooltipDecorator : MaterialPropertyDrawer
+{
     string toolTip;
 
-	public RTP_TooltipDecorator(string toolTip) : base() {
+    public RTP_TooltipDecorator(string toolTip) : base()
+    {
         this.toolTip = RTP_MatPropStringParser.Parse(toolTip);
-	}
+    }
 
     override public void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
     {

@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-namespace TerrainComposer2 {
+namespace TerrainComposer2
+{
     [ExecuteInEditMode]
-    public class TC_AnimateNode : MonoBehaviour {
+    public class TC_AnimateNode : MonoBehaviour
+    {
 
         public Vector3 moveSpeed;
         public float rotSpeed;
@@ -18,7 +19,7 @@ namespace TerrainComposer2 {
             item = GetComponent<TC_ItemBehaviour>();
         }
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         void OnEnable()
         {
             UnityEditor.EditorApplication.update += MyUpdate;
@@ -28,10 +29,11 @@ namespace TerrainComposer2 {
         {
             UnityEditor.EditorApplication.update -= MyUpdate;
         }
-        #endif
+#endif
 
 
-        void MyUpdate() {
+        void MyUpdate()
+        {
             transform.Rotate(0, rotSpeed, 0);
             transform.Translate(moveSpeed * 90);
             transform.localScale += new Vector3(scaleSpeed, scaleSpeed, scaleSpeed);

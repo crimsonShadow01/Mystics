@@ -185,7 +185,7 @@ namespace UnityMeshSimplifier
                         SkinnedMeshRenderer[] skinnedRenderersActuallyCombined = null;
 
                         staticRenderers = CombineStaticMeshes(transform, levelIndex, meshRenderers);
-                        skinnedRenderers = CombineSkinnedMeshes(transform, levelIndex, skinnedMeshRenderers, ref skinnedRenderersActuallyCombined);             
+                        skinnedRenderers = CombineSkinnedMeshes(transform, levelIndex, skinnedMeshRenderers, ref skinnedRenderersActuallyCombined);
                     }
                     else
                     {
@@ -199,7 +199,7 @@ namespace UnityMeshSimplifier
                         {
                             var renderer = staticRenderers[rendererIndex];
                             var mesh = renderer.mesh;
-                           
+
                             // Simplify the mesh if necessary
                             if (level.Quality < 1f)
                             {
@@ -318,7 +318,7 @@ namespace UnityMeshSimplifier
         #region Private Methods
         public static StaticRenderer[] GetStaticRenderers(MeshRenderer[] renderers)
         {
-            if(renderers == null || renderers.Length == 0) { return null; }
+            if (renderers == null || renderers.Length == 0) { return null; }
 
             var newRenderers = new List<StaticRenderer>(renderers.Length);
 
@@ -396,9 +396,9 @@ namespace UnityMeshSimplifier
 
             string rendererName = string.Format("{0}_combined_static", baseName);
 
-            if(autoName)
+            if (autoName)
             {
-                if(transform != null)
+                if (transform != null)
                 {
                     combinedMesh.name = string.Format("{0}_static{1:00}", transform.name, levelIndex);
                 }
@@ -434,7 +434,7 @@ namespace UnityMeshSimplifier
                                         select renderer);
             var combineRenderers = (from renderer in renderers
                                     where renderer.sharedMesh != null // && renderer.sharedMesh.blendShapeCount == 0 baw did
-                                    select renderer).ToArray(); 
+                                    select renderer).ToArray();
 
 
             renderersActuallyCombined = combineRenderers;
@@ -607,7 +607,7 @@ namespace UnityMeshSimplifier
         }
 
 
-        
+
 
         private static void SetupLevelRenderer(Renderer renderer, ref LODLevel level)
         {
@@ -624,7 +624,7 @@ namespace UnityMeshSimplifier
                 skinnedMeshRenderer.skinnedMotionVectors = level.SkinnedMotionVectors;
             }
         }
-        
+
         private static Renderer[] GetChildRenderersForLOD(GameObject gameObject)
         {
             var resultRenderers = new List<Renderer>();
@@ -671,7 +671,7 @@ namespace UnityMeshSimplifier
             meshSimplifier.VertexLinkDistance = options.VertexLinkDistance;
             meshSimplifier.MaxIterationCount = options.MaxIterationCount;
             meshSimplifier.Aggressiveness = options.Agressiveness;
-           
+
             meshSimplifier.Initialize(mesh);
             meshSimplifier.SimplifyMesh(quality);
 

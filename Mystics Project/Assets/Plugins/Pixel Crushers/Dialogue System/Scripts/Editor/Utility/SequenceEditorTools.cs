@@ -1,11 +1,11 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
-using UnityEditor;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -316,7 +316,7 @@ namespace PixelCrushers.DialogueSystem
                 case ComponentDragDropCommand.SetEnabledTrue:
                     return "SetEnabled(" + componentName + ",true," + goName + ")";
                 case ComponentDragDropCommand.SetEnabledFalse:
-                    return "SetEnabled(" + componentName+ ",false," + goName + ")";
+                    return "SetEnabled(" + componentName + ",false," + goName + ")";
             }
         }
 
@@ -489,7 +489,7 @@ namespace PixelCrushers.DialogueSystem
             if (string.IsNullOrEmpty(sequenceToCheck)) return SequenceSyntaxState.Valid;
             var parser = new SequenceParser();
             var result = parser.Parse(sequenceToCheck);
-            return (result == null || result.Count == 0) ? SequenceSyntaxState.Error : SequenceSyntaxState.Valid; 
+            return (result == null || result.Count == 0) ? SequenceSyntaxState.Error : SequenceSyntaxState.Valid;
         }
 
         public static void SetSyntaxStateGUIColor(SequenceSyntaxState syntaxState)

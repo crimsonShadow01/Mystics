@@ -1,31 +1,31 @@
+using Ludiq.PeekCore;
 using UnityEditor;
 using UnityEngine;
-using Ludiq.PeekCore;
 
 [assembly: RegisterInspector(typeof(LooseAssemblyName), typeof(LooseAssemblyNameInspector))]
 
 namespace Ludiq.PeekCore
 {
-	public sealed class LooseAssemblyNameInspector : Inspector
-	{
-		public LooseAssemblyNameInspector(Accessor accessor) : base(accessor) { }
-		
-		private IFuzzyOptionTree GetOptions()
-		{
-			return new LooseAssemblyNameOptionTree();
-		}
+    public sealed class LooseAssemblyNameInspector : Inspector
+    {
+        public LooseAssemblyNameInspector(Accessor accessor) : base(accessor) { }
 
-		protected override void OnControlGUI(Rect position)
-		{
-			EditorGUI.BeginChangeCheck();
-			
-			var newAssemblyName = LudiqGUI.AssemblyField(position, GUIContent.none, (LooseAssemblyName)accessor.value, GetOptions);
+        private IFuzzyOptionTree GetOptions()
+        {
+            return new LooseAssemblyNameOptionTree();
+        }
 
-			if (EditorGUI.EndChangeCheck())
-			{
-				accessor.RecordUndo();
-				accessor.value = newAssemblyName;
-			}
-		}
-	}
+        protected override void OnControlGUI(Rect position)
+        {
+            EditorGUI.BeginChangeCheck();
+
+            var newAssemblyName = LudiqGUI.AssemblyField(position, GUIContent.none, (LooseAssemblyName)accessor.value, GetOptions);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                accessor.RecordUndo();
+                accessor.value = newAssemblyName;
+            }
+        }
+    }
 }

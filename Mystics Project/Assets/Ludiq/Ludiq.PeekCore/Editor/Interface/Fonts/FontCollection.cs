@@ -4,36 +4,36 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public class FontCollection
-	{
-		public FontCollection(Func<FontVariant, Font> load)
-		{
-			if (load == null)
-			{
-				throw new ArgumentNullException(nameof(load));
-			}
+    public class FontCollection
+    {
+        public FontCollection(Func<FontVariant, Font> load)
+        {
+            if (load == null)
+            {
+                throw new ArgumentNullException(nameof(load));
+            }
 
-			this.load = load;
+            this.load = load;
 
-			variants = new Dictionary<FontVariant, Font>();
-		}
+            variants = new Dictionary<FontVariant, Font>();
+        }
 
-		private readonly Dictionary<FontVariant, Font> variants;
-		private readonly Func<FontVariant, Font> load;
+        private readonly Dictionary<FontVariant, Font> variants;
+        private readonly Func<FontVariant, Font> load;
 
-		public Font this[FontWeight weight, FontStyle style]
-		{
-			get
-			{
-				var variant = new FontVariant(weight, style);
+        public Font this[FontWeight weight, FontStyle style]
+        {
+            get
+            {
+                var variant = new FontVariant(weight, style);
 
-				if (!variants.ContainsKey(variant))
-				{
-					variants.Add(variant, load(variant));
-				}
+                if (!variants.ContainsKey(variant))
+                {
+                    variants.Add(variant, load(variant));
+                }
 
-				return variants[variant];
-			}
-		}
-	}
+                return variants[variant];
+            }
+        }
+    }
 }

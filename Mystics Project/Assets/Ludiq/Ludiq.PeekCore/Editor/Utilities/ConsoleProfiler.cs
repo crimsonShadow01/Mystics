@@ -7,132 +7,132 @@ using Debug = UnityEngine.Debug;
 
 namespace Ludiq.PeekCore
 {
-	public static class ConsoleProfiler
-	{
-		private static readonly Color[] levelColors =
-		{
-			new Color(.14f, .65f, 1.00f),
-			new Color(.89f, .12f, .12f),
-			new Color(.09f, .85f, .43f),
-			new Color(.80f, .24f, 1.00f),
-			new Color(1.00f, .79f, .0f),
-			new Color(.09f, .80f, .85f),
-			new Color(.66f, .85f, .09f),
-		};
+    public static class ConsoleProfiler
+    {
+        private static readonly Color[] levelColors =
+        {
+            new Color(.14f, .65f, 1.00f),
+            new Color(.89f, .12f, .12f),
+            new Color(.09f, .85f, .43f),
+            new Color(.80f, .24f, 1.00f),
+            new Color(1.00f, .79f, .0f),
+            new Color(.09f, .80f, .85f),
+            new Color(.66f, .85f, .09f),
+        };
 
-		[Conditional(ProfilingUtility.ConditionalDefine)]
-		public static void Dump(TimeSpan threshold)
-		{
-			if (ProfilingUtility.allRootSegments.Count == 0)
-			{
-				return;
-			}
+        [Conditional(ProfilingUtility.ConditionalDefine)]
+        public static void Dump(TimeSpan threshold)
+        {
+            if (ProfilingUtility.allRootSegments.Count == 0)
+            {
+                return;
+            }
 
-			var sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-			foreach (var rootSegmentPair in ProfilingUtility.allRootSegments)
-			{
-				var thread = rootSegmentPair.Key;
-				var rootSegment = rootSegmentPair.Value;
+            foreach (var rootSegmentPair in ProfilingUtility.allRootSegments)
+            {
+                var thread = rootSegmentPair.Key;
+                var rootSegment = rootSegmentPair.Value;
 
-				if (rootSegment.children.Count == 0)
-				{
-					return;
-				}
+                if (rootSegment.children.Count == 0)
+                {
+                    return;
+                }
 
-				sb.Append($"Thread {thread.Name ?? "#" + thread.ManagedThreadId}: ");
-				Append(sb, 0, rootSegment, threshold);
-				sb.AppendLine();
-			}
+                sb.Append($"Thread {thread.Name ?? "#" + thread.ManagedThreadId}: ");
+                Append(sb, 0, rootSegment, threshold);
+                sb.AppendLine();
+            }
 
-			ProfilingUtility.Clear();
-			
-			Debug.Log(sb);
-		}
-		
-		[Conditional(ProfilingUtility.ConditionalDefine)]
-		public static void Dump()
-		{
-			Dump(TimeSpan.Zero);
-		}
+            ProfilingUtility.Clear();
 
-		[Conditional(ProfilingUtility.ConditionalDefine)]
-		public static void DumpThisThread(TimeSpan threshold)
-		{
-			var sb = new StringBuilder();
+            Debug.Log(sb);
+        }
 
-			var rootSegment = ProfilingUtility.rootSegment;
+        [Conditional(ProfilingUtility.ConditionalDefine)]
+        public static void Dump()
+        {
+            Dump(TimeSpan.Zero);
+        }
 
-			if (rootSegment.children.Count == 0)
-			{
-				return;
-			}
-				
-			Append(sb, 0, rootSegment, threshold);
+        [Conditional(ProfilingUtility.ConditionalDefine)]
+        public static void DumpThisThread(TimeSpan threshold)
+        {
+            var sb = new StringBuilder();
 
-			ProfilingUtility.ClearThisThread();
+            var rootSegment = ProfilingUtility.rootSegment;
 
-			Debug.Log(sb);
-		}
-		
-		[Conditional(ProfilingUtility.ConditionalDefine)]
-		public static void DumpThisThread()
-		{
-			DumpThisThread(TimeSpan.Zero);
-		}
+            if (rootSegment.children.Count == 0)
+            {
+                return;
+            }
 
-		private static void Append(StringBuilder sb, int indent, ProfiledSegment segmentParent, TimeSpan threshold)
-		{
-			var totalElapsed = TimeSpan.Zero;
+            Append(sb, 0, rootSegment, threshold);
 
-			foreach (var segment in segmentParent.children.OrderByDescending(s => s.stopwatch.Elapsed))
-			{
-				if (segment.stopwatch.Elapsed < threshold)
-				{
-					continue;
-				}
+            ProfilingUtility.ClearThisThread();
 
-				totalElapsed += segment.stopwatch.Elapsed;
-				var elapsedProportion = segmentParent.parent == null ? 1 : segment.stopwatch.Elapsed.TotalMilliseconds / segmentParent.stopwatch.Elapsed.TotalMilliseconds;
-				var color = levelColors[indent % levelColors.Length];
+            Debug.Log(sb);
+        }
 
-				sb.AppendLineFormat
-				(
-					"<color=#{0}>{1}<b>{2}:</b> {3:0.0}ms ({4:0}%) ({5}x, ~{6:0.000}ms/x)</color>",
-					color.ToHexString(),
-					new string(' ', indent * 4),
-					segment.name,
-					segment.stopwatch.Elapsed.TotalMilliseconds,
-					elapsedProportion * 100,
-					segment.calls,
-					segment.stopwatch.Elapsed.TotalMilliseconds / segment.calls
-				);
+        [Conditional(ProfilingUtility.ConditionalDefine)]
+        public static void DumpThisThread()
+        {
+            DumpThisThread(TimeSpan.Zero);
+        }
 
-				indent++;
-				Append(sb, indent, segment, threshold);
-				indent--;
-			}
+        private static void Append(StringBuilder sb, int indent, ProfiledSegment segmentParent, TimeSpan threshold)
+        {
+            var totalElapsed = TimeSpan.Zero;
 
-			if (segmentParent.children.Count > 0)
-			{
-				var remainingElapsed = (segmentParent.stopwatch.Elapsed - totalElapsed);
+            foreach (var segment in segmentParent.children.OrderByDescending(s => s.stopwatch.Elapsed))
+            {
+                if (segment.stopwatch.Elapsed < threshold)
+                {
+                    continue;
+                }
 
-				if (remainingElapsed > threshold)
-				{
-					var remainingElapsedProportion = remainingElapsed.TotalMilliseconds / segmentParent.stopwatch.Elapsed.TotalMilliseconds;
-					var color = levelColors[indent % levelColors.Length];
+                totalElapsed += segment.stopwatch.Elapsed;
+                var elapsedProportion = segmentParent.parent == null ? 1 : segment.stopwatch.Elapsed.TotalMilliseconds / segmentParent.stopwatch.Elapsed.TotalMilliseconds;
+                var color = levelColors[indent % levelColors.Length];
 
-					sb.AppendLineFormat
-					(
-						"<color=#{4}>{0}<b>{1}:</b> {2:0.0}ms ({3:0}%)</color>",
-						new string(' ', indent * 4),
-						"Remaining",
-						remainingElapsed.TotalMilliseconds,
-						remainingElapsedProportion * 100,
-						color.ToHexString()
-					);
-				}
-			}
-		}
-	}
+                sb.AppendLineFormat
+                (
+                    "<color=#{0}>{1}<b>{2}:</b> {3:0.0}ms ({4:0}%) ({5}x, ~{6:0.000}ms/x)</color>",
+                    color.ToHexString(),
+                    new string(' ', indent * 4),
+                    segment.name,
+                    segment.stopwatch.Elapsed.TotalMilliseconds,
+                    elapsedProportion * 100,
+                    segment.calls,
+                    segment.stopwatch.Elapsed.TotalMilliseconds / segment.calls
+                );
+
+                indent++;
+                Append(sb, indent, segment, threshold);
+                indent--;
+            }
+
+            if (segmentParent.children.Count > 0)
+            {
+                var remainingElapsed = (segmentParent.stopwatch.Elapsed - totalElapsed);
+
+                if (remainingElapsed > threshold)
+                {
+                    var remainingElapsedProportion = remainingElapsed.TotalMilliseconds / segmentParent.stopwatch.Elapsed.TotalMilliseconds;
+                    var color = levelColors[indent % levelColors.Length];
+
+                    sb.AppendLineFormat
+                    (
+                        "<color=#{4}>{0}<b>{1}:</b> {2:0.0}ms ({3:0}%)</color>",
+                        new string(' ', indent * 4),
+                        "Remaining",
+                        remainingElapsed.TotalMilliseconds,
+                        remainingElapsedProportion * 100,
+                        color.ToHexString()
+                    );
+                }
+            }
+        }
+    }
 }

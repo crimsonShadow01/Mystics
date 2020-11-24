@@ -2,45 +2,45 @@
 
 namespace Ludiq.PeekCore
 {
-	public class LessThanHandler : BinaryOperatorHandler
-	{
-		public LessThanHandler() : base(OperatorCategory.Comparison, BinaryOperator.LessThan, "Less Than", "Less Than", "<", "<", "op_LessThan")
-		{
-			Handle<byte, byte>((a, b) => a < b, typeof(bool));
-			Handle<byte, sbyte>((a, b) => a < b, typeof(bool));
-			Handle<byte, short>((a, b) => a < b, typeof(bool));
-			Handle<byte, ushort>((a, b) => a < b, typeof(bool));
-			Handle<byte, int>((a, b) => a < b, typeof(bool));
-			Handle<byte, uint>((a, b) => a < b, typeof(bool));
-			Handle<byte, long>((a, b) => a < b, typeof(bool));
-			Handle<byte, ulong>((a, b) => a < b, typeof(bool));
-			Handle<byte, float>((a, b) => a < b, typeof(bool));
-			Handle<byte, decimal>((a, b) => a < b, typeof(bool));
-			Handle<byte, double>((a, b) => a < b, typeof(bool));
+    public class LessThanHandler : BinaryOperatorHandler
+    {
+        public LessThanHandler() : base(OperatorCategory.Comparison, BinaryOperator.LessThan, "Less Than", "Less Than", "<", "<", "op_LessThan")
+        {
+            Handle<byte, byte>((a, b) => a < b, typeof(bool));
+            Handle<byte, sbyte>((a, b) => a < b, typeof(bool));
+            Handle<byte, short>((a, b) => a < b, typeof(bool));
+            Handle<byte, ushort>((a, b) => a < b, typeof(bool));
+            Handle<byte, int>((a, b) => a < b, typeof(bool));
+            Handle<byte, uint>((a, b) => a < b, typeof(bool));
+            Handle<byte, long>((a, b) => a < b, typeof(bool));
+            Handle<byte, ulong>((a, b) => a < b, typeof(bool));
+            Handle<byte, float>((a, b) => a < b, typeof(bool));
+            Handle<byte, decimal>((a, b) => a < b, typeof(bool));
+            Handle<byte, double>((a, b) => a < b, typeof(bool));
 
-			Handle<sbyte, byte>((a, b) => a < b, typeof(bool));
-			Handle<sbyte, sbyte>((a, b) => a < b, typeof(bool));
-			Handle<sbyte, short>((a, b) => a < b, typeof(bool));
-			Handle<sbyte, ushort>((a, b) => a < b, typeof(bool));
-			Handle<sbyte, int>((a, b) => a < b, typeof(bool));
-			Handle<sbyte, uint>((a, b) => a < b, typeof(bool));
-			Handle<sbyte, long>((a, b) => a < b, typeof(bool));
-			//Handle<sbyte, ulong>((a, b) => a < b, typeof(bool));
-			Handle<sbyte, float>((a, b) => a < b, typeof(bool));
-			Handle<sbyte, decimal>((a, b) => a < b, typeof(bool));
-			Handle<sbyte, double>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, byte>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, sbyte>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, short>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, ushort>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, int>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, uint>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, long>((a, b) => a < b, typeof(bool));
+            //Handle<sbyte, ulong>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, float>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, decimal>((a, b) => a < b, typeof(bool));
+            Handle<sbyte, double>((a, b) => a < b, typeof(bool));
 
-			Handle<short, byte>((a, b) => a < b, typeof(bool));
-			Handle<short, sbyte>((a, b) => a < b, typeof(bool));
-			Handle<short, short>((a, b) => a < b, typeof(bool));
-			Handle<short, ushort>((a, b) => a < b, typeof(bool));
-			Handle<short, int>((a, b) => a < b, typeof(bool));
-			Handle<short, uint>((a, b) => a < b, typeof(bool));
-			Handle<short, long>((a, b) => a < b, typeof(bool));
-			//Handle<short, ulong>((a, b) => a < b, typeof(bool));
-			Handle<short, float>((a, b) => a < b, typeof(bool));
-			Handle<short, decimal>((a, b) => a < b, typeof(bool));
-			Handle<short, double>((a, b) => a < b, typeof(bool));
+            Handle<short, byte>((a, b) => a < b, typeof(bool));
+            Handle<short, sbyte>((a, b) => a < b, typeof(bool));
+            Handle<short, short>((a, b) => a < b, typeof(bool));
+            Handle<short, ushort>((a, b) => a < b, typeof(bool));
+            Handle<short, int>((a, b) => a < b, typeof(bool));
+            Handle<short, uint>((a, b) => a < b, typeof(bool));
+            Handle<short, long>((a, b) => a < b, typeof(bool));
+            //Handle<short, ulong>((a, b) => a < b, typeof(bool));
+            Handle<short, float>((a, b) => a < b, typeof(bool));
+            Handle<short, decimal>((a, b) => a < b, typeof(bool));
+            Handle<short, double>((a, b) => a < b, typeof(bool));
 
             Handle<ushort, byte>((a, b) => a < b, typeof(bool));
             Handle<ushort, sbyte>((a, b) => a < b, typeof(bool));
@@ -137,8 +137,8 @@ namespace Ludiq.PeekCore
             Handle<double, float>((a, b) => a < b, typeof(bool));
             //Handle<double, decimal>((a, b) => a < b, typeof(bool));
             Handle<double, double>((a, b) => a < b, typeof(bool));
-		}
+        }
 
-		public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine the first is less than the second.";
-	}
+        public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine the first is less than the second.";
+    }
 }

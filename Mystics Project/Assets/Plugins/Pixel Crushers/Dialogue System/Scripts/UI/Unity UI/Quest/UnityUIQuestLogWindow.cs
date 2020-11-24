@@ -1,9 +1,9 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
-using UnityEngine.Events;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -155,7 +155,7 @@ namespace PixelCrushers.DialogueSystem
         {
             if (autoFocus && isOpen &&
                 UnityEngine.EventSystems.EventSystem.current != null &&
-                UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == null && 
+                UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == null &&
                 autoFocusCheckFrequency > 0.001f && Time.realtimeSinceStartup > nextAutoFocusCheckTime)
             {
                 nextAutoFocusCheckTime = Time.realtimeSinceStartup + autoFocusCheckFrequency;
@@ -227,7 +227,7 @@ namespace PixelCrushers.DialogueSystem
                 Destroy(unusedQuestTemplateInstances[i].gameObject);
             }
             unusedQuestTemplateInstances.Clear();
-            
+
             SetStateToggleButtons();
 
             if (mainPanel != null) UnityEngine.UI.LayoutRebuilder.MarkLayoutForRebuild(mainPanel.rectTransform);
@@ -378,7 +378,7 @@ namespace PixelCrushers.DialogueSystem
         }
 
         protected virtual void SetQuestDetails(UnityUIQuestTemplate questControl, QuestInfo questInfo)
-        { 
+        {
             // Set details if this is the selected quest:
             if (IsSelectedQuest(questInfo))
             {

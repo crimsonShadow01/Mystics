@@ -2,30 +2,30 @@
 
 namespace Ludiq.PeekCore
 {
-	public class CastAccessor : ProxyAccessor
-	{
-		public CastAccessor(Type newType, Accessor parent) : base(newType, parent, parent)
-		{
-			this.newType = newType;
+    public class CastAccessor : ProxyAccessor
+    {
+        public CastAccessor(Type newType, Accessor parent) : base(newType, parent, parent)
+        {
+            this.newType = newType;
 
-			definedType = newType;
-		}
+            definedType = newType;
+        }
 
-		public Type newType { get; private set; }
-		
-		protected override string Subpath()
-		{
-			return "(" + newType.CSharpName(false) + ")";
-		}
+        public Type newType { get; private set; }
 
-		protected override string OdinPath(string parentPath)
-		{
-			return parentPath;
-		}
+        protected override string Subpath()
+        {
+            return "(" + newType.CSharpName(false) + ")";
+        }
 
-		public override Attribute[] GetCustomAttributes(bool inherit = true)
-		{
-			return parent.GetCustomAttributes(inherit);
-		}
-	}
+        protected override string OdinPath(string parentPath)
+        {
+            return parentPath;
+        }
+
+        public override Attribute[] GetCustomAttributes(bool inherit = true)
+        {
+            return parent.GetCustomAttributes(inherit);
+        }
+    }
 }

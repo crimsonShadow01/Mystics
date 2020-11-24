@@ -2,15 +2,15 @@
 {
     public sealed class CodeBreakStatement : CodeStatement
     {
-        public CodeBreakStatement() {}
+        public CodeBreakStatement() { }
 
-		public override bool IsTerminator => true;
+        public override bool IsTerminator => true;
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
         {
-			generator.WriteBlankLineIfJustExitedBlock();
+            generator.WriteBlankLineIfJustExitedBlock();
             generator.WriteLine(TokenType.Keyword, "break");
-			generator.WriteStatementEnd(emitOptions);
+            generator.WriteStatementEnd(emitOptions);
         }
-	}
+    }
 }

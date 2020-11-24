@@ -1,12 +1,11 @@
 ﻿namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public enum TreeViewToolbarAlignment
-	{
-		Left,
+    public enum TreeViewToolbarAlignment
+    {
+        Left,
 
-		Right
-	}
+        Right
+    }
 }

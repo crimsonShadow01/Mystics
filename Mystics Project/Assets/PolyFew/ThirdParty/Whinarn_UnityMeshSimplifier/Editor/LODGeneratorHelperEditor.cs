@@ -26,8 +26,8 @@ SOFTWARE.
 
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace UnityMeshSimplifier.Editor
 {
@@ -119,7 +119,7 @@ namespace UnityMeshSimplifier.Editor
 
         private void DrawNotGeneratedView()
         {
-           
+
             EditorGUILayout.PropertyField(fadeModeProperty);
             var fadeMode = (LODFadeMode)fadeModeProperty.intValue;
 
@@ -551,8 +551,8 @@ namespace UnityMeshSimplifier.Editor
             // Filter out game objects that aren't children of the generator
             var ourTransform = lodGeneratorHelper.transform;
             var childGameObjects = from go in gameObjects
-                          where go.transform.IsChildOf(ourTransform)
-                          select go;
+                                   where go.transform.IsChildOf(ourTransform)
+                                   select go;
 
             var notChildGameObjects = from go in gameObjects
                                       where !go.transform.IsChildOf(ourTransform)

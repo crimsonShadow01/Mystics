@@ -1,6 +1,6 @@
-using System;
 using PlaceholderSoftware.WetStuff.Debugging;
 using PlaceholderSoftware.WetStuff.Timeline.Settings;
+using System;
 using UnityEngine;
 
 namespace PlaceholderSoftware.WetStuff
@@ -241,7 +241,7 @@ namespace PlaceholderSoftware.WetStuff
         #endregion
 
         private static readonly Log Log = Logs.Create(LogCategory.Core, typeof(WetDecal).Name);
-        
+
         // fields for serialization
         [SerializeField, UsedImplicitly] private DecalSettings _settings;
 
@@ -271,7 +271,8 @@ namespace PlaceholderSoftware.WetStuff
 
         public WetDecal()
         {
-            _settings = new DecalSettings {
+            _settings = new DecalSettings
+            {
                 Saturation = 0.5f,
                 EdgeFadeoff = 0.1f,
                 LayerProjection = ProjectionMode.Local,

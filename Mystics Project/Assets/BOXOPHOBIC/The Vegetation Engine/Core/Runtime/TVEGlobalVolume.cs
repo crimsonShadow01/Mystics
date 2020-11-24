@@ -1,11 +1,10 @@
 ﻿// Cristian Pop - https://boxophobic.com/
 
-using UnityEngine;
 using Boxophobic.StyledGUI;
-using UnityEngine.Rendering;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Rendering;
 #if UNITY_EDITOR
-using UnityEditor;
 #endif
 
 namespace TheVegetationEngine

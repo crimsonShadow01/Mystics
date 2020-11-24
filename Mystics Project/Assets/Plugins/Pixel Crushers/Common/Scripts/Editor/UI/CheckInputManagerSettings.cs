@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace PixelCrushers
 {
@@ -21,7 +21,7 @@ namespace PixelCrushers
             var alreadyAsked = EditorPrefs.GetBool(CheckedInputManagerSettingsEditorPrefsKey, false);
             EditorPrefs.SetBool(CheckedInputManagerSettingsEditorPrefsKey, true);
             if (InputDeviceManagerEditor.HasStandardInputDefinitions() || alreadyAsked) return;
-            if (EditorUtility.DisplayDialog("Add Input Manager Settings?", 
+            if (EditorUtility.DisplayDialog("Add Input Manager Settings?",
                 "Do you want to add standard input definitions for joystick axes so the Input Device Manager can detect when the player is using a joystick?", "Yes", "No"))
             {
                 InputDeviceManagerEditor.AddStandardInputDefinitions();

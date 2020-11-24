@@ -1,6 +1,6 @@
+using PlaceholderSoftware.WetStuff.Debugging;
 using System;
 using System.Collections.Generic;
-using PlaceholderSoftware.WetStuff.Debugging;
 using UnityEngine;
 
 namespace PlaceholderSoftware.WetStuff.Weather
@@ -70,7 +70,8 @@ namespace PlaceholderSoftware.WetStuff.Weather
             public AnimationCurve OutputMin;
             public AnimationCurve OutputMax;
 
-            public static readonly ChannelCurves Default = new ChannelCurves {
+            public static readonly ChannelCurves Default = new ChannelCurves
+            {
                 Threshold = AnimationCurve.EaseInOut(0, 0, 1, 1),
                 Softness = AnimationCurve.EaseInOut(0, 0, 1, 1),
                 OutputMin = AnimationCurve.EaseInOut(0, 0, 1, 1),
@@ -131,7 +132,8 @@ namespace PlaceholderSoftware.WetStuff.Weather
             public ChannelCurves Green;
             public ChannelCurves Alpha;
 
-            public static readonly DecalStateCurves Default = new DecalStateCurves {
+            public static readonly DecalStateCurves Default = new DecalStateCurves
+            {
                 Saturation = AnimationCurve.EaseInOut(0, 0, 1, 1),
                 Red = ChannelCurves.Default,
                 Blue = ChannelCurves.Default,
@@ -312,7 +314,8 @@ namespace PlaceholderSoftware.WetStuff.Weather
             State = RainState.Drying;
         }
 
-        [CanBeNull] private RainDecal Spawn()
+        [CanBeNull]
+        private RainDecal Spawn()
         {
             if (_dead.Count > 0)
             {

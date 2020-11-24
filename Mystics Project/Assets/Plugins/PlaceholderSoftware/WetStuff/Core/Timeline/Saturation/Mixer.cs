@@ -25,7 +25,7 @@ namespace PlaceholderSoftware.WetStuff.Timeline.Saturation
             for (var i = 0; i < inputCount; i++)
             {
                 var inputWeight = playable.GetInputWeight(i);
-                var inputPlayable = (ScriptPlayable<Data>) playable.GetInput(i);
+                var inputPlayable = (ScriptPlayable<Data>)playable.GetInput(i);
                 var input = inputPlayable.GetBehaviour();
 
                 blendedSaturation += input.Saturation * inputWeight;

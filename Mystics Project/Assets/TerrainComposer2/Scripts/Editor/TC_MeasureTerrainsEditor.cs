@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -33,7 +32,7 @@ namespace TerrainComposer2
 
                 mt.terrain = hit.collider.GetComponent<Terrain>();
                 mt.mr = hit.collider.GetComponent<MeshRenderer>();
-                
+
                 Terrain terrain = mt.terrain;
 
                 // if (mt.terrain != null) Debug.Log(mt.terrain.name);
@@ -59,7 +58,7 @@ namespace TerrainComposer2
 
             GUILayout.Space(5.0f);
             TD.DrawLabelWidthUnderline("Terrain", 14);
-            
+
             EditorGUILayout.BeginVertical("Box");
 
             GUI.changed = false;
@@ -283,7 +282,7 @@ namespace TerrainComposer2
                 for (int i = 0; i < splatTextures.Length; ++i)
                 {
                     EditorGUILayout.BeginHorizontal();
-                    
+
                     TC_ItemBehaviourEditor.DrawPreviewTexture(splatTextures[i], Color.white, Color.white, mt.textureSize, mt.textureSize);
                     float splatValue = mt.splat[0, 0, i];
                     EditorGUILayout.LabelField("");
@@ -308,7 +307,7 @@ namespace TerrainComposer2
                 EditorGUILayout.EndVertical();
             }
         }
-        
+
         void DrawGrass()
         {
             if (mt.terrain != null && mt.grassLayer != null)

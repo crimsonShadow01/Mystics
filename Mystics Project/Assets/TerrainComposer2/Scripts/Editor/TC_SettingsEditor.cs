@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -39,7 +38,7 @@ namespace TerrainComposer2
         SerializedProperty linkScaleToMaskDefault;
 
         public void OnEnable()
-        { 
+        {
             masterTerrain = serializedObject.FindProperty("masterTerrain");
             previewResolution = serializedObject.FindProperty("previewResolution");
             hideTerrainGroup = serializedObject.FindProperty("hideTerrainGroup");
@@ -50,9 +49,9 @@ namespace TerrainComposer2
             // scrollAdd = serializedObject.FindProperty("scrollAdd");
 
             global = new SerializedObject(((TC_Settings)target).global);
-            
+
             tooltip = global.FindProperty("tooltip");
-            
+
             previewColors = global.FindProperty("previewColors");
 
             colLayerGroup = global.FindProperty("colLayerGroup");
@@ -78,17 +77,17 @@ namespace TerrainComposer2
         {
             if (TC_Settings.instance == null) return;
             TC_NodeWindow.Keys();
-            
+
             if (TC_Settings.instance.debugMode) DrawDefaultInspector(); else DrawCustomInspector();
         }
 
         public void DrawCustomInspector()
         {
             TC_GlobalSettings globalSettings = TC_Settings.instance.global;
-            
+
             serializedObject.Update();
             global.Update();
-            
+
             TD.DrawSpacer();
             TD.DrawLabelWidthUnderline("Local Settings", 14);
 
@@ -99,8 +98,8 @@ namespace TerrainComposer2
             TD.DrawProperty(masterTerrain, new GUIContent("Master Terrain", globalSettings.tooltip ? "This terrain is used for selecting the splat textures, grass textures and trees in the nodes." : ""));
 
             EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel(new GUIContent("Node Preview Image Resolution", globalSettings.tooltip ? "The resolution of the node preview images." : ""));
-                previewResolution.intValue = EditorGUILayout.IntPopup(previewResolution.intValue, previewResolutionsDisplay, previewResolutions);
+            EditorGUILayout.PrefixLabel(new GUIContent("Node Preview Image Resolution", globalSettings.tooltip ? "The resolution of the node preview images." : ""));
+            previewResolution.intValue = EditorGUILayout.IntPopup(previewResolution.intValue, previewResolutionsDisplay, previewResolutions);
             EditorGUILayout.EndHorizontal();
 
             TD.DrawProperty(hideTerrainGroup, new GUIContent("Hide TerrainLayer GameObject"));
@@ -131,7 +130,7 @@ namespace TerrainComposer2
             EditorGUILayout.BeginVertical("Box");
             TD.DrawProperty(tooltip);
             TD.DrawProperty(showResolutionWarnings);
-            
+
             GUI.changed = false;
             Vector3 defaultTerrainSize = globalSettings.defaultTerrainSize;
             defaultTerrainSize = EditorGUILayout.Vector3Field("Default Node Size", defaultTerrainSize);
@@ -147,7 +146,7 @@ namespace TerrainComposer2
 
             TD.DrawLabelWidthUnderline("Trees and Objects", 12);
             EditorGUILayout.BeginVertical("Box");
-                TD.DrawProperty(linkScaleToMaskDefault, new GUIContent("Link Scale To Mask Default"));
+            TD.DrawProperty(linkScaleToMaskDefault, new GUIContent("Link Scale To Mask Default"));
             EditorGUILayout.EndVertical();
 
             GUILayout.Space(5);
@@ -179,7 +178,7 @@ namespace TerrainComposer2
             TD.DrawPropertyArray(previewColors);
 
             TD.DrawSpacer();
-            
+
             serializedObject.ApplyModifiedProperties();
             global.ApplyModifiedProperties();
         }

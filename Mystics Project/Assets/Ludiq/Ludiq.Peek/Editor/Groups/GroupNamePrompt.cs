@@ -3,108 +3,108 @@ using UnityEngine;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public sealed class GroupNamePrompt : LudiqEditorWindow
-	{
-		public static bool Prompt(out string name, string defaultName = "Group")
-		{
-			var prompt = CreateInstance<GroupNamePrompt>();
-			prompt.name = defaultName;
-			prompt.minSize = prompt.maxSize = new Vector2(300, 70);
-			prompt.ShowModal();
-			name = prompt.name;
-			return prompt.confirmed;
-		}
-		
-		public new string name { get; private set; }
+    public sealed class GroupNamePrompt : LudiqEditorWindow
+    {
+        public static bool Prompt(out string name, string defaultName = "Group")
+        {
+            var prompt = CreateInstance<GroupNamePrompt>();
+            prompt.name = defaultName;
+            prompt.minSize = prompt.maxSize = new Vector2(300, 70);
+            prompt.ShowModal();
+            name = prompt.name;
+            return prompt.confirmed;
+        }
 
-		public bool confirmed { get; private set; }
+        public new string name { get; private set; }
 
-		private bool focused;
+        public bool confirmed { get; private set; }
 
-		protected override void OnEnable()
-		{
-			base.OnEnable();
-			titleContent.text = "Group";
-			this.Center();
-		}
+        private bool focused;
 
-		protected override void OnGUI()
-		{
-			base.OnGUI();
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            titleContent.text = "Group";
+            this.Center();
+        }
 
-			if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Return)
-			{
-				Confirm();
-			}
-			else if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Return)
-			{
-				Cancel();
-			}
+        protected override void OnGUI()
+        {
+            base.OnGUI();
 
-			GUILayout.BeginVertical(Styles.fieldsArea);
+            if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Return)
+            {
+                Confirm();
+            }
+            else if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Return)
+            {
+                Cancel();
+            }
 
-			GUI.SetNextControlName("GroupNameField");
-			name = EditorGUILayout.TextField("Group Name", name);
+            GUILayout.BeginVertical(Styles.fieldsArea);
 
-			GUILayout.EndVertical();
+            GUI.SetNextControlName("GroupNameField");
+            name = EditorGUILayout.TextField("Group Name", name);
 
-			if (!focused)
-			{
-				EditorGUI.FocusTextInControl("GroupNameField");
-				focused = true;
-			}
-			
-			GUILayout.FlexibleSpace();
+            GUILayout.EndVertical();
 
-			GUILayout.BeginHorizontal(Styles.buttonsArea);
+            if (!focused)
+            {
+                EditorGUI.FocusTextInControl("GroupNameField");
+                focused = true;
+            }
 
-			GUILayout.FlexibleSpace();
+            GUILayout.FlexibleSpace();
 
-			if (GUILayout.Button("Cancel"))
-			{
-				Cancel();
-			}
+            GUILayout.BeginHorizontal(Styles.buttonsArea);
 
-			GUILayout.Space(2);
+            GUILayout.FlexibleSpace();
 
-			if (GUILayout.Button("OK"))
-			{
-				Confirm();
-			}
+            if (GUILayout.Button("Cancel"))
+            {
+                Cancel();
+            }
 
-			GUILayout.EndHorizontal();
-		}
+            GUILayout.Space(2);
 
-		private void Confirm()
-		{
-			confirmed = true;
-			Close();
-			GUIUtility.ExitGUI();
-		}
+            if (GUILayout.Button("OK"))
+            {
+                Confirm();
+            }
 
-		private void Cancel()
-		{
-			confirmed = false;
-			Close();
-			GUIUtility.ExitGUI();
-		}
+            GUILayout.EndHorizontal();
+        }
 
-		private static class Styles
-		{
-			static Styles()
-			{
-				fieldsArea = ColorPalette.unityBackgroundMid.CreateBackground();
-				fieldsArea.padding = new RectOffset(8, 8, 8, 8);
+        private void Confirm()
+        {
+            confirmed = true;
+            Close();
+            GUIUtility.ExitGUI();
+        }
 
-				buttonsArea = ColorPalette.unityBackgroundDark.CreateBackground();
-				buttonsArea.padding = new RectOffset(8, 8, 8, 8);
-			}
+        private void Cancel()
+        {
+            confirmed = false;
+            Close();
+            GUIUtility.ExitGUI();
+        }
 
-			public static readonly GUIStyle fieldsArea;
-			public static readonly GUIStyle buttonsArea;
-		}
-	}
+        private static class Styles
+        {
+            static Styles()
+            {
+                fieldsArea = ColorPalette.unityBackgroundMid.CreateBackground();
+                fieldsArea.padding = new RectOffset(8, 8, 8, 8);
+
+                buttonsArea = ColorPalette.unityBackgroundDark.CreateBackground();
+                buttonsArea.padding = new RectOffset(8, 8, 8, 8);
+            }
+
+            public static readonly GUIStyle fieldsArea;
+            public static readonly GUIStyle buttonsArea;
+        }
+    }
 }

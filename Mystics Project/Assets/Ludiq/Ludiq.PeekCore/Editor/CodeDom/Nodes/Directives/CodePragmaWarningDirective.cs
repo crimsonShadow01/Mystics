@@ -6,45 +6,45 @@ using System.Linq;
 
 namespace Ludiq.PeekCore.CodeDom
 {
-	public sealed class CodePragmaWarningDirective : CodeDirective
-	{
+    public sealed class CodePragmaWarningDirective : CodeDirective
+    {
         public CodePragmaWarningDirective(CodePragmaWarningSetting setting, IEnumerable<int> warnings)
         {
-			Setting = setting;
+            Setting = setting;
             Warnings.AddRange(warnings);
         }
 
-		public CodePragmaWarningSetting Setting { get; }
+        public CodePragmaWarningSetting Setting { get; }
         public List<int> Warnings { get; } = new List<int>();
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
+        protected override void GenerateInner(CodeGenerator generator)
+        {
             if (Warnings != null && Warnings.Any())
-			{
-				generator.Write(TokenType.Directive, "#pragma warning ");
+            {
+                generator.Write(TokenType.Directive, "#pragma warning ");
 
-				switch (Setting)
-				{
-					case CodePragmaWarningSetting.Disable: generator.Write(TokenType.Directive, "disable "); break;
-					case CodePragmaWarningSetting.Restore: generator.Write(TokenType.Directive, "restore "); break;
-				}
+                switch (Setting)
+                {
+                    case CodePragmaWarningSetting.Disable: generator.Write(TokenType.Directive, "disable "); break;
+                    case CodePragmaWarningSetting.Restore: generator.Write(TokenType.Directive, "restore "); break;
+                }
 
-				bool first = true;
+                bool first = true;
                 foreach (var warning in Warnings)
                 {
-					if (first)
-					{
-						first = false;
-					}
-					else
-					{
-						generator.Write(TokenType.Punctuation, ", ");
-					}
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        generator.Write(TokenType.Punctuation, ", ");
+                    }
 
-					generator.Write(TokenType.IntLiteral, warning.ToString(CultureInfo.InvariantCulture));
+                    generator.Write(TokenType.IntLiteral, warning.ToString(CultureInfo.InvariantCulture));
                 }
-				generator.WriteLine();
+                generator.WriteLine();
             }
-		}
-	}
+        }
+    }
 }

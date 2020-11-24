@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using System;
 using UnityEngine;
 
 namespace PixelCrushers

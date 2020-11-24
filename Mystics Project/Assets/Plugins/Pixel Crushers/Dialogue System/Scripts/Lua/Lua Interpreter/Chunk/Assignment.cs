@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Language.Lua
 {
@@ -9,7 +7,7 @@ namespace Language.Lua
         public override LuaValue Execute(LuaTable enviroment, out bool isBreak)
         {
             //[PixelCrushers]LuaValue[] values = this.ExprList.ConvertAll(expr => expr.Evaluate(enviroment)).ToArray();
-			LuaValue[] values = LuaInterpreterExtensions.EvaluateAll(this.ExprList, enviroment).ToArray();
+            LuaValue[] values = LuaInterpreterExtensions.EvaluateAll(this.ExprList, enviroment).ToArray();
 
             LuaValue[] neatValues = LuaMultiValue.UnWrapLuaValues(values);
 
@@ -43,9 +41,10 @@ namespace Language.Lua
                     NameAccess nameAccess = lastAccess as NameAccess;
                     if (nameAccess != null)
                     {
-						if (baseValue == null || (baseValue is LuaNil)) {
-							throw new System.NullReferenceException("Cannot assign to a null value. Are you trying to assign to a nonexistent table element?.");
-						}
+                        if (baseValue == null || (baseValue is LuaNil))
+                        {
+                            throw new System.NullReferenceException("Cannot assign to a null value. Are you trying to assign to a nonexistent table element?.");
+                        }
                         SetKeyValue(baseValue, new LuaString(nameAccess.Name), values[i]);
                         continue;
                     }

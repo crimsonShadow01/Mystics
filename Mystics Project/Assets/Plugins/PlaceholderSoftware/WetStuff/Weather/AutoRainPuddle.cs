@@ -32,7 +32,7 @@ namespace PlaceholderSoftware.WetStuff.Weather
             {
                 // Get wetness values from weather source
                 var delta = WetnessSource.RainIntensity;
-                
+
                 // Determine if wetness is increasing or not
                 var raining = delta > 0;
 

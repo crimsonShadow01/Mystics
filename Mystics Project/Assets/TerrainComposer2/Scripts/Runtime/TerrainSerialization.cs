@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.IO;
+using UnityEngine;
 
 public class TerrainSerialization : MonoBehaviour
 {
@@ -64,7 +63,7 @@ public class TerrainSerialization : MonoBehaviour
         }
         byte[] bytes = new byte[file.Length];
         file.Read(bytes, 0, bytes.Length);
-        
+
         int index = 0;
         int terrainLength = R_SerializationHelper.DeserializeInt(bytes, ref index);
         Terrain[] terrains = new Terrain[terrainLength];
@@ -82,13 +81,13 @@ public class TerrainSerialization : MonoBehaviour
 
         R_SerializationHelper.SerializeString(bytes, terrain.name);
         R_SerializationHelper.SerializeVector3(bytes, terrain.transform.position);
-        
+
         R_SerializationHelper.SerializeFloat(bytes, terrain.basemapDistance);
-        #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2018_4
+#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2018_4
         R_SerializationHelper.SerializeBool(bytes, terrain.castShadows);
-        #else
+#else
         R_SerializationHelper.SerializeInt(bytes, (int)terrain.shadowCastingMode);
-        #endif
+#endif
         R_SerializationHelper.SerializeBool(bytes, terrain.collectDetailPatches);
         R_SerializationHelper.SerializeFloat(bytes, terrain.detailObjectDensity);
         R_SerializationHelper.SerializeFloat(bytes, terrain.detailObjectDistance);
@@ -96,10 +95,10 @@ public class TerrainSerialization : MonoBehaviour
         R_SerializationHelper.SerializeBool(bytes, terrain.drawTreesAndFoliage);
         R_SerializationHelper.SerializeInt(bytes, terrain.heightmapMaximumLOD);
         R_SerializationHelper.SerializeFloat(bytes, terrain.heightmapPixelError);
-        #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
+#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
         R_SerializationHelper.SerializeFloat(bytes, terrain.legacyShininess);
         R_SerializationHelper.SerializeColor(bytes, terrain.legacySpecular);
-        #endif
+#endif
         R_SerializationHelper.SerializeInt(bytes, terrain.lightmapIndex);
         R_SerializationHelper.SerializeVector4(bytes, terrain.lightmapScaleOffset);
 
@@ -110,10 +109,10 @@ public class TerrainSerialization : MonoBehaviour
         }
         else bytes.Add(0);
 
-        #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
+#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
         R_SerializationHelper.SerializeInt(bytes, (int)terrain.materialType);
-        #endif
-        R_SerializationHelper.SerializeInt(bytes, terrain.realtimeLightmapIndex); 
+#endif
+        R_SerializationHelper.SerializeInt(bytes, terrain.realtimeLightmapIndex);
         R_SerializationHelper.SerializeVector4(bytes, terrain.realtimeLightmapScaleOffset);
         R_SerializationHelper.SerializeInt(bytes, (int)terrain.reflectionProbeUsage);
         R_SerializationHelper.SerializeFloat(bytes, terrain.treeBillboardDistance);
@@ -177,7 +176,7 @@ public class TerrainSerialization : MonoBehaviour
 
         return terrain;
     }
-    
+
     public void SerializeTerrainData(List<byte> bytes, TerrainData terrainData)
     {
         R_SerializationHelper.SerializeString(bytes, terrainData.name);
@@ -250,7 +249,7 @@ public class TerrainSerialization : MonoBehaviour
             R_SerializationHelper.SerializeFloat(bytes, tree.bendFactor);
             R_SerializationHelper.SerializeString(bytes, tree.prefab.name);
         }
-         
+
         // Grass
         DetailPrototype[] detailPrototypes = terrainData.detailPrototypes;
         int detailPrototypesLength = detailPrototypes.Length;

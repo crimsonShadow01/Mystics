@@ -158,7 +158,7 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
             if (nodeEditorDeleteCurrentConversation) DeleteCurrentConversationInNodeEditor();
             //--- Unnecessary: if (inspectorSelection == null) inspectorSelection = currentConversation;
 
-            DrawNodeEditorTopControls();            
+            DrawNodeEditorTopControls();
 
             var topOffset = GetTopOffsetHeight();
 
@@ -538,7 +538,7 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
             return isSelected ? GetNodeStyle(m_nodeStylesSelected, color, isSelected) : GetNodeStyle(m_nodeStyles, color, isSelected);
         }
 
-        private GUIStyle GetNodeStyle(Dictionary <Styles.Color, GUIStyle> dict, Styles.Color color, bool isSelected)
+        private GUIStyle GetNodeStyle(Dictionary<Styles.Color, GUIStyle> dict, Styles.Color color, bool isSelected)
         {
             GUIStyle nodeStyle;
             if (!dict.TryGetValue(color, out nodeStyle))
@@ -576,8 +576,8 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
                 if (actorHasCustomColorCache == null) actorHasCustomColorCache = new Dictionary<int, bool>();
                 if (actorIsPlayerCache == null) actorIsPlayerCache = new Dictionary<int, bool>();
                 if (actorCustomColorCache == null) actorCustomColorCache = new Dictionary<int, Color>();
-                if (!actorHasCustomColorCache.ContainsKey(actorID) || 
-                    !actorCustomColorCache.ContainsKey(actorID) || 
+                if (!actorHasCustomColorCache.ContainsKey(actorID) ||
+                    !actorCustomColorCache.ContainsKey(actorID) ||
                     (actorCustomColorCache.ContainsKey(actorID) && (actorCustomColorCache[actorID].a == 0)))
                 {
                     var actor = database.GetActor(actorID);
@@ -643,7 +643,7 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
             }
         }
 
-#endregion
+        #endregion
 
         private void DrawEntryNode(DialogueEntry entry)
         {

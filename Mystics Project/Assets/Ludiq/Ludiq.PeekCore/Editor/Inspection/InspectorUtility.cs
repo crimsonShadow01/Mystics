@@ -1,4 +1,4 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public static class InspectorUtility { }
+    public static class InspectorUtility { }
 }

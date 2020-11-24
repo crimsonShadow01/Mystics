@@ -1,5 +1,5 @@
-using System;
 using PlaceholderSoftware.WetStuff.Debugging;
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -43,7 +43,8 @@ namespace PlaceholderSoftware.WetStuff
                     Log.Error("Camera '{0}' rendering path is '{1}', 'DeferredShading' is required for Wet Decals to render.", _camera.name, _camera.actualRenderingPath);
             }
 
-            _cmd = new CommandBuffer {
+            _cmd = new CommandBuffer
+            {
                 name = "Wet Surface Decals"
             };
 
@@ -52,7 +53,8 @@ namespace PlaceholderSoftware.WetStuff
                 Log.Error("Failed to attach CommandBuffer");
 
             _decalRenderer = new WetDecalRenderer(_camera);
-            _gbufferModifier = new WetAttributeModifier(_camera) {
+            _gbufferModifier = new WetAttributeModifier(_camera)
+            {
                 AmbientDarkenStrength = _ambientModificationFactor
             };
 

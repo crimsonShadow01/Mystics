@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public interface ISerializationDepender : ISerializationCallbackReceiver
-	{
-		IEnumerable<ISerializationDependency> deserializationDependencies { get; }
+    public interface ISerializationDepender : ISerializationCallbackReceiver
+    {
+        IEnumerable<ISerializationDependency> deserializationDependencies { get; }
 
-		void OnAfterDependenciesDeserialized();
-	}
+        void OnAfterDependenciesDeserialized();
+    }
 }

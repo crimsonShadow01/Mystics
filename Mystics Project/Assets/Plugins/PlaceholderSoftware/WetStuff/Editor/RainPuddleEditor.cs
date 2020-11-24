@@ -1,4 +1,3 @@
-using System;
 using PlaceholderSoftware.WetStuff.Components;
 using PlaceholderSoftware.WetStuff.Weather;
 using UnityEditor;
@@ -170,7 +169,8 @@ namespace PlaceholderSoftware.WetStuff
                 _alpha = target.FindProperty(string.Format("{0}.Alpha", _stateProperty));
             }
 
-            [NotNull] protected override GenericMenu GetHeaderMenu()
+            [NotNull]
+            protected override GenericMenu GetHeaderMenu()
             {
                 var g = new GenericMenu();
 
@@ -319,7 +319,8 @@ namespace PlaceholderSoftware.WetStuff
                 _alpha = target.FindProperty(string.Format("{0}.Alpha", _curvesProperty));
             }
 
-            [NotNull] protected override GenericMenu GetHeaderMenu()
+            [NotNull]
+            protected override GenericMenu GetHeaderMenu()
             {
                 var g = new GenericMenu();
 

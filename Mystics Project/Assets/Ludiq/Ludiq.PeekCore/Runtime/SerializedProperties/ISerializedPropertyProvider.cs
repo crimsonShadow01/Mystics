@@ -1,7 +1,7 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public interface ISerializedPropertyProvider
-	{
-		object item { get; set; }
-	}
+    public interface ISerializedPropertyProvider
+    {
+        object item { get; set; }
+    }
 }

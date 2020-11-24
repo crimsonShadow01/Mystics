@@ -1,15 +1,15 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public interface IFactory
-	{
-		object Create(IFactoryConfiguration configuration);
+    public interface IFactory
+    {
+        object Create(IFactoryConfiguration configuration);
 
-		bool requiresConfiguration { get; }
+        bool requiresConfiguration { get; }
 
-		string label { get; }
+        string label { get; }
 
-		string description { get; }
+        string description { get; }
 
-		EditorTexture icon { get; }
-	}
+        EditorTexture icon { get; }
+    }
 }

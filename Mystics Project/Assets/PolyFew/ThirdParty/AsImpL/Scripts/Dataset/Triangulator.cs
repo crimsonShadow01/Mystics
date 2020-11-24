@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using AsImpL.MathUtil;
 using System.Collections.Generic;
 using UnityEngine;
-using AsImpL.MathUtil;
 
 namespace AsImpL
 {

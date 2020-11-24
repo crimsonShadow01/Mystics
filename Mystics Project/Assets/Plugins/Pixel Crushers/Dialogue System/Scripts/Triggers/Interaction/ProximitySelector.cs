@@ -142,8 +142,9 @@ namespace PixelCrushers.DialogueSystem
         /// Gets the current usable.
         /// </summary>
         /// <value>The usable.</value>
-        public Usable CurrentUsable { 
-            get { return currentUsable; } 
+        public Usable CurrentUsable
+        {
+            get { return currentUsable; }
             set { SetCurrentUsable(value); }
         }
 

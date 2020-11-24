@@ -20,15 +20,15 @@
 
 namespace Databox.OdinSerializer.Editor
 {
-    using Utilities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using UnityEditor;
     using UnityEditor.SceneManagement;
     using UnityEngine;
-    using System.Reflection;
     using UnityEngine.SceneManagement;
+    using Utilities;
 
     public sealed class AOTSupportScanner : IDisposable
     {
@@ -103,7 +103,7 @@ namespace Databox.OdinSerializer.Editor
         public bool ScanAssetBundle(string bundle)
         {
             string[] assets = AssetDatabase.GetAssetPathsFromAssetBundle(bundle);
-            
+
             foreach (var asset in assets)
             {
                 this.ScanAsset(asset, true);
@@ -145,7 +145,7 @@ namespace Databox.OdinSerializer.Editor
         {
             if (resourcesPaths == null)
             {
-                resourcesPaths = new List<string>() {""};
+                resourcesPaths = new List<string>() { "" };
             }
 
             try
@@ -268,7 +268,7 @@ namespace Databox.OdinSerializer.Editor
                         foreach (var go in sceneGOs)
                         {
                             if (go.scene != openScene) continue;
-                            
+
                             if ((go.hideFlags & HideFlags.DontSaveInBuild) == 0)
                             {
                                 foreach (var component in go.GetComponents<ISerializationCallbackReceiver>())
@@ -311,7 +311,7 @@ namespace Databox.OdinSerializer.Editor
                     }
 
                     bool previous = true;
-                    
+
                     try
                     {
                         if (logger != null)

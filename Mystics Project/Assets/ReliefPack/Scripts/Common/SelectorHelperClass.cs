@@ -1,4 +1,3 @@
 using UnityEngine;
-using System.Collections;
 
-public class SelectorHelperClass : MonoBehaviour {}
+public class SelectorHelperClass : MonoBehaviour { }

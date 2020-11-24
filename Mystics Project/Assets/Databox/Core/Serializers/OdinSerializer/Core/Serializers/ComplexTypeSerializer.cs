@@ -598,7 +598,7 @@ namespace Databox.OdinSerializer
                 {
                     Type type = value.GetType(); // Get type of actual stored object
 
-                    if (ComplexTypeMayBeBoxedValueType && FormatterUtilities.IsPrimitiveType(type)) 
+                    if (ComplexTypeMayBeBoxedValueType && FormatterUtilities.IsPrimitiveType(type))
                     // It's a boxed primitive type
                     {
                         try
@@ -624,7 +624,7 @@ namespace Databox.OdinSerializer
                     else
                     {
                         IFormatter formatter;
-                        
+
                         if (object.ReferenceEquals(type, TypeOf_T))
                         {
                             formatter = GetBaseFormatter(policy);

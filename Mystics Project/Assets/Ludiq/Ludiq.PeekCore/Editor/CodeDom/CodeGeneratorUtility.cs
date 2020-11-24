@@ -3,23 +3,23 @@ using System.Linq;
 
 namespace Ludiq.PeekCore.CodeDom
 {
-	public static class CodeGeneratorUtility
-	{
-		public static void Generate(this IEnumerable<CodeDirective> directives, CodeGenerator generator)
-		{
+    public static class CodeGeneratorUtility
+    {
+        public static void Generate(this IEnumerable<CodeDirective> directives, CodeGenerator generator)
+        {
             foreach (var directive in directives)
             {
-				directive.Generate(generator);
+                directive.Generate(generator);
             }
-		}
+        }
 
-		public static void ReserveLocals(this IEnumerable<CodeStatement> statements, CodeGenerator generator, CodeStatementEmitOptions options)
-		{
+        public static void ReserveLocals(this IEnumerable<CodeStatement> statements, CodeGenerator generator, CodeStatementEmitOptions options)
+        {
             foreach (var statement in statements)
             {
                 statement.ReserveLocals(generator, options);
             }
-		}
+        }
 
         public static void Generate(this IEnumerable<CodeStatement> statements, CodeGenerator generator, CodeStatementEmitOptions options)
         {
@@ -42,14 +42,14 @@ namespace Ludiq.PeekCore.CodeDom
             foreach (var comment in comments)
             {
                 comment.Generate(generator);
-				generator.WriteLine();
+                generator.WriteLine();
             }
         }
 
         public static void Generate(this IEnumerable<CodeUsingImport> usingImports, CodeGenerator generator)
         {
-			var sortedUniqueUsingImports = new List<CodeUsingImport>(new HashSet<CodeUsingImport>(usingImports));
-			sortedUniqueUsingImports.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
+            var sortedUniqueUsingImports = new List<CodeUsingImport>(new HashSet<CodeUsingImport>(usingImports));
+            sortedUniqueUsingImports.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
 
             foreach (var usingImport in sortedUniqueUsingImports)
             {
@@ -62,8 +62,8 @@ namespace Ludiq.PeekCore.CodeDom
             }
         }
 
-		public static void GenerateCommaSeparated(this IEnumerable<CodeExpression> expressions, CodeGenerator generator, bool newlineBetweenItems = false)
-		{
+        public static void GenerateCommaSeparated(this IEnumerable<CodeExpression> expressions, CodeGenerator generator, bool newlineBetweenItems = false)
+        {
             bool first = true;
 
             //generator.Indent++;
@@ -77,44 +77,44 @@ namespace Ludiq.PeekCore.CodeDom
                 else
                 {
                     if (newlineBetweenItems)
-					{
+                    {
                         generator.WriteLine(TokenType.Punctuation, ',');
-					}
+                    }
                     else
-					{
-						generator.Write(TokenType.Punctuation, ',');
-						generator.Write(TokenType.Space, ' ');
-					}
+                    {
+                        generator.Write(TokenType.Punctuation, ',');
+                        generator.Write(TokenType.Space, ' ');
+                    }
                 }
 
                 expression.Generate(generator);
             }
 
             //generator.Indent--;
-		}
-		
+        }
+
         public static void GenerateCommaSeparated(this IEnumerable<CodeParameterDeclaration> parameters, CodeGenerator generator, bool newlineBetweenItems = false)
         {
             bool first = true;
 
             foreach (var parameter in parameters)
             {
-				if (first)
-				{
-					first = false;
-				}
-				else
-				{
-					if (newlineBetweenItems)
-					{
+                if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    if (newlineBetweenItems)
+                    {
                         generator.WriteLine(TokenType.Punctuation, ',');
-					}
-					else
-					{
-						generator.Write(TokenType.Punctuation, ',');
-						generator.Write(TokenType.Space, ' ');
-					}
-				}
+                    }
+                    else
+                    {
+                        generator.Write(TokenType.Punctuation, ',');
+                        generator.Write(TokenType.Space, ' ');
+                    }
+                }
 
                 parameter.Generate(generator);
             }
@@ -130,8 +130,8 @@ namespace Ludiq.PeekCore.CodeDom
             }
         }
 
-		public static void Generate(this CodeMemberModifiers modifiers, CodeGenerator generator)
-		{
+        public static void Generate(this CodeMemberModifiers modifiers, CodeGenerator generator)
+        {
             switch (modifiers & CodeMemberModifiers.NewMask)
             {
                 case CodeMemberModifiers.New: generator.Write(TokenType.Keyword, "new"); generator.Write(TokenType.Space, ' '); break;
@@ -160,7 +160,7 @@ namespace Ludiq.PeekCore.CodeDom
             {
                 case CodeMemberModifiers.ReadOnly: generator.Write(TokenType.Keyword, "readonly"); generator.Write(TokenType.Space, ' '); break;
             }
-		}
+        }
 
         public static readonly HashSet<string> Keywords = new HashSet<string> {
             "as",
@@ -189,8 +189,8 @@ namespace Ludiq.PeekCore.CodeDom
             "true",
             "uint",
             "void",
-			"async",
-			"await",
+            "async",
+            "await",
             "break",
             "catch",
             "class",
@@ -250,84 +250,84 @@ namespace Ludiq.PeekCore.CodeDom
         };
 
         public static readonly HashSet<string> TypeKeywords = new HashSet<string> {
-			"int",
-			"bool",
-			"byte",
-			"char",
-			"long",
-			"uint",
-			"float",
-			"sbyte",
-			"short",
-			"ulong",
-			"double",
-			"object",
-			"string",
-			"ushort",
-			"decimal",
-		};
+            "int",
+            "bool",
+            "byte",
+            "char",
+            "long",
+            "uint",
+            "float",
+            "sbyte",
+            "short",
+            "ulong",
+            "double",
+            "object",
+            "string",
+            "ushort",
+            "decimal",
+        };
 
         public static string EscapeIdentifier(this string name)
         {
-	        var first = name[0];
+            var first = name[0];
 
-	        if (first != '_' && !char.IsLetter(first))
-	        {
-		        name = '_' + name;
-	        }
+            if (first != '_' && !char.IsLetter(first))
+            {
+                name = '_' + name;
+            }
 
-	        if (Keywords.Contains(name) || name.StartsWith("__"))
-	        {
-		        name = '@' + name;
-	        }
+            if (Keywords.Contains(name) || name.StartsWith("__"))
+            {
+                name = '@' + name;
+            }
 
-	        return name;
+            return name;
         }
 
-		public static string EscapeUnqualifiedTypeIdentifier(this string name)
-		{
-			return TypeKeywords.Contains(name)
-				? name
-				: EscapeIdentifier(name);
-		}
+        public static string EscapeUnqualifiedTypeIdentifier(this string name)
+        {
+            return TypeKeywords.Contains(name)
+                ? name
+                : EscapeIdentifier(name);
+        }
 
-		// See: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/
-		public enum BinaryOperatorPrecedence
-		{
-			Multiplicative,
-			Additive,
-			BitwiseShift,
-			Relational,
-			Equality,
-			BitwiseAnd,
-			BitwiseXor,
-			BitwiseOr,
-			LogicalAnd,
-			LogicalOr,
-			NullCoalescing,
-		}
+        // See: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/
+        public enum BinaryOperatorPrecedence
+        {
+            Multiplicative,
+            Additive,
+            BitwiseShift,
+            Relational,
+            Equality,
+            BitwiseAnd,
+            BitwiseXor,
+            BitwiseOr,
+            LogicalAnd,
+            LogicalOr,
+            NullCoalescing,
+        }
 
-		public static readonly Dictionary<CodeBinaryOperatorType, BinaryOperatorPrecedence> BinaryOperatorPrecedences = new Dictionary<CodeBinaryOperatorType, BinaryOperatorPrecedence>() {
+        public static readonly Dictionary<CodeBinaryOperatorType, BinaryOperatorPrecedence> BinaryOperatorPrecedences = new Dictionary<CodeBinaryOperatorType, BinaryOperatorPrecedence>() {
 			// Multiplicative operators
 			{ CodeBinaryOperatorType.Multiply, BinaryOperatorPrecedence.Multiplicative },
-			{ CodeBinaryOperatorType.Divide, BinaryOperatorPrecedence.Multiplicative },
-			{ CodeBinaryOperatorType.Modulo, BinaryOperatorPrecedence.Multiplicative },
+            { CodeBinaryOperatorType.Divide, BinaryOperatorPrecedence.Multiplicative },
+            { CodeBinaryOperatorType.Modulo, BinaryOperatorPrecedence.Multiplicative },
 			// Additive operators
 			{ CodeBinaryOperatorType.Add, BinaryOperatorPrecedence.Additive },
-			{ CodeBinaryOperatorType.Subtract, BinaryOperatorPrecedence.Additive },
+            { CodeBinaryOperatorType.Subtract, BinaryOperatorPrecedence.Additive },
 			// Bitwise shift operators
 			{ CodeBinaryOperatorType.BitwiseShiftLeft, BinaryOperatorPrecedence.BitwiseShift },
-			{ CodeBinaryOperatorType.BitwiseShiftRight, BinaryOperatorPrecedence.BitwiseShift },
+            { CodeBinaryOperatorType.BitwiseShiftRight, BinaryOperatorPrecedence.BitwiseShift },
 			// Relational operators
 			{ CodeBinaryOperatorType.LessThan, BinaryOperatorPrecedence.Relational },
-			{ CodeBinaryOperatorType.GreaterThan, BinaryOperatorPrecedence.Relational },
-			{ CodeBinaryOperatorType.LessThanOrEqual, BinaryOperatorPrecedence.Relational },
-			{ CodeBinaryOperatorType.GreaterThanOrEqual, BinaryOperatorPrecedence.Relational },
-			{ CodeBinaryOperatorType.Is, BinaryOperatorPrecedence.Relational },
-			{ CodeBinaryOperatorType.As, BinaryOperatorPrecedence.Relational },
+            { CodeBinaryOperatorType.GreaterThan, BinaryOperatorPrecedence.Relational },
+            { CodeBinaryOperatorType.LessThanOrEqual, BinaryOperatorPrecedence.Relational },
+            { CodeBinaryOperatorType.GreaterThanOrEqual, BinaryOperatorPrecedence.Relational },
+            { CodeBinaryOperatorType.Is, BinaryOperatorPrecedence.Relational },
+            { CodeBinaryOperatorType.As, BinaryOperatorPrecedence.Relational },
 			// Equality operators
 			{ CodeBinaryOperatorType.Equality, BinaryOperatorPrecedence.Equality },
-			{ CodeBinaryOperatorType.Inequality, BinaryOperatorPrecedence.Equality },
+            { CodeBinaryOperatorType.Inequality, BinaryOperatorPrecedence.Equality },
 			// Bitwise and
 			{ CodeBinaryOperatorType.BitwiseAnd, BinaryOperatorPrecedence.BitwiseAnd },
 			// Bitwise xor
@@ -340,26 +340,26 @@ namespace Ludiq.PeekCore.CodeDom
 			{ CodeBinaryOperatorType.LogicalOr, BinaryOperatorPrecedence.LogicalOr },
 			// Null coalescing
 			{ CodeBinaryOperatorType.NullCoalesce, BinaryOperatorPrecedence.NullCoalescing },
-		};
+        };
 
-		public static bool IsLogicalPrecedence(this BinaryOperatorPrecedence prec)
-		{
-			return prec == BinaryOperatorPrecedence.LogicalOr || prec == BinaryOperatorPrecedence.LogicalAnd;
-		}
+        public static bool IsLogicalPrecedence(this BinaryOperatorPrecedence prec)
+        {
+            return prec == BinaryOperatorPrecedence.LogicalOr || prec == BinaryOperatorPrecedence.LogicalAnd;
+        }
 
-		public static bool IsBitwisePrecedence(this BinaryOperatorPrecedence prec)
-		{
-			return prec == BinaryOperatorPrecedence.BitwiseXor || prec == BinaryOperatorPrecedence.BitwiseAnd || prec == BinaryOperatorPrecedence.BitwiseOr || prec == BinaryOperatorPrecedence.BitwiseShift;
-		}
+        public static bool IsBitwisePrecedence(this BinaryOperatorPrecedence prec)
+        {
+            return prec == BinaryOperatorPrecedence.BitwiseXor || prec == BinaryOperatorPrecedence.BitwiseAnd || prec == BinaryOperatorPrecedence.BitwiseOr || prec == BinaryOperatorPrecedence.BitwiseShift;
+        }
 
-		public static bool ShouldParenthesizeWhenMixed(this BinaryOperatorPrecedence prec)
-		{
-			return prec.IsBitwisePrecedence() || prec.IsLogicalPrecedence();
-		}
+        public static bool ShouldParenthesizeWhenMixed(this BinaryOperatorPrecedence prec)
+        {
+            return prec.IsBitwisePrecedence() || prec.IsLogicalPrecedence();
+        }
 
-		public static bool IsValidAssignmentTerm(this CodeExpression expression)
-		{
-			return expression is CodeVariableReferenceExpression || expression is CodeFieldReferenceExpression || expression is CodeIndexExpression;
-		}
-	}
+        public static bool IsValidAssignmentTerm(this CodeExpression expression)
+        {
+            return expression is CodeVariableReferenceExpression || expression is CodeFieldReferenceExpression || expression is CodeIndexExpression;
+        }
+    }
 }

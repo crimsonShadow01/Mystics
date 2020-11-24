@@ -6,110 +6,110 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public static class ProductContainer
-	{
-		private static Dictionary<string, Product> productsById;
+    public static class ProductContainer
+    {
+        private static Dictionary<string, Product> productsById;
 
-		private static Dictionary<string, Type> productTypesById;
+        private static Dictionary<string, Type> productTypesById;
 
-		public static bool initialized { get; private set; }
+        public static bool initialized { get; private set; }
 
-		public static bool initializing { get; private set; }
+        public static bool initializing { get; private set; }
 
-		public static IEnumerable<Product> products
-		{
-			get
-			{
-				EnsureInitialized();
+        public static IEnumerable<Product> products
+        {
+            get
+            {
+                EnsureInitialized();
 
-				return productsById.Values;
-			}
-		}
+                return productsById.Values;
+            }
+        }
 
-		internal static void Initialize()
-		{
-			initializing = true;
+        internal static void Initialize()
+        {
+            initializing = true;
 
-			productTypesById = Codebase.GetTypeRegistrations<RegisterProductAttribute>().ToDictionary(r => r.id, r => r.type);
+            productTypesById = Codebase.GetTypeRegistrations<RegisterProductAttribute>().ToDictionary(r => r.id, r => r.type);
 
-			var productIdsByPluginType = Codebase.GetTypeRegistrations<MapToProductAttribute>().ToDictionary(r => r.type, r => r.productId); 
+            var productIdsByPluginType = Codebase.GetTypeRegistrations<MapToProductAttribute>().ToDictionary(r => r.type, r => r.productId);
 
-			productsById = new Dictionary<string, Product>();
+            productsById = new Dictionary<string, Product>();
 
-			foreach (var productTypeById in productTypesById)
-			{
-				var productId = productTypeById.Key;
-				var productType = productTypeById.Value;
+            foreach (var productTypeById in productTypesById)
+            {
+                var productId = productTypeById.Key;
+                var productType = productTypeById.Value;
 
-				Product product;
+                Product product;
 
-				try
-				{
-					product = (Product)productType.Instantiate();
-				}
-				catch (Exception ex)
-				{
-					throw new TargetInvocationException($"Could not instantiate product '{productId}' ('{productType.CSharpName()}').", ex);
-				}
+                try
+                {
+                    product = (Product)productType.Instantiate();
+                }
+                catch (Exception ex)
+                {
+                    throw new TargetInvocationException($"Could not instantiate product '{productId}' ('{productType.CSharpName()}').", ex);
+                }
 
-				foreach (var plugin in PluginContainer.plugins)
-				{
-					if (productIdsByPluginType.TryGetValue(plugin.GetType(), out var pluginProductId) && productId == pluginProductId)
-					{
-						product._plugins.Add(plugin);
-					}
-				}
+                foreach (var plugin in PluginContainer.plugins)
+                {
+                    if (productIdsByPluginType.TryGetValue(plugin.GetType(), out var pluginProductId) && productId == pluginProductId)
+                    {
+                        product._plugins.Add(plugin);
+                    }
+                }
 
-				productsById.Add(productId, product);
-			}
+                productsById.Add(productId, product);
+            }
 
-			foreach (var product in products)
-			{
-				try
-				{
-					product.Initialize();
-				}
-				catch (Exception ex)
-				{
-					Debug.LogException(new Exception($"Failed to initialize product '{product.id}'.", ex));
-				}
-			}
+            foreach (var product in products)
+            {
+                try
+                {
+                    product.Initialize();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogException(new Exception($"Failed to initialize product '{product.id}'.", ex));
+                }
+            }
 
-			initializing = false;
+            initializing = false;
 
-			initialized = true;
-		}
+            initialized = true;
+        }
 
-		private static void EnsureInitialized()
-		{
-			if (initializing)
-			{
-				return;
-			}
+        private static void EnsureInitialized()
+        {
+            if (initializing)
+            {
+                return;
+            }
 
-			if (!initialized)
-			{
-				throw new InvalidOperationException("Trying to access Ludiq product container before it is initialized.");
-			}
-		}
+            if (!initialized)
+            {
+                throw new InvalidOperationException("Trying to access Ludiq product container before it is initialized.");
+            }
+        }
 
-		public static Product GetProduct(string productId)
-		{
-			EnsureInitialized();
+        public static Product GetProduct(string productId)
+        {
+            EnsureInitialized();
 
-			Ensure.That(nameof(productId)).IsNotNull(productId);
-			Ensure.That(nameof(productId)).IsKeyOf(productsById, productId);
+            Ensure.That(nameof(productId)).IsNotNull(productId);
+            Ensure.That(nameof(productId)).IsKeyOf(productsById, productId);
 
-			return productsById[productId];
-		}
+            return productsById[productId];
+        }
 
-		public static bool HasProduct(string productId)
-		{
-			EnsureInitialized();
+        public static bool HasProduct(string productId)
+        {
+            EnsureInitialized();
 
-			Ensure.That(nameof(productId)).IsNotNull(productId);
+            Ensure.That(nameof(productId)).IsNotNull(productId);
 
-			return productsById.ContainsKey(productId);
-		}
-	}
+            return productsById.ContainsKey(productId);
+        }
+    }
 }

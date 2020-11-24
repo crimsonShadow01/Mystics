@@ -4,78 +4,78 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public class CustomPropertyDrawerInspector : Inspector
-	{
-		public CustomPropertyDrawerInspector(Accessor accessor) : base(accessor) { }
+    public class CustomPropertyDrawerInspector : Inspector
+    {
+        public CustomPropertyDrawerInspector(Accessor accessor) : base(accessor) { }
 
-		public override void Initialize()
-		{
-			base.Initialize();
+        public override void Initialize()
+        {
+            base.Initialize();
 
-			property = SerializedPropertyUtility.CreateTemporaryProperty(accessor.definedType);
-			propertyType = property.GetUnderlyingType();
-			
-			var adaptiveWidthAttribute = propertyType.GetAttribute<InspectorFieldWidthAttribute>();
-			_adaptiveWidth = adaptiveWidthAttribute?.width ?? 200;
-		}
+            property = SerializedPropertyUtility.CreateTemporaryProperty(accessor.definedType);
+            propertyType = property.GetUnderlyingType();
 
-		private float _adaptiveWidth;
+            var adaptiveWidthAttribute = propertyType.GetAttribute<InspectorFieldWidthAttribute>();
+            _adaptiveWidth = adaptiveWidthAttribute?.width ?? 200;
+        }
 
-		private SerializedProperty property;
+        private float _adaptiveWidth;
 
-		private Type propertyType;
+        private SerializedProperty property;
 
-		public override void Dispose()
-		{
-			SerializedPropertyUtility.DestroyTemporaryProperty(property);
-			base.Dispose();
-		}
+        private Type propertyType;
 
-		protected override bool cacheControlHeight => false;
+        public override void Dispose()
+        {
+            SerializedPropertyUtility.DestroyTemporaryProperty(property);
+            base.Dispose();
+        }
 
-		protected override float GetFieldHeight(float width)
-		{
-			return EditorGUI.GetPropertyHeight(property, label);
-		}
+        protected override bool cacheControlHeight => false;
 
-		protected override float GetControlWidth()
-		{
-			return _adaptiveWidth;
-		}
+        protected override float GetFieldHeight(float width)
+        {
+            return EditorGUI.GetPropertyHeight(property, label);
+        }
 
-		protected override void OnFieldGUI(Rect position)
-		{
-			BeginBlock(position);
+        protected override float GetControlWidth()
+        {
+            return _adaptiveWidth;
+        }
 
-			if (!propertyType.IsAssignableFrom(accessor.valueType))
-			{
-				if (propertyType.IsValueType)
-				{
-					accessor.value = Activator.CreateInstance(propertyType);
-				}
-				else
-				{
-					accessor.value = null;
-				}
-			}
+        protected override void OnFieldGUI(Rect position)
+        {
+            BeginBlock(position);
 
-			property.SetUnderlyingValue(accessor.value);
+            if (!propertyType.IsAssignableFrom(accessor.valueType))
+            {
+                if (propertyType.IsValueType)
+                {
+                    accessor.value = Activator.CreateInstance(propertyType);
+                }
+                else
+                {
+                    accessor.value = null;
+                }
+            }
 
-			property.serializedObject.Update();
+            property.SetUnderlyingValue(accessor.value);
 
-			EditorGUI.BeginChangeCheck();
+            property.serializedObject.Update();
 
-			EditorGUI.PropertyField(position, property, label);
+            EditorGUI.BeginChangeCheck();
 
-			property.serializedObject.ApplyModifiedProperties();
+            EditorGUI.PropertyField(position, property, label);
 
-			if (EditorGUI.EndChangeCheck())
-			{
-				accessor.RecordUndo();
-				accessor.value = property.GetUnderlyingValue();
-			}
+            property.serializedObject.ApplyModifiedProperties();
 
-			EndBlock();
-		}
-	}
+            if (EditorGUI.EndChangeCheck())
+            {
+                accessor.RecordUndo();
+                accessor.value = property.GetUnderlyingValue();
+            }
+
+            EndBlock();
+        }
+    }
 }

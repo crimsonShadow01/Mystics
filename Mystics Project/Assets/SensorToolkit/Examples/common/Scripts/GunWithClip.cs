@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
-namespace SensorToolkit.Example {
+namespace SensorToolkit.Example
+{
     public class GunWithClip : MonoBehaviour
     {
         public float FireInterval;

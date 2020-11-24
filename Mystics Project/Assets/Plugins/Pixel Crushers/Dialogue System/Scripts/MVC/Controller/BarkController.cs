@@ -1,8 +1,8 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -156,7 +156,7 @@ namespace PixelCrushers.DialogueSystem
         /// </param>
         public static IEnumerator Bark(string conversationTitle, Transform speaker, Transform listener, BarkHistory barkHistory, DialogueDatabase database = null, bool stopAtFirstValid = false)
         {
-            if (CheckDontBarkDuringConversation()) yield break; 
+            if (CheckDontBarkDuringConversation()) yield break;
             bool barked = false;
             if (string.IsNullOrEmpty(conversationTitle) && DialogueDebug.logWarnings) Debug.Log(string.Format("{0}: Bark (speaker={1}, listener={2}): conversation title is blank", new System.Object[] { DialogueDebug.Prefix, speaker, listener }), speaker);
             if (speaker == null) speaker = DialogueManager.instance.FindActorTransformFromConversation(conversationTitle, "Actor");
@@ -222,7 +222,7 @@ namespace PixelCrushers.DialogueSystem
                         {
                             yield return null;
                         }
-                        if (sequencer != null) GameObject.Destroy(sequencer);                        
+                        if (sequencer != null) GameObject.Destroy(sequencer);
                     }
                 }
                 finally
@@ -370,7 +370,7 @@ namespace PixelCrushers.DialogueSystem
 
         private static bool CheckDontBarkDuringConversation()
         {
-            return DialogueManager.isConversationActive && DialogueManager.displaySettings != null && 
+            return DialogueManager.isConversationActive && DialogueManager.displaySettings != null &&
                 DialogueManager.displaySettings.barkSettings != null && !DialogueManager.displaySettings.barkSettings.allowBarksDuringConversations;
         }
 

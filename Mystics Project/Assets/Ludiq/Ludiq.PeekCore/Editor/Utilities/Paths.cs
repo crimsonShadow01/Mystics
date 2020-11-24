@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Microsoft.Win32;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
@@ -11,161 +11,166 @@ using Debug = UnityEngine.Debug;
 
 namespace Ludiq.PeekCore
 {
-	public static class Paths
-	{
-		static Paths()
-		{
-			assets = Application.dataPath;
-			editor = EditorApplication.applicationPath;
-			editorContents = EditorApplication.applicationContentsPath;
-			project = Directory.GetParent(assets).FullName;
-			projectName = Path.GetFileName(project.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
-			projectSettings = Path.Combine(project, "ProjectSettings");
-			editorDefaultResources = Path.Combine(assets, "Editor Default Resources");
-		}
+    public static class Paths
+    {
+        static Paths()
+        {
+            assets = Application.dataPath;
+            editor = EditorApplication.applicationPath;
+            editorContents = EditorApplication.applicationContentsPath;
+            project = Directory.GetParent(assets).FullName;
+            projectName = Path.GetFileName(project.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+            projectSettings = Path.Combine(project, "ProjectSettings");
+            editorDefaultResources = Path.Combine(assets, "Editor Default Resources");
+        }
 
-		public static string assets { get; }
-		
-		public static string editor { get; }
-		
-		public static string editorContents { get; }
+        public static string assets { get; }
 
-		public static string project { get; }
+        public static string editor { get; }
 
-		public static string projectName { get; }
+        public static string editorContents { get; }
 
-		public static string projectSettings { get; }
+        public static string project { get; }
 
-		public static string editorDefaultResources { get; }
+        public static string projectName { get; }
 
-		#region Assembly Projects
+        public static string projectSettings { get; }
 
-		public static string AssemblyProject(Assembly assemblyDefinition)
-		{
-			string filename;
+        public static string editorDefaultResources { get; }
 
-			switch (assemblyDefinition.name)
-			{
-				case "Assembly-CSharp": filename = projectName;
-					break;
+        #region Assembly Projects
 
-				case "Assembly-CSharp-firstpass": filename = projectName + ".Plugins";
-					break;
+        public static string AssemblyProject(Assembly assemblyDefinition)
+        {
+            string filename;
 
-				case "Assembly-CSharp-Editor": filename = projectName + ".Editor";
-					break;
+            switch (assemblyDefinition.name)
+            {
+                case "Assembly-CSharp":
+                    filename = projectName;
+                    break;
 
-				case "Assembly-CSharp-Editor-firstpass": filename = projectName + ".Editor.Plugins";
-					break;
+                case "Assembly-CSharp-firstpass":
+                    filename = projectName + ".Plugins";
+                    break;
 
-				default: filename = assemblyDefinition.name;
-					break;
-			}
+                case "Assembly-CSharp-Editor":
+                    filename = projectName + ".Editor";
+                    break;
 
-			var path = Path.Combine(project, filename + ".csproj");
+                case "Assembly-CSharp-Editor-firstpass":
+                    filename = projectName + ".Editor.Plugins";
+                    break;
 
-			return path;
-		}
-		
-		public static IEnumerable<string> assemblyProjects
-		{
-			get
-			{
-				foreach (var assemblyDefinition in CompilationPipeline.GetAssemblies())
-				{
-					var path = AssemblyProject(assemblyDefinition);
+                default:
+                    filename = assemblyDefinition.name;
+                    break;
+            }
 
-					if (File.Exists(path))
-					{
-						yield return path;
-					}
-				}
-			}
-		}
+            var path = Path.Combine(project, filename + ".csproj");
 
-		#endregion
+            return path;
+        }
 
-		#region .NET
+        public static IEnumerable<string> assemblyProjects
+        {
+            get
+            {
+                foreach (var assemblyDefinition in CompilationPipeline.GetAssemblies())
+                {
+                    var path = AssemblyProject(assemblyDefinition);
 
-		public const string MsBuildToolsVersion = "15.0";
-		public const string MsBuildDownloadLink = "https://aka.ms/vs/15/release/vs_buildtools.exe";
+                    if (File.Exists(path))
+                    {
+                        yield return path;
+                    }
+                }
+            }
+        }
 
-		public static IEnumerable<string> environmentPaths
-		{
-			get
-			{
-				try
-				{
-					if (Application.platform == RuntimePlatform.WindowsEditor)
-					{
-						return Environment.GetEnvironmentVariable("PATH").Split(';');
-					}
-					else
-					{
-						// http://stackoverflow.com/a/41318134/154502
-						var start = new ProcessStartInfo
-						{
-							FileName = "/bin/bash",
-							Arguments = "-l -c \"echo $PATH\"", // -l = 'login shell' to execute /etc/profile
-							UseShellExecute = false,
-							CreateNoWindow = true,
-							RedirectStandardOutput = true,
-							RedirectStandardError = true
-						};
+        #endregion
 
-						var process = Process.Start(start);
-						process.WaitForExit();
-						var path = process.StandardOutput.ReadToEnd().Trim();
-						return path.Split(':');
-					}
-				}
-				catch (Exception ex)
-				{
-					Debug.LogWarning("Failed to fetch environment paths: \n" + ex);
-					return Enumerable.Empty<string>();
-				}
-			}
-		}
-		
-		public static string msBuild
-		{
-			get
-			{
-				if (Application.platform != RuntimePlatform.WindowsEditor)
-				{
-					return null;
-				}
-				 
-				var visualStudioDirectory = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7", MsBuildToolsVersion, null);
+        #region .NET
 
-				if (visualStudioDirectory != null)
-				{
-					return Path.Combine(visualStudioDirectory, $@"MSBuild\{MsBuildToolsVersion}\Bin", "MSBuild.exe");
-				}
+        public const string MsBuildToolsVersion = "15.0";
+        public const string MsBuildDownloadLink = "https://aka.ms/vs/15/release/vs_buildtools.exe";
 
-				return null;
-			}
-		}
+        public static IEnumerable<string> environmentPaths
+        {
+            get
+            {
+                try
+                {
+                    if (Application.platform == RuntimePlatform.WindowsEditor)
+                    {
+                        return Environment.GetEnvironmentVariable("PATH").Split(';');
+                    }
+                    else
+                    {
+                        // http://stackoverflow.com/a/41318134/154502
+                        var start = new ProcessStartInfo
+                        {
+                            FileName = "/bin/bash",
+                            Arguments = "-l -c \"echo $PATH\"", // -l = 'login shell' to execute /etc/profile
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true
+                        };
 
-		public static string xBuild
-		{
-			get
-			{
-				if (Application.platform == RuntimePlatform.WindowsEditor)
-				{
-					return null;
-				}
+                        var process = Process.Start(start);
+                        process.WaitForExit();
+                        var path = process.StandardOutput.ReadToEnd().Trim();
+                        return path.Split(':');
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning("Failed to fetch environment paths: \n" + ex);
+                    return Enumerable.Empty<string>();
+                }
+            }
+        }
 
-				var path = PathUtility.TryPathsForFile("xbuild", environmentPaths);
+        public static string msBuild
+        {
+            get
+            {
+                if (Application.platform != RuntimePlatform.WindowsEditor)
+                {
+                    return null;
+                }
 
-				return path;
-			}
-		}
+                var visualStudioDirectory = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7", MsBuildToolsVersion, null);
 
-		public static string roslynCompiler => Path.Combine(Path.GetDirectoryName(editor), "Data/tools/Roslyn/csc.exe");
+                if (visualStudioDirectory != null)
+                {
+                    return Path.Combine(visualStudioDirectory, $@"MSBuild\{MsBuildToolsVersion}\Bin", "MSBuild.exe");
+                }
 
-		public static string projectBuilder => Application.platform == RuntimePlatform.WindowsEditor ? msBuild : xBuild;
+                return null;
+            }
+        }
 
-		#endregion
-	}
+        public static string xBuild
+        {
+            get
+            {
+                if (Application.platform == RuntimePlatform.WindowsEditor)
+                {
+                    return null;
+                }
+
+                var path = PathUtility.TryPathsForFile("xbuild", environmentPaths);
+
+                return path;
+            }
+        }
+
+        public static string roslynCompiler => Path.Combine(Path.GetDirectoryName(editor), "Data/tools/Roslyn/csc.exe");
+
+        public static string projectBuilder => Application.platform == RuntimePlatform.WindowsEditor ? msBuild : xBuild;
+
+        #endregion
+    }
 }

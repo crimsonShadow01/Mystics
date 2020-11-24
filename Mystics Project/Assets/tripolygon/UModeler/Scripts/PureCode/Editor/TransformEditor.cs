@@ -1,8 +1,8 @@
 ﻿// Copyright 2018-2020 tripolygon Inc. All Rights Reserved.
 
-using UnityEngine;
-using UnityEditor;
 using tripolygon.UModeler;
+using UnityEditor;
+using UnityEngine;
 
 namespace TPUModelerEditor
 {

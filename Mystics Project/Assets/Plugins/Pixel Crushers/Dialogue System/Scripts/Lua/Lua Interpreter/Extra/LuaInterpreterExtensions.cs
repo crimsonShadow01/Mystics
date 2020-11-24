@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using System;
 using System.Collections.Generic;
 
 // [PixelCrushers] Adds extra methods to make LuaInterpreter work with Unity.

@@ -1,21 +1,21 @@
-﻿using System.Reflection;
-using Ludiq.PeekCore;
+﻿using Ludiq.PeekCore;
+using System.Reflection;
 
 [assembly: RegisterAotStubWriter(typeof(PropertyInfo), typeof(PropertyInfoStubWriter))]
 
 namespace Ludiq.PeekCore
 {
-	public class PropertyInfoStubWriter : AccessorInfoStubWriter<PropertyInfo>
-	{
-		public PropertyInfoStubWriter(PropertyInfo propertyInfo) : base(propertyInfo) { }
+    public class PropertyInfoStubWriter : AccessorInfoStubWriter<PropertyInfo>
+    {
+        public PropertyInfoStubWriter(PropertyInfo propertyInfo) : base(propertyInfo) { }
 
-		protected override IOptimizedAccessor GetOptimizedAccessor(PropertyInfo propertyInfo)
-		{
-			return propertyInfo.Prewarm();
-		}
+        protected override IOptimizedAccessor GetOptimizedAccessor(PropertyInfo propertyInfo)
+        {
+            return propertyInfo.Prewarm();
+        }
 
-		protected override bool supportsOptimization => stub.SupportsOptimization();
+        protected override bool supportsOptimization => stub.SupportsOptimization();
 
-		public override bool skip => base.skip || stub.IsIndexer();
-	}
+        public override bool skip => base.skip || stub.IsIndexer();
+    }
 }

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using System;
+using UnityEngine;
 
 namespace PixelCrushers
 {
@@ -163,7 +163,7 @@ namespace PixelCrushers
             }
         }
 
-    public override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (obj is StringField)
             {

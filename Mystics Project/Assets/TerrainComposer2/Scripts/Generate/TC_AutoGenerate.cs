@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -22,17 +21,17 @@ namespace TerrainComposer2
             cT.Copy(t);
         }
 
-        #if !UNITY_EDITOR
+#if !UNITY_EDITOR
         void Update()
         {
             MyUpdate();
         }
-        #endif
+#endif
 
         void MyUpdate()
         {
             // if (repeat) TC.AutoGenerate();
-            
+
             if (cT.hasChanged(t))
             {
                 // Debug.Log("Auto generate");
@@ -58,24 +57,24 @@ namespace TerrainComposer2
         void OnEnable()
         {
             if (generateOnEnable) TC.AutoGenerate();
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.update += MyUpdate;
-            #endif
+#endif
         }
-         
+
         void OnDisable()
         {
             if (generateOnDisable) TC.AutoGenerate();
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.update -= MyUpdate;
-            #endif
+#endif
         }
 
         void OnDestroy()
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.update -= MyUpdate;
-            #endif
+#endif
         }
 
     }

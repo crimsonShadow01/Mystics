@@ -4,92 +4,92 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class WindowTaskRunner : ITaskRunner
-	{
-		public static WindowTaskRunner instance { get; } = new WindowTaskRunner();
-		
-		private static readonly TaskThreadTracker threadTracker = new TaskThreadTracker();
+    public sealed class WindowTaskRunner : ITaskRunner
+    {
+        public static WindowTaskRunner instance { get; } = new WindowTaskRunner();
 
-		public bool runsCurrentThread => threadTracker.runsCurrent;
+        private static readonly TaskThreadTracker threadTracker = new TaskThreadTracker();
 
-		private static readonly object @lock = new object();
+        public bool runsCurrentThread => threadTracker.runsCurrent;
 
-		private TaskWindow window
-		{
-			get => TaskWindow.instance;
-			set => TaskWindow.instance = value;
-		}
+        private static readonly object @lock = new object();
 
-		public void Run(Task task)
-		{
-			if (UnityThread.isRunningOnMainThread)
-			{
-				if (window == null)
-				{
-					window = ScriptableObject.CreateInstance<TaskWindow>();
-					window.titleContent = new GUIContent(task.title);
-				}
+        private TaskWindow window
+        {
+            get => TaskWindow.instance;
+            set => TaskWindow.instance = value;
+        }
 
-				new Thread(() => RunSynchronous(task)).Start();
-				
-				window.ShowModal();
-			}
-			else
-			{
-				if (window == null)
-				{
-					throw new NotSupportedException("Must be on the main thread to run a root window task.");
-				}
-				
-				RunSynchronous(task);
-			}
-		}
+        public void Run(Task task)
+        {
+            if (UnityThread.isRunningOnMainThread)
+            {
+                if (window == null)
+                {
+                    window = ScriptableObject.CreateInstance<TaskWindow>();
+                    window.titleContent = new GUIContent(task.title);
+                }
 
-		private void RunSynchronous(Task task)
-		{
-			threadTracker.Enter();
+                new Thread(() => RunSynchronous(task)).Start();
 
-			lock (@lock)
-			{
-				window.tasks.Add(task);
-			}
+                window.ShowModal();
+            }
+            else
+            {
+                if (window == null)
+                {
+                    throw new NotSupportedException("Must be on the main thread to run a root window task.");
+                }
 
-			task.Begin();
+                RunSynchronous(task);
+            }
+        }
 
-			try
-			{
-				task.Run();
-			}
-			catch (ThreadAbortException) { }
-			catch (OperationCanceledException) { }
-			catch (Exception ex)
-			{
-				Debug.LogException(ex);
-			}
-			finally
-			{
-				task.End();
+        private void RunSynchronous(Task task)
+        {
+            threadTracker.Enter();
 
-				lock (@lock)
-				{
-					if (window != null)
-					{
-						window.tasks.Remove(task);
+            lock (@lock)
+            {
+                window.tasks.Add(task);
+            }
 
-						if (window.tasks.Count == 0)
-						{
-							window.Close();
-						}
-					}
-				}
+            task.Begin();
 
-				threadTracker.Exit();
-			}
-		}
+            try
+            {
+                task.Run();
+            }
+            catch (ThreadAbortException) { }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+            finally
+            {
+                task.End();
 
-		public void Report(Task task)
-		{
+                lock (@lock)
+                {
+                    if (window != null)
+                    {
+                        window.tasks.Remove(task);
 
-		}
-	}
+                        if (window.tasks.Count == 0)
+                        {
+                            window.Close();
+                        }
+                    }
+                }
+
+                threadTracker.Exit();
+            }
+        }
+
+        public void Report(Task task)
+        {
+
+        }
+    }
 }

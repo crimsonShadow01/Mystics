@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace SensorToolkit.Example
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class CharacterControls : MonoBehaviour 
+    public class CharacterControls : MonoBehaviour
     {
         public float MaxMoveForce;
         public float MaxStrafeForce;
@@ -19,15 +19,15 @@ namespace SensorToolkit.Example
         private Vector3 move;
         public Vector3 Move
         {
-            get {return move;}
-            set {move = value.sqrMagnitude > 1f ? value.normalized : value;}
+            get { return move; }
+            set { move = value.sqrMagnitude > 1f ? value.normalized : value; }
         }
 
         private Vector3 face;
         public Vector3 Face
         {
-            get {return face;}
-            set {face = value.normalized;}
+            get { return face; }
+            set { face = value.normalized; }
         }
 
         public Holdable Held { get { return held; } }

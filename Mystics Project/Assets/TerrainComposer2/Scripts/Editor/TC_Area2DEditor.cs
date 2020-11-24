@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -34,7 +33,7 @@ namespace TerrainComposer2
             // TD.DrawLabelWidthUnderline("Area 2D script", 14);
 
             TD.DrawSpacer();
-                TD.DrawPropertyArray(terrainAreas);
+            TD.DrawPropertyArray(terrainAreas);
             TD.DrawSpacer();
             // TD.DrawProperty(terrainLayer);
         }

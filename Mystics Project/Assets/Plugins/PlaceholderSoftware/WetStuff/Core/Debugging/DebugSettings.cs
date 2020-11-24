@@ -34,8 +34,8 @@ namespace PlaceholderSoftware.WetStuff.Debugging
 
         public DebugSettings()
         {
-            var categories = ((LogCategory[]) Enum.GetValues(typeof(LogCategory)))
-               .Select(c => (int) c)
+            var categories = ((LogCategory[])Enum.GetValues(typeof(LogCategory)))
+               .Select(c => (int)c)
                .Max();
 
             _levels = new List<LogLevel>(categories + 1);

@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using EnhancedUI;
+﻿using EnhancedUI;
 using EnhancedUI.EnhancedScroller;
-using System;
+using System.Collections;
+using UnityEngine;
 
 namespace EnhancedScrollerDemos.Pagination
 {

@@ -1,26 +1,26 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Collections.Generic;
- 
+using UnityEngine;
+
 
 
 
 public static class GUIDoubleField
 {
-	
-	#if !UNITY_EDITOR
+
+#if !UNITY_EDITOR
 	private static int activeDoubleField = -1;
 	private static double activeDoubleFieldLastValue = 0;
 	private static string activeDoubleFieldString = "";
-	#endif
+#endif
 
-/// <summary>
-	/// Double Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.DoubleField
-/// </summary>
-	public static double DoubleField (double value)
-	{
+    /// <summary>
+    /// Double Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.DoubleField
+    /// </summary>
+    public static double DoubleField(double value)
+    {
 #if UNITY_EDITOR
-		return UnityEditor.EditorGUILayout.DoubleField (value);
+        return UnityEditor.EditorGUILayout.DoubleField(value);
 #else
    
 		// Get rect and control for this double field for identification
@@ -73,15 +73,15 @@ public static class GUIDoubleField
    
 		return value;
 #endif
-	}
- 
-	/// <summary>
-	/// Double Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.DoubleField
-	/// </summary>
-	public static double DoubleField (GUIContent label, double value)
-	{
+    }
+
+    /// <summary>
+    /// Double Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.DoubleField
+    /// </summary>
+    public static double DoubleField(GUIContent label, double value)
+    {
 #if UNITY_EDITOR
-		return UnityEditor.EditorGUILayout.DoubleField (label, value);
+        return UnityEditor.EditorGUILayout.DoubleField(label, value);
 #else
 		GUILayout.BeginHorizontal ();
 		GUILayout.Label (label, label != GUIContent.none? GUILayout.ExpandWidth (true) : GUILayout.ExpandWidth (false));
@@ -89,46 +89,46 @@ public static class GUIDoubleField
 		GUILayout.EndHorizontal ();
 		return value;
 #endif
-	}
- 
-	/// <summary>
-	/// Forces to parse to double by cleaning string if necessary
-	/// </summary>
-	public static double ForceDoubleParse (this string str)
-	{
-		// try parse
-		double value;
-		if (double.TryParse (str, out value))
-			return value;
-   
-		// Clean string if it could not be parsed
-		bool recordedDecimalPoint = false;
-		List<char> strVal = new List<char> (str);
-		for (int cnt = 0; cnt < strVal.Count; cnt++)
-		{
-			UnicodeCategory type = CharUnicodeInfo.GetUnicodeCategory (str[cnt]);
-			if (type != UnicodeCategory.DecimalDigitNumber)
-			{
-				strVal.RemoveRange (cnt, strVal.Count-cnt);
-				break;
-			}
-			else if (str[cnt] == '.')
-			{
-				if (recordedDecimalPoint)
-				{
-					strVal.RemoveRange (cnt, strVal.Count-cnt);
-					break;
-				}
-				recordedDecimalPoint = true;
-			}
-		}
-   
-		// Parse again
-		if (strVal.Count == 0)
-			return 0;
-		str = new string (strVal.ToArray ());
-		if (!double.TryParse (str, out value))
-			Debug.LogError ("Could not parse " + str);
-		return value;
-	}
+    }
+
+    /// <summary>
+    /// Forces to parse to double by cleaning string if necessary
+    /// </summary>
+    public static double ForceDoubleParse(this string str)
+    {
+        // try parse
+        double value;
+        if (double.TryParse(str, out value))
+            return value;
+
+        // Clean string if it could not be parsed
+        bool recordedDecimalPoint = false;
+        List<char> strVal = new List<char>(str);
+        for (int cnt = 0; cnt < strVal.Count; cnt++)
+        {
+            UnicodeCategory type = CharUnicodeInfo.GetUnicodeCategory(str[cnt]);
+            if (type != UnicodeCategory.DecimalDigitNumber)
+            {
+                strVal.RemoveRange(cnt, strVal.Count - cnt);
+                break;
+            }
+            else if (str[cnt] == '.')
+            {
+                if (recordedDecimalPoint)
+                {
+                    strVal.RemoveRange(cnt, strVal.Count - cnt);
+                    break;
+                }
+                recordedDecimalPoint = true;
+            }
+        }
+
+        // Parse again
+        if (strVal.Count == 0)
+            return 0;
+        str = new string(strVal.ToArray());
+        if (!double.TryParse(str, out value))
+            Debug.LogError("Could not parse " + str);
+        return value;
+    }
 }

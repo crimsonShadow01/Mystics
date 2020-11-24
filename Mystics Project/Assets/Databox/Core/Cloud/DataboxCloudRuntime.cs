@@ -1,15 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Databox
 {
-public class DataboxCloudRuntime : MonoBehaviour
-{
-	
-	public void ForceDownloadRuntime(DataboxObject _database)
-	{		
-		StartCoroutine(DataboxCloud.GetDataIE());
-	}
-}
+    public class DataboxCloudRuntime : MonoBehaviour
+    {
+
+        public void ForceDownloadRuntime(DataboxObject _database)
+        {
+            StartCoroutine(DataboxCloud.GetDataIE());
+        }
+    }
 }

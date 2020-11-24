@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.EventSystems;
-using System.Collections;
-using EnhancedUI;
+﻿using EnhancedUI;
 using EnhancedUI.EnhancedScroller;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace EnhancedScrollerDemos.PullDownRefresh
 {

@@ -1,69 +1,69 @@
-﻿using System;
+﻿using Ludiq.OdinSerializer;
+using System;
 using System.Collections.Generic;
-using Ludiq.OdinSerializer;
 using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class RootAccessor : Accessor
-	{
-		public RootAccessor() : base("Root", null) { }
+    public sealed class RootAccessor : Accessor
+    {
+        public RootAccessor() : base("Root", null) { }
 
-		public RootAccessor(object value) : this(value, value.GetType()) { }
+        public RootAccessor(object value) : this(value, value.GetType()) { }
 
-		public RootAccessor(object value, Type definedType) : base(value, null)
-		{
-			this.definedType = definedType;
-			_rawValue = value;
-			serializedObject = value as UnityObject;
-			
-			if (serializedObject != null && serializedObject.IsConnectedPrefabInstance())
-			{
-				prefabDefinition = Root(serializedObject.GetPrefabDefinition());
-			}
-		}
+        public RootAccessor(object value, Type definedType) : base(value, null)
+        {
+            this.definedType = definedType;
+            _rawValue = value;
+            serializedObject = value as UnityObject;
 
-		protected override bool isRoot => true;
+            if (serializedObject != null && serializedObject.IsConnectedPrefabInstance())
+            {
+                prefabDefinition = Root(serializedObject.GetPrefabDefinition());
+            }
+        }
 
-		public override UnityObject serializedObject { get; }
+        protected override bool isRoot => true;
 
-		private readonly object _rawValue;
+        public override UnityObject serializedObject { get; }
 
-		protected override object rawValue
-		{
-			get => _rawValue;
-			set { }
-		}
+        private readonly object _rawValue;
 
-		public override Attribute[] GetCustomAttributes(bool inherit = true)
-		{
-			return Empty<Attribute>.array;
-		}
+        protected override object rawValue
+        {
+            get => _rawValue;
+            set { }
+        }
 
-		public List<PrefabModification> prefabModifications { get; private set; }
+        public override Attribute[] GetCustomAttributes(bool inherit = true)
+        {
+            return Empty<Attribute>.array;
+        }
 
-		public override bool supportsPrefabModifications => serializedObject is ISupportsPrefabSerialization;
+        public List<PrefabModification> prefabModifications { get; private set; }
 
-		public void UpdatePrefabModifications()
-		{
-			if (!supportsPrefabModifications)
-			{
-				return;
-			}
+        public override bool supportsPrefabModifications => serializedObject is ISupportsPrefabSerialization;
 
-			var data = ((ISupportsPrefabSerialization)serializedObject).SerializationData;
+        public void UpdatePrefabModifications()
+        {
+            if (!supportsPrefabModifications)
+            {
+                return;
+            }
 
-			prefabModifications = UnitySerializationUtility.PrefabModificationCache.DeserializePrefabModificationsCached(serializedObject, data.PrefabModifications, data.PrefabModificationsReferencedUnityObjects);
-		}
+            var data = ((ISupportsPrefabSerialization)serializedObject).SerializationData;
 
-		public void ApplyPrefabModifications()
-		{
-			if (!supportsPrefabModifications)
-			{
-				return;
-			}
+            prefabModifications = UnitySerializationUtility.PrefabModificationCache.DeserializePrefabModificationsCached(serializedObject, data.PrefabModifications, data.PrefabModificationsReferencedUnityObjects);
+        }
 
-			UnitySerializationUtility.RegisterPrefabModificationsChange(serializedObject, prefabModifications);
-		}
-	}
+        public void ApplyPrefabModifications()
+        {
+            if (!supportsPrefabModifications)
+            {
+                return;
+            }
+
+            UnitySerializationUtility.RegisterPrefabModificationsChange(serializedObject, prefabModifications);
+        }
+    }
 }

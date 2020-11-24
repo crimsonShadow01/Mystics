@@ -22,10 +22,10 @@ namespace Ludiq.PeekCore.CodeDom
         LessThanOrEqual,
         GreaterThan,
         GreaterThanOrEqual,
-		BitwiseShiftLeft,
-		BitwiseShiftRight,
-		Is,
-		As,
-		NullCoalesce,
+        BitwiseShiftLeft,
+        BitwiseShiftRight,
+        Is,
+        As,
+        NullCoalesce,
     }
 }

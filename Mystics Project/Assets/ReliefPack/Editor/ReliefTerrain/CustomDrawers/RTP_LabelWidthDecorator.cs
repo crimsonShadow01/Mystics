@@ -1,13 +1,12 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using System.Collections;
-using System;
-using System.Reflection;
 
-public class RTP_LabelWidthDecorator : MaterialPropertyDrawer {
+public class RTP_LabelWidthDecorator : MaterialPropertyDrawer
+{
     float nextLabelWidth;
 
-	public RTP_LabelWidthDecorator(float nextLabelWidth) :base() {
+    public RTP_LabelWidthDecorator(float nextLabelWidth) : base()
+    {
         this.nextLabelWidth = nextLabelWidth;
     }
 

@@ -1,210 +1,209 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class Namespace
-	{
-		public const char Separator = '.';
+    public sealed class Namespace
+    {
+        public const char Separator = '.';
 
-		private Namespace(string fullName)
-		{
-			FullName = fullName;
+        private Namespace(string fullName)
+        {
+            FullName = fullName;
 
-			if (fullName != null)
-			{
-				Parts = FullName.Split(Separator);
+            if (fullName != null)
+            {
+                Parts = FullName.Split(Separator);
 
-				Name = Parts[Parts.Length - 1];
+                Name = Parts[Parts.Length - 1];
 
-				if (Parts.Length > 1)
-				{
-					Root = Parts[0];
-					Parent = FullName.Substring(0, FullName.LastIndexOf(Separator));
-				}
-				else
-				{
-					Root = this;
-					IsRoot = true;
-					Parent = Global;
-				}
-			}
-			else
-			{
-				Root = this;
-				IsRoot = true;
-				IsGlobal = true;
-			}
-		}
-		
-		public string[] Parts { get; }
-		public Namespace Root { get; }
-		public Namespace Parent { get; }
-		public string FullName { get; }
-		public string Name { get; }
-		public bool IsRoot { get; }
-		public bool IsGlobal { get; }
+                if (Parts.Length > 1)
+                {
+                    Root = Parts[0];
+                    Parent = FullName.Substring(0, FullName.LastIndexOf(Separator));
+                }
+                else
+                {
+                    Root = this;
+                    IsRoot = true;
+                    Parent = Global;
+                }
+            }
+            else
+            {
+                Root = this;
+                IsRoot = true;
+                IsGlobal = true;
+            }
+        }
 
-		public IEnumerable<Namespace> Ancestors
-		{
-			get
-			{
-				var ancestor = Parent;
+        public string[] Parts { get; }
+        public Namespace Root { get; }
+        public Namespace Parent { get; }
+        public string FullName { get; }
+        public string Name { get; }
+        public bool IsRoot { get; }
+        public bool IsGlobal { get; }
 
-				while (ancestor != null)
-				{
-					yield return ancestor;
-					ancestor = ancestor.Parent;
-				}
-			}
-		}
+        public IEnumerable<Namespace> Ancestors
+        {
+            get
+            {
+                var ancestor = Parent;
 
-		public IEnumerable<Namespace> AndAncestors()
-		{
-			yield return this;
+                while (ancestor != null)
+                {
+                    yield return ancestor;
+                    ancestor = ancestor.Parent;
+                }
+            }
+        }
 
-			foreach (var ancestor in Ancestors)
-			{
-				yield return ancestor;
-			}
-		}
+        public IEnumerable<Namespace> AndAncestors()
+        {
+            yield return this;
 
-		public bool IsAncestorOf(Namespace other)
-		{
-			Ensure.That(nameof(other)).IsNotNull(other);
+            foreach (var ancestor in Ancestors)
+            {
+                yield return ancestor;
+            }
+        }
 
-			if (other.IsGlobal)
-			{
-				return false;
-			}
+        public bool IsAncestorOf(Namespace other)
+        {
+            Ensure.That(nameof(other)).IsNotNull(other);
 
-			return other.FullName.StartsWith(FullName + ".");
-		}
+            if (other.IsGlobal)
+            {
+                return false;
+            }
 
-		public bool IsDescendantOf(Namespace other)
-		{
-			Ensure.That(nameof(other)).IsNotNull(other);
+            return other.FullName.StartsWith(FullName + ".");
+        }
 
-			if (other.IsGlobal)
-			{
-				return false;
-			}
+        public bool IsDescendantOf(Namespace other)
+        {
+            Ensure.That(nameof(other)).IsNotNull(other);
 
-			return FullName.StartsWith(other.FullName + ".");
-		}
+            if (other.IsGlobal)
+            {
+                return false;
+            }
 
-		public override int GetHashCode()
-		{
-			if (FullName == null)
-			{
-				return 0;
-			}
+            return FullName.StartsWith(other.FullName + ".");
+        }
 
-			return FullName.GetHashCode();
-		}
+        public override int GetHashCode()
+        {
+            if (FullName == null)
+            {
+                return 0;
+            }
 
-		public override string ToString()
-		{
-			return FullName;
-		}
+            return FullName.GetHashCode();
+        }
 
-		static Namespace()
-		{
-			interns = new Interns();
-		}
+        public override string ToString()
+        {
+            return FullName;
+        }
 
-		private static readonly Interns interns;
+        static Namespace()
+        {
+            interns = new Interns();
+        }
 
-		public static Namespace Global { get; } = new Namespace(null);
+        private static readonly Interns interns;
 
-		public static Namespace FromFullName(string fullName)
-		{
-			if (fullName == null)
-			{
-				return Global;
-			}
+        public static Namespace Global { get; } = new Namespace(null);
 
-			lock (interns)
-			{
-				if (!interns.TryGetValue(fullName, out var @namespace))
-				{
-					@namespace = new Namespace(fullName);
-					interns.Add(@namespace);
-				}
+        public static Namespace FromFullName(string fullName)
+        {
+            if (fullName == null)
+            {
+                return Global;
+            }
 
-				return @namespace;
-			}
-		}
+            lock (interns)
+            {
+                if (!interns.TryGetValue(fullName, out var @namespace))
+                {
+                    @namespace = new Namespace(fullName);
+                    interns.Add(@namespace);
+                }
 
-		public static implicit operator Namespace(string fullName)
-		{
-			return FromFullName(fullName);
-		}
+                return @namespace;
+            }
+        }
 
-		public static implicit operator string(Namespace @namespace)
-		{
-			return @namespace.FullName;
-		}
+        public static implicit operator Namespace(string fullName)
+        {
+            return FromFullName(fullName);
+        }
 
-		public static Dictionary<Namespace, HashSet<Namespace>> ChildrenByNamespaces(IEnumerable<Namespace> namespaces)
-		{
-			var result = new Dictionary<Namespace, HashSet<Namespace>>();
+        public static implicit operator string(Namespace @namespace)
+        {
+            return @namespace.FullName;
+        }
 
-			foreach (var ns in namespaces)
-			{
-				if (ns.Parent != null)
-				{
-					if (!result.TryGetValue(ns.Parent, out var children))
-					{
-						children = new HashSet<Namespace>();
-						result.Add(ns.Parent, children);
-					}
+        public static Dictionary<Namespace, HashSet<Namespace>> ChildrenByNamespaces(IEnumerable<Namespace> namespaces)
+        {
+            var result = new Dictionary<Namespace, HashSet<Namespace>>();
 
-					children.Add(ns);
-				} 
-			}
+            foreach (var ns in namespaces)
+            {
+                if (ns.Parent != null)
+                {
+                    if (!result.TryGetValue(ns.Parent, out var children))
+                    {
+                        children = new HashSet<Namespace>();
+                        result.Add(ns.Parent, children);
+                    }
 
-			return result;
-		}
+                    children.Add(ns);
+                }
+            }
 
-		public static bool operator ==(Namespace a, Namespace b)
-		{
-			if (ReferenceEquals(a, b))
-			{
-				return true;
-			}
+            return result;
+        }
 
-			if (((object)a == null) || ((object)b == null))
-			{
-				return false;
-			}
+        public static bool operator ==(Namespace a, Namespace b)
+        {
+            if (ReferenceEquals(a, b))
+            {
+                return true;
+            }
 
-			return a.Equals(b);
-		}
+            if (((object)a == null) || ((object)b == null))
+            {
+                return false;
+            }
 
-		public static bool operator !=(Namespace a, Namespace b)
-		{
-			return !(a == b);
-		}
+            return a.Equals(b);
+        }
 
-		public override bool Equals(object obj)
-		{
-			var other = obj as Namespace;
+        public static bool operator !=(Namespace a, Namespace b)
+        {
+            return !(a == b);
+        }
 
-			if (other == null)
-			{
-				return false;
-			}
+        public override bool Equals(object obj)
+        {
+            var other = obj as Namespace;
 
-			return FullName == other.FullName;
-		}
+            if (other == null)
+            {
+                return false;
+            }
 
-		private class Interns : KeyedCollection<string, Namespace>
-		{
-			protected override string GetKeyForItem(Namespace item)
-			{
-				return item.FullName;
-			}
-		}
-	}
+            return FullName == other.FullName;
+        }
+
+        private class Interns : KeyedCollection<string, Namespace>
+        {
+            protected override string GetKeyForItem(Namespace item)
+            {
+                return item.FullName;
+            }
+        }
+    }
 }

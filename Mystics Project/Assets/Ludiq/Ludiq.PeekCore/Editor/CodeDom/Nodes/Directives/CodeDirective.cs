@@ -6,15 +6,15 @@ namespace Ludiq.PeekCore.CodeDom
 {
     public abstract class CodeDirective : CodeElement
     {
-		public void Generate(CodeGenerator generator)
-		{
-			generator.EnterElement(this);
+        public void Generate(CodeGenerator generator)
+        {
+            generator.EnterElement(this);
 
-			GenerateInner(generator);
+            GenerateInner(generator);
 
-			generator.ExitElement();
-		}
+            generator.ExitElement();
+        }
 
-		protected abstract void GenerateInner(CodeGenerator generator);
+        protected abstract void GenerateInner(CodeGenerator generator);
     }
 }

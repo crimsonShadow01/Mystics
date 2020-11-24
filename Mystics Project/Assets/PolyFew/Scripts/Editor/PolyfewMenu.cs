@@ -19,7 +19,7 @@ namespace BrainFailProductions.PolyFew
             InspectorAttacher.AttachInspector();
         }
 
-        
+
         [MenuItem("Window/Brainfail Products/PolyFew/Disable Auto UI Attaching", false, 1)]
         static void DisableAutoUIAttaching()
         {
@@ -223,7 +223,7 @@ namespace BrainFailProductions.PolyFew
         [MenuItem("Window/Brainfail Products/PolyFew/Disable Auto UI Attaching", true)]
         static bool CheckDisableAttachingButton()
         {
-            bool isEnableButtOn  = CheckEnableAttachingButton();
+            bool isEnableButtOn = CheckEnableAttachingButton();
 
             if (isEnableButtOn) { return false; }
             else { return true; }

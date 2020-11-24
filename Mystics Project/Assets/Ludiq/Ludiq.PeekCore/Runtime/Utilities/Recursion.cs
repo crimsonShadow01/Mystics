@@ -4,184 +4,184 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public class Recursion<T> : IPoolable, IDisposable
-	{
-		protected Recursion()
-		{
-			traversedOrder = new Stack<T>();
-			traversedCount = new Dictionary<T, int>();
-		}
-		
-		private readonly Stack<T> traversedOrder;
+    public class Recursion<T> : IPoolable, IDisposable
+    {
+        protected Recursion()
+        {
+            traversedOrder = new Stack<T>();
+            traversedCount = new Dictionary<T, int>();
+        }
 
-		private readonly Dictionary<T, int> traversedCount;
-		
-		private bool disposed;
+        private readonly Stack<T> traversedOrder;
 
-		protected int maxDepth;
+        private readonly Dictionary<T, int> traversedCount;
 
-		public void Enter(T o)
-		{
-			if (!TryEnter(o))
-			{
-				throw new StackOverflowException($"Max recursion depth of {maxDepth} has been exceeded. Consider increasing '{nameof(Recursion)}.{nameof(Recursion.defaultMaxDepth)}'.");
-			}
-		}
+        private bool disposed;
 
-		public bool TryEnter(T o)
-		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(ToString());
-			}
+        protected int maxDepth;
 
-			// Disable null check because it boxes o
-			// Ensure.That(nameof(o)).IsNotNull(o);
-			
-			if (traversedCount.TryGetValue(o, out var depth))
-			{
-				if (depth < maxDepth)
-				{
-					traversedOrder.Push(o);
-					traversedCount[o]++;
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				traversedOrder.Push(o);
-				traversedCount.Add(o, 1);
-				return true;
-			}
-		}
+        public void Enter(T o)
+        {
+            if (!TryEnter(o))
+            {
+                throw new StackOverflowException($"Max recursion depth of {maxDepth} has been exceeded. Consider increasing '{nameof(Recursion)}.{nameof(Recursion.defaultMaxDepth)}'.");
+            }
+        }
 
-		public void Exit(T o)
-		{
-			if (traversedOrder.Count == 0)
-			{
-				throw new InvalidOperationException("Trying to exit an empty recursion stack.");
-			}
+        public bool TryEnter(T o)
+        {
+            if (disposed)
+            {
+                throw new ObjectDisposedException(ToString());
+            }
 
-			var current = traversedOrder.Peek();
+            // Disable null check because it boxes o
+            // Ensure.That(nameof(o)).IsNotNull(o);
 
-			if (!EqualityComparer<T>.Default.Equals(o, current))
-			{
-				throw new InvalidOperationException($"Exiting recursion stack in a non-consecutive order:\nProvided: {o} / Expected: {current}");
-			}
-			
-			traversedOrder.Pop();
+            if (traversedCount.TryGetValue(o, out var depth))
+            {
+                if (depth < maxDepth)
+                {
+                    traversedOrder.Push(o);
+                    traversedCount[o]++;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                traversedOrder.Push(o);
+                traversedCount.Add(o, 1);
+                return true;
+            }
+        }
 
-			var newDepth = traversedCount[current]--;
+        public void Exit(T o)
+        {
+            if (traversedOrder.Count == 0)
+            {
+                throw new InvalidOperationException("Trying to exit an empty recursion stack.");
+            }
 
-			if (newDepth == 0)
-			{
-				traversedCount.Remove(current);
-			}
-		}
+            var current = traversedOrder.Peek();
 
-		public void Dispose()
-		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(ToString());
-			}
+            if (!EqualityComparer<T>.Default.Equals(o, current))
+            {
+                throw new InvalidOperationException($"Exiting recursion stack in a non-consecutive order:\nProvided: {o} / Expected: {current}");
+            }
 
-			Free();
-		}
+            traversedOrder.Pop();
 
-		protected virtual void Free()
-		{
-			GenericPool<Recursion<T>>.Free(this);
-		}
+            var newDepth = traversedCount[current]--;
 
-		void IPoolable.New()
-		{
-			disposed = false;
-			traversedOrder.Clear();
-			traversedCount.Clear();
-		}
+            if (newDepth == 0)
+            {
+                traversedCount.Remove(current);
+            }
+        }
 
-		void IPoolable.Free()
-		{
-			disposed = true;
-		}
+        public void Dispose()
+        {
+            if (disposed)
+            {
+                throw new ObjectDisposedException(ToString());
+            }
 
-		public void Reset()
-		{
-			traversedOrder.Clear();
-			traversedCount.Clear();
-		}
-		
-		public static Recursion<T> New(bool force = false)
-		{
-			return New(Recursion.defaultMaxDepth, force);
-		}
+            Free();
+        }
 
-		public static Recursion<T> New(int maxDepth, bool force = false)
-		{
-			if (!force && !Recursion.safeMode)
-			{
-				return null;
-			}
+        protected virtual void Free()
+        {
+            GenericPool<Recursion<T>>.Free(this);
+        }
 
-			if (maxDepth < 1)
-			{
-				throw new ArgumentException("Max recursion depth must be at least one.", nameof(maxDepth));
-			}
+        void IPoolable.New()
+        {
+            disposed = false;
+            traversedOrder.Clear();
+            traversedCount.Clear();
+        }
 
-			var recursion = GenericPool<Recursion<T>>.New(() => new Recursion<T>());
+        void IPoolable.Free()
+        {
+            disposed = true;
+        }
 
-			recursion.maxDepth = maxDepth;
+        public void Reset()
+        {
+            traversedOrder.Clear();
+            traversedCount.Clear();
+        }
 
-			return recursion;
-		}
-	}
+        public static Recursion<T> New(bool force = false)
+        {
+            return New(Recursion.defaultMaxDepth, force);
+        }
 
-	public sealed class Recursion : Recursion<object>
-	{
-		private Recursion() : base() { }
-		
-		public static int defaultMaxDepth { get; set; } = 100;
+        public static Recursion<T> New(int maxDepth, bool force = false)
+        {
+            if (!force && !Recursion.safeMode)
+            {
+                return null;
+            }
 
-		public static bool safeMode { get; set; }
+            if (maxDepth < 1)
+            {
+                throw new ArgumentException("Max recursion depth must be at least one.", nameof(maxDepth));
+            }
 
-		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-		private static void OnRuntimeMethodLoad()
-		{
-			safeMode = Application.isEditor || Debug.isDebugBuild;
-		}
+            var recursion = GenericPool<Recursion<T>>.New(() => new Recursion<T>());
 
-		protected override void Free()
-		{
-			GenericPool<Recursion>.Free(this);
-		}
+            recursion.maxDepth = maxDepth;
 
-		public new static Recursion New(bool force = false)
-		{
-			return New(defaultMaxDepth, force);
-		}
+            return recursion;
+        }
+    }
 
-		public new static Recursion New(int maxDepth, bool force = false)
-		{
-			if (!force && !safeMode)
-			{
-				return null;
-			}
+    public sealed class Recursion : Recursion<object>
+    {
+        private Recursion() : base() { }
 
-			if (maxDepth < 1)
-			{
-				throw new ArgumentException("Max recursion depth must be at least one.", nameof(maxDepth));
-			}
+        public static int defaultMaxDepth { get; set; } = 100;
 
-			var recursion = GenericPool<Recursion>.New(() => new Recursion());
+        public static bool safeMode { get; set; }
 
-			recursion.maxDepth = maxDepth;
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void OnRuntimeMethodLoad()
+        {
+            safeMode = Application.isEditor || Debug.isDebugBuild;
+        }
 
-			return recursion;
-		}
-	}
+        protected override void Free()
+        {
+            GenericPool<Recursion>.Free(this);
+        }
+
+        public new static Recursion New(bool force = false)
+        {
+            return New(defaultMaxDepth, force);
+        }
+
+        public new static Recursion New(int maxDepth, bool force = false)
+        {
+            if (!force && !safeMode)
+            {
+                return null;
+            }
+
+            if (maxDepth < 1)
+            {
+                throw new ArgumentException("Max recursion depth must be at least one.", nameof(maxDepth));
+            }
+
+            var recursion = GenericPool<Recursion>.New(() => new Recursion());
+
+            recursion.maxDepth = maxDepth;
+
+            return recursion;
+        }
+    }
 }

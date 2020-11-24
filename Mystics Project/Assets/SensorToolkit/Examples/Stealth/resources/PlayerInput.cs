@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace SensorToolkit.Example
 {
@@ -9,7 +8,7 @@ namespace SensorToolkit.Example
         public Sensor InteractionRange;
 
         CharacterControls cc;
-        
+
         void Start()
         {
             cc = GetComponent<CharacterControls>();

@@ -1,27 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
 namespace OC
 {
-	[CustomEditor(typeof(OverCloudReflectionProbe)), CanEditMultipleObjects]
-	public class OverCloudReflectionProbeEditor : Editor
-	{
-		public override void OnInspectorGUI ()
-		{
-			serializedObject.Update();
+    [CustomEditor(typeof(OverCloudReflectionProbe)), CanEditMultipleObjects]
+    public class OverCloudReflectionProbeEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
 
-			OverCloudReflectionProbe probe = (OverCloudReflectionProbe)target;
+            OverCloudReflectionProbe probe = (OverCloudReflectionProbe)target;
 
-			DrawDefaultInspector();
+            DrawDefaultInspector();
 
-			if (GUILayout.Button("Save Cubemap"))
-			{
-				probe.SaveCubemap();
-			}
+            if (GUILayout.Button("Save Cubemap"))
+            {
+                probe.SaveCubemap();
+            }
 
-			serializedObject.ApplyModifiedProperties();
-		}
-	}
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
 }

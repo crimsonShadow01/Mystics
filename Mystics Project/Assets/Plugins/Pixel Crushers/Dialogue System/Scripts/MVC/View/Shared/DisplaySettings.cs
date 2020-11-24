@@ -427,7 +427,7 @@ namespace PixelCrushers.DialogueSystem
         public bool GetSkipPCSubtitleAfterResponseMenu()
         {
             return ShouldUseSubtitleOverrides() ? conversationOverrideSettings.skipPCSubtitleAfterResponseMenu :
-                ((subtitleSettings != null) ? subtitleSettings.skipPCSubtitleAfterResponseMenu: true);
+                ((subtitleSettings != null) ? subtitleSettings.skipPCSubtitleAfterResponseMenu : true);
         }
 
         public float GetSubtitleCharsPerSecond()

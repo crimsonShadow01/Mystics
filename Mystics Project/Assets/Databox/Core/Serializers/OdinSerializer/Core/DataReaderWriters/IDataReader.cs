@@ -47,7 +47,7 @@ namespace Databox.OdinSerializer
         /// </value>
         [Obsolete("Data readers and writers don't necessarily have streams any longer, so this API has been made obsolete. Using this property may result in NotSupportedExceptions being thrown.", false)]
         Stream Stream { get; set; }
-        
+
         /// <summary>
         /// Gets a value indicating whether the reader is in an array node.
         /// </summary>

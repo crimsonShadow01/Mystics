@@ -16,7 +16,7 @@ namespace FIMSpace.FTail
         public Transform IKTarget;
 
         public bool IKAutoWeights = true;
-        [Range(0f,1f)]
+        [Range(0f, 1f)]
         public float IKBaseReactionWeight = .65f;
         [FPD_FixedCurveWindow(0, 0, 1f, 1f, 0.2f, .5f, 0.85f)]
         public AnimationCurve IKReactionWeightCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, .25f);
@@ -28,10 +28,10 @@ namespace FIMSpace.FTail
         [Tooltip("If ik process should work referencing to previously computed CCDIK pose (can be more precise but need more adjusting in weights and angle limits)")]
         public bool IKContinousSolve = false;
 
-        [FPD_Suffix(0f,1f)]
+        [FPD_Suffix(0f, 1f)]
         [Tooltip("How much IK motion sohuld be used in tail animator motion -> 0: turned off")]
         public float IKBlend = 1f;
-        [FPD_Suffix(0f,1f)]
+        [FPD_Suffix(0f, 1f)]
         [Tooltip("If syncing with animator then applying motion of keyframe animation for IK")]
         public float IKAnimatorBlend = 0.5f;
 
@@ -45,7 +45,7 @@ namespace FIMSpace.FTail
         public float IKMaxStretching = 0f;
         [FPD_FixedCurveWindow(0, 0, 1f, 1f, 0.9f, .4f, 0.5f)]
         public AnimationCurve IKStretchCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-        
+
         public List<IKBoneSettings> IKLimitSettings;
 
 
@@ -82,7 +82,7 @@ namespace FIMSpace.FTail
 
             IK.Update();
         }
-        
+
 
         /// <summary>
         /// FC: Helper class to manage ik bones settings
@@ -123,7 +123,7 @@ namespace FIMSpace.FTail
                 }
             }
 
-            if ( ikInitialized) if (IKAutoWeights) IK.AutoWeightBones(IKBaseReactionWeight); else IK.AutoWeightBones(IKReactionWeightCurve);
+            if (ikInitialized) if (IKAutoWeights) IK.AutoWeightBones(IKBaseReactionWeight); else IK.AutoWeightBones(IKReactionWeightCurve);
             if (IKAutoAngleLimits) IK.AutoLimitAngle(IKAutoAngleLimit, 10f + IKAutoAngleLimit / 10f);
         }
 

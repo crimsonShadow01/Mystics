@@ -15,19 +15,19 @@ namespace Ludiq.PeekCore.CodeDom
 
         public CodeExpression Expression { get; }
 
-		public override bool IsTerminator => false;
+        public override bool IsTerminator => false;
 
-		public override IEnumerable<CodeElement> Children => Expression.Yield<CodeElement>();
+        public override IEnumerable<CodeElement> Children => Expression.Yield<CodeElement>();
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			generator.WriteBlankLineIfJustExitedBlock();
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.WriteBlankLineIfJustExitedBlock();
             generator.Write(TokenType.Keyword, "yield");
             generator.Write(TokenType.Space, ' ');
             generator.Write(TokenType.Keyword, "return");
-			generator.Write(TokenType.Space, ' ');
+            generator.Write(TokenType.Space, ' ');
             Expression.Generate(generator);
-			generator.WriteStatementEnd(emitOptions);
-		}
+            generator.WriteStatementEnd(emitOptions);
+        }
     }
 }

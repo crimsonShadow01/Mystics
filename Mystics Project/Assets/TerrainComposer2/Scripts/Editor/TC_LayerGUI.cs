@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -11,9 +10,9 @@ namespace TerrainComposer2
         static public void Draw(TC_Layer layer, ref Vector2 startOffset, float activeMulti, bool drawMethod, bool isFirst, bool isLast)
         {
             TC_GlobalSettings g = TC_Settings.instance.global;
-            
+
             bool isCulled = false;
-            
+
             TC_LayerGroupGUI.DrawLayerOrLayerGroup(layer, ref startOffset, g.colLayer, ref isCulled, activeMulti, drawMethod, isFirst, isLast);
             if (!layer.active) activeMulti *= 0.75f;
 
@@ -46,7 +45,7 @@ namespace TerrainComposer2
                 menu.AddItem(new GUIContent("Add Mask"), false, LeftClickMenu, instanceID + ":Add Mask");
                 menu.AddSeparator("");
             }
-            
+
             menu.AddItem(new GUIContent("Add Layer"), false, LeftClickMenu, instanceID + ":Add Layer");
             menu.AddItem(new GUIContent("Duplicate Layer"), false, LeftClickMenu, instanceID + ":Duplicate Layer");
             if (layer.level > 1)

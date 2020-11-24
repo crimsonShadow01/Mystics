@@ -1,7 +1,7 @@
 ﻿// Cristian Pop - https://boxophobic.com/
 
-using UnityEngine;
 using Boxophobic.StyledGUI;
+using UnityEngine;
 
 namespace TheVegetationEngine
 {
@@ -15,7 +15,7 @@ namespace TheVegetationEngine
         [StyledMessage("Info", "Use the Wetness slider to control the smoothness on vegetation and props for a wet look. The wetness can be controlled locally with Wetness elements.", 0, 10)]
         public bool styledMessage = true;
 
-        [StyledRangeOptions(-1f, 1f, "Wetness", new string[] { "Dry", "Default", "Wet"})]
+        [StyledRangeOptions(-1f, 1f, "Wetness", new string[] { "Dry", "Default", "Wet" })]
         public float wetness = 0f;
 
         [StyledSpace(10)]

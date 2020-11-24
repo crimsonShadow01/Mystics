@@ -13,10 +13,10 @@ namespace Ludiq.PeekCore.CodeDom
 
         public string RegionText { get; }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
+        protected override void GenerateInner(CodeGenerator generator)
+        {
             generator.Write(TokenType.Directive, "#region ");
             generator.WriteLine(TokenType.Directive, RegionText);
-		}
+        }
     }
 }

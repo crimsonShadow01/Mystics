@@ -264,7 +264,7 @@ namespace FIMSpace.FTail
                 Color preCol = Gizmos.color;
                 Gizmos.color = new Color(0.2f, 1f, 0.2f, 0.25f);
 
-                for (int i = 1; i < _TransformsGhostChain.Count-1; i++)
+                for (int i = 1; i < _TransformsGhostChain.Count - 1; i++)
                 {
                     if (_TransformsGhostChain[i] == null) continue;
                     Matrix4x4 curr = Matrix4x4.TRS(_TransformsGhostChain[i].position, _TransformsGhostChain[i].rotation, _TransformsGhostChain[i].lossyScale);
@@ -383,7 +383,8 @@ namespace FIMSpace.FTail
             if (DistanceWithoutY)
             {
                 if (maxDistanceExceed)
-                    Handles.color = new Color(1f, .1f, .1f, a); else Handles.color = new Color(0.02f, .65f, 0.2f, a);
+                    Handles.color = new Color(1f, .1f, .1f, a);
+                else Handles.color = new Color(0.02f, .65f, 0.2f, a);
 
                 Handles.DrawWireDisc(startPos, Vector3.up, MaximumDistance);
 

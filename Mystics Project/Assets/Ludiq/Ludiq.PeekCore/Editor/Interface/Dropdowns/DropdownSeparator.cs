@@ -1,14 +1,14 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public class DropdownSeparator : DropdownOption
-	{
-		public DropdownSeparator() : this(string.Empty) { }
+    public class DropdownSeparator : DropdownOption
+    {
+        public DropdownSeparator() : this(string.Empty) { }
 
-		public DropdownSeparator(string path) : base(null, null)
-		{
-			this.path = path;
-		}
+        public DropdownSeparator(string path) : base(null, null)
+        {
+            this.path = path;
+        }
 
-		public string path { get; set; }
-	}
+        public string path { get; set; }
+    }
 }

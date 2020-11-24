@@ -1,424 +1,423 @@
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public sealed class ToolControl
-	{
-		private static Event e => Event.current;
+    public sealed class ToolControl
+    {
+        private static Event e => Event.current;
 
-		public ITool tool { get; }
+        public ITool tool { get; }
 
-		public Rect screenPosition { get; set; }
+        public Rect screenPosition { get; set; }
 
-		public Rect guiPosition
-		{
-			get => GUIUtility.ScreenToGUIRect(screenPosition);
-			set => screenPosition = LudiqGUIUtility.GUIToScreenRect(value);
-		}
+        public Rect guiPosition
+        {
+            get => GUIUtility.ScreenToGUIRect(screenPosition);
+            set => screenPosition = LudiqGUIUtility.GUIToScreenRect(value);
+        }
 
-		public EventModifiers shortcutModifiers = EventModifiers.None;
+        public EventModifiers shortcutModifiers = EventModifiers.None;
 
-		public int? shortcutIndex { get; set; }
+        public int? shortcutIndex { get; set; }
 
-		public string shortcutLabel { get; set; }
-		
-		public ToolbarControl toolbarControl { get; }
+        public string shortcutLabel { get; set; }
 
-		public Rect activatorScreenPosition
-		{
-			get
-			{
-				if (toolbarControl.isActivator)
-				{
-					return toolbarControl.screenPosition;
-				}
-				else
-				{
-					return screenPosition;
-				}
-			}
-		}
+        public ToolbarControl toolbarControl { get; }
 
-		public Rect activatorGuiPosition => GUIUtility.ScreenToGUIRect(activatorScreenPosition);
+        public Rect activatorScreenPosition
+        {
+            get
+            {
+                if (toolbarControl.isActivator)
+                {
+                    return toolbarControl.screenPosition;
+                }
+                else
+                {
+                    return screenPosition;
+                }
+            }
+        }
 
-		private Rect previousScreenPosition;
+        public Rect activatorGuiPosition => GUIUtility.ScreenToGUIRect(activatorScreenPosition);
 
-		private bool isPressed;
+        private Rect previousScreenPosition;
 
-		private bool isDragging;
+        private bool isPressed;
 
-		private bool isDropping;
-		
-		public ToolControl(ToolbarControl toolbarControl, ITool tool)
-		{
-			Ensure.That(nameof(tool)).IsNotNull(toolbarControl);
-			Ensure.That(nameof(tool)).IsNotNull(tool);
+        private bool isDragging;
 
-			this.toolbarControl = toolbarControl;
-			this.tool = tool;
-		}
+        private bool isDropping;
 
-		private void HandleDragAndDrop()
-		{
-			var isHovered = guiPosition.Contains(e.mousePosition);
-			
-			// Handle Drag
-			if (e.button == (int)MouseButton.Left && e.modifiers == EventModifiers.None)
-			{
-				if (e.type == EventType.MouseDown)
-				{
-					if (isHovered && !isPressed)
-					{
-						isPressed = true;
-						GUIUtility.hotControl = 0;
-					}
-				}
-				else if (e.type == EventType.MouseDrag)
-				{
-					if (isPressed && !isHovered && !isDragging)
-					{
-						if (tool.OnDragEntered(this))
-						{
-							isDragging = true;
-							e.Use();
-							GUIUtility.hotControl = 0;
-						}
-					}
-				}
-			}
+        public ToolControl(ToolbarControl toolbarControl, ITool tool)
+        {
+            Ensure.That(nameof(tool)).IsNotNull(toolbarControl);
+            Ensure.That(nameof(tool)).IsNotNull(tool);
 
-			// Handle Drop
-			if (e.rawType == EventType.DragUpdated)
-			{
-				if (isHovered && !isDropping)
-				{
-					if (tool.OnDropEntered(this))
-					{
-						isDropping = true;
-					}
+            this.toolbarControl = toolbarControl;
+            this.tool = tool;
+        }
 
-					e.Use();
-				}
-				else if (isHovered && isDropping)
-				{
-					tool.OnDropUpdated(this);
-					e.Use();
-				}
-				else if (!isHovered && isDropping)
-				{
-					tool.OnDropExited(this);
-					isDropping = false;
-					e.Use();
-				}
-			}
-			
-			// Exit
-			if (e.rawType == EventType.DragExited)
-			{
-				if (isDragging)
-				{
-					tool.OnDragExited(this);
-					isDragging = false;
-				}
+        private void HandleDragAndDrop()
+        {
+            var isHovered = guiPosition.Contains(e.mousePosition);
 
-				if (isDropping)
-				{
-					tool.OnDropExited(this);
-					isDropping = false;
-				}
-			}
+            // Handle Drag
+            if (e.button == (int)MouseButton.Left && e.modifiers == EventModifiers.None)
+            {
+                if (e.type == EventType.MouseDown)
+                {
+                    if (isHovered && !isPressed)
+                    {
+                        isPressed = true;
+                        GUIUtility.hotControl = 0;
+                    }
+                }
+                else if (e.type == EventType.MouseDrag)
+                {
+                    if (isPressed && !isHovered && !isDragging)
+                    {
+                        if (tool.OnDragEntered(this))
+                        {
+                            isDragging = true;
+                            e.Use();
+                            GUIUtility.hotControl = 0;
+                        }
+                    }
+                }
+            }
 
-			if (e.rawType == EventType.MouseUp)
-			{
-				isPressed = false;
-			}
-		}
-		
-		public void DrawInTreeView(bool isVisible, Rect visibleRect, bool fixReadability)
-		{
-			using (LudiqGUIUtility.iconSize.Override(IconSize.Small))
-			{
-				var isActive = tool.isActive;
-				bool wantsActive = false;
-				var showPreview = PeekPlugin.Configuration.enablePreviewIcons && tool.preview != null;
+            // Handle Drop
+            if (e.rawType == EventType.DragUpdated)
+            {
+                if (isHovered && !isDropping)
+                {
+                    if (tool.OnDropEntered(this))
+                    {
+                        isDropping = true;
+                    }
 
-				var icon = showPreview ? tool.preview : tool.icon;
-				var toolContent = isVisible ? LudiqGUIUtility.TempContent(tool.label) : GUIContent.none;
-				var toolStyle = isVisible ? tool.treeViewStyle : GUIStyle.none;
-				
-				HandleDragAndDrop();
+                    e.Use();
+                }
+                else if (isHovered && isDropping)
+                {
+                    tool.OnDropUpdated(this);
+                    e.Use();
+                }
+                else if (!isHovered && isDropping)
+                {
+                    tool.OnDropExited(this);
+                    isDropping = false;
+                    e.Use();
+                }
+            }
 
-				var iconPosition = new Rect
-				(
-					guiPosition.x + ((guiPosition.width - tool.iconSize.x) / 2),
-					guiPosition.y + ((guiPosition.height - tool.iconSize.y) / 2),
-					tool.iconSize.x,
-					tool.iconSize.y
-				);
-				
-				using (LudiqGUI.color.Override(LudiqGUI.color.value.WithAlphaMultiplied(tool.isDimmed ? 0.5f : 1)))
-				{
-					wantsActive = LudiqGUI.DropdownToggle(guiPosition, isActive, toolContent, toolStyle);
+            // Exit
+            if (e.rawType == EventType.DragExited)
+            {
+                if (isDragging)
+                {
+                    tool.OnDragExited(this);
+                    isDragging = false;
+                }
 
-					if (isVisible)
-					{
-						if (fixReadability && LudiqGUIUtility.isFlatSkin && !EditorGUIUtility.isProSkin && !showPreview)
-						{
-							LudiqGUI.DrawTextureColored(iconPosition, icon, Color.white.WithAlpha(0.9f));
-						}
-						else
-						{
-							GUI.DrawTexture(iconPosition, icon);
-						}
-					}
-				}
+                if (isDropping)
+                {
+                    tool.OnDropExited(this);
+                    isDropping = false;
+                }
+            }
 
-				if (isVisible && tool.overlay != null)
-				{
-					var overlayPosition = new Rect(guiPosition.position, tool.iconSize);
-					
-					GUI.DrawTexture(overlayPosition, tool.overlay);
-				}
+            if (e.rawType == EventType.MouseUp)
+            {
+                isPressed = false;
+            }
+        }
 
-				tool.OnGUI(this);
+        public void DrawInTreeView(bool isVisible, Rect visibleRect, bool fixReadability)
+        {
+            using (LudiqGUIUtility.iconSize.Override(IconSize.Small))
+            {
+                var isActive = tool.isActive;
+                bool wantsActive = false;
+                var showPreview = PeekPlugin.Configuration.enablePreviewIcons && tool.preview != null;
 
-				if (e.type != EventType.Layout && screenPosition != previousScreenPosition)
-				{
-					tool.OnMove(this);
-				}
+                var icon = showPreview ? tool.preview : tool.icon;
+                var toolContent = isVisible ? LudiqGUIUtility.TempContent(tool.label) : GUIContent.none;
+                var toolStyle = isVisible ? tool.treeViewStyle : GUIStyle.none;
 
-				if (guiPosition.Contains(e.mousePosition))
-				{
-					var tooltipContent = LudiqGUIUtility.TempContent(tool.tooltip);
-					var tooltipStyle = PeekStyles.treeViewTooltip;
-					var tooltipSize = tooltipStyle.CalcSize(tooltipContent);
+                HandleDragAndDrop();
 
-					var tooltipPosition = new Rect
-					(
-						guiPosition.center.x - (tooltipSize.x / 2),
-						guiPosition.yMin - tooltipSize.y - tooltipStyle.margin.bottom,
-						tooltipSize.x,
-						tooltipSize.y
-					);
+                var iconPosition = new Rect
+                (
+                    guiPosition.x + ((guiPosition.width - tool.iconSize.x) / 2),
+                    guiPosition.y + ((guiPosition.height - tool.iconSize.y) / 2),
+                    tool.iconSize.x,
+                    tool.iconSize.y
+                );
 
-					tooltipPosition.x = Mathf.Clamp
-					(
-						tooltipPosition.x,
-						visibleRect.xMin,
-						visibleRect.xMax - tooltipPosition.width
-					);
+                using (LudiqGUI.color.Override(LudiqGUI.color.value.WithAlphaMultiplied(tool.isDimmed ? 0.5f : 1)))
+                {
+                    wantsActive = LudiqGUI.DropdownToggle(guiPosition, isActive, toolContent, toolStyle);
 
-					GUI.Label(tooltipPosition, tooltipContent, tooltipStyle);
-				}
+                    if (isVisible)
+                    {
+                        if (fixReadability && LudiqGUIUtility.isFlatSkin && !EditorGUIUtility.isProSkin && !showPreview)
+                        {
+                            LudiqGUI.DrawTextureColored(iconPosition, icon, Color.white.WithAlpha(0.9f));
+                        }
+                        else
+                        {
+                            GUI.DrawTexture(iconPosition, icon);
+                        }
+                    }
+                }
 
-				if (wantsActive != isActive)
-				{
-					if (wantsActive)
-					{
-						if (tool.isTransient)
-						{
-							toolbarControl.CloseAllTransientTools();
-						}
-						
-						if (e.IsContextMouseButton())
-						{
-							tool.OpenContextual(this);
-						}
-						else
-						{
-							tool.Open(this);
-						}
-					}
-					else
-					{
-						tool.Close(this);
+                if (isVisible && tool.overlay != null)
+                {
+                    var overlayPosition = new Rect(guiPosition.position, tool.iconSize);
 
-						if (e.IsContextMouseButton())
-						{
-							tool.OpenContextual(this);
-						}
-					}
-				}
-			}
+                    GUI.DrawTexture(overlayPosition, tool.overlay);
+                }
 
-			if (e.type != EventType.Layout)
-			{
-				previousScreenPosition = screenPosition;
-			}
-		}
+                tool.OnGUI(this);
 
-		public Vector2 GetSceneViewSize(bool isFirst, bool isLast)
-		{
-			var style = tool.SceneViewStyle(isFirst, isLast);
-			var content = LudiqGUIUtility.TempContent(tool.showText ? tool.label : string.Empty, tool.icon);
+                if (e.type != EventType.Layout && screenPosition != previousScreenPosition)
+                {
+                    tool.OnMove(this);
+                }
 
-			using (LudiqGUIUtility.realIconSize.Override(tool.iconSize))
-			{
-				return style.CalcSize(content);
-			}
-		}
-		 
-		public DelayedTooltip? DrawInSceneView(bool isFirst, bool isLast)
-		{
-			var delayedTooltip = (DelayedTooltip?)null;
+                if (guiPosition.Contains(e.mousePosition))
+                {
+                    var tooltipContent = LudiqGUIUtility.TempContent(tool.tooltip);
+                    var tooltipStyle = PeekStyles.treeViewTooltip;
+                    var tooltipSize = tooltipStyle.CalcSize(tooltipContent);
 
-			var isActive = tool.isActive;
-			var isDimmed = tool.isDimmed;
-			var showText = tool.showText;
-			var showPreview = PeekPlugin.Configuration.enablePreviewIcons && tool != toolbarControl.toolbar.mainTool && tool.preview != null;
+                    var tooltipPosition = new Rect
+                    (
+                        guiPosition.center.x - (tooltipSize.x / 2),
+                        guiPosition.yMin - tooltipSize.y - tooltipStyle.margin.bottom,
+                        tooltipSize.x,
+                        tooltipSize.y
+                    );
 
-			LudiqGUIUtility.realIconSize.BeginOverride(tool.iconSize);
-			var icon = showPreview ? tool.preview : tool.icon;
-			var content = new GUIContent(showText ? tool.label : string.Empty, ColorUtility.GetPixel(ColorPalette.transparent));
-			var style = tool.SceneViewStyle(isFirst, isLast);
-			var guiPosition = GUILayoutUtility.GetRect(content, style);
+                    tooltipPosition.x = Mathf.Clamp
+                    (
+                        tooltipPosition.x,
+                        visibleRect.xMin,
+                        visibleRect.xMax - tooltipPosition.width
+                    );
 
-			if (e.type == EventType.Repaint)
-			{
-				this.guiPosition = guiPosition;
+                    GUI.Label(tooltipPosition, tooltipContent, tooltipStyle);
+                }
 
-				if (screenPosition != previousScreenPosition)
-				{
-					tool.OnMove(this);
-				}
-			}
+                if (wantsActive != isActive)
+                {
+                    if (wantsActive)
+                    {
+                        if (tool.isTransient)
+                        {
+                            toolbarControl.CloseAllTransientTools();
+                        }
 
-			var isHovered = guiPosition.Contains(e.mousePosition);
+                        if (e.IsContextMouseButton())
+                        {
+                            tool.OpenContextual(this);
+                        }
+                        else
+                        {
+                            tool.Open(this);
+                        }
+                    }
+                    else
+                    {
+                        tool.Close(this);
 
-			if (isDimmed && e.type == EventType.Repaint)
-			{
-				style.Draw(guiPosition, false, false, false, false);
-			}
-			
-			var hasShortcut = shortcutIndex.HasValue && e.modifiers == shortcutModifiers && InternalEditorUtility.isApplicationActive;
+                        if (e.IsContextMouseButton())
+                        {
+                            tool.OpenContextual(this);
+                        }
+                    }
+                }
+            }
 
-			HandleDragAndDrop();
+            if (e.type != EventType.Layout)
+            {
+                previousScreenPosition = screenPosition;
+            }
+        }
 
-			LudiqGUI.color.BeginOverride(LudiqGUI.color.value.WithAlphaMultiplied(isDimmed ? 0.5f : 1));
+        public Vector2 GetSceneViewSize(bool isFirst, bool isLast)
+        {
+            var style = tool.SceneViewStyle(isFirst, isLast);
+            var content = LudiqGUIUtility.TempContent(tool.showText ? tool.label : string.Empty, tool.icon);
 
-			var wantsActive = LudiqGUI.DropdownToggle(guiPosition, isActive, content, style);
+            using (LudiqGUIUtility.realIconSize.Override(tool.iconSize))
+            {
+                return style.CalcSize(content);
+            }
+        }
 
-			if (icon != null)
-			{
-				var iconPosition = new Rect
-				(
-					guiPosition.x + style.padding.left,
-					guiPosition.y + style.padding.top + (guiPosition.height / 2 - tool.iconSize.y / 2),
-					tool.iconSize.x,
-					tool.iconSize.y
-				);
+        public DelayedTooltip? DrawInSceneView(bool isFirst, bool isLast)
+        {
+            var delayedTooltip = (DelayedTooltip?)null;
 
-				if (isActive && LudiqGUIUtility.isFlatSkin && !EditorGUIUtility.isProSkin && !showPreview)
-				{
-					LudiqGUI.DrawTextureColored(iconPosition, icon, Color.white);
-				}
-				else
-				{
-					GUI.DrawTexture(iconPosition, icon);
-				}
-			}
+            var isActive = tool.isActive;
+            var isDimmed = tool.isDimmed;
+            var showText = tool.showText;
+            var showPreview = PeekPlugin.Configuration.enablePreviewIcons && tool != toolbarControl.toolbar.mainTool && tool.preview != null;
 
-			LudiqGUI.color.EndOverride();
-			LudiqGUIUtility.realIconSize.EndOverride();
+            LudiqGUIUtility.realIconSize.BeginOverride(tool.iconSize);
+            var icon = showPreview ? tool.preview : tool.icon;
+            var content = new GUIContent(showText ? tool.label : string.Empty, ColorUtility.GetPixel(ColorPalette.transparent));
+            var style = tool.SceneViewStyle(isFirst, isLast);
+            var guiPosition = GUILayoutUtility.GetRect(content, style);
 
-			if (tool.overlay != null)
-			{
-				var overlayPosition = new Rect(guiPosition.position + new Vector2(6, 2), tool.iconSize);
+            if (e.type == EventType.Repaint)
+            {
+                this.guiPosition = guiPosition;
 
-				GUI.DrawTexture(overlayPosition, tool.overlay);
-			}
+                if (screenPosition != previousScreenPosition)
+                {
+                    tool.OnMove(this);
+                }
+            }
 
-			if (wantsActive != isActive)
-			{
-				if (wantsActive)
-				{
-					if (tool.isTransient)
-					{
-						toolbarControl.CloseAllTransientTools();
-					}
+            var isHovered = guiPosition.Contains(e.mousePosition);
 
-					if (e.IsContextMouseButton())
-					{
-						tool.OpenContextual(this);
-					}
-					else
-					{
-						tool.Open(this);
-					}
-				}
-				else
-				{
-					tool.Close(this);
+            if (isDimmed && e.type == EventType.Repaint)
+            {
+                style.Draw(guiPosition, false, false, false, false);
+            }
 
-					if (e.IsContextMouseButton())
-					{
-						tool.OpenContextual(this);
-					}
-				}
+            var hasShortcut = shortcutIndex.HasValue && e.modifiers == shortcutModifiers && InternalEditorUtility.isApplicationActive;
 
-				e.Use();
-			}
+            HandleDragAndDrop();
 
-			tool.OnGUI(this);
+            LudiqGUI.color.BeginOverride(LudiqGUI.color.value.WithAlphaMultiplied(isDimmed ? 0.5f : 1));
 
-			var showTooltip = isHovered || hasShortcut;
+            var wantsActive = LudiqGUI.DropdownToggle(guiPosition, isActive, content, style);
 
-			if (showTooltip)
-			{
-				var tooltipContent = new GUIContent(hasShortcut ? shortcutLabel : tool.tooltip);
-				var tooltipStyle = PeekStyles.sceneViewTooltip;
-				var tooltipSize = tooltipStyle.CalcSize(tooltipContent);
+            if (icon != null)
+            {
+                var iconPosition = new Rect
+                (
+                    guiPosition.x + style.padding.left,
+                    guiPosition.y + style.padding.top + (guiPosition.height / 2 - tool.iconSize.y / 2),
+                    tool.iconSize.x,
+                    tool.iconSize.y
+                );
 
-				var tooltipPosition = new Rect
-				(
-					guiPosition.center.x - (tooltipSize.x / 2),
-					guiPosition.yMin - tooltipSize.y - tooltipStyle.margin.bottom,
-					tooltipSize.x,
-					tooltipSize.y
-				);
+                if (isActive && LudiqGUIUtility.isFlatSkin && !EditorGUIUtility.isProSkin && !showPreview)
+                {
+                    LudiqGUI.DrawTextureColored(iconPosition, icon, Color.white);
+                }
+                else
+                {
+                    GUI.DrawTexture(iconPosition, icon);
+                }
+            }
 
-				delayedTooltip = new DelayedTooltip()
-				{
-					screenPosition = LudiqGUIUtility.GUIToScreenRect(tooltipPosition),
-					content = tooltipContent,
-					style = tooltipStyle
-				};
-			}
+            LudiqGUI.color.EndOverride();
+            LudiqGUIUtility.realIconSize.EndOverride();
 
-			if (e.type != EventType.Layout)
-			{
-				previousScreenPosition = screenPosition;
-			}
+            if (tool.overlay != null)
+            {
+                var overlayPosition = new Rect(guiPosition.position + new Vector2(6, 2), tool.iconSize);
 
-			return delayedTooltip;
-		}
+                GUI.DrawTexture(overlayPosition, tool.overlay);
+            }
 
-		public void Open()
-		{
-			tool.Open(this);
-		}
+            if (wantsActive != isActive)
+            {
+                if (wantsActive)
+                {
+                    if (tool.isTransient)
+                    {
+                        toolbarControl.CloseAllTransientTools();
+                    }
 
-		public void Close()
-		{
-			tool.Close(this);
-		}
+                    if (e.IsContextMouseButton())
+                    {
+                        tool.OpenContextual(this);
+                    }
+                    else
+                    {
+                        tool.Open(this);
+                    }
+                }
+                else
+                {
+                    tool.Close(this);
 
-		public void Toggle()
-		{
-			if (tool.isActive)
-			{
-				Open();
-			}
-			else
-			{
-				Close();
-			}
-		}
-	}
+                    if (e.IsContextMouseButton())
+                    {
+                        tool.OpenContextual(this);
+                    }
+                }
+
+                e.Use();
+            }
+
+            tool.OnGUI(this);
+
+            var showTooltip = isHovered || hasShortcut;
+
+            if (showTooltip)
+            {
+                var tooltipContent = new GUIContent(hasShortcut ? shortcutLabel : tool.tooltip);
+                var tooltipStyle = PeekStyles.sceneViewTooltip;
+                var tooltipSize = tooltipStyle.CalcSize(tooltipContent);
+
+                var tooltipPosition = new Rect
+                (
+                    guiPosition.center.x - (tooltipSize.x / 2),
+                    guiPosition.yMin - tooltipSize.y - tooltipStyle.margin.bottom,
+                    tooltipSize.x,
+                    tooltipSize.y
+                );
+
+                delayedTooltip = new DelayedTooltip()
+                {
+                    screenPosition = LudiqGUIUtility.GUIToScreenRect(tooltipPosition),
+                    content = tooltipContent,
+                    style = tooltipStyle
+                };
+            }
+
+            if (e.type != EventType.Layout)
+            {
+                previousScreenPosition = screenPosition;
+            }
+
+            return delayedTooltip;
+        }
+
+        public void Open()
+        {
+            tool.Open(this);
+        }
+
+        public void Close()
+        {
+            tool.Close(this);
+        }
+
+        public void Toggle()
+        {
+            if (tool.isActive)
+            {
+                Open();
+            }
+            else
+            {
+                Close();
+            }
+        }
+    }
 }

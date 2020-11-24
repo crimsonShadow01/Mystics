@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
 namespace MeshCombineStudio
 {
@@ -10,7 +8,7 @@ namespace MeshCombineStudio
     {
         SerializedProperty drawGizmos, distances, lodMode, lodDistanceMode, showLod, lodCulled, lodCullDistance;
         SerializedProperty[] distanceElements;
-        
+
         float editorSkinMulti;
 
         private void OnEnable()
@@ -81,7 +79,7 @@ namespace MeshCombineStudio
                     else if (distanceElements[i].floatValue < distanceElements[i - 1].floatValue) distanceElements[i].floatValue = distanceElements[i - 1].floatValue + 0.1f;
                 }
             }
-            
+
 
             EditorGUILayout.EndVertical();
 

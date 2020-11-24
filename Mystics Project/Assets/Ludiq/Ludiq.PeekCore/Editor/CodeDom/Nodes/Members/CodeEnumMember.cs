@@ -16,7 +16,7 @@ namespace Ludiq.PeekCore.CodeDom
         public CodeEnumMember(string name, CodeExpression initializer)
         {
             Name = name;
-			Initializer = initializer;
+            Initializer = initializer;
         }
 
         public string Name { get; }
@@ -27,40 +27,40 @@ namespace Ludiq.PeekCore.CodeDom
         public List<CodeDirective> EndDirectives { get; } = new List<CodeDirective>();
         public List<CodeAttributeDeclaration> CustomAttributes { get; } = new List<CodeAttributeDeclaration>();
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach(var child in base.Children) yield return child;
-				if (Initializer != null) yield return Initializer;
-				foreach(var child in Comments) yield return child;
-				foreach(var child in StartDirectives) yield return child;
-				foreach(var child in EndDirectives) yield return child;
-				foreach(var child in CustomAttributes) yield return child;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Initializer != null) yield return Initializer;
+                foreach (var child in Comments) yield return child;
+                foreach (var child in StartDirectives) yield return child;
+                foreach (var child in EndDirectives) yield return child;
+                foreach (var child in CustomAttributes) yield return child;
+            }
+        }
 
-		public void Generate(CodeGenerator generator)
-		{
-			generator.EnterElement(this);
+        public void Generate(CodeGenerator generator)
+        {
+            generator.EnterElement(this);
 
-			StartDirectives.Generate(generator);
-			Comments.Generate(generator);
+            StartDirectives.Generate(generator);
+            Comments.Generate(generator);
 
-			generator.GenerateAttributes(CustomAttributes);
-			generator.OutputIdentifier(TokenType.Identifier, Name);
-			if (Initializer != null)
-			{
-				generator.Write(TokenType.Space, ' ');
-				generator.Write(TokenType.Punctuation, '=');
-				generator.Write(TokenType.Space, ' ');
-				Initializer.Generate(generator);
-			}
-			generator.WriteLine(TokenType.Punctuation, ',');
+            generator.GenerateAttributes(CustomAttributes);
+            generator.OutputIdentifier(TokenType.Identifier, Name);
+            if (Initializer != null)
+            {
+                generator.Write(TokenType.Space, ' ');
+                generator.Write(TokenType.Punctuation, '=');
+                generator.Write(TokenType.Space, ' ');
+                Initializer.Generate(generator);
+            }
+            generator.WriteLine(TokenType.Punctuation, ',');
 
-			EndDirectives.Generate(generator);
+            EndDirectives.Generate(generator);
 
-			generator.ExitElement();
-		}
-	}
+            generator.ExitElement();
+        }
+    }
 }

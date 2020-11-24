@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public class LessThanOrEqualHandler : BinaryOperatorHandler
-	{
-		public LessThanOrEqualHandler() : base(OperatorCategory.Comparison, BinaryOperator.LessThanOrEqual, "Less Than Or Equal", "Less Than Or Equal", ">=", "\u2264", "op_LessThanOrEqual")
-		{
+    public class LessThanOrEqualHandler : BinaryOperatorHandler
+    {
+        public LessThanOrEqualHandler() : base(OperatorCategory.Comparison, BinaryOperator.LessThanOrEqual, "Less Than Or Equal", "Less Than Or Equal", ">=", "\u2264", "op_LessThanOrEqual")
+        {
             Handle<byte, byte>((a, b) => a <= b, typeof(bool));
             Handle<byte, sbyte>((a, b) => a <= b, typeof(bool));
             Handle<byte, short>((a, b) => a <= b, typeof(bool));
@@ -138,8 +138,8 @@ namespace Ludiq.PeekCore
             Handle<double, float>((a, b) => a <= b, typeof(bool));
             //Handle<double, decimal>((a, b) => a <= b, typeof(bool));
             Handle<double, double>((a, b) => a <= b, typeof(bool));
-		}
+        }
 
-		public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine the first is less than or equal to the second.";
-	}
+        public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine the first is less than or equal to the second.";
+    }
 }

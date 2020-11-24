@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MeshCombineStudio
 {
@@ -25,7 +23,7 @@ namespace MeshCombineStudio
             startPosition = position = transform.position;
             startRotation = rot = transform.rotation;
         }
-         
+
         void OnDestroy()
         {
             RestoreCam();

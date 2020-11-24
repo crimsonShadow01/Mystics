@@ -1,272 +1,271 @@
-using System;
-using System.Linq;
 using Ludiq.Peek;
 using Ludiq.PeekCore;
+using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Handles = UnityEditor.Handles;
-using UnityObject = UnityEngine.Object;
 
 [assembly: InitializeAfterPlugins(typeof(SceneToolbars))]
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public static class SceneToolbars
-	{
-		private static Event e => Event.current;
+    public static class SceneToolbars
+    {
+        private static Event e => Event.current;
 
-		private static readonly ToolbarControlProvider toolbarControlProvider = new ToolbarControlProvider(ToolbarWindow.Scene);
+        private static readonly ToolbarControlProvider toolbarControlProvider = new ToolbarControlProvider(ToolbarWindow.Scene);
 
-		private static GameObject[] selectionToolbarTargets;
+        private static GameObject[] selectionToolbarTargets;
 
-		public static ToolbarControl selectionToolbarControl { get; private set; }
+        public static ToolbarControl selectionToolbarControl { get; private set; }
 
-		public static ToolbarControl dragToolbarControl { get; private set; }
+        public static ToolbarControl dragToolbarControl { get; private set; }
 
-		public static bool dragToolbarLocked { get; set; }
-		
-		private static DateTime dragToolbarStart;
-		
-		public static GameObject dragToolbarTarget;
+        public static bool dragToolbarLocked { get; set; }
 
-		static SceneToolbars()
-		{
-			EditorApplicationUtility.onSelectionChange += RefreshSelectionToolbar;
-			EditorApplicationUtility.onProjectChange += RefreshSelectionToolbar;
-			EditorApplicationUtility.onHierarchyChange += RefreshSelectionToolbar;
-			RefreshSelectionToolbar();
-		}
+        private static DateTime dragToolbarStart;
 
-		public static void RefreshSelectionToolbar()
-		{
-			// Don't pick prefabs
-			selectionToolbarTargets = Selection.transforms.Select(t => t.gameObject).ToArray();
+        public static GameObject dragToolbarTarget;
 
-			if (selectionToolbarTargets.Length > 0)
-			{
-				var toolbar = ObjectToolbarProvider.GetToolbar(selectionToolbarTargets);
-				ShortcutsIntegration.primaryToolbar = selectionToolbarControl = toolbarControlProvider.GetControl(toolbar);
-			}
-			else
-			{
-				ShortcutsIntegration.primaryToolbar = selectionToolbarControl = null;
-			}
+        static SceneToolbars()
+        {
+            EditorApplicationUtility.onSelectionChange += RefreshSelectionToolbar;
+            EditorApplicationUtility.onProjectChange += RefreshSelectionToolbar;
+            EditorApplicationUtility.onHierarchyChange += RefreshSelectionToolbar;
+            RefreshSelectionToolbar();
+        }
 
-			SceneView.RepaintAll();
-		}
+        public static void RefreshSelectionToolbar()
+        {
+            // Don't pick prefabs
+            selectionToolbarTargets = Selection.transforms.Select(t => t.gameObject).ToArray();
 
-		private static void RefreshDragToolbar(SceneView sceneView)
-		{
-			if (e.type == EventType.DragUpdated && !dragToolbarLocked)
-			{
-				var previousDragToolbarTarget = dragToolbarTarget;
+            if (selectionToolbarTargets.Length > 0)
+            {
+                var toolbar = ObjectToolbarProvider.GetToolbar(selectionToolbarTargets);
+                ShortcutsIntegration.primaryToolbar = selectionToolbarControl = toolbarControlProvider.GetControl(toolbar);
+            }
+            else
+            {
+                ShortcutsIntegration.primaryToolbar = selectionToolbarControl = null;
+            }
 
-				dragToolbarTarget = HandleUtility.PickGameObject(e.mousePosition, true);
+            SceneView.RepaintAll();
+        }
 
-				if (dragToolbarTarget != null)
-				{
-					var dragToolbar = ObjectToolbarProvider.GetToolbar(dragToolbarTarget);
-					dragToolbarControl = toolbarControlProvider.GetControl(dragToolbar);
-					sceneView.Repaint();
-				}
-				else
-				{
-					dragToolbarControl = null;
-					dragToolbarLocked = false;
-					sceneView.Repaint();
-				}
+        private static void RefreshDragToolbar(SceneView sceneView)
+        {
+            if (e.type == EventType.DragUpdated && !dragToolbarLocked)
+            {
+                var previousDragToolbarTarget = dragToolbarTarget;
 
-				if (dragToolbarTarget != previousDragToolbarTarget)
-				{
-					dragToolbarStart = DateTime.UtcNow;
-				}
+                dragToolbarTarget = HandleUtility.PickGameObject(e.mousePosition, true);
 
-				if (dragToolbarTarget != null && (DateTime.UtcNow - dragToolbarStart).TotalSeconds > PeekPlugin.Configuration.dropActivationDelay)
-				{
-					dragToolbarLocked = true;
-				}
-			}
+                if (dragToolbarTarget != null)
+                {
+                    var dragToolbar = ObjectToolbarProvider.GetToolbar(dragToolbarTarget);
+                    dragToolbarControl = toolbarControlProvider.GetControl(dragToolbar);
+                    sceneView.Repaint();
+                }
+                else
+                {
+                    dragToolbarControl = null;
+                    dragToolbarLocked = false;
+                    sceneView.Repaint();
+                }
 
-			if (e.rawType == EventType.DragExited)
-			{
-				dragToolbarTarget = null;
-				dragToolbarControl = null;
-				dragToolbarLocked = false;
-			}
-		}
-		
-		internal static void OnSceneGUI(SceneView sceneView)
-		{
-			if (PeekPlugin.Configuration.toggleToolbarShortcut.Check())
-			{
-				PeekPlugin.Configuration.displaySceneToolbars = !PeekPlugin.Configuration.displaySceneToolbars;
-				PeekPlugin.Configuration.Save();
-				e.TryUse();
-			}
+                if (dragToolbarTarget != previousDragToolbarTarget)
+                {
+                    dragToolbarStart = DateTime.UtcNow;
+                }
 
-			if (!PeekPlugin.Configuration.enableSceneToolbars.Display(sceneView.maximized) ||
-			    !PeekPlugin.Configuration.displaySceneToolbars)
-			{
-				return;
-			}
+                if (dragToolbarTarget != null && (DateTime.UtcNow - dragToolbarStart).TotalSeconds > PeekPlugin.Configuration.dropActivationDelay)
+                {
+                    dragToolbarLocked = true;
+                }
+            }
 
-			Profiler.BeginSample("Peek." + nameof(SceneToolbars));
-			
-			try
-			{
+            if (e.rawType == EventType.DragExited)
+            {
+                dragToolbarTarget = null;
+                dragToolbarControl = null;
+                dragToolbarLocked = false;
+            }
+        }
 
-				Handles.BeginGUI();
+        internal static void OnSceneGUI(SceneView sceneView)
+        {
+            if (PeekPlugin.Configuration.toggleToolbarShortcut.Check())
+            {
+                PeekPlugin.Configuration.displaySceneToolbars = !PeekPlugin.Configuration.displaySceneToolbars;
+                PeekPlugin.Configuration.Save();
+                e.TryUse();
+            }
 
-				DrawToolbar(sceneView, selectionToolbarControl, selectionToolbarTargets);
-				
-				if (PeekPlugin.Configuration.enableStickyDragAndDrop)
-				{
-					if (dragToolbarControl != null)
-					{
-						EditorGUI.BeginDisabledGroup(!dragToolbarLocked);
-						DrawToolbar(sceneView, dragToolbarControl, new[] {dragToolbarTarget});
-						EditorGUI.EndDisabledGroup();
-					}
+            if (!PeekPlugin.Configuration.enableSceneToolbars.Display(sceneView.maximized) ||
+                !PeekPlugin.Configuration.displaySceneToolbars)
+            {
+                return;
+            }
 
-					RefreshDragToolbar(sceneView);
-				}
+            Profiler.BeginSample("Peek." + nameof(SceneToolbars));
 
-				if (PeekPlugin.Configuration.selectionHierarchyShortcut.Check(e))
-				{
-					if (OpenHierarchyTool())
-					{
-						e.Use();
-					}
-				}
+            try
+            {
 
-				Handles.EndGUI();
-			}
-			catch (Exception ex)
-			{
-				Debug.LogException(ex);
-			}
+                Handles.BeginGUI();
 
-			Profiler.EndSample();
-		}
+                DrawToolbar(sceneView, selectionToolbarControl, selectionToolbarTargets);
 
-		private static void DrawToolbar(SceneView sceneView, ToolbarControl toolbarControl, GameObject[] targets)
-		{
-			if (toolbarControl == null || !toolbarControl.toolbar.isValid)
-			{
-				return;
-			}
-		
-			toolbarControl.toolbar.Update();
-			
-			var stripSize = toolbarControl.GetSceneViewSize();
+                if (PeekPlugin.Configuration.enableStickyDragAndDrop)
+                {
+                    if (dragToolbarControl != null)
+                    {
+                        EditorGUI.BeginDisabledGroup(!dragToolbarLocked);
+                        DrawToolbar(sceneView, dragToolbarControl, new[] { dragToolbarTarget });
+                        EditorGUI.EndDisabledGroup();
+                    }
 
-			float stripX, stripY;
+                    RefreshDragToolbar(sceneView);
+                }
 
-			var position = sceneView.GetInnerGuiPosition();
-			
-			sceneView.CalculateGuiBounds(targets, out var guiBounds, out var guiCenter);
+                if (PeekPlugin.Configuration.selectionHierarchyShortcut.Check(e))
+                {
+                    if (OpenHierarchyTool())
+                    {
+                        e.Use();
+                    }
+                }
 
-			if (guiBounds != null)
-			{
-				stripX = guiBounds.Value.center.x;
-				stripY = guiBounds.Value.yMax + Styles.toolbarBoundsMargin;
+                Handles.EndGUI();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
 
-				// LudiqGUI.DrawEmptyRect(guiBounds.Value, Color.red);
-			}
-			else if (guiCenter != null)
-			{
-				stripX = guiCenter.Value.x;
-				stripY = guiCenter.Value.y + Styles.toolbarCenterMargin;
-			}
-			else
-			{
-				// Object is behind camera
-				// We can't return because we might get a layout mismatch error.
-				// And we can't do a safe check in Update because we only have a GUI callback.
-				// So we just hide the toolbar later.
-				stripX = 0;
-				stripY = 0;
-			}
+            Profiler.EndSample();
+        }
 
-			stripX -= stripSize.x / 2;
+        private static void DrawToolbar(SceneView sceneView, ToolbarControl toolbarControl, GameObject[] targets)
+        {
+            if (toolbarControl == null || !toolbarControl.toolbar.isValid)
+            {
+                return;
+            }
 
-			stripX = Mathf.Clamp
-			(
-				stripX,
-				Styles.toolbarScreenMargin,
-				position.width - Styles.toolbarScreenMargin - stripSize.x
-			);
+            toolbarControl.toolbar.Update();
 
-			stripY = Mathf.Clamp
-			(
-				stripY,
-				Styles.toolbarScreenMargin,
-				position.height - Styles.toolbarScreenMargin - stripSize.y
-			);
+            var stripSize = toolbarControl.GetSceneViewSize();
 
-			toolbarControl.guiPosition = new Rect
-			(
-				stripX,
-				stripY,
-				stripSize.x,
-				stripSize.y
-			);
+            float stripX, stripY;
 
-			var isWithinView = sceneView.IsWithinView(guiBounds, guiCenter);
-			var alpha = isWithinView.HasValue ? (isWithinView.Value ? 1 : 0.5f) : 0;
+            var position = sceneView.GetInnerGuiPosition();
 
-			EditorGUI.BeginDisabledGroup(alpha == 0);
-			
-			using (LudiqGUI.color.Override(LudiqGUI.color.value.WithAlphaMultiplied(alpha)))
-			{
-				toolbarControl.DrawInSceneView();
-			}
+            sceneView.CalculateGuiBounds(targets, out var guiBounds, out var guiCenter);
 
-			EditorGUI.EndDisabledGroup();
+            if (guiBounds != null)
+            {
+                stripX = guiBounds.Value.center.x;
+                stripY = guiBounds.Value.yMax + Styles.toolbarBoundsMargin;
 
-			if (toolbarControl.guiPosition.Contains(e.mousePosition))
-			{
-				sceneView.Repaint();
-				SceneViewIntegration.Use();
-			}
-		}
-		
-		private static bool OpenHierarchyTool()
-		{
-			var gameObjectTool = selectionToolbarControl?.toolbar.OfType<GameObjectEditorTool>().FirstOrDefault();
+                // LudiqGUI.DrawEmptyRect(guiBounds.Value, Color.red);
+            }
+            else if (guiCenter != null)
+            {
+                stripX = guiCenter.Value.x;
+                stripY = guiCenter.Value.y + Styles.toolbarCenterMargin;
+            }
+            else
+            {
+                // Object is behind camera
+                // We can't return because we might get a layout mismatch error.
+                // And we can't do a safe check in Update because we only have a GUI callback.
+                // So we just hide the toolbar later.
+                stripX = 0;
+                stripY = 0;
+            }
 
-			if (gameObjectTool == null)
-			{
-				return false;
-			}
+            stripX -= stripSize.x / 2;
 
-			var gameObjectToolControl = selectionToolbarControl.GetToolControl(gameObjectTool);
+            stripX = Mathf.Clamp
+            (
+                stripX,
+                Styles.toolbarScreenMargin,
+                position.width - Styles.toolbarScreenMargin - stripSize.x
+            );
 
-			gameObjectToolControl.Toggle();
+            stripY = Mathf.Clamp
+            (
+                stripY,
+                Styles.toolbarScreenMargin,
+                position.height - Styles.toolbarScreenMargin - stripSize.y
+            );
 
-			if (gameObjectTool.isActive)
-			{
-				gameObjectTool.Close(gameObjectToolControl);
-			}
+            toolbarControl.guiPosition = new Rect
+            (
+                stripX,
+                stripY,
+                stripSize.x,
+                stripSize.y
+            );
 
-			gameObjectTool.OpenHierarchy(gameObjectToolControl);
+            var isWithinView = sceneView.IsWithinView(guiBounds, guiCenter);
+            var alpha = isWithinView.HasValue ? (isWithinView.Value ? 1 : 0.5f) : 0;
 
-			return true;
-		}
+            EditorGUI.BeginDisabledGroup(alpha == 0);
 
-		private static class Styles
-		{
-			static Styles() { }
+            using (LudiqGUI.color.Override(LudiqGUI.color.value.WithAlphaMultiplied(alpha)))
+            {
+                toolbarControl.DrawInSceneView();
+            }
 
-			public static readonly float toolbarCenterMargin = 64;
+            EditorGUI.EndDisabledGroup();
 
-			public static readonly float toolbarBoundsMargin = 24;
+            if (toolbarControl.guiPosition.Contains(e.mousePosition))
+            {
+                sceneView.Repaint();
+                SceneViewIntegration.Use();
+            }
+        }
 
-			public static readonly float toolbarScreenMargin = 16;
-		}
-	}
+        private static bool OpenHierarchyTool()
+        {
+            var gameObjectTool = selectionToolbarControl?.toolbar.OfType<GameObjectEditorTool>().FirstOrDefault();
+
+            if (gameObjectTool == null)
+            {
+                return false;
+            }
+
+            var gameObjectToolControl = selectionToolbarControl.GetToolControl(gameObjectTool);
+
+            gameObjectToolControl.Toggle();
+
+            if (gameObjectTool.isActive)
+            {
+                gameObjectTool.Close(gameObjectToolControl);
+            }
+
+            gameObjectTool.OpenHierarchy(gameObjectToolControl);
+
+            return true;
+        }
+
+        private static class Styles
+        {
+            static Styles() { }
+
+            public static readonly float toolbarCenterMargin = 64;
+
+            public static readonly float toolbarBoundsMargin = 24;
+
+            public static readonly float toolbarScreenMargin = 16;
+        }
+    }
 }

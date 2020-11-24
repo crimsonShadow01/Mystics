@@ -1,14 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 using UnityEditor;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 
 
 namespace TerrainComposer2
 {
     [CustomEditor(typeof(TC_ItemBehaviour), true)]
     [CanEditMultipleObjects]
-    public class TC_ItemBehaviourEditor : Editor {
+    public class TC_ItemBehaviourEditor : Editor
+    {
 
         SerializedProperty posOffset, positionMode;
 
@@ -26,12 +26,12 @@ namespace TerrainComposer2
         SerializedProperty seed2;
         SerializedProperty noise, lacunarity, octaves, persistence, seed, amplitude, warp0, warp, damp0, damp, dampScale, cellType, distanceFunction;
         SerializedProperty noiseMode, cellNoiseMode;
-        
+
         SerializedProperty wrapMode, radius;
         SerializedProperty stampTex, pathTexStamp, rawImage, collisionMask, collisionMode, heightDetectRange, range; //collisionDirection
         SerializedProperty image, texImage;
         SerializedProperty imageSettings, colChannels, colSelectMode;
-        
+
         SerializedProperty shapes, topSize, bottomSize, shapeSize;
         SerializedProperty iterations, mipmapLevel, convexityMode, convexityStrength, blurMode, detectRange;
         SerializedProperty distanceRules;
@@ -75,7 +75,7 @@ namespace TerrainComposer2
         float scaleYOld;
 
         string[] layers;
-        
+
         public class SPCurve
         {
             public SerializedProperty curveEntry;
@@ -128,7 +128,7 @@ namespace TerrainComposer2
             lockScaleX = serializedObject.FindProperty("lockScaleX");
             lockScaleY = serializedObject.FindProperty("lockScaleY");
             lockScaleZ = serializedObject.FindProperty("lockScaleZ");
-            
+
             posOffset = serializedObject.FindProperty("posOffset");
             positionMode = serializedObject.FindProperty("positionMode");
             posY = serializedObject.FindProperty("posY");
@@ -143,7 +143,7 @@ namespace TerrainComposer2
             }
 
             if (layer != null) distanceRules = serializedObject.FindProperty("distanceRules");
-            
+
             TC_Reporter.Log("OnEnable");
 
             if (layerLevel != null)
@@ -210,7 +210,7 @@ namespace TerrainComposer2
                 range = serializedObject.FindProperty("range");
                 heightDetectRange = serializedObject.FindProperty("heightDetectRange");
                 includeTerrainHeight = serializedObject.FindProperty("includeTerrainHeight");
-                
+
                 shapes = serializedObject.FindProperty("shapes");
 
                 if (shapes != null)
@@ -248,7 +248,7 @@ namespace TerrainComposer2
 
                     heightOffset = tree.FindPropertyRelative("heightOffset");
                     randomPosition = tree.FindPropertyRelative("randomPosition");
-                     
+
                     scaleRange = tree.FindPropertyRelative("scaleRange");
                     scaleMulti = tree.FindPropertyRelative("scaleMulti");
                     nonUniformScale = tree.FindPropertyRelative("nonUniformScale");
@@ -264,14 +264,14 @@ namespace TerrainComposer2
                     parentName = spawnObject.FindPropertyRelative("parentName");
                     parentT = spawnObject.FindPropertyRelative("parentT");
                     parentToTerrain = spawnObject.FindPropertyRelative("parentToTerrain");
-                    
+
                     heightRange = spawnObject.FindPropertyRelative("heightRange");
                     heightOffset = spawnObject.FindPropertyRelative("heightOffset");
 
                     randomPosition = spawnObject.FindPropertyRelative("randomPosition");
                     includeTerrainHeight = spawnObject.FindPropertyRelative("includeTerrainHeight");
                     includeTerrainAngle = spawnObject.FindPropertyRelative("includeTerrainAngle");
-                    
+
                     rotRangeX = spawnObject.FindPropertyRelative("rotRangeX");
                     rotRangeY = spawnObject.FindPropertyRelative("rotRangeY");
                     rotRangeZ = spawnObject.FindPropertyRelative("rotRangeZ");
@@ -317,18 +317,18 @@ namespace TerrainComposer2
                 TC_ItemBehaviour.DoRepaint -= Repaint;
             }
             UnityEditor.Tools.hidden = false;
-            Undo.undoRedoPerformed -= Repaint; 
+            Undo.undoRedoPerformed -= Repaint;
         }
-         
+
         void OnDestroy()
         {
             Undo.undoRedoPerformed -= Repaint;
             item = (TC_ItemBehaviour)target;
-            if (item != null) TC_ItemBehaviour.DoRepaint -= Repaint; 
+            if (item != null) TC_ItemBehaviour.DoRepaint -= Repaint;
         }
 
         bool keyUp, cmdDuplicate, cmdDelete;
-        
+
         void OnSceneGUI()
         {
             eventCurrent = Event.current;
@@ -338,7 +338,7 @@ namespace TerrainComposer2
 
             if ((eventCurrent.commandName == "Delete" || eventCurrent.commandName == "SoftDelete") && eventCurrent.type == EventType.Repaint) { eventCurrent.Use(); cmdDelete = true; }
             else if (eventCurrent.commandName == "Duplicate" && eventCurrent.type == EventType.Repaint) { eventCurrent.Use(); cmdDuplicate = true; }
-            
+
             if (cmdDelete && keyUp) { cmdDelete = keyUp = false; TC_NodeWindow.DeleteKey(); return; }
             else if (cmdDuplicate && keyUp) { cmdDuplicate = keyUp = false; TC_NodeWindow.DuplicateKey(); return; }
 
@@ -366,11 +366,11 @@ namespace TerrainComposer2
                 Vector3 pos = posOld = item.t.position;
 
                 // if (GUIUtility.hotControl != 0 && node != null) pos.y *= node.t.lossyScale.y;
-                
+
                 GUI.changed = false;
                 Undo.RecordObject(item.t, "Edit Transform");
                 Undo.RecordObject(item, "Edit Transform");
-                
+
                 pos = Handles.PositionHandle(pos, Quaternion.identity);
 
                 if (item.lockTransform)
@@ -379,7 +379,7 @@ namespace TerrainComposer2
                     if (item.lockPosY && pos.y != posOld.y) { TC.AddMessage(item.name + " position Y is locked."); pos.y = posOld.y; }
                     if (item.lockPosZ && pos.z != posOld.z) { TC.AddMessage(item.name + " position Z is locked."); pos.z = posOld.z; }
                 }
-                
+
                 if (!item.lockPosParent)
                 {
                     if (item.t.position != pos) item.t.position = pos;
@@ -428,20 +428,20 @@ namespace TerrainComposer2
                 }
                 else if (GUI.changed) TC.AddMessage(item.name + " positioning is locked.");
             }
-            
+
             else if (currentTool == UnityEditor.Tool.Rotate)
             {
                 Undo.RecordObject(item.transform, "Rotate");
                 Handles.color = Color.blue;
                 Handles.Slider(item.t.position, item.t.localRotation * new Vector3(0, 0, 1));
-                #if UNITY_5_1 || UNITY_5_2 || UNITY_5_3 || UNITY_5_4 || UNITY_5_5
+#if UNITY_5_1 || UNITY_5_2 || UNITY_5_3 || UNITY_5_4 || UNITY_5_5
                 Handles.SphereCap(0, item.t.position, Quaternion.identity, 0.15f * HandleUtility.GetHandleSize(item.t.position));
-                #else
+#else
                 Handles.SphereHandleCap(0, item.t.position, Quaternion.identity, 0.15f * HandleUtility.GetHandleSize(item.t.position), EventType.Repaint);
-                #endif
-                Handles.color = Color.white; 
+#endif
+                Handles.color = Color.white;
                 GUI.changed = false;
-                
+
                 Quaternion rot = Handles.Disc(item.t.rotation, item.t.position, new Vector3(0, 1, 0), 1.5f * HandleUtility.GetHandleSize(item.t.position), false, 0);
 
                 if (!(item.lockTransform && item.lockRotY))
@@ -490,7 +490,7 @@ namespace TerrainComposer2
                     if (item.lockScaleY && scale.y != scaleOld.y) { TC.AddMessage(item.name + " scale Y is locked."); scale.y = scaleOld.y; }
                     if (item.lockScaleZ && scale.z != scaleOld.z) { TC.AddMessage(item.name + " scale Z is locked."); scale.z = scaleOld.z; }
                 }
-                
+
                 if (scale.x != scaleOld.x || scale.y != scaleOld.y || scale.z != scaleOld.z)
                 {
                     item.t.localScale = scale;
@@ -525,7 +525,7 @@ namespace TerrainComposer2
 
             if (settings == null) return;
             serializedObject.Update();
-            
+
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space((EditorGUIUtility.currentViewWidth / 2) - 130);
 
@@ -597,7 +597,7 @@ namespace TerrainComposer2
 
                 string tooltip = "The pivot can be moved without affecting the position of all the children.\nWhen rescaling the scale will be taken from each node seperately.\n\nPress 'F' key to toggle.\nHold 'Control' key to enable.";
 
-                TD.DrawProperty(lockPosChildren, new GUIContent("Lock Position Children",tooltip));
+                TD.DrawProperty(lockPosChildren, new GUIContent("Lock Position Children", tooltip));
 
                 if (GUI.changed)
                 {
@@ -635,7 +635,7 @@ namespace TerrainComposer2
                     GUI.color = Color.red * TD.editorSkinMulti;
                     EditorGUILayout.BeginVertical("Box");
                     GUI.color = Color.white;
-                        TD.DrawProperty(doNormalize, new GUIContent("Normalize"));
+                    TD.DrawProperty(doNormalize, new GUIContent("Normalize"));
                     EditorGUILayout.EndVertical();
                 }
             }
@@ -685,7 +685,7 @@ namespace TerrainComposer2
 
                             Texture2D splatTexture;
                             int splatLength = TC.GetTerrainSplatTexture(settings.masterTerrain, splatSelectIndex.intValue, out splatTexture);
-                            
+
                             DrawIntSlider(splatSelectIndex, 0, splatLength - 1, new GUIContent("Splat Index"));
                             EditorGUILayout.EndHorizontal();
                             EditorGUILayout.BeginHorizontal();
@@ -811,7 +811,7 @@ namespace TerrainComposer2
             // DrawMethod();
             // Draw Inspector
             // if (node == null)
-            
+
             if (layerGroup != null)
             {
                 if (layerGroup.level == 0)
@@ -839,9 +839,9 @@ namespace TerrainComposer2
 
             notes.stringValue = EditorGUILayout.TextArea(notes.stringValue);
 
-            if (settings.drawDefaultInspector) base.OnInspectorGUI();  
+            if (settings.drawDefaultInspector) base.OnInspectorGUI();
             TD.DrawSpacer();
-            
+
             serializedObject.ApplyModifiedProperties();
 
             if (selectItem == null && selectItemGroup == null)
@@ -878,7 +878,7 @@ namespace TerrainComposer2
                     EditorGUILayout.BeginHorizontal();
                     if (usedAsPortalList[i] == null) { item.isPortalCount--; usedAsPortalList.RemoveAt(i--); EditorUtility.SetDirty(item); continue; }
                     EditorGUILayout.ObjectField(usedAsPortalList[i], typeof(TC_ItemBehaviour), true);
-                    
+
                     if (GUILayout.Button("Select", EditorStyles.miniButtonMid, GUILayout.Width(70)))
                     {
                         Selection.activeTransform = usedAsPortalList[i].t;
@@ -916,12 +916,12 @@ namespace TerrainComposer2
                 {
                     _portalNode = portalNode.objectReferenceValue as TC_ItemBehaviour;
                     bool verifyPortal = TC.VerifyPortal(_portalNode);
-                    
+
                     if (oldPortalNode != null && (_portalNode == null || verifyPortal))
                     {
                         item.RemoveFromPortalNode();
                     }
-                    
+
                     if (_portalNode != null)
                     {
                         if (verifyPortal)
@@ -1005,13 +1005,13 @@ namespace TerrainComposer2
                 GUILayout.Space(5);
                 EditorGUILayout.BeginVertical("Box");
                 EditorGUILayout.BeginHorizontal();
-                    distanceRules.arraySize = EditorGUILayout.IntField("Size", distanceRules.arraySize);
-                    if (GUILayout.Button("+", EditorStyles.miniButtonMid, GUILayout.Width(25)))
-                    {
-                        distanceRules.InsertArrayElementAtIndex(0);
-                    }
+                distanceRules.arraySize = EditorGUILayout.IntField("Size", distanceRules.arraySize);
+                if (GUILayout.Button("+", EditorStyles.miniButtonMid, GUILayout.Width(25)))
+                {
+                    distanceRules.InsertArrayElementAtIndex(0);
+                }
                 EditorGUILayout.EndHorizontal();
-                
+
                 EditorGUI.indentLevel++;
 
                 for (int i = 0; i < distanceRules.arraySize; i++)
@@ -1019,11 +1019,11 @@ namespace TerrainComposer2
                     SerializedProperty elementProperty = distanceRules.GetArrayElementAtIndex(i);
 
                     EditorGUILayout.BeginHorizontal();
-                        TD.DrawProperty(elementProperty, new GUIContent("Rule " + (i + 1)));
-                        if (GUILayout.Button("-", EditorStyles.miniButtonMid, GUILayout.Width(25)))
-                        {
-                            distanceRules.DeleteArrayElementAtIndex(i--); continue;
-                        }
+                    TD.DrawProperty(elementProperty, new GUIContent("Rule " + (i + 1)));
+                    if (GUILayout.Button("-", EditorStyles.miniButtonMid, GUILayout.Width(25)))
+                    {
+                        distanceRules.DeleteArrayElementAtIndex(i--); continue;
+                    }
                     EditorGUILayout.EndHorizontal();
 
                     if (elementProperty.isExpanded)
@@ -1116,12 +1116,12 @@ namespace TerrainComposer2
             for (int i = 0; i < settings.importTerrains.Count; i++)
             {
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PrefixLabel("Tile x" + tileX + "_y" + tileY);
-                    settings.importTerrains[i] = EditorGUILayout.ObjectField(settings.importTerrains[i], typeof(TerrainData), false) as TerrainData;
-                    if (GUILayout.Button("-", GUILayout.Width(25)))
-                    {
-                        settings.importTerrains.RemoveAt(i--);
-                    }
+                EditorGUILayout.PrefixLabel("Tile x" + tileX + "_y" + tileY);
+                settings.importTerrains[i] = EditorGUILayout.ObjectField(settings.importTerrains[i], typeof(TerrainData), false) as TerrainData;
+                if (GUILayout.Button("-", GUILayout.Width(25)))
+                {
+                    settings.importTerrains.RemoveAt(i--);
+                }
                 EditorGUILayout.EndHorizontal();
                 if (++tileX >= settings.importTiles.x) { tileX = 0; ++tileY; }
             }
@@ -1129,21 +1129,21 @@ namespace TerrainComposer2
             GUILayout.Space(5);
 
             EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel("Tiles X");
-                settings.importTiles.x = EditorGUILayout.IntField(settings.importTiles.x);
-                if (settings.importTiles.x < 0) settings.importTiles.x = 0;
+            EditorGUILayout.PrefixLabel("Tiles X");
+            settings.importTiles.x = EditorGUILayout.IntField(settings.importTiles.x);
+            if (settings.importTiles.x < 0) settings.importTiles.x = 0;
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel("Tiles Y");
-                settings.importTiles.y = EditorGUILayout.IntField(settings.importTiles.y);
-                if (settings.importTiles.y < 0) settings.importTiles.y = 0;
+            EditorGUILayout.PrefixLabel("Tiles Y");
+            settings.importTiles.y = EditorGUILayout.IntField(settings.importTiles.y);
+            if (settings.importTiles.y < 0) settings.importTiles.y = 0;
             EditorGUILayout.EndHorizontal();
 
             GUILayout.Space(10);
             // TD.DrawSpacer();
         }
-        
+
         void DrawExport(string filename, int mode)
         {
             TD.DrawSpacer();
@@ -1159,18 +1159,18 @@ namespace TerrainComposer2
             if (mode == 0)
             {
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PrefixLabel("Export Source");
-                    settings.importSource = (TC_Settings.ImportSource)EditorGUILayout.EnumPopup(settings.importSource);
+                EditorGUILayout.PrefixLabel("Export Source");
+                settings.importSource = (TC_Settings.ImportSource)EditorGUILayout.EnumPopup(settings.importSource);
                 EditorGUILayout.EndHorizontal();
 
                 if (settings.importSource == TC_Settings.ImportSource.TerrainData_Files) DrawTerrainDataFiles();
             }
-            
-            
+
+
             EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel("Path");
-                EditorGUILayout.LabelField(settings.exportPath);
-                if (GUILayout.Button("Select", GUILayout.Width(50))) SelectExportPath();
+            EditorGUILayout.PrefixLabel("Path");
+            EditorGUILayout.LabelField(settings.exportPath);
+            if (GUILayout.Button("Select", GUILayout.Width(50))) SelectExportPath();
             EditorGUILayout.EndHorizontal();
 
             string filenameText, buttonText;
@@ -1228,17 +1228,17 @@ namespace TerrainComposer2
                 settings.normalmapStrength = EditorGUILayout.FloatField("Normal map Strength", settings.normalmapStrength);
 
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PrefixLabel(" ");
+                EditorGUILayout.PrefixLabel(" ");
 
-                    if (GUILayout.Button("Export Normal map", GUILayout.Width(buttonWidth)))
-                    {
-                        generate.ExportNormalmap(settings.exportPath, true);
-                    }
+                if (GUILayout.Button("Export Normal map", GUILayout.Width(buttonWidth)))
+                {
+                    generate.ExportNormalmap(settings.exportPath, true);
+                }
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.EndVertical();
             }
-            
+
         }
 
         public void SelectExportPath()
@@ -1388,7 +1388,7 @@ namespace TerrainComposer2
             string[] files = FindPresets(path);
 
             GenericMenu menu = new GenericMenu();
-            
+
             for (int i = 0; i < files.Length; i++)
             {
                 string filename = TC.GetFileName(AssetDatabase.GUIDToAssetPath(files[i]));
@@ -1454,7 +1454,7 @@ namespace TerrainComposer2
 
             if (inputKind.enumValueIndex == (int)InputKind.Noise) path += ((InputNoise)inputNoise.enumValueIndex).ToString();
             if (inputKind.enumValueIndex == (int)InputKind.Shape) path += ((InputShape)inputShape.enumValueIndex).ToString();
-            
+
             return path;
         }
 
@@ -1468,7 +1468,7 @@ namespace TerrainComposer2
         {
             string path = GetPresetPathFile();
             string fullPath = GetPresetFullPath();
-            
+
             // Debug.Log(path);
             // Debug.Log(fullPath);
 
@@ -1568,7 +1568,7 @@ namespace TerrainComposer2
                     else if (octaves.intValue > 12) octaves.intValue = 12;
                 }
                 TD.DrawProperty(seed);
-                
+
                 GUILayout.Space(15);
 
                 if (inputNoise.enumValueIndex == (int)InputNoise.Swiss || inputNoise.enumValueIndex == (int)InputNoise.Jordan)
@@ -1639,7 +1639,7 @@ namespace TerrainComposer2
             spCurve.range.vector2Value /= multi;
 
             DrawMinMaxSlider(spCurve.range, 0, 1, 0.001f, new GUIContent(" "));
-            
+
             // GUILayout.Space(3);
 
             EditorGUILayout.BeginHorizontal();
@@ -1674,7 +1674,7 @@ namespace TerrainComposer2
         void ClickCurveMenu()
         {
             GenericMenu menu = new GenericMenu();
-            
+
             menu.AddItem(new GUIContent("Invert"), false, CurveMenuInput, "invert");
             menu.AddSeparator("");
             menu.AddItem(new GUIContent("Linear Curve"), false, CurveMenuInput, "linearCurve");
@@ -1751,34 +1751,34 @@ namespace TerrainComposer2
             if (lockTransform.boolValue)
             {
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PrefixLabel(" Position");
-                    if (lockPosX.boolValue) GUI.backgroundColor = Color.green;
-                    if (GUILayout.Button("X", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockPosX.boolValue = !lockPosX.boolValue;
-                    GUI.backgroundColor = lockPosY.boolValue ? Color.green : Color.white;
-                    if (GUILayout.Button("Y", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockPosY.boolValue = !lockPosY.boolValue;
-                    GUI.backgroundColor = lockPosZ.boolValue ? Color.green : Color.white;
-                    if (GUILayout.Button("Z", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockPosZ.boolValue = !lockPosZ.boolValue;
-                    GUI.backgroundColor = Color.white;
+                EditorGUILayout.PrefixLabel(" Position");
+                if (lockPosX.boolValue) GUI.backgroundColor = Color.green;
+                if (GUILayout.Button("X", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockPosX.boolValue = !lockPosX.boolValue;
+                GUI.backgroundColor = lockPosY.boolValue ? Color.green : Color.white;
+                if (GUILayout.Button("Y", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockPosY.boolValue = !lockPosY.boolValue;
+                GUI.backgroundColor = lockPosZ.boolValue ? Color.green : Color.white;
+                if (GUILayout.Button("Z", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockPosZ.boolValue = !lockPosZ.boolValue;
+                GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PrefixLabel(" Rotation");
-                    GUI.backgroundColor = lockRotY.boolValue ? Color.green : Color.white;
-                    GUILayout.Space(25);
-                    if (GUILayout.Button("Y", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockRotY.boolValue = !lockRotY.boolValue;
-                    GUI.backgroundColor = Color.white;
+                EditorGUILayout.PrefixLabel(" Rotation");
+                GUI.backgroundColor = lockRotY.boolValue ? Color.green : Color.white;
+                GUILayout.Space(25);
+                if (GUILayout.Button("Y", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockRotY.boolValue = !lockRotY.boolValue;
+                GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
-                
+
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PrefixLabel(" Scale");
-                    if (lockScaleX.boolValue) GUI.backgroundColor = Color.green;
-                    if (GUILayout.Button("X", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockScaleX.boolValue = !lockScaleX.boolValue;
-                    GUI.backgroundColor = lockScaleY.boolValue ? Color.green : Color.white;
-                    if (GUILayout.Button("Y", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockScaleY.boolValue = !lockScaleY.boolValue;
-                    GUI.backgroundColor = lockScaleZ.boolValue ? Color.green : Color.white;
-                    if (GUILayout.Button("Z", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockScaleZ.boolValue = !lockScaleZ.boolValue;
-                    GUI.backgroundColor = Color.white;
+                EditorGUILayout.PrefixLabel(" Scale");
+                if (lockScaleX.boolValue) GUI.backgroundColor = Color.green;
+                if (GUILayout.Button("X", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockScaleX.boolValue = !lockScaleX.boolValue;
+                GUI.backgroundColor = lockScaleY.boolValue ? Color.green : Color.white;
+                if (GUILayout.Button("Y", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockScaleY.boolValue = !lockScaleY.boolValue;
+                GUI.backgroundColor = lockScaleZ.boolValue ? Color.green : Color.white;
+                if (GUILayout.Button("Z", EditorStyles.miniButtonMid, GUILayout.Width(25))) lockScaleZ.boolValue = !lockScaleZ.boolValue;
+                GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
             }
 
@@ -1795,14 +1795,14 @@ namespace TerrainComposer2
             }
 
             EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel("Flip Scale");
-                if (item.t.localScale.x < 0) GUI.backgroundColor = Color.green;
-                if (GUILayout.Button("X", EditorStyles.miniButtonMid, GUILayout.Width(25))) SetTransformScale(new Vector3(-item.t.localScale.x, item.t.localScale.y, item.t.localScale.z), "Flip X");
-                GUI.backgroundColor = item.t.localScale.y < 0 ? Color.green : Color.white;
-                if (GUILayout.Button("Y", EditorStyles.miniButtonMid, GUILayout.Width(25))) SetTransformScale(new Vector3(item.t.localScale.x, -item.t.localScale.y, item.t.localScale.z), "Flip Y");
-                GUI.backgroundColor = item.t.localScale.z < 0 ? Color.green : Color.white;
-                if (GUILayout.Button("Z", EditorStyles.miniButtonMid, GUILayout.Width(25))) SetTransformScale(new Vector3(item.t.localScale.x, item.t.localScale.y, -item.t.localScale.z), "Flip Z");
-                GUI.backgroundColor = Color.white;
+            EditorGUILayout.PrefixLabel("Flip Scale");
+            if (item.t.localScale.x < 0) GUI.backgroundColor = Color.green;
+            if (GUILayout.Button("X", EditorStyles.miniButtonMid, GUILayout.Width(25))) SetTransformScale(new Vector3(-item.t.localScale.x, item.t.localScale.y, item.t.localScale.z), "Flip X");
+            GUI.backgroundColor = item.t.localScale.y < 0 ? Color.green : Color.white;
+            if (GUILayout.Button("Y", EditorStyles.miniButtonMid, GUILayout.Width(25))) SetTransformScale(new Vector3(item.t.localScale.x, -item.t.localScale.y, item.t.localScale.z), "Flip Y");
+            GUI.backgroundColor = item.t.localScale.z < 0 ? Color.green : Color.white;
+            if (GUILayout.Button("Z", EditorStyles.miniButtonMid, GUILayout.Width(25))) SetTransformScale(new Vector3(item.t.localScale.x, item.t.localScale.y, -item.t.localScale.z), "Flip Z");
+            GUI.backgroundColor = Color.white;
             EditorGUILayout.EndHorizontal();
 
             if (drawBox) EditorGUILayout.EndVertical();
@@ -1864,7 +1864,7 @@ namespace TerrainComposer2
             {
                 // Debug.Log("Unregister");
                 node.rawImage.UnregisterReference();
-                
+
             }
             pathTexStamp.stringValue = "";
             // Debug.Log("Do " + node.pathTexStamp);
@@ -1905,11 +1905,12 @@ namespace TerrainComposer2
             GUILayout.Space(5);
 
             EditorGUILayout.BeginVertical("Box");
-            
+
             Color colStart = Color.black, colEnd = Color.black;
             Color colStartOld = colStart, colEndOld = colEnd;
-            
-            for (int i = 0; i < 4; i++) {
+
+            for (int i = 0; i < 4; i++)
+            {
                 if (node.imageSettings.colChannels[i].active)
                 {
                     colStartOld[i] = node.imageSettings.colChannels[i].range.x / 255.0f;
@@ -1938,7 +1939,7 @@ namespace TerrainComposer2
                 }
             }
             EditorGUILayout.EndHorizontal();
-            
+
             for (int i = 0; i < 4; i++)
             {
                 SerializedProperty colChannel = colChannels.GetArrayElementAtIndex(i);
@@ -1946,31 +1947,31 @@ namespace TerrainComposer2
                 SerializedProperty range = colChannel.FindPropertyRelative("range");
 
                 EditorGUILayout.BeginHorizontal();
-                    GUI.color = TC.colChannel[i];
-                    if (!active.boolValue) GUI.color = new Color(1, 1, 1, 0.35f);
-                    EditorGUILayout.LabelField(TC.colChannelNames[i], GUILayout.Width(50));
-                    TD.DrawProperty(active, new GUIContent(""), 25);
-                    if (active.boolValue) GUI.color = Color.white;
-                    
-                    if (colSelectMode.enumValueIndex == (int)ColorSelectMode.Color)
-                    {
-                        int rangeX = (int)range.vector2Value.x;
-                        rangeX = EditorGUILayout.IntSlider(rangeX, 0, 255);
-                        if (rangeX != range.vector2Value.x) AutoGenerate();
-                        range.vector2Value = new Vector2(rangeX, range.vector2Value.y);
-                    }
-                    else
-                    {
-                        GUI.changed = false;
-                        range.vector2Value = new Vector2(EditorGUILayout.IntField((int)range.vector2Value.x, GUILayout.Width(30)), range.vector2Value.y);
-                        if (GUI.changed) AutoGenerate();
-                        DrawMinMaxSlider(range, 0, 255, 0f, new GUIContent(""));
-                        GUI.changed = false;
-                        range.vector2Value = new Vector2(range.vector2Value.x, EditorGUILayout.IntField((int)range.vector2Value.y, GUILayout.Width(30)));
-                        if (GUI.changed) AutoGenerate();
-                    }
+                GUI.color = TC.colChannel[i];
+                if (!active.boolValue) GUI.color = new Color(1, 1, 1, 0.35f);
+                EditorGUILayout.LabelField(TC.colChannelNames[i], GUILayout.Width(50));
+                TD.DrawProperty(active, new GUIContent(""), 25);
+                if (active.boolValue) GUI.color = Color.white;
 
-                    if (GUILayout.Button("R", GUILayout.Width(25))) { range.vector2Value = new Vector2(0, 255); AutoGenerate(); }
+                if (colSelectMode.enumValueIndex == (int)ColorSelectMode.Color)
+                {
+                    int rangeX = (int)range.vector2Value.x;
+                    rangeX = EditorGUILayout.IntSlider(rangeX, 0, 255);
+                    if (rangeX != range.vector2Value.x) AutoGenerate();
+                    range.vector2Value = new Vector2(rangeX, range.vector2Value.y);
+                }
+                else
+                {
+                    GUI.changed = false;
+                    range.vector2Value = new Vector2(EditorGUILayout.IntField((int)range.vector2Value.x, GUILayout.Width(30)), range.vector2Value.y);
+                    if (GUI.changed) AutoGenerate();
+                    DrawMinMaxSlider(range, 0, 255, 0f, new GUIContent(""));
+                    GUI.changed = false;
+                    range.vector2Value = new Vector2(range.vector2Value.x, EditorGUILayout.IntField((int)range.vector2Value.y, GUILayout.Width(30)));
+                    if (GUI.changed) AutoGenerate();
+                }
+
+                if (GUILayout.Button("R", GUILayout.Width(25))) { range.vector2Value = new Vector2(0, 255); AutoGenerate(); }
                 EditorGUILayout.EndHorizontal();
             }
 
@@ -1982,17 +1983,17 @@ namespace TerrainComposer2
             if (selectItemGroup.itemList.Count == 0) return;
 
             EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Mixing", GUILayout.Width(50));
-                DrawSlider(mix, 0, 1.5f, new GUIContent("","Mixes " + TC.outputNames[item.outputId] + " Items to have more overlap\n 0 = no overlap, 1.5 = max overlap."));
-            
-                if (GUI.changed)
-                {
-                    serializedObject.ApplyModifiedProperties();
-                    selectItemGroup.CalcPreview();
-                    DoRepaint();
-                }
+            EditorGUILayout.LabelField("Mixing", GUILayout.Width(50));
+            DrawSlider(mix, 0, 1.5f, new GUIContent("", "Mixes " + TC.outputNames[item.outputId] + " Items to have more overlap\n 0 = no overlap, 1.5 = max overlap."));
+
+            if (GUI.changed)
+            {
+                serializedObject.ApplyModifiedProperties();
+                selectItemGroup.CalcPreview();
+                DoRepaint();
+            }
             EditorGUILayout.EndHorizontal();
-            
+
             if (GUILayout.Button("Reset Sliders")) selectItemGroup.ResetRanges();
 
             GUI.color = TD.editorSkinMulti != 1 ? new Color(0.1f, 0.0f, 0.0f, 0.5f) : Color.red;
@@ -2013,7 +2014,7 @@ namespace TerrainComposer2
                 DrawRangeSlider(selectItem1, true);
                 EditorGUILayout.EndHorizontal();
             }
-            
+
             EditorGUILayout.EndVertical();
 
             if (selectItemGroup.outputId == TC.treeOutput || selectItemGroup.outputId == TC.objectOutput)
@@ -2025,19 +2026,19 @@ namespace TerrainComposer2
                 GUI.color = Color.white;
 
                 TD.DrawLabelWidthUnderline("Scale", 14);
-                
+
                 DrawVector2(scaleMinMaxMulti, true, "Min", "Max", new GUIContent("Scale Range Multiplier"));
-                
+
                 GUI.changed = false;
-                TD.DrawProperty(scaleMulti, new GUIContent("Scale Multiplier")); 
+                TD.DrawProperty(scaleMulti, new GUIContent("Scale Multiplier"));
                 if (GUI.changed)
                 {
                     if (scaleMulti.floatValue < 0.01f) scaleMulti.floatValue = 0.01f;
                 }
 
                 EditorGUILayout.BeginHorizontal();
-                    TD.DrawProperty(linkScaleToMask);
-                    if (linkScaleToMask.boolValue) DrawSlider(linkScaleToMaskAmount, 0, 1, new GUIContent(""));
+                TD.DrawProperty(linkScaleToMask);
+                if (linkScaleToMask.boolValue) DrawSlider(linkScaleToMaskAmount, 0, 1, new GUIContent(""));
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.EndVertical();
@@ -2055,7 +2056,7 @@ namespace TerrainComposer2
             rect.y += 4;
             rect.width -= 8;
             rect.height -= 8;
-            
+
             if (tex != null)
             {
                 GUI.color = colTex;
@@ -2093,7 +2094,7 @@ namespace TerrainComposer2
             }
             if (GUILayout.Button("Refresh", GUILayout.Width(60))) ApplyTerrainHeight(size);
             GUI.backgroundColor = Color.white;
-            
+
             EditorGUILayout.EndHorizontal();
         }
 
@@ -2131,7 +2132,7 @@ namespace TerrainComposer2
                 //    serializedObject.ApplyModifiedProperties();
                 //    selectItem.Refresh();
                 //}
-                
+
                 //if (splatCustom.boolValue)
                 //{
                 //    if (splatCustomValues.arraySize != length) splatCustomValues.arraySize = length;
@@ -2212,11 +2213,11 @@ namespace TerrainComposer2
                 EditorGUILayout.EndHorizontal();
 
                 if (GUI.changed) EditorUtility.SetDirty(terrainLayer);
-                
+
                 TD.DrawSpacer();
             }
         }
-        
+
         void DrawTreeSelectItem()
         {
             if (!settings.hasMasterTerrain) return;
@@ -2230,14 +2231,14 @@ namespace TerrainComposer2
 
             GUI.color = Color.red * TD.editorSkinMulti;
             EditorGUILayout.BeginVertical("Box");
-                GUI.color = Color.white;
-                TD.DrawLabelWidthUnderline("Position", 14);
-                DrawSlider(randomPosition, 0, 1, new GUIContent("Random Position"));
-                if (GUI.changed)
-                {
-                    serializedObject.ApplyModifiedProperties();
-                    selectItem.parentItem.CreateMixBuffer();
-                }
+            GUI.color = Color.white;
+            TD.DrawLabelWidthUnderline("Position", 14);
+            DrawSlider(randomPosition, 0, 1, new GUIContent("Random Position"));
+            if (GUI.changed)
+            {
+                serializedObject.ApplyModifiedProperties();
+                selectItem.parentItem.CreateMixBuffer();
+            }
             // TD.DrawProperty(heightOffset);
             EditorGUILayout.EndVertical();
 
@@ -2285,7 +2286,7 @@ namespace TerrainComposer2
             {
                 if (scaleMulti.floatValue < 0.01f) scaleMulti.floatValue = 0.01f;
             }
-            
+
             TD.DrawProperty(scaleCurve);
 
             TC_SelectItemGroup selectableItemGroup = selectItem.parentItem;
@@ -2305,7 +2306,7 @@ namespace TerrainComposer2
 
             EditorGUILayout.EndVertical();
         }
-        
+
 
         void DrawObjectSelectItem()
         {
@@ -2321,7 +2322,7 @@ namespace TerrainComposer2
             }
 
             Color color = Color.white;
-            
+
             TD.DrawProperty(parentMode);
             if (GUI.changed) TC.RefreshOutputReferences(TC.objectOutput);
 
@@ -2353,13 +2354,13 @@ namespace TerrainComposer2
             EditorGUILayout.EndVertical();
 
             TD.DrawSpacer();
-            
+
             GUI.color = Color.red * TD.editorSkinMulti;
             EditorGUILayout.BeginVertical("Box");
             GUI.color = Color.white;
 
             TD.DrawLabelWidthUnderline("Position", 14);
-            
+
             DrawSlider(randomPosition, 0, 1, new GUIContent("Random Position"));
             if (GUI.changed)
             {
@@ -2372,7 +2373,7 @@ namespace TerrainComposer2
             TD.DrawProperty(includeTerrainHeight);
             TD.DrawProperty(includeTerrainAngle);
             EditorGUILayout.EndVertical();
-            
+
             TD.DrawSpacer();
 
             GUI.color = Color.yellow * TD.editorSkinMulti;
@@ -2417,7 +2418,7 @@ namespace TerrainComposer2
         {
             if (labelSpace) EditorGUILayout.LabelField("");
             Rect rect = GUILayoutUtility.GetLastRect();
-            
+
             if (item.active)
             {
                 GUI.color = (TD.hoverItem == item ? Color.green : Color.white);
@@ -2458,13 +2459,13 @@ namespace TerrainComposer2
             EditorGUILayout.BeginHorizontal();
             if (guiContent != null) EditorGUILayout.PrefixLabel(guiContent);
             else EditorGUILayout.PrefixLabel(property.name);
-            
+
             EditorGUIUtility.labelWidth = xLabelWidth;
             float x = EditorGUILayout.FloatField(xLabel, property.vector2Value.x);
 
             EditorGUIUtility.labelWidth = yLabelWidth;
             float y = EditorGUILayout.FloatField(yLabel, property.vector2Value.y);
-            
+
             property.vector2Value = new Vector2(x, y);
 
             EditorGUILayout.EndHorizontal();
@@ -2487,7 +2488,7 @@ namespace TerrainComposer2
             GUI.changed = false;
             EditorGUILayout.BeginHorizontal();
             Vector2 v = property.vector2Value;
-            
+
             if (width == -1)
             {
                 EditorGUILayout.PrefixLabel(guiContent);
@@ -2508,7 +2509,7 @@ namespace TerrainComposer2
             if (GUI.changed)
             {
                 // if (property.vector2Value.x  < limit) property.vector2Value = new Vector2(limit, property.vector2Value.y);
-                
+
                 AutoGenerate();
             }
         }

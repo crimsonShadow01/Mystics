@@ -4,8 +4,8 @@
 
 namespace Ludiq.PeekCore
 {
-	public class FloatInspector : ContinuousNumberInspector<float>
-	{
-		public FloatInspector(Accessor accessor) : base(accessor) { }
-	}
+    public class FloatInspector : ContinuousNumberInspector<float>
+    {
+        public FloatInspector(Accessor accessor) : base(accessor) { }
+    }
 }

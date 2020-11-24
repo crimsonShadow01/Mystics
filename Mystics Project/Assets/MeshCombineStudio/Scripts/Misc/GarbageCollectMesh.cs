@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MeshCombineStudio
 {
@@ -8,16 +6,16 @@ namespace MeshCombineStudio
     public class GarbageCollectMesh : MonoBehaviour
     {
         public Mesh mesh;
-        
+
         void OnDestroy()
         {
             if (mesh != null)
             {
-                #if UNITY_EDITOR
-                    DestroyImmediate(mesh);
-                #else
+#if UNITY_EDITOR
+                DestroyImmediate(mesh);
+#else
                     Destroy(mesh);
-                #endif
+#endif
             }
             // Debug.Log("Destroy Mesh");
         }

@@ -1,204 +1,203 @@
-﻿using Ludiq.PeekCore.Bolt;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.PeekCore
 {
-	public class UnityObjectInspector : Inspector
-	{
-		public UnityObjectInspector(Accessor accessor) : base(accessor) { }
+    public class UnityObjectInspector : Inspector
+    {
+        public UnityObjectInspector(Accessor accessor) : base(accessor) { }
 
-		protected UnityObject value => (UnityObject)accessor.value;
+        protected UnityObject value => (UnityObject)accessor.value;
 
-		protected virtual bool fuzzy => e.alt != LudiqCore.Configuration.fuzzyObjectPicker;
+        protected virtual bool fuzzy => e.alt != LudiqCore.Configuration.fuzzyObjectPicker;
 
-		protected virtual string typeLabel => accessor.definedType.Name;
+        protected virtual string typeLabel => accessor.definedType.Name;
 
-		protected virtual EditorTexture typeIcon => accessor.definedType.Icon();
+        protected virtual EditorTexture typeIcon => accessor.definedType.Icon();
 
-		protected virtual Scene? scene => accessor.serializedObject?.AsGameObject()?.scene;
+        protected virtual Scene? scene => accessor.serializedObject?.AsGameObject()?.scene;
 
-		protected virtual bool allowAssetObjects => true;
+        protected virtual bool allowAssetObjects => true;
 
-		protected virtual bool hidableFrame => true;
+        protected virtual bool hidableFrame => true;
 
-		protected virtual IFuzzyOptionTree GetOptions()
-		{
-			return new UnityObjectOptionTree
-			(
-				accessor.definedType,
-				typeLabel,
-				typeIcon,
-				scene,
-				allowAssetObjects,
-				Filter,
-				typeLabel
-			);
-		}
-		
-		protected virtual UnityObjectFieldVisualType visualType
-		{
-			get
-			{
-				if (adaptiveWidth && accessor.value.IsUnityNull())
-				{
-					return UnityObjectFieldVisualType.Target;
-				}
-				else
-				{
-					return UnityObjectFieldVisualType.NameAndTarget;
-				}
-			}
-		}
+        protected virtual IFuzzyOptionTree GetOptions()
+        {
+            return new UnityObjectOptionTree
+            (
+                accessor.definedType,
+                typeLabel,
+                typeIcon,
+                scene,
+                allowAssetObjects,
+                Filter,
+                typeLabel
+            );
+        }
 
-		protected override float GetControlWidth()
-		{
-			if (accessor.value.IsUnityNull())
-			{
-				return LudiqGUI.GetFuzzyObjectFieldWidth(value, UnityObjectFieldVisualType.Target);
-			}
-			else
-			{
-				return LudiqGUI.GetFuzzyObjectFieldWidth(value, UnityObjectFieldVisualType.NameAndTarget);
-			}
-		}
+        protected virtual UnityObjectFieldVisualType visualType
+        {
+            get
+            {
+                if (adaptiveWidth && accessor.value.IsUnityNull())
+                {
+                    return UnityObjectFieldVisualType.Target;
+                }
+                else
+                {
+                    return UnityObjectFieldVisualType.NameAndTarget;
+                }
+            }
+        }
 
-		private float GetObjectFieldWidth()
-		{
-			return LudiqGUI.GetFuzzyObjectFieldWidth(value, visualType);
-		}
+        protected override float GetControlWidth()
+        {
+            if (accessor.value.IsUnityNull())
+            {
+                return LudiqGUI.GetFuzzyObjectFieldWidth(value, UnityObjectFieldVisualType.Target);
+            }
+            else
+            {
+                return LudiqGUI.GetFuzzyObjectFieldWidth(value, UnityObjectFieldVisualType.NameAndTarget);
+            }
+        }
 
-		private float GetObjectFieldHeight(float width)
-		{
-			return LudiqGUI.GetFuzzyObjectFieldHeight(visualType, width);
-		}
+        private float GetObjectFieldWidth()
+        {
+            return LudiqGUI.GetFuzzyObjectFieldWidth(value, visualType);
+        }
 
-		protected override float GetControlHeight(float width)
-		{
-			var height = EditorGUIUtility.singleLineHeight;
+        private float GetObjectFieldHeight(float width)
+        {
+            return LudiqGUI.GetFuzzyObjectFieldHeight(visualType, width);
+        }
 
-			if (!Filter(value))
-			{
-				height += EditorGUIUtility.standardVerticalSpacing;
-				height += LudiqGUIUtility.GetHelpBoxHeight(InvalidValueMessage(value), MessageType.Error, width);
-			}
+        protected override float GetControlHeight(float width)
+        {
+            var height = EditorGUIUtility.singleLineHeight;
 
-			return height;
-		}
+            if (!Filter(value))
+            {
+                height += EditorGUIUtility.standardVerticalSpacing;
+                height += LudiqGUIUtility.GetHelpBoxHeight(InvalidValueMessage(value), MessageType.Error, width);
+            }
 
-		protected override void OnControlGUI(Rect position)
-		{
-			EditorGUI.BeginChangeCheck();
+            return height;
+        }
 
-			var oldValue = (UnityObject)accessor.value;
-			
-			var fieldPosition = new Rect
-			(
-				position.x,
-				position.y,
-				position.width,
-				GetObjectFieldHeight(position.width)
-			);
+        protected override void OnControlGUI(Rect position)
+        {
+            EditorGUI.BeginChangeCheck();
 
-			UnityObject newValue;
+            var oldValue = (UnityObject)accessor.value;
 
-			if (fuzzy)
-			{
-				newValue = LudiqGUI.ObjectField
-				(
-					fieldPosition,
-					oldValue,
-					accessor.definedType,
-					scene,
-					allowAssetObjects,
-					typeLabel,
-					typeIcon,
-					Filter,
-					GetOptions,
-					visualType,
-					hidableFrame
-				);
-			}
-			else
-			{
-				newValue = EditorGUI.ObjectField
-				(
-					fieldPosition,
-					oldValue,
-					accessor.definedType,
-					scene != null
-				);
-			}
+            var fieldPosition = new Rect
+            (
+                position.x,
+                position.y,
+                position.width,
+                GetObjectFieldHeight(position.width)
+            );
 
-			y += EditorGUIUtility.singleLineHeight;
+            UnityObject newValue;
 
-			var isValid = Filter(newValue);
+            if (fuzzy)
+            {
+                newValue = LudiqGUI.ObjectField
+                (
+                    fieldPosition,
+                    oldValue,
+                    accessor.definedType,
+                    scene,
+                    allowAssetObjects,
+                    typeLabel,
+                    typeIcon,
+                    Filter,
+                    GetOptions,
+                    visualType,
+                    hidableFrame
+                );
+            }
+            else
+            {
+                newValue = EditorGUI.ObjectField
+                (
+                    fieldPosition,
+                    oldValue,
+                    accessor.definedType,
+                    scene != null
+                );
+            }
 
-			if (!isValid)
-			{
-				y += EditorGUIUtility.standardVerticalSpacing;
+            y += EditorGUIUtility.singleLineHeight;
 
-				var message = InvalidValueMessage(newValue);
+            var isValid = Filter(newValue);
 
-				var invalidValueMessagePosition = position.VerticalSection(ref y, LudiqGUIUtility.GetHelpBoxHeight(message, MessageType.Error, position.width));
+            if (!isValid)
+            {
+                y += EditorGUIUtility.standardVerticalSpacing;
 
-				EditorGUI.HelpBox(invalidValueMessagePosition, message, MessageType.Error);
+                var message = InvalidValueMessage(newValue);
 
-				if (newValue != null && GUI.Button(invalidValueMessagePosition, GUIContent.none, GUIStyle.none))
-				{
-					EditorGUIUtility.PingObject(newValue);
-				}
-			}
+                var invalidValueMessagePosition = position.VerticalSection(ref y, LudiqGUIUtility.GetHelpBoxHeight(message, MessageType.Error, position.width));
 
-			if (EditorGUI.EndChangeCheck())
-			{
-				if (isValid)
-				{
-					accessor.RecordUndo();
-					accessor.value = newValue;
-				}
-				else
-				{
-					Debug.LogWarning(InvalidValueMessage(newValue));
-				}
-			}
-		}
+                EditorGUI.HelpBox(invalidValueMessagePosition, message, MessageType.Error);
 
-		protected virtual string InvalidValueMessage(UnityObject invalidValue)
-		{
-			if (invalidValue == null)
-			{
-				return "Value should not be null.";
-			}
+                if (newValue != null && GUI.Button(invalidValueMessagePosition, GUIContent.none, GUIStyle.none))
+                {
+                    EditorGUIUtility.PingObject(newValue);
+                }
+            }
 
-			if (!accessor.definedType.IsInstanceOfTypeNullable(invalidValue))
-			{
-				return $"Invalid value type: expected {accessor.definedType.DisplayName()}, not {invalidValue.GetType().DisplayName()}.";
-			}
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (isValid)
+                {
+                    accessor.RecordUndo();
+                    accessor.value = newValue;
+                }
+                else
+                {
+                    Debug.LogWarning(InvalidValueMessage(newValue));
+                }
+            }
+        }
 
-			return CustomInvalidValueMessage(invalidValue);
-		}
+        protected virtual string InvalidValueMessage(UnityObject invalidValue)
+        {
+            if (invalidValue == null)
+            {
+                return "Value should not be null.";
+            }
 
-		protected virtual string CustomInvalidValueMessage(UnityObject invalidValue)
-		{
-			return "Invalid value.";
-		}
+            if (!accessor.definedType.IsInstanceOfTypeNullable(invalidValue))
+            {
+                return $"Invalid value type: expected {accessor.definedType.DisplayName()}, not {invalidValue.GetType().DisplayName()}.";
+            }
 
-		protected virtual bool Filter(UnityObject uo)
-		{
-			if (uo == null)
-			{
-				return true;
-			}
+            return CustomInvalidValueMessage(invalidValue);
+        }
 
-			if (!accessor.definedType.IsInstanceOfTypeNullable(uo))
-			{
-				return false;
-			}
+        protected virtual string CustomInvalidValueMessage(UnityObject invalidValue)
+        {
+            return "Invalid value.";
+        }
 
-			return true;
-		}
-	}
+        protected virtual bool Filter(UnityObject uo)
+        {
+            if (uo == null)
+            {
+                return true;
+            }
+
+            if (!accessor.definedType.IsInstanceOfTypeNullable(uo))
+            {
+                return false;
+            }
+
+            return true;
+        }
+    }
 }

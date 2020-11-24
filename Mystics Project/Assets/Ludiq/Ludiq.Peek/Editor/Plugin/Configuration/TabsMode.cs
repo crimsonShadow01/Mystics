@@ -1,11 +1,10 @@
 ﻿namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public enum TabsMode
-	{
-		Popup,
-		Pinned
-	}
+    public enum TabsMode
+    {
+        Popup,
+        Pinned
+    }
 }

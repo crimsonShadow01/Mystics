@@ -1,90 +1,90 @@
-﻿using System;
+﻿using Ludiq.PeekCore;
+using System;
 using UnityEditor;
 using UnityEngine;
-using Ludiq.PeekCore;
 
 [assembly: RegisterInspector(typeof(Type), typeof(TypeInspector))]
 
 namespace Ludiq.PeekCore
 {
-	public sealed class TypeInspector : Inspector
-	{
-		private TypeFilter rootTypeFilter;
-		
-		private TypeTree rootTypeTree = new TypeTree();
+    public sealed class TypeInspector : Inspector
+    {
+        private TypeFilter rootTypeFilter;
 
-		public bool hasHideRootAttribute;
+        private TypeTree rootTypeTree = new TypeTree();
 
-		public bool forceHideRoot { get; set; }
+        public bool hasHideRootAttribute;
 
-		public Type rootTypeGenericParameter { get; set; }
+        public bool forceHideRoot { get; set; }
 
-		private bool hideRoot => forceHideRoot || (hasHideRootAttribute && accessor.value != null);
+        public Type rootTypeGenericParameter { get; set; }
 
-		public TypeInspector(Accessor accessor) : base(accessor)
-		{
-			hasHideRootAttribute = accessor.HasAttribute<InspectorTypeHideRootAttribute>();
+        private bool hideRoot => forceHideRoot || (hasHideRootAttribute && accessor.value != null);
 
-			rootTypeFilter = accessor.GetAttribute<TypeFilter>() ?? TypeFilter.Any;
+        public TypeInspector(Accessor accessor) : base(accessor)
+        {
+            hasHideRootAttribute = accessor.HasAttribute<InspectorTypeHideRootAttribute>();
 
-			accessor.valueChanged += _ => RefreshRootTypeTree();
-		}
+            rootTypeFilter = accessor.GetAttribute<TypeFilter>() ?? TypeFilter.Any;
 
-		public void RefreshRootTypeTree()
-		{
-			var type = (Type)accessor.value;
+            accessor.valueChanged += _ => RefreshRootTypeTree();
+        }
 
-			if (rootTypeGenericParameter != null)
-			{
-				rootTypeTree.ChangeType(type, rootTypeGenericParameter);
-			}
-			else
-			{
-				rootTypeTree.ChangeType(type);
-			}
-		}
+        public void RefreshRootTypeTree()
+        {
+            var type = (Type)accessor.value;
 
-		private Func<IFuzzyOptionTree> GetOptions(TypeTree typeTree)
-		{
-			if (typeTree == rootTypeTree)
-			{
-				if (rootTypeFilter == TypeFilter.Any)
-				{
-					return () => TypeOptionTree.All;
-				}
-				else
-				{
-					return () => new TypeOptionTree(Codebase.types, rootTypeFilter);
-				}
-			}
-			else
-			{
-				return () => new TypeOptionTree(Codebase.types, typeTree.filter);
-			}
-		}
+            if (rootTypeGenericParameter != null)
+            {
+                rootTypeTree.ChangeType(type, rootTypeGenericParameter);
+            }
+            else
+            {
+                rootTypeTree.ChangeType(type);
+            }
+        }
 
-		protected override float GetControlHeight(float width)
-		{
-			return LudiqGUI.GetTypeTreeFieldHeight(rootTypeTree, !hideRoot);
-		}
+        private Func<IFuzzyOptionTree> GetOptions(TypeTree typeTree)
+        {
+            if (typeTree == rootTypeTree)
+            {
+                if (rootTypeFilter == TypeFilter.Any)
+                {
+                    return () => TypeOptionTree.All;
+                }
+                else
+                {
+                    return () => new TypeOptionTree(Codebase.types, rootTypeFilter);
+                }
+            }
+            else
+            {
+                return () => new TypeOptionTree(Codebase.types, typeTree.filter);
+            }
+        }
 
-		protected override float GetControlWidth()
-		{
-			return LudiqGUI.GetTypeTreeFieldAdaptiveWidth(rootTypeTree, !hideRoot);
-		}
+        protected override float GetControlHeight(float width)
+        {
+            return LudiqGUI.GetTypeTreeFieldHeight(rootTypeTree, !hideRoot);
+        }
 
-		protected override void OnControlGUI(Rect position)
-		{
-			EditorGUI.BeginChangeCheck();
+        protected override float GetControlWidth()
+        {
+            return LudiqGUI.GetTypeTreeFieldAdaptiveWidth(rootTypeTree, !hideRoot);
+        }
 
-			LudiqGUI.TypeTreeField(ref position, GUIContent.none, rootTypeTree, !hideRoot, GetOptions);
+        protected override void OnControlGUI(Rect position)
+        {
+            EditorGUI.BeginChangeCheck();
 
-			if (EditorGUI.EndChangeCheck())
-			{
-				var newType = rootTypeTree.GetSubstitutedType();
-				accessor.RecordUndo();
-				accessor.value = newType;
-			}
-		}
-	}
+            LudiqGUI.TypeTreeField(ref position, GUIContent.none, rootTypeTree, !hideRoot, GetOptions);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                var newType = rootTypeTree.GetSubstitutedType();
+                accessor.RecordUndo();
+                accessor.value = newType;
+            }
+        }
+    }
 }

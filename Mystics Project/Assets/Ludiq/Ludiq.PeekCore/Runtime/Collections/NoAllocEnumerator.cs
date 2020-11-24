@@ -4,55 +4,55 @@ using System.Collections.Generic;
 
 namespace Ludiq.PeekCore
 {
-	public struct NoAllocEnumerator<T> : IEnumerator<T>
-	{
-		private readonly IList<T> list;
-		private int index;
-		private T current;
-		private bool exceeded;
+    public struct NoAllocEnumerator<T> : IEnumerator<T>
+    {
+        private readonly IList<T> list;
+        private int index;
+        private T current;
+        private bool exceeded;
 
-		public NoAllocEnumerator(IList<T> list) : this()
-		{
-			this.list = list;
-		}
+        public NoAllocEnumerator(IList<T> list) : this()
+        {
+            this.list = list;
+        }
 
-		public void Dispose() { }
+        public void Dispose() { }
 
-		public bool MoveNext()
-		{
-			if (index < list.Count)
-			{
-				current = list[index];
-				index++;
-				return true;
-			}
-			else
-			{
-				index = list.Count + 1;
-				current = default(T);
-				exceeded = true;
-				return false;
-			}
-		}
+        public bool MoveNext()
+        {
+            if (index < list.Count)
+            {
+                current = list[index];
+                index++;
+                return true;
+            }
+            else
+            {
+                index = list.Count + 1;
+                current = default(T);
+                exceeded = true;
+                return false;
+            }
+        }
 
-		public T Current => current;
+        public T Current => current;
 
-		object IEnumerator.Current
-		{
-			get
-			{
-				if (exceeded)
-				{
-					throw new InvalidOperationException();
-				}
+        object IEnumerator.Current
+        {
+            get
+            {
+                if (exceeded)
+                {
+                    throw new InvalidOperationException();
+                }
 
-				return Current;
-			}
-		}
+                return Current;
+            }
+        }
 
-		void IEnumerator.Reset()
-		{
-			throw new InvalidOperationException();
-		}
-	}
+        void IEnumerator.Reset()
+        {
+            throw new InvalidOperationException();
+        }
+    }
 }

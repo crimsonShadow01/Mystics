@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -56,7 +54,7 @@ namespace BrunetonsImprovedAtmosphere
 
             DeltaIrradianceTexture = NewRenderTexture2D(
                 CONSTANTS.IRRADIANCE_WIDTH,
-                CONSTANTS.IRRADIANCE_HEIGHT, 
+                CONSTANTS.IRRADIANCE_HEIGHT,
                 false);
 
             DeltaRayleighScatteringTexture = NewRenderTexture3D(
@@ -97,9 +95,9 @@ namespace BrunetonsImprovedAtmosphere
             ReleaseArray(IrradianceArray);
             ReleaseArray(ScatteringArray);
             ReleaseArray(OptionalSingleMieScatteringArray);
-            
+
         }
-        
+
         public void Clear(ComputeShader compute)
         {
             ClearTexture(compute, DeltaIrradianceTexture);
@@ -114,13 +112,13 @@ namespace BrunetonsImprovedAtmosphere
 
         private void ReleaseTexture(RenderTexture tex)
         {
-            if(tex == null) return;
+            if (tex == null) return;
             GameObject.DestroyImmediate(tex);
         }
 
         private void ReleaseArray(RenderTexture[] arr)
         {
-            if(arr == null) return;
+            if (arr == null) return;
 
             for (int i = 0; i < arr.Length; i++)
             {

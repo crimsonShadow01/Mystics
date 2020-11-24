@@ -1,9 +1,8 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 #if USE_ADDRESSABLES
 using UnityEngine.AddressableAssets;

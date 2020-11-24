@@ -53,7 +53,7 @@ namespace PixelCrushers.DialogueSystem
             return GetPopupWidth(new GUIContent(text));
         }
         public static GUILayoutOption GUILayoutPopupWidth(object obj)
-        {            
+        {
             return GUILayout.Width(GetPopupWidth(new GUIContent(obj.ToString())));
         }
 

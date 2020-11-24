@@ -1,17 +1,15 @@
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public struct DelayedTooltip
-	{
-		public Rect screenPosition;
+    public struct DelayedTooltip
+    {
+        public Rect screenPosition;
 
-		public GUIContent content;
+        public GUIContent content;
 
-		public GUIStyle style;
-	}
+        public GUIStyle style;
+    }
 }

@@ -1,9 +1,8 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
-using System;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -356,7 +355,7 @@ namespace PixelCrushers.DialogueSystem
         public virtual void ShowContinueButton()
         {
             Tools.SetGameObjectActive(continueButton, true);
-            if (InputDeviceManager.autoFocus) Select(); 
+            if (InputDeviceManager.autoFocus) Select();
             if (continueButton != null && continueButton.onClick.GetPersistentEventCount() == 0)
             {
                 continueButton.onClick.RemoveAllListeners();
@@ -416,7 +415,7 @@ namespace PixelCrushers.DialogueSystem
             currentSubtitle = subtitle;
             CheckSubtitleAnimator(subtitle);
             if (!onlyShowNPCPortraits || subtitle.speakerInfo.isNPC)
-            {                
+            {
                 if (portraitImage != null)
                 {
                     var sprite = subtitle.GetSpeakerPortrait();

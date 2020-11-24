@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace SensorToolkit
 {
@@ -111,16 +109,16 @@ namespace SensorToolkit
                 triggerStayLag[c] = currentCount + 1;
             }
 
-            if (RequiresLineOfSight && LineOfSightUpdateMode == UpdateMode.FixedInterval) 
+            if (RequiresLineOfSight && LineOfSightUpdateMode == UpdateMode.FixedInterval)
             {
                 timer += Time.deltaTime;
-                if (timer > CheckLineOfSightInterval) 
+                if (timer > CheckLineOfSightInterval)
                 {
                     testSensor();
                     timer = 0f;
                 }
-            } 
-            else 
+            }
+            else
             {
                 timer = 0f;
             }

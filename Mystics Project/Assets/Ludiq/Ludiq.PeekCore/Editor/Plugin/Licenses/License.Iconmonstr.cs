@@ -1,8 +1,8 @@
 ﻿namespace Ludiq.PeekCore
 {
-	internal partial class Licenses
-	{
-		public const string Iconmonstr = @"This license agreement (the “Agreement”) sets forth the terms by which Alexander Kahlkopf, the owner of iconmonstr (the “Licensor”), shall provide access to certain Work (defined below) to you (the “Licensee”, “you” or “your”). This Agreement regulates the free use of the icons, fonts, images and other media content (collectively, the “Work”), which is made available via the website iconmonstr.com (the “Website”). By downloading or copying a Work, you agree to be bound by the following terms and conditions.
+    internal partial class Licenses
+    {
+        public const string Iconmonstr = @"This license agreement (the “Agreement”) sets forth the terms by which Alexander Kahlkopf, the owner of iconmonstr (the “Licensor”), shall provide access to certain Work (defined below) to you (the “Licensee”, “you” or “your”). This Agreement regulates the free use of the icons, fonts, images and other media content (collectively, the “Work”), which is made available via the website iconmonstr.com (the “Website”). By downloading or copying a Work, you agree to be bound by the following terms and conditions.
 
 1. Grant of Rights
 
@@ -36,5 +36,5 @@ You agree to indemnify Licensor for any and all claims, liability performances, 
 7. Warranty and Liability
 
 The Website and the Works are provided “as is.” Licensor does not accept any warranty or liability regarding a Work, the Website, the accuracy of the information or rights described therein or the licenses, which are subject to this Agreement. Licensor is not liable for damages, costs, losses or claims incurred by you, another person or entity by the use of the Website or the Works.";
-	}
+    }
 }

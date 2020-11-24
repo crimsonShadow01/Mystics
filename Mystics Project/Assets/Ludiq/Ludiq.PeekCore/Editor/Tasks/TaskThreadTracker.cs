@@ -3,51 +3,51 @@ using System.Threading;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class TaskThreadTracker
-	{
-		private readonly Dictionary<Thread, int> threads = new Dictionary<Thread, int>();
+    public sealed class TaskThreadTracker
+    {
+        private readonly Dictionary<Thread, int> threads = new Dictionary<Thread, int>();
 
-		public void Enter()
-		{
-			var thread = Thread.CurrentThread;
+        public void Enter()
+        {
+            var thread = Thread.CurrentThread;
 
-			lock (threads)
-			{
-				if (!threads.ContainsKey(thread))
-				{
-					threads.Add(thread, 0);
-				}
+            lock (threads)
+            {
+                if (!threads.ContainsKey(thread))
+                {
+                    threads.Add(thread, 0);
+                }
 
-				threads[thread]++;
-			}
-		}
+                threads[thread]++;
+            }
+        }
 
-		public void Exit()
-		{
-			var thread = Thread.CurrentThread;
+        public void Exit()
+        {
+            var thread = Thread.CurrentThread;
 
-			lock (threads)
-			{
-				if (!threads.ContainsKey(thread))
-				{
-					throw new InvalidImplementationException("Exiting a thread that was never entered.");
-				}
+            lock (threads)
+            {
+                if (!threads.ContainsKey(thread))
+                {
+                    throw new InvalidImplementationException("Exiting a thread that was never entered.");
+                }
 
-				if (--threads[thread] == 0)
-				{
-					threads.Remove(thread);
-				}
-			}
-		}
+                if (--threads[thread] == 0)
+                {
+                    threads.Remove(thread);
+                }
+            }
+        }
 
-		public bool Runs(Thread thread)
-		{
-			lock (threads)
-			{
-				return threads.ContainsKey(thread);
-			}
-		}
+        public bool Runs(Thread thread)
+        {
+            lock (threads)
+            {
+                return threads.ContainsKey(thread);
+            }
+        }
 
-		public bool runsCurrent => Runs(Thread.CurrentThread);
-	}
+        public bool runsCurrent => Runs(Thread.CurrentThread);
+    }
 }

@@ -18,6 +18,12 @@ namespace AmplifyShaderEditor
             m_sequence = new List<ActionData>();
         }
 
+        public ActionLog(int maxCount, int index, List<ActionData> sequence) : this(maxCount)
+        {
+            m_index = index;
+            m_sequence = sequence;
+        }
+
         public void AddToLog(ActionData actionData)
         {
             if (m_sequence.Count > m_maxCount)
@@ -32,7 +38,7 @@ namespace AmplifyShaderEditor
 
         public void UndoLastAction()
         {
-            if ( m_index > -1 && m_index < m_sequence.Count )
+            if (m_index > -1 && m_index < m_sequence.Count)
                 m_sequence[m_index--].ExecuteReverse();
         }
 
@@ -40,7 +46,7 @@ namespace AmplifyShaderEditor
         {
             if (m_index < (m_sequence.Count - 1))
                 m_sequence[++m_index].ExecuteForward();
-            
+
         }
 
         public void ClearLog()

@@ -22,8 +22,8 @@ using Databox.OdinSerializer;
 
 namespace Databox.OdinSerializer
 {
-    using System.Globalization;
     using System;
+    using System.Globalization;
 
     /// <summary>
     /// Custom formatter for the <see cref="DateTimeOffset"/> type.

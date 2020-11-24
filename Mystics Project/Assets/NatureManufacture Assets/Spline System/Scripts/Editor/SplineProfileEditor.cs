@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.Rendering;
 #if VEGETATION_STUDIO_PRO
 using AwesomeTechnologies.VegetationSystem;

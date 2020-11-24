@@ -6,129 +6,129 @@ using System.Threading.Tasks;
 
 namespace Ludiq.PeekCore
 {
-	public static class TaskLinq
-	{
-		public static bool parallelizeByDefault = false;
+    public static class TaskLinq
+    {
+        public static bool parallelizeByDefault = false;
 
-		public static void ForEachTask<T>(this IEnumerable<T> items, string title, bool parallelize, Func<T, string> getLabel, Action<T> action)
-		{
-			var array = items.ToArray();
+        public static void ForEachTask<T>(this IEnumerable<T> items, string title, bool parallelize, Func<T, string> getLabel, Action<T> action)
+        {
+            var array = items.ToArray();
 
-			if (array.Length == 0)
-			{
-				return;
-			}
+            if (array.Length == 0)
+            {
+                return;
+            }
 
-			Task.Run(title, array.Length, task =>
-			{
-				if (parallelize)
-				{
-					Parallel.ForEach(Partitioner.Create(array), task.parallelOptions, item =>
-					{
-						task.StartStep(getLabel?.Invoke(item));
-						action(item);
-						task.CompleteStep();
-					});
-				}
-				else
-				{
-					foreach (var item in array)
-					{
-						task.StartStep(getLabel?.Invoke(item));
-						action(item);
-						task.CompleteStep();
-					}
-				}
-			});
-		}
+            Task.Run(title, array.Length, task =>
+            {
+                if (parallelize)
+                {
+                    Parallel.ForEach(Partitioner.Create(array), task.parallelOptions, item =>
+                    {
+                        task.StartStep(getLabel?.Invoke(item));
+                        action(item);
+                        task.CompleteStep();
+                    });
+                }
+                else
+                {
+                    foreach (var item in array)
+                    {
+                        task.StartStep(getLabel?.Invoke(item));
+                        action(item);
+                        task.CompleteStep();
+                    }
+                }
+            });
+        }
 
-		public static void ForEachTask<T>(this IEnumerable<T> items, string title, Action<T> action)
-		{
-			items.ForEachTask(title, parallelizeByDefault, null, action);
-		}
-		
-		public static HashSet<TResult> SelectManyTask<TSource, TResult>(this IEnumerable<TSource> items, string title, bool parallelize, Func<TSource, string> getLabel, Func<TSource, IEnumerable<TResult>> selector)
-		{
-			var results = new HashSet<TResult>();
+        public static void ForEachTask<T>(this IEnumerable<T> items, string title, Action<T> action)
+        {
+            items.ForEachTask(title, parallelizeByDefault, null, action);
+        }
 
-			var array = items.ToArray();
+        public static HashSet<TResult> SelectManyTask<TSource, TResult>(this IEnumerable<TSource> items, string title, bool parallelize, Func<TSource, string> getLabel, Func<TSource, IEnumerable<TResult>> selector)
+        {
+            var results = new HashSet<TResult>();
 
-			if (array.Length == 0)
-			{
-				return results;
-			}
+            var array = items.ToArray();
 
-			Task.Run(title, array.Length, task =>
-			{
-				if (parallelize)
-				{
-					var parallelResults = new ConcurrentBag<TResult>();
-					
-					Parallel.ForEach(Partitioner.Create(array), task.parallelOptions, item =>
-					{
-						task.StartStep(getLabel?.Invoke(item));
+            if (array.Length == 0)
+            {
+                return results;
+            }
 
-						foreach (var selected in selector(item))
-						{
-							parallelResults.Add(selected);
-						}
+            Task.Run(title, array.Length, task =>
+            {
+                if (parallelize)
+                {
+                    var parallelResults = new ConcurrentBag<TResult>();
 
-						task.CompleteStep();
-					});
-					
-					results.UnionWith(parallelResults);
-				}
-				else
-				{
-					foreach (var item in array)
-					{
-						task.AllowCancellation();
+                    Parallel.ForEach(Partitioner.Create(array), task.parallelOptions, item =>
+                    {
+                        task.StartStep(getLabel?.Invoke(item));
 
-						task.StartStep(getLabel?.Invoke(item));
+                        foreach (var selected in selector(item))
+                        {
+                            parallelResults.Add(selected);
+                        }
 
-						results.UnionWith(selector(item));
+                        task.CompleteStep();
+                    });
 
-						task.CompleteStep();
-					}
-				}
-			});
+                    results.UnionWith(parallelResults);
+                }
+                else
+                {
+                    foreach (var item in array)
+                    {
+                        task.AllowCancellation();
 
-			return results;
-		}
+                        task.StartStep(getLabel?.Invoke(item));
 
-		public static HashSet<TResult> SelectTask<TSource, TResult>(this IEnumerable<TSource> items, string title, bool parallelize, Func<TSource, string> getLabel, Func<TSource, TResult> selector)
-		{
-			return items.SelectManyTask(title, parallelize, getLabel, item => selector(item).Yield());
-		}
+                        results.UnionWith(selector(item));
 
-		public static HashSet<T> WhereTask<T>(this IEnumerable<T> items, string title, bool parallelize, Func<T, string> getLabel, Func<T, bool> predicate)
-		{
-			return items.SelectManyTask(title, parallelize, getLabel, item => predicate(item) ? item.Yield() : Enumerable.Empty<T>());
-		}
+                        task.CompleteStep();
+                    }
+                }
+            });
 
-		public static HashSet<TResult> SelectWhereTask<TSource, TResult>(this IEnumerable<TSource> items, string title, bool parallelize, Func<TSource, string> getLabel, Func<TSource, bool> predicate, Func<TSource, TResult> selector)
-		{
-			return items.SelectManyTask(title, parallelize, getLabel, item => predicate(item) ? selector(item).Yield() : Enumerable.Empty<TResult>());
-		}
-		
-		public static HashSet<TResult> SelectManyTask<TSource, TResult>(this IEnumerable<TSource> items, string title, Func<TSource, IEnumerable<TResult>> selector)
-		{
-			return items.SelectManyTask(title, parallelizeByDefault, null, selector);
-		}
+            return results;
+        }
 
-		public static HashSet<TResult> SelectTask<TSource, TResult>(this IEnumerable<TSource> items, string title, Func<TSource, TResult> selector)
-		{
-			return items.SelectManyTask(title, parallelizeByDefault, null, item => selector(item).Yield());
-		}
+        public static HashSet<TResult> SelectTask<TSource, TResult>(this IEnumerable<TSource> items, string title, bool parallelize, Func<TSource, string> getLabel, Func<TSource, TResult> selector)
+        {
+            return items.SelectManyTask(title, parallelize, getLabel, item => selector(item).Yield());
+        }
 
-		public static HashSet<T> WhereTask<T>(this IEnumerable<T> items, string title, Func<T, bool> predicate)
-		{
-			return items.SelectManyTask(title, parallelizeByDefault, null, item => predicate(item) ? item.Yield() : Enumerable.Empty<T>());
-		}
+        public static HashSet<T> WhereTask<T>(this IEnumerable<T> items, string title, bool parallelize, Func<T, string> getLabel, Func<T, bool> predicate)
+        {
+            return items.SelectManyTask(title, parallelize, getLabel, item => predicate(item) ? item.Yield() : Enumerable.Empty<T>());
+        }
 
-		public static HashSet<TResult> SelectWhereTask<TSource, TResult>(this IEnumerable<TSource> items, string title, Func<TSource, bool> predicate, Func<TSource, TResult> selector)
-		{
-			return items.SelectManyTask(title, parallelizeByDefault, null, item => predicate(item) ? selector(item).Yield() : Enumerable.Empty<TResult>());
-		}
-	}
+        public static HashSet<TResult> SelectWhereTask<TSource, TResult>(this IEnumerable<TSource> items, string title, bool parallelize, Func<TSource, string> getLabel, Func<TSource, bool> predicate, Func<TSource, TResult> selector)
+        {
+            return items.SelectManyTask(title, parallelize, getLabel, item => predicate(item) ? selector(item).Yield() : Enumerable.Empty<TResult>());
+        }
+
+        public static HashSet<TResult> SelectManyTask<TSource, TResult>(this IEnumerable<TSource> items, string title, Func<TSource, IEnumerable<TResult>> selector)
+        {
+            return items.SelectManyTask(title, parallelizeByDefault, null, selector);
+        }
+
+        public static HashSet<TResult> SelectTask<TSource, TResult>(this IEnumerable<TSource> items, string title, Func<TSource, TResult> selector)
+        {
+            return items.SelectManyTask(title, parallelizeByDefault, null, item => selector(item).Yield());
+        }
+
+        public static HashSet<T> WhereTask<T>(this IEnumerable<T> items, string title, Func<T, bool> predicate)
+        {
+            return items.SelectManyTask(title, parallelizeByDefault, null, item => predicate(item) ? item.Yield() : Enumerable.Empty<T>());
+        }
+
+        public static HashSet<TResult> SelectWhereTask<TSource, TResult>(this IEnumerable<TSource> items, string title, Func<TSource, bool> predicate, Func<TSource, TResult> selector)
+        {
+            return items.SelectManyTask(title, parallelizeByDefault, null, item => predicate(item) ? selector(item).Yield() : Enumerable.Empty<TResult>());
+        }
+    }
 }

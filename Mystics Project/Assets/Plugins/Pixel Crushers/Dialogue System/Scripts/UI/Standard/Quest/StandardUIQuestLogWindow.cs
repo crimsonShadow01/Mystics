@@ -1,9 +1,9 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
-using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -220,8 +220,8 @@ namespace PixelCrushers.DialogueSystem
             showingActiveQuestsHeading.SetActive(isShowingActiveQuests);
             showingCompletedQuestHeading.SetActive(!isShowingActiveQuests);
             selectionPanelContentManager.Clear();
-            var questTitleTemplate = isShowingActiveQuests ? 
-                activeQuestHeadingTemplate 
+            var questTitleTemplate = isShowingActiveQuests ?
+                activeQuestHeadingTemplate
                 : completedQuestHeadingTemplate;
             var selectedQuestTitleTemplate = isShowingActiveQuests ?
                 (selectedActiveQuestHeadingTemplate ?? activeQuestHeadingTemplate)

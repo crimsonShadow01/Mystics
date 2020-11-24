@@ -14,34 +14,44 @@ namespace MFlight
     public class MouseFlightController : MonoBehaviour
     {
         [Header("Components")]
-        [SerializeField] [Tooltip("Transform of the aircraft the rig follows and references")]
+        [SerializeField]
+        [Tooltip("Transform of the aircraft the rig follows and references")]
         private Transform aircraft = null;
-        [SerializeField] [Tooltip("Transform of the object the mouse rotates to generate MouseAim position")]
+        [SerializeField]
+        [Tooltip("Transform of the object the mouse rotates to generate MouseAim position")]
         private Transform mouseAim = null;
-        [SerializeField] [Tooltip("Transform of the object on the rig which the camera is attached to")]
+        [SerializeField]
+        [Tooltip("Transform of the object on the rig which the camera is attached to")]
         private Transform cameraRig = null;
-        [SerializeField] [Tooltip("Transform of the camera itself")]
+        [SerializeField]
+        [Tooltip("Transform of the camera itself")]
         private Transform cam = null;
 
         [Header("Options")]
-        [SerializeField] [Tooltip("Follow aircraft using fixed update loop")]
+        [SerializeField]
+        [Tooltip("Follow aircraft using fixed update loop")]
         private bool useFixed = true;
 
-        [SerializeField] [Tooltip("How quickly the camera tracks the mouse aim point.")]
+        [SerializeField]
+        [Tooltip("How quickly the camera tracks the mouse aim point.")]
         private float camSmoothSpeed = 5f;
 
-        [SerializeField] [Tooltip("Mouse sensitivity for the mouse flight target")]
+        [SerializeField]
+        [Tooltip("Mouse sensitivity for the mouse flight target")]
         private float mouseSensitivity = 3f;
 
-        [SerializeField] [Tooltip("How far the boresight and mouse flight are from the aircraft")]
+        [SerializeField]
+        [Tooltip("How far the boresight and mouse flight are from the aircraft")]
         private float aimDistance = 500f;
 
         [Space]
-        [SerializeField] [Tooltip("How far the boresight and mouse flight are from the aircraft")]
+        [SerializeField]
+        [Tooltip("How far the boresight and mouse flight are from the aircraft")]
         private bool showDebugInfo = false;
 
-		[SerializeField] [Tooltip("Lock the mouse inside the game window.")]
-		private bool lockMouse = false;
+        [SerializeField]
+        [Tooltip("Lock the mouse inside the game window.")]
+        private bool lockMouse = false;
 
         /// <summary>
         /// Get a point along the aircraft's boresight projected out to aimDistance meters.
@@ -88,15 +98,15 @@ namespace MFlight
             // rotations causing unintended rotations as it gets dragged around.
             transform.parent = null;
 
-			Cursor.lockState = lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.lockState = lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
         }
 
-		private void OnValidate()
-		{
-			Cursor.lockState = Application.isPlaying && lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
-		}
+        private void OnValidate()
+        {
+            Cursor.lockState = Application.isPlaying && lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
+        }
 
-		private void Update()
+        private void Update()
         {
             if (useFixed == false)
                 UpdateCameraPos();

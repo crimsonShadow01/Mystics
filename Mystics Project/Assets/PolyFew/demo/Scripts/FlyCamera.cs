@@ -1,8 +1,6 @@
 ﻿
 using UnityEngine;
 
-using System.Collections;
-
 
 
 public class FlyCamera : MonoBehaviour
@@ -51,7 +49,7 @@ public class FlyCamera : MonoBehaviour
     void Update()
     {
 
-        if(deactivated) { return; }
+        if (deactivated) { return; }
 
         if (target)
         {
@@ -88,7 +86,7 @@ public class FlyCamera : MonoBehaviour
 
             transform.position = position;
             transform.rotation = rotation;
-            
+
         }
     }
 

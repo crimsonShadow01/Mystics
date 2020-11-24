@@ -10,33 +10,33 @@ namespace Ludiq.PeekCore.CodeDom
     {
         public CodeNamedArgumentExpression(string argumentName, CodeExpression value)
         {
-			Ensure.That(nameof(argumentName)).IsNotNullOrEmpty(argumentName);
-			Ensure.That(nameof(value)).IsNotNull(value);
+            Ensure.That(nameof(argumentName)).IsNotNullOrEmpty(argumentName);
+            Ensure.That(nameof(value)).IsNotNull(value);
 
             ArgumentName = argumentName;
-			Value = value;
+            Value = value;
         }
 
         public string ArgumentName { get; }
         public CodeExpression Value { get; }
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (Value != null) yield return Value;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Value != null) yield return Value;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
+        protected override void GenerateInner(CodeGenerator generator)
+        {
             generator.OutputIdentifier(TokenType.Identifier, ArgumentName);
             generator.Write(TokenType.Punctuation, ':');
             generator.Write(TokenType.Space, ' ');
             Value.Generate(generator);
-		}
-	}
+        }
+    }
 }

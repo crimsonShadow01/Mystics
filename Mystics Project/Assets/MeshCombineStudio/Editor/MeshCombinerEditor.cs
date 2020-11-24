@@ -1,13 +1,12 @@
-using UnityEngine;
-using UnityEditor;
-using System.Collections;
-using System.Reflection;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using UnityEngine.Rendering;
 using System.Linq;
+using System.Reflection;
+using System.Text;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace MeshCombineStudio
 {
@@ -20,10 +19,10 @@ namespace MeshCombineStudio
         enum BoolEnum { On, Off };
         enum PropertyType { Property, Enum, Layer, Mask };
 
-        GameObject meshCombine; 
+        GameObject meshCombine;
         MeshCombiner meshCombiner;
         Products products = new Products();
-        
+
         SearchConditions searchConditions = new SearchConditions();
 
 #if UNITY_2017 || UNITY_2018
@@ -40,7 +39,7 @@ namespace MeshCombineStudio
             public SerializedProperty useMaxBoundsFactor, maxBoundsFactor, useVertexInputLimit, vertexInputLimit;
             public SerializedProperty useLayerMask, layerMask, useTag, tag, useNameContains, nameContainList, onlyActive, onlyActiveMeshRenderers, onlyStatic, editorStatic;
             public SerializedProperty useComponentsFilter, componentCondition, componentNameList;
-            
+
 
             public void Init(SerializedObject serializedObject)
             {
@@ -165,7 +164,7 @@ namespace MeshCombineStudio
 
                 GUIDraw.PropertyField(objectCenter, new GUIContent("Object Center", "Which position should be used to determine the cell location."));
                 GUIDraw.PropertyField(lodGroupSearchMode, new GUIContent("LODGroup Search Mode", "LodRenderers will search inside the LODGroup renderers, default search mode is LODGroup"));
-                
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel(new GUIContent("Only Static", "Only combine GameObjects that marked with any static flag."));
                 EditorGUILayout.PropertyField(onlyStatic, GUIContent.none, GUILayout.Width(30));
@@ -424,7 +423,10 @@ namespace MeshCombineStudio
         // Unity Settings
         SerializedProperty unitySettingsFoldout;
 
+
         // Original Objects Settings
+
+
         SerializedProperty useHideFlags, hideFlags;
 
         // Output Settings
@@ -593,7 +595,7 @@ namespace MeshCombineStudio
         {
             UnityEditor.Tools.hidden = false;
         }
-        
+
         void OnSceneGUI()
         {
             ApplyTransformLock();
@@ -743,27 +745,27 @@ namespace MeshCombineStudio
             // EditorGUILayout.EndVertical();
 
             GUIDraw.DrawSpacer(space, 5, space);
-                DrawUnitySettings(Color.white);
+            DrawUnitySettings(Color.white);
             serializedObject.ApplyModifiedProperties();
             GUIDraw.DrawSpacer(space, 5, space);
-                searchConditions.DrawSearchParents(this, Color.red);
+            searchConditions.DrawSearchParents(this, Color.red);
             GUIDraw.DrawSpacer(space, 5, space);
-                searchConditions.DrawSearchConditions(this, Color.red);
+            searchConditions.DrawSearchConditions(this, Color.red);
             GUIDraw.DrawSpacer(space, 5, space);
-                DrawOriginalObjectSettings(Color.red);
+            DrawOriginalObjectSettings(Color.red);
             GUIDraw.DrawSpacer(space, 5, space);
-                combineConditions.Draw(this, Color.blue);
+            combineConditions.Draw(this, Color.blue);
             GUIDraw.DrawSpacer(space, 5, space);
-                DrawOutputSettings(Color.blue);
+            DrawOutputSettings(Color.blue);
             GUIDraw.DrawSpacer(space, 5, space);
 
             meshCombiner.InitMeshCombineJobManager();
             if (MeshCombineJobManager.instance != null) DrawJobSettings();
-            
+
             GUIDraw.DrawSpacer(space, 5, space);
-                DrawRuntimeSettings(Color.green);
+            DrawRuntimeSettings(Color.green);
             GUIDraw.DrawSpacer(space, 5, space);
-                DrawSaveSettings(Color.white);
+            DrawSaveSettings(Color.white);
             GUIDraw.DrawSpacer(space, 5, space);
             DrawCombining();
 
@@ -828,12 +830,12 @@ namespace MeshCombineStudio
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel("Use HideFlags");
             EditorGUILayout.PropertyField(useHideFlags, GUIContent.none, GUILayout.Width(25));
-            
+
             if (useHideFlags.boolValue)
             {
                 CustomHideFlags customHideFlags = Methods.HideFlagsToCustom((HideFlags)hideFlags.intValue);
                 GUI.changed = false;
-                customHideFlags = (CustomHideFlags)EditorGUILayout.EnumMaskPopup(GUIContent.none, customHideFlags);
+                customHideFlags = (CustomHideFlags)EditorGUILayout.EnumFlagsField(GUIContent.none, customHideFlags);
                 if (GUI.changed)
                 {
                     hideFlags.intValue = (int)Methods.CustomToHideFlags(customHideFlags);
@@ -855,7 +857,7 @@ namespace MeshCombineStudio
             GUIDraw.PropertyField(combineMode, new GUIContent("Combine Mode",
                 "StaticObjects => Combine Static Objects cell based.\n\n" +
                 "DynamicObjects => Combine Dynamic GameObjects. The dynamic object/parts need to be marked with the 'MCS Dynamic Object' script."));
-                //"Dynamic => Combine dynamic GameObject where the combined GameObject will be children of the original GameObjects."));
+            //"Dynamic => Combine dynamic GameObject where the combined GameObject will be children of the original GameObjects."));
 
             if ((CombineMode)combineMode.enumValueIndex == CombineMode.StaticObjects)
             {
@@ -869,7 +871,7 @@ namespace MeshCombineStudio
                     {
                         float ratio = (float)cellSize.intValue / oldCellSize;
                         cellOffset.vector3Value *= ratio;
-                        
+
                         // if (meshCombiner.octreeContainsObjects) meshCombiner.ResetOctree();
                     }
                 }
@@ -920,7 +922,7 @@ namespace MeshCombineStudio
                 }
                 GUIDraw.PropertyField(removeSamePositionTriangles, new GUIContent("Remove Same Position Tris", "Remove triangles that share the same position inside a mesh volume.\nE.g. this will remove insides of cubes that are snapped together."), true);
                 GUIDraw.PropertyField(reportFoundObjectsNotOnOverlapLayerMask, new GUIContent("Report Objects Not On LayerMask", "Report Found Objects that are not on the Overlap LayerMask"), true);
-                
+
                 string overlapLayerMaskTooltip = "Put the meshes you want to remove insides from on the layer, but also meshes outside of the search parent can be included on the layer (and they don't necessarily need to be closed). E.g. our marching cube terrain mesh we include in this layer as well as Remove Tris Below Surface only works on a heightmap based mesh (our older arenas use a heightmap based terrain). Meshes outside the search parent don't necessarily need to be closed, like a heightmap terrain is not closed but will work. Important is that the collider backfaces shouldn't be visible to the camera, if they are, removal doesn't work correctly.";
 
                 EditorGUI.indentLevel++;
@@ -958,7 +960,7 @@ namespace MeshCombineStudio
             if (removeBackFaceTriangles.boolValue)
             {
                 GUIDraw.PropertyField(backFaceTriangleMode, new GUIContent("Backface Mode", "Use 'Box' if your camera always stays within a box volume.\n\nUse 'Direction' if you camera always faces the same direction, doesn't rotate and moves in the same direction."), true);
-                    
+
                 if (backFaceTriangleMode.enumValueIndex == (int)MeshCombiner.BackFaceTriangleMode.Direction)
                 {
                     EditorGUILayout.BeginHorizontal();
@@ -967,7 +969,7 @@ namespace MeshCombineStudio
                     EditorGUI.indentLevel--;
 
                     EditorGUILayout.PropertyField(backFaceDirection, GUIContent.none);
-                    
+
                     if (GUILayout.Button("R", EditorStyles.miniButtonMid, GUILayout.Width(25))) backFaceDirection.vector3Value = Vector3.zero;
                     EditorGUILayout.EndHorizontal();
                 }
@@ -1002,7 +1004,7 @@ namespace MeshCombineStudio
             if (weldVertices.boolValue)
             {
                 EditorGUILayout.HelpBox("Only use this option if you want to use the combined mesh for depth prepass only. For shadows it influences the normals and makes it run a bit slower and less quality, so don't use it for that.", MessageType.Warning, true);
-            } 
+            }
 
             GUIDraw.PropertyField(weldVertices, new GUIContent("Weld Vertices", "This will combine all vertices that share the same position"));
             if (weldVertices.boolValue)
@@ -1015,7 +1017,7 @@ namespace MeshCombineStudio
                 }
                 GUIDraw.PropertyField(weldIncludeNormals, new GUIContent("Include Normals", ""), true);
             }
-            
+
             if (addMeshColliders.boolValue)
             {
                 EditorGUILayout.HelpBox("Only use this option if you do not have primitive colliders on the original GameObjects or if you remove geometry, otherwise it will slow down physics.", MessageType.Warning, true);
@@ -1040,15 +1042,15 @@ namespace MeshCombineStudio
             GUIDraw.PropertyField(excludeSingleMeshes, new GUIContent("Exclude Single Meshes", "Don't combine a mesh if there's only 1 in a cell.\n\nIf disabled MCS will copy the original GameObject with the original mesh as a child of the MCS GameObject."));
 
             EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel(new GUIContent("Use Vertex Output Limit", "Combined meshes won't exceed this vertex count."));
-                EditorGUILayout.PropertyField(useVertexOutputLimit, GUIContent.none, GUILayout.Width(25));
-                if (useVertexOutputLimit.boolValue)
-                {
-                    EditorGUILayout.PropertyField(vertexOutputLimit, GUIContent.none);
-                }
-            
-                if (vertexOutputLimit.intValue < 1) vertexOutputLimit.intValue = 1;
-                else if (vertexOutputLimit.intValue > 64000) vertexOutputLimit.intValue = 64000;
+            EditorGUILayout.PrefixLabel(new GUIContent("Use Vertex Output Limit", "Combined meshes won't exceed this vertex count."));
+            EditorGUILayout.PropertyField(useVertexOutputLimit, GUIContent.none, GUILayout.Width(25));
+            if (useVertexOutputLimit.boolValue)
+            {
+                EditorGUILayout.PropertyField(vertexOutputLimit, GUIContent.none);
+            }
+
+            if (vertexOutputLimit.intValue < 1) vertexOutputLimit.intValue = 1;
+            else if (vertexOutputLimit.intValue > 64000) vertexOutputLimit.intValue = 64000;
 
             EditorGUILayout.EndHorizontal();
 
@@ -1088,7 +1090,7 @@ namespace MeshCombineStudio
             //}
 
             GUIDraw.PropertyArray(addScripts, new GUIContent("Add Scripts", "Add scripts to the combined GameObjects"), new GUIContent("Script"), true, true, true, false);
-            
+
             EditorGUI.indentLevel--;
             EditorGUILayout.EndVertical();
         }
@@ -1172,11 +1174,11 @@ namespace MeshCombineStudio
             if (meshCombiner != null && meshCombiner.meshCombineJobs.Count > 0)
             {
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PrefixLabel("Jobs Pending");
-                    EditorGUILayout.LabelField("");
-                    Rect rect = GUILayoutUtility.GetLastRect();
-                    rect.x += 16; rect.width -= 16;
-                    EditorGUI.ProgressBar(rect, (float)(meshCombiner.totalMeshCombineJobs - meshCombiner.meshCombineJobs.Count) / meshCombiner.totalMeshCombineJobs, meshCombiner.meshCombineJobs.Count.ToString());
+                EditorGUILayout.PrefixLabel("Jobs Pending");
+                EditorGUILayout.LabelField("");
+                Rect rect = GUILayoutUtility.GetLastRect();
+                rect.x += 16; rect.width -= 16;
+                EditorGUI.ProgressBar(rect, (float)(meshCombiner.totalMeshCombineJobs - meshCombiner.meshCombineJobs.Count) / meshCombiner.totalMeshCombineJobs, meshCombiner.meshCombineJobs.Count.ToString());
                 EditorGUILayout.EndHorizontal();
             }
 
@@ -1225,7 +1227,7 @@ namespace MeshCombineStudio
 
             EditorGUI.indentLevel--;
             EditorGUILayout.EndVertical();
-            
+
             if (guiChanged)
             {
                 serializedObject.ApplyModifiedProperties();
@@ -1405,15 +1407,15 @@ namespace MeshCombineStudio
             {
                 GUIDraw.DrawSpacer(2.5f, 5, 2.5f);
                 GUIContent guiContent;
-                if (activeOriginal.boolValue) 
-                { 
-                    guiContent = new GUIContent("Enable Combined Objects", "Enables the combined objects and disables the original objects."); 
-                    GUI.backgroundColor = new Color(0.70f, 0.70f, 1); 
+                if (activeOriginal.boolValue)
+                {
+                    guiContent = new GUIContent("Enable Combined Objects", "Enables the combined objects and disables the original objects.");
+                    GUI.backgroundColor = new Color(0.70f, 0.70f, 1);
                 }
-                else 
-                { 
-                    guiContent = new GUIContent("Enable Original Objects", "Enables the original objects and disables the combined objects."); 
-                    GUI.backgroundColor = new Color(0.70f, 1, 0.70f); 
+                else
+                {
+                    guiContent = new GUIContent("Enable Original Objects", "Enables the original objects and disables the combined objects.");
+                    GUI.backgroundColor = new Color(0.70f, 1, 0.70f);
                 }
 
                 if (GUILayout.Button(guiContent))
@@ -1468,12 +1470,12 @@ namespace MeshCombineStudio
 
             // GUILayout.Space(5);
 
-            DisplayOctreeInfo(); 
+            DisplayOctreeInfo();
 
             if (DisplayVertsAndTrisInfo()) GUIDraw.DrawSpacer();
 
             EditorGUILayout.EndVertical();
-            
+
             // Debug.Log("Time " + stopwatch.ElapsedMilliseconds);
         }
 
@@ -1482,7 +1484,7 @@ namespace MeshCombineStudio
             // if (!meshCombiner.octreeContainsObjects) return;
             GUIDraw.DrawSpacer(0, 5, 2);
             BeginVertical(Color.magenta * editorSkinMulti);
-            
+
             FoundCombineConditions foundCombineConditions = meshCombiner.foundCombineConditions;
 
             if (meshCombiner.data != null)
@@ -1508,9 +1510,9 @@ namespace MeshCombineStudio
             GUIDraw.DrawUnderLine(2);
             GUIDraw.PrefixAndLabel(new GUIContent("Cells"), new GUIContent(meshCombiner.cellCount.ToString()));
             GUIDraw.DrawUnderLine(2);
-            
+
             MeshCombiner.LodParentHolder[] lodParentsCount = meshCombiner.lodParentHolders;
-             
+
             if (lodParentsCount == null || lodParentsCount.Length == 0 || meshCombiner.data == null || meshCombiner.data.foundLodGroups.Count == 0)
             {
                 EditorGUILayout.EndVertical();
@@ -1519,7 +1521,7 @@ namespace MeshCombineStudio
 
             GUILayout.Space(5);
             GUIDraw.LabelWidthUnderline(new GUIContent("Found LOD Groups", ""), 14);
-             
+
             for (int i = 0; i < lodParentsCount.Length; i++)
             {
                 MeshCombiner.LodParentHolder lodParentCount = lodParentsCount[i];
@@ -1593,7 +1595,7 @@ namespace MeshCombineStudio
 
             // GUIDraw.LabelWidthUnderline(new GUIContent("Combine Stats"), 14);
 
-            float width1 = 70; 
+            float width1 = 70;
             float width2 = 80;
 
             float labelWidth = 125;
@@ -1602,7 +1604,7 @@ namespace MeshCombineStudio
             EditorGUILayout.BeginVertical("Box");
 
             EditorStyles.label.fontStyle = FontStyle.Bold;
-            GUIDraw.PrefixAnd2Labels(new GUIContent(" "), new GUIContent("Orig. Meshes*", "This can show a lower number than `Original` count below, because if a cell has only 1 mesh it won't be combined and counted here, while `Original` below does count it."), labelWidth, 
+            GUIDraw.PrefixAnd2Labels(new GUIContent(" "), new GUIContent("Orig. Meshes*", "This can show a lower number than `Original` count below, because if a cell has only 1 mesh it won't be combined and counted here, while `Original` below does count it."), labelWidth,
                 new GUIContent("Comb. Meshes*", "This can show a lower number than `Combined` count below, because if a cell has only 1 mesh it won't be combined and counted here, while `Combine` below does count it as a new draw call."));
             EditorStyles.label.fontStyle = FontStyle.Normal;
             EditorGUILayout.EndVertical();
@@ -1625,7 +1627,7 @@ namespace MeshCombineStudio
             GUI.color = Color.white;
             GUIDraw.PrefixAnd2Labels("Color Channels", meshCombiner.originalTotalColorChannels.ToString(), labelWidth, meshCombiner.newTotalColorChannels.ToString());
             EditorGUILayout.EndVertical();
-            
+
             GUIDraw.DrawSpacer(0, 5, 2);
 
             BeginVertical(Color.white * editorSkinMulti);
@@ -1649,9 +1651,9 @@ namespace MeshCombineStudio
 
             if (meshCombiner.originalTotalVertices != 0)
             {
-               Label("Saved", (((meshCombiner.originalDrawCalls - meshCombiner.newDrawCalls) / (float)meshCombiner.originalDrawCalls) * 100).ToString("F1") + "%",
-                     (((meshCombiner.originalTotalVertices - meshCombiner.newTotalVertices) / (float)meshCombiner.originalTotalVertices) * 100).ToString("F2") + "%",
-                     (((meshCombiner.originalTotalTriangles - meshCombiner.newTotalTriangles) / (float)meshCombiner.originalTotalTriangles) * 100).ToString("F2") + "%", width1, width2);
+                Label("Saved", (((meshCombiner.originalDrawCalls - meshCombiner.newDrawCalls) / (float)meshCombiner.originalDrawCalls) * 100).ToString("F1") + "%",
+                      (((meshCombiner.originalTotalVertices - meshCombiner.newTotalVertices) / (float)meshCombiner.originalTotalVertices) * 100).ToString("F2") + "%",
+                      (((meshCombiner.originalTotalTriangles - meshCombiner.newTotalTriangles) / (float)meshCombiner.originalTotalTriangles) * 100).ToString("F2") + "%", width1, width2);
 
                 Label("Boost", (100 + (((meshCombiner.originalDrawCalls - meshCombiner.newDrawCalls) / (float)meshCombiner.newDrawCalls) * 100)).ToString("F1") + "%",
                       (100 + (((meshCombiner.originalTotalVertices - meshCombiner.newTotalVertices) / (float)meshCombiner.newTotalVertices) * 100)).ToString("F2") + "%",
@@ -1786,7 +1788,7 @@ namespace MeshCombineStudio
 
                     nameBuilder.Append(mesh.name);
                     ComputeFileName(cachedComponent.t, ref nameBuilder);
-                    SanitizeFileName(ref nameBuilder); 
+                    SanitizeFileName(ref nameBuilder);
                     UniquifyMeshName(cachedComponent, ref nameBuilder);
                     nameBuilder.Append(".asset");
 
@@ -1823,7 +1825,7 @@ namespace MeshCombineStudio
                 AssetDatabase.StopAssetEditing();
             }
 
-            Debug.Log("Mesh Combine Studio => Done saving. Cached Meshes: " + cachedMeshes + " Updated Meshes: "  + updatedMeshes + " New Meshes: " + (i - cachedMeshes - updatedMeshes) + " Skipped Meshes: " + (cachedComponents.Length - i));
+            Debug.Log("Mesh Combine Studio => Done saving. Cached Meshes: " + cachedMeshes + " Updated Meshes: " + updatedMeshes + " New Meshes: " + (i - cachedMeshes - updatedMeshes) + " Skipped Meshes: " + (cachedComponents.Length - i));
 
             // We didn't abort
             if (i == length && deleteFilesFromSaveFolder.boolValue)

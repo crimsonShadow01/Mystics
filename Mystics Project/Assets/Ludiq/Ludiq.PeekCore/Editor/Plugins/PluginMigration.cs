@@ -4,40 +4,40 @@ using System.Collections.ObjectModel;
 
 namespace Ludiq.PeekCore
 {
-	public abstract class PluginMigration : IPluginAddon, IComparable<PluginMigration>
-	{
-		protected PluginMigration(Plugin plugin)
-		{
-			this.plugin = plugin;
+    public abstract class PluginMigration : IPluginAddon, IComparable<PluginMigration>
+    {
+        protected PluginMigration(Plugin plugin)
+        {
+            this.plugin = plugin;
 
-			_requiredActions = new List<string>();
-			requiredActions = _requiredActions.AsReadOnly();
-		}
+            _requiredActions = new List<string>();
+            requiredActions = _requiredActions.AsReadOnly();
+        }
 
-		public Plugin plugin { get; }
+        public Plugin plugin { get; }
 
-		public abstract SemanticVersion from { get; }
-		public abstract SemanticVersion to { get; }
+        public abstract SemanticVersion from { get; }
+        public abstract SemanticVersion to { get; }
 
-		private List<string> _requiredActions { get; }
+        private List<string> _requiredActions { get; }
 
-		public ReadOnlyCollection<string> requiredActions { get; private set; }
+        public ReadOnlyCollection<string> requiredActions { get; private set; }
 
-		protected void RequireAction(string action)
-		{
-			_requiredActions.Add(action);
-		}
+        protected void RequireAction(string action)
+        {
+            _requiredActions.Add(action);
+        }
 
-		protected void RequireActions(params string[] actions)
-		{
-			_requiredActions.AddRange(actions);
-		}
+        protected void RequireActions(params string[] actions)
+        {
+            _requiredActions.AddRange(actions);
+        }
 
-		public abstract void Run();
+        public abstract void Run();
 
-		public int CompareTo(PluginMigration other)
-		{
-			return from.CompareTo(other.from);
-		}
-	}
+        public int CompareTo(PluginMigration other)
+        {
+            return from.CompareTo(other.from);
+        }
+    }
 }

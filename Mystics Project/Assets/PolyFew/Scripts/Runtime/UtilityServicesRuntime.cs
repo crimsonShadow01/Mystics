@@ -17,7 +17,7 @@ namespace BrainFailProductions.PolyFewRuntime
 {
 
 
-    public class UtilityServicesRuntime:MonoBehaviour
+    public class UtilityServicesRuntime : MonoBehaviour
     {
 
 
@@ -795,7 +795,7 @@ namespace BrainFailProductions.PolyFewRuntime
                     Debug.LogWarning("Cannot download from empty URL. Please provide a direct URL to the accompanying material file.");
                 }
 
-                if(downloadProgress == null)
+                if (downloadProgress == null)
                 {
                     throw new ArgumentNullException("downloadProgress", "You must pass a reference to the Download Progress object.");
                 }
@@ -812,7 +812,7 @@ namespace BrainFailProductions.PolyFewRuntime
 
 
                 try
-                {                    
+                {
                     GameObject toReturn = await objImporter.ImportModelFromNetwork(objURL, objName, diffuseTexURL, bumpTexURL, specularTexURL, opacityTexURL, materialURL, downloadProgress, importOptions);
                     Destroy(objImporter);
                     OnSuccess(toReturn);
@@ -852,7 +852,7 @@ namespace BrainFailProductions.PolyFewRuntime
                     OnError(new ArgumentNullException("downloadProgress", "You must pass a reference to the Download Progress object."));
                     return;
                 }
-                
+
                 GameObject objectToPopulate = new GameObject();
                 objectToPopulate.AddComponent<ObjectImporter>();
                 ObjectImporter objImporter = objectToPopulate.GetComponent<ObjectImporter>();
@@ -864,12 +864,12 @@ namespace BrainFailProductions.PolyFewRuntime
                 }
 
 
-               
+
                 objImporter.ImportModelFromNetworkWebGL(objURL, objName, diffuseTexURL, bumpTexURL, specularTexURL, opacityTexURL, materialURL, downloadProgress, importOptions, (GameObject imported) =>
                 {
                     Destroy(objImporter);
                     OnSuccess(imported);
-                }, 
+                },
                 (exception) =>
                 {
                     DestroyImmediate(objectToPopulate);

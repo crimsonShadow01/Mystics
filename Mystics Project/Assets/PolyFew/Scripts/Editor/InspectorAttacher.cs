@@ -18,22 +18,22 @@ namespace BrainFailProductions.PolyFew
         private bool resetFlags = true;
         private static HideFlags oldFlags;
 
-        
+
         [DrawGizmo(GizmoType.Selected | GizmoType.Active)]
         static void DrawGizmoForMyScript(Transform scr, GizmoType gizmoType)
         {
-            if(PolyfewMenu.IsAutoAttachEnabled())
+            if (PolyfewMenu.IsAutoAttachEnabled())
             {
                 AttachInspector();
-            }        
+            }
         }
-    
+
 
 
         public static void AttachInspector()
         {
 
-            
+
             //Debug.Log("DrawGizmoForMyScript on InspectorAttacher on PolyFew HasHost?  " + (Selection.activeGameObject.GetComponent<PolyFewHost>() != null));
             if (Selection.activeGameObject == null) { return; }
             if (Selection.activeTransform == null || Selection.activeTransform is RectTransform) { return; }

@@ -2,16 +2,16 @@
 
 namespace Ludiq.PeekCore
 {
-	public interface IDescriptor
-	{
-		object target { get; }
+    public interface IDescriptor
+    {
+        object target { get; }
 
-		IDescription description { get; }
+        IDescription description { get; }
 
-		void SetDirty();
+        void SetDirty();
 
-		void Validate();
+        void Validate();
 
-		event Action descriptionChanged;
-	}
+        event Action descriptionChanged;
+    }
 }

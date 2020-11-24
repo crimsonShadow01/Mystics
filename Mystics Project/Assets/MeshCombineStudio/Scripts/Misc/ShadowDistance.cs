@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ShadowDistance : MonoBehaviour
 {
@@ -8,6 +6,6 @@ public class ShadowDistance : MonoBehaviour
 
     void Awake()
     {
-        QualitySettings.shadowDistance = shadowDistance;    
+        QualitySettings.shadowDistance = shadowDistance;
     }
 }

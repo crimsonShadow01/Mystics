@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using Ludiq.Peek;
 using Ludiq.PeekCore;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,46 +11,46 @@ using UnityEngine;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	[PluginRuntimeAssembly(ID + ".Runtime")]
-	public class PeekPlugin : Plugin
-	{
-		public PeekPlugin() : base(ID)
-		{
-			instance = this;
-		}
+    [PluginRuntimeAssembly(ID + ".Runtime")]
+    public class PeekPlugin : Plugin
+    {
+        public PeekPlugin() : base(ID)
+        {
+            instance = this;
+        }
 
-		public static PeekPlugin instance { get; private set; }
+        public static PeekPlugin instance { get; private set; }
 
-		public override IEnumerable<Page> SetupWizardPages(SetupWizard wizard)
-		{
-			yield break;
-		}
+        public override IEnumerable<Page> SetupWizardPages(SetupWizard wizard)
+        {
+            yield break;
+        }
 
-		public const string ID = "Ludiq.Peek";
+        public const string ID = "Ludiq.Peek";
 
-		public static PeekManifest Manifest => (PeekManifest)instance.manifest;
+        public static PeekManifest Manifest => (PeekManifest)instance.manifest;
 
-		public static PeekPaths Paths => (PeekPaths)instance.paths;
+        public static PeekPaths Paths => (PeekPaths)instance.paths;
 
-		public static PeekConfiguration Configuration => (PeekConfiguration)instance.configuration;
+        public static PeekConfiguration Configuration => (PeekConfiguration)instance.configuration;
 
-		public static PeekResources Resources => (PeekResources)instance.resources;
+        public static PeekResources Resources => (PeekResources)instance.resources;
 
-		public static PeekResources.Icons Icons => Resources.icons;
-		
-		[SettingsProvider]
-		private static SettingsProvider ProjectSettingsProvider()
-		{
-			return CreateEarlySettingsProvider(ID, SettingsScope.Project);
-		}
+        public static PeekResources.Icons Icons => Resources.icons;
 
-		[SettingsProvider]
-		private static SettingsProvider EditorPrefsProvider()
-		{
-			return CreateEarlySettingsProvider(ID, SettingsScope.User);
-		}
-	}
+        [SettingsProvider]
+        private static SettingsProvider ProjectSettingsProvider()
+        {
+            return CreateEarlySettingsProvider(ID, SettingsScope.Project);
+        }
+
+        [SettingsProvider]
+        private static SettingsProvider EditorPrefsProvider()
+        {
+            return CreateEarlySettingsProvider(ID, SettingsScope.User);
+        }
+    }
 }

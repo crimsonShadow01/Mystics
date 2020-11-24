@@ -8,7 +8,7 @@ namespace Ludiq.PeekCore.CodeDom
 {
     public sealed class CodeReturnStatement : CodeStatement
     {
-        public CodeReturnStatement() {}
+        public CodeReturnStatement() { }
 
         public CodeReturnStatement(CodeExpression expression)
         {
@@ -17,27 +17,27 @@ namespace Ludiq.PeekCore.CodeDom
 
         public CodeExpression Expression { get; }
 
-		public override bool IsTerminator => true;
+        public override bool IsTerminator => true;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach(var child in base.Children) yield return child;
-				if (Expression != null) yield return Expression;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Expression != null) yield return Expression;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			generator.WriteBlankLineIfJustExitedBlock();
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.WriteBlankLineIfJustExitedBlock();
             generator.Write(TokenType.Keyword, "return");
             if (Expression != null)
             {
                 generator.Write(TokenType.Space, ' ');
                 Expression.Generate(generator);
             }
-			generator.WriteStatementEnd(emitOptions);
-		}
+            generator.WriteStatementEnd(emitOptions);
+        }
     }
 }

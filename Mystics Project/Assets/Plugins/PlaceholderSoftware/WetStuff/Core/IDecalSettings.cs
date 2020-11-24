@@ -1,6 +1,6 @@
-using System;
 using PlaceholderSoftware.WetStuff.Rendering;
 using PlaceholderSoftware.WetStuff.Timeline.Settings;
+using System;
 using UnityEngine;
 
 namespace PlaceholderSoftware.WetStuff

@@ -6,40 +6,40 @@ using System.Reflection;
 
 namespace Ludiq.PeekCore.ReflectionMagic
 {
-	public class PrivateReflectionDynamicObjectStatic : PrivateReflectionDynamicObjectBase
-	{
-		private static readonly ConcurrentDictionary<Type, IDictionary<string, IDynamicAccessor>> _accessorsOnType = new ConcurrentDictionary<Type, IDictionary<string, IDynamicAccessor>>();
+    public class PrivateReflectionDynamicObjectStatic : PrivateReflectionDynamicObjectBase
+    {
+        private static readonly ConcurrentDictionary<Type, IDictionary<string, IDynamicAccessor>> _accessorsOnType = new ConcurrentDictionary<Type, IDictionary<string, IDynamicAccessor>>();
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="PrivateReflectionDynamicObjectStatic" /> class, wrapping the specified
-		/// type.
-		/// </summary>
-		/// <param name="type">The type to wrap.</param>
-		/// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is <c>null</c>.</exception>
-		public PrivateReflectionDynamicObjectStatic(Type type)
-		{
-			TargetType = type ?? throw new ArgumentNullException(nameof(type));
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PrivateReflectionDynamicObjectStatic" /> class, wrapping the specified
+        /// type.
+        /// </summary>
+        /// <param name="type">The type to wrap.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is <c>null</c>.</exception>
+        public PrivateReflectionDynamicObjectStatic(Type type)
+        {
+            TargetType = type ?? throw new ArgumentNullException(nameof(type));
+        }
 
-		protected override IDictionary<Type, IDictionary<string, IDynamicAccessor>> AccessorsOnType => _accessorsOnType;
+        protected override IDictionary<Type, IDictionary<string, IDynamicAccessor>> AccessorsOnType => _accessorsOnType;
 
-		// For static calls, we have the type and the instance is always null
-		protected override Type TargetType { get; }
+        // For static calls, we have the type and the instance is always null
+        protected override Type TargetType { get; }
 
-		protected override object Instance => null;
+        protected override object Instance => null;
 
-		public override object RealObject => TargetType;
+        public override object RealObject => TargetType;
 
-		protected override BindingFlags BindingFlags => BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+        protected override BindingFlags BindingFlags => BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
-		public dynamic New(params object[] args)
-		{
-			if (args == null)
-			{
-				throw new ArgumentNullException(nameof(args));
-			}
+        public dynamic New(params object[] args)
+        {
+            if (args == null)
+            {
+                throw new ArgumentNullException(nameof(args));
+            }
 
-			Debug.Assert(TargetType != null);
+            Debug.Assert(TargetType != null);
 
 #if NETSTANDARD1_5
             var constructors = TargetType.GetTypeInfo().GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -75,8 +75,8 @@ namespace Ludiq.PeekCore.ReflectionMagic
 
             return result.AsDynamic();
 #else
-			return Activator.CreateInstance(TargetType, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, args, null).AsDynamic();
+            return Activator.CreateInstance(TargetType, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, args, null).AsDynamic();
 #endif
-		}
-	}
+        }
+    }
 }

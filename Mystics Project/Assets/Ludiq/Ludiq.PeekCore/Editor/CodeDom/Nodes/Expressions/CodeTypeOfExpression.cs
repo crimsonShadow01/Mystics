@@ -10,30 +10,30 @@ namespace Ludiq.PeekCore.CodeDom
     {
         public CodeTypeOfExpression(CodeTypeReference type)
         {
-			Ensure.That(nameof(type)).IsNotNull(type);
+            Ensure.That(nameof(type)).IsNotNull(type);
 
             Type = type;
         }
 
         public CodeTypeReference Type { get; }
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (Type != null) yield return Type;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Type != null) yield return Type;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
+        protected override void GenerateInner(CodeGenerator generator)
+        {
             generator.Write(TokenType.Keyword, "typeof");
             generator.Write(TokenType.Punctuation, '(');
             Type.Generate(generator);
             generator.Write(TokenType.Punctuation, ')');
         }
-	}
+    }
 }

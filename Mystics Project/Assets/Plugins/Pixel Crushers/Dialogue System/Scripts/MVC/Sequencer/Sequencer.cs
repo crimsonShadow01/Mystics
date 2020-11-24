@@ -2308,7 +2308,7 @@ namespace PixelCrushers.DialogueSystem
                 var actor = DialogueManager.masterDatabase.GetActor(actorName);
                 var standardDialogueUI = DialogueManager.dialogueUI as StandardDialogueUI;
                 if (actor != null && standardDialogueUI != null)
-                { 
+                {
                     standardDialogueUI.OverrideActorMenuPanel(actor, menuPanelNumber, null);
                     return true;
                 }

@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
-using UnityEditor;
 using System.IO;
+using UnityEditor;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem.DialogueEditor
 {
@@ -141,7 +141,7 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
         }
 
         private void SaveEditorSettings()
-        { 
+        {
             EditorPrefs.SetBool(CompleteUndoKey, registerCompleteObjectUndo);
             EditorPrefs.SetBool(ShowDatabaseNameKey, showDatabaseName);
             EditorPrefs.SetFloat(AutoBackupKey, autoBackupFrequency);
@@ -387,7 +387,8 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
             {
                 DrawCurrentSection();
             }
-            else {
+            else
+            {
                 DrawNoDatabaseSection();
             }
         }
@@ -426,7 +427,8 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
                         {
                             DrawWatchSection();
                         }
-                        else {
+                        else
+                        {
                             DrawTemplateSection();
                         }
                         break;
@@ -474,16 +476,19 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
                     {
                         Debug.LogWarning("Dialogue Editor wants to mark database to be saved, but it doesn't have a reference to a database!");
                     }
-                    else {
+                    else
+                    {
                         Debug.LogWarning("Dialogue Editor wants to mark database to be saved after change '" + reason + "', but it doesn't have a reference to a database!");
                     }
                 }
-                else {
+                else
+                {
                     if (string.IsNullOrEmpty(reason))
                     {
                         Debug.Log("Dialogue Editor marking database '" + database.name + "' to be saved.", database);
                     }
-                    else {
+                    else
+                    {
                         Debug.Log("Dialogue Editor marking database '" + database.name + "' to be saved after change '" + reason + "'.", database);
                     }
                 }

@@ -1,7 +1,6 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace SensorToolkit
 {
@@ -44,14 +43,14 @@ namespace SensorToolkit
         public override void Pulse()
         {
             if (isActiveAndEnabled) testSensor();
-            
+
         }
 
         HashSet<GameObject> previousDetectedObjects = new HashSet<GameObject>();
         Collider[] collidersBuffer;
         float timer = 0f;
 
-        protected override void Awake() 
+        protected override void Awake()
         {
             base.Awake();
 
@@ -64,9 +63,9 @@ namespace SensorToolkit
             previousDetectedObjects.Clear();
         }
 
-        void Update() 
+        void Update()
         {
-            if (!Application.isPlaying) 
+            if (!Application.isPlaying)
             {
                 return;
             }
@@ -93,13 +92,13 @@ namespace SensorToolkit
             var numberDetected = Physics.OverlapSphereNonAlloc(transform.position, SensorRange, collidersBuffer, DetectsOnLayers);
             if (numberDetected == CurrentBufferSize)
             {
-                if (DynamicallyIncreaseBufferSize) 
+                if (DynamicallyIncreaseBufferSize)
                 {
                     CurrentBufferSize *= 2;
                     testSensor();
                     return;
                 }
-                else 
+                else
                 {
                     logInsufficientBufferSize();
                 }
@@ -146,7 +145,7 @@ namespace SensorToolkit
             Debug.LogWarning("A range sensor on " + name + " has an insufficient buffer size. Some objects may not be detected");
         }
 
-        void prepareCollidersBuffer() 
+        void prepareCollidersBuffer()
         {
             if (CurrentBufferSize == 0)
             {

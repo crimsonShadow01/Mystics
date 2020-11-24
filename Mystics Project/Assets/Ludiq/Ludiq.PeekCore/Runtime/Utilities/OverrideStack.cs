@@ -3,108 +3,108 @@ using System.Collections.Generic;
 
 namespace Ludiq.PeekCore
 {
-	public class OverrideStack<T>
-	{
-		public OverrideStack(T defaultValue)
-		{
-			_value = defaultValue;
-			getValue = () => _value;
-			setValue = (value) => _value = value;
-		}
+    public class OverrideStack<T>
+    {
+        public OverrideStack(T defaultValue)
+        {
+            _value = defaultValue;
+            getValue = () => _value;
+            setValue = (value) => _value = value;
+        }
 
-		public OverrideStack(Func<T> getValue, Action<T> setValue)
-		{
-			Ensure.That(nameof(getValue)).IsNotNull(getValue);
-			Ensure.That(nameof(setValue)).IsNotNull(setValue);
+        public OverrideStack(Func<T> getValue, Action<T> setValue)
+        {
+            Ensure.That(nameof(getValue)).IsNotNull(getValue);
+            Ensure.That(nameof(setValue)).IsNotNull(setValue);
 
-			this.getValue = getValue;
-			this.setValue = setValue;
-		}
+            this.getValue = getValue;
+            this.setValue = setValue;
+        }
 
-		public OverrideStack(Func<T> getValue, Action<T> setValue, Action clearValue) : this(getValue, setValue)
-		{
-			Ensure.That(nameof(clearValue)).IsNotNull(clearValue);
+        public OverrideStack(Func<T> getValue, Action<T> setValue, Action clearValue) : this(getValue, setValue)
+        {
+            Ensure.That(nameof(clearValue)).IsNotNull(clearValue);
 
-			this.clearValue = clearValue;
-		}
+            this.clearValue = clearValue;
+        }
 
-		private readonly Func<T> getValue;
+        private readonly Func<T> getValue;
 
-		private readonly Action<T> setValue;
+        private readonly Action<T> setValue;
 
-		private readonly Action clearValue;
+        private readonly Action clearValue;
 
-		private T _value;
+        private T _value;
 
-		private readonly Stack<T> previous = new Stack<T>();
+        private readonly Stack<T> previous = new Stack<T>();
 
-		public T value
-		{
-			get
-			{
-				return getValue();
-			}
-			internal set
-			{
-				setValue(value);
-			}
-		}
+        public T value
+        {
+            get
+            {
+                return getValue();
+            }
+            internal set
+            {
+                setValue(value);
+            }
+        }
 
-		public OverrideLayer<T> Override(T item)
-		{
-			return new OverrideLayer<T>(this, item);
-		}
+        public OverrideLayer<T> Override(T item)
+        {
+            return new OverrideLayer<T>(this, item);
+        }
 
-		public void BeginOverride(T item)
-		{
-			previous.Push(value);
-			value = item;
-		}
+        public void BeginOverride(T item)
+        {
+            previous.Push(value);
+            value = item;
+        }
 
-		public void EndOverride()
-		{
-			if (previous.Count == 0)
-			{
-				throw new InvalidOperationException();
-			}
+        public void EndOverride()
+        {
+            if (previous.Count == 0)
+            {
+                throw new InvalidOperationException();
+            }
 
-			value = previous.Pop();
+            value = previous.Pop();
 
-			if (previous.Count == 0)
-			{
-				clearValue?.Invoke();
-			}
-		}
+            if (previous.Count == 0)
+            {
+                clearValue?.Invoke();
+            }
+        }
 
-		public static implicit operator T(OverrideStack<T> stack)
-		{
-			Ensure.That(nameof(stack)).IsNotNull(stack);
+        public static implicit operator T(OverrideStack<T> stack)
+        {
+            Ensure.That(nameof(stack)).IsNotNull(stack);
 
-			return stack.value;
-		}
+            return stack.value;
+        }
 
-		public override string ToString()
-		{
-			return value?.ToString() ?? "null";
-		}
-	}
+        public override string ToString()
+        {
+            return value?.ToString() ?? "null";
+        }
+    }
 
-	public struct OverrideLayer<T> : IDisposable
-	{
-		public OverrideStack<T> stack { get; }
+    public struct OverrideLayer<T> : IDisposable
+    {
+        public OverrideStack<T> stack { get; }
 
-		internal OverrideLayer(OverrideStack<T> stack, T item)
-		{
-			Ensure.That(nameof(stack)).IsNotNull(stack);
+        internal OverrideLayer(OverrideStack<T> stack, T item)
+        {
+            Ensure.That(nameof(stack)).IsNotNull(stack);
 
-			this.stack = stack;
+            this.stack = stack;
 
-			stack.BeginOverride(item);
-		}
+            stack.BeginOverride(item);
+        }
 
-		public void Dispose()
-		{
-			stack.EndOverride();
-		}
-	}
+        public void Dispose()
+        {
+            stack.EndOverride();
+        }
+    }
 }

@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+﻿using EnhancedUI.EnhancedScroller;
 using System.Collections.Generic;
-using EnhancedUI.EnhancedScroller;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace EnhancedScrollerDemos.JumpToDemo
 {

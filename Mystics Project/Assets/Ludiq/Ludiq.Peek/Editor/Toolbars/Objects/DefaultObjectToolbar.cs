@@ -5,11 +5,10 @@ using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public sealed class DefaultObjectToolbar : ObjectToolbar<UnityObject>
-	{
-		public DefaultObjectToolbar(UnityObject[] targets) : base(targets) { }
-	}
+    public sealed class DefaultObjectToolbar : ObjectToolbar<UnityObject>
+    {
+        public DefaultObjectToolbar(UnityObject[] targets) : base(targets) { }
+    }
 }

@@ -1949,7 +1949,7 @@ namespace Databox.OdinSerializer
                 this.bufferIndex = this.bufferEnd;
             }
         }
-        
+
         private void SkipPeekedEntryContent()
         {
             if (this.peekedEntryType != null)
@@ -2408,7 +2408,7 @@ namespace Databox.OdinSerializer
             value = 0;
             return false;
         }
-        
+
         [MethodImpl((MethodImplOptions)0x100)]  // Set aggressive inlining flag, for the runtimes that understand that
         private bool UNSAFE_Read_8_Int64(out long value)
         {
@@ -2429,7 +2429,7 @@ namespace Databox.OdinSerializer
                             long result = 0;
                             int* toPtr = (int*)&result;
                             int* fromPtr = (int*)(basePtr + this.bufferIndex);
-                            
+
                             *toPtr++ = *fromPtr++;
                             *toPtr = *fromPtr;
 
@@ -2717,7 +2717,7 @@ namespace Databox.OdinSerializer
             return false;
         }
 
-        
+
         [MethodImpl((MethodImplOptions)0x100)]  // Set aggressive inlining flag, for the runtimes that understand that
         private bool HasBufferData(int amount)
         {

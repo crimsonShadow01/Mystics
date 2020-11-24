@@ -16,7 +16,7 @@ namespace Ludiq.PeekCore.CodeDom
 
         public CodeParameterDeclaration(CodeParameterDirection direction, CodeTypeReference type, string name)
         {
-			Direction = direction;
+            Direction = direction;
             Type = type;
             Name = name;
         }
@@ -26,19 +26,19 @@ namespace Ludiq.PeekCore.CodeDom
         public CodeTypeReference Type { get; }
         public string Name { get; }
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				foreach (var child in CustomAttributes) yield return child;
-				if (Type != null) yield return Type;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                foreach (var child in CustomAttributes) yield return child;
+                if (Type != null) yield return Type;
+            }
+        }
 
         public void Generate(CodeGenerator generator)
         {
-			generator.EnterElement(this);
+            generator.EnterElement(this);
 
             if (CustomAttributes.Count > 0)
             {
@@ -47,10 +47,10 @@ namespace Ludiq.PeekCore.CodeDom
 
             Direction.Generate(generator);
             Type.Generate(generator);
-			generator.Write(TokenType.Space, ' ');
-			generator.OutputIdentifier(TokenType.Identifier, Name);
+            generator.Write(TokenType.Space, ' ');
+            generator.OutputIdentifier(TokenType.Identifier, Name);
 
-			generator.ExitElement();
+            generator.ExitElement();
         }
     }
 }

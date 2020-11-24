@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace SensorToolkit
 {
@@ -41,7 +40,7 @@ namespace SensorToolkit
         {
             Length = Mathf.Max(0f, Length);
             BaseSize = Mathf.Max(0f, BaseSize);
-            if (pc != null) 
+            if (pc != null)
             {
                 CreateCollider();
             }
@@ -55,7 +54,7 @@ namespace SensorToolkit
             pts[0] = new Vector3(-BaseSize / 2f, 0f); // Bottom Left
             pts[1] = new Vector3(BaseSize / 2f, 0f);  // Bottom Right
 
-            for (int i = 0; i <= 1+Resolution; i++)
+            for (int i = 0; i <= 1 + Resolution; i++)
             {
                 float a = -FOVAngle / 2f + FOVAngle * ((float)i / (1 + Resolution));
                 Vector2 pt = Quaternion.AngleAxis(a, Vector3.forward) * (Vector2.up * Length);
@@ -72,7 +71,7 @@ namespace SensorToolkit
             }
 
             var triangles = new int[(2 + Resolution) * 3];
-            for (int i = 0; i < (2+Resolution); i++)
+            for (int i = 0; i < (2 + Resolution); i++)
             {
                 var ti = i * 3;
                 if (i == 0)
@@ -83,7 +82,7 @@ namespace SensorToolkit
                 }
                 else
                 {
-                    triangles[ti] = i+1;
+                    triangles[ti] = i + 1;
                     triangles[ti + 1] = 0;
                     triangles[ti + 2] = i + 2;
                 }
@@ -98,7 +97,7 @@ namespace SensorToolkit
         void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
-            foreach(Vector3 p in pts)
+            foreach (Vector3 p in pts)
             {
                 Gizmos.DrawSphere(transform.TransformPoint(p), 0.1f);
             }

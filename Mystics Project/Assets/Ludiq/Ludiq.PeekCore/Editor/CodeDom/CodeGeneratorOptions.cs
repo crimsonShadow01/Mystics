@@ -8,29 +8,29 @@ namespace Ludiq.PeekCore.CodeDom
 {
     public sealed class CodeGeneratorOptions
     {
-		public enum BracingStyleOption
-		{
-			AddNewLine,
-			OnSameLine,
-		}
+        public enum BracingStyleOption
+        {
+            AddNewLine,
+            OnSameLine,
+        }
 
         public CodeGeneratorOptions(
-			string indentString = "    ",
-			BracingStyleOption bracingStyle = BracingStyleOption.AddNewLine,
-			bool elseOnClosing = false,
-			IEnumerable<CodePredeclaredType> predeclaredTypes = null)
-		{
-			IndentString = indentString;
-			BracingStyle = bracingStyle;
-			MiddleClosingBraceOnSameLine = elseOnClosing;
-			PredeclaredTypes = predeclaredTypes != null
-				? new List<CodePredeclaredType>(predeclaredTypes)
-				: new List<CodePredeclaredType>();
-		}
+            string indentString = "    ",
+            BracingStyleOption bracingStyle = BracingStyleOption.AddNewLine,
+            bool elseOnClosing = false,
+            IEnumerable<CodePredeclaredType> predeclaredTypes = null)
+        {
+            IndentString = indentString;
+            BracingStyle = bracingStyle;
+            MiddleClosingBraceOnSameLine = elseOnClosing;
+            PredeclaredTypes = predeclaredTypes != null
+                ? new List<CodePredeclaredType>(predeclaredTypes)
+                : new List<CodePredeclaredType>();
+        }
 
         public string IndentString { get; } = "    ";
         public BracingStyleOption BracingStyle { get; }
         public bool MiddleClosingBraceOnSameLine { get; }
-		public List<CodePredeclaredType> PredeclaredTypes { get; }
+        public List<CodePredeclaredType> PredeclaredTypes { get; }
     }
 }

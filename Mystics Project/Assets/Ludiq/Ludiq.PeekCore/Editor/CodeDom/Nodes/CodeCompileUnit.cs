@@ -15,44 +15,44 @@ namespace Ludiq.PeekCore.CodeDom
         public List<string> ReferencedAssemblies { get; } = new List<string>();
         public List<CodeAttributeDeclaration> AssemblyCustomAttributes { get; } = new List<CodeAttributeDeclaration>();
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				foreach (var child in StartDirectives) yield return child;
-				foreach (var child in EndDirectives) yield return child;
-				foreach (var child in Namespaces) yield return child;
-				foreach (var child in AssemblyCustomAttributes) yield return child;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                foreach (var child in StartDirectives) yield return child;
+                foreach (var child in EndDirectives) yield return child;
+                foreach (var child in Namespaces) yield return child;
+                foreach (var child in AssemblyCustomAttributes) yield return child;
+            }
+        }
 
-		public void Generate(CodeGenerator generator)
-		{
-			generator.EnterElement(this);
+        public void Generate(CodeGenerator generator)
+        {
+            generator.EnterElement(this);
 
-			generator.WriteLine(TokenType.Comment, @"//--------------------------------------------------------------");
-			generator.WriteLine(TokenType.Comment, @"//              _______      _____      __       ________       ");
-			generator.WriteLine(TokenType.Comment, @"//             |  ___  \    /     \    |  |     |___  ___|      ");
-			generator.WriteLine(TokenType.Comment, @"//             | |   \  |  /  ___  \   |  |         / /         ");
-			generator.WriteLine(TokenType.Comment, @"//             | |___/ /  /  /   \  \  |  |        / /_         ");
-			generator.WriteLine(TokenType.Comment, @"//             | |   \ \  \  \___/  /  |  |       /_  /         ");
-			generator.WriteLine(TokenType.Comment, @"//             | |___/  |  \       /   |  |____    | /          ");
-			generator.WriteLine(TokenType.Comment, @"//             |_______/    \_____/    |_______|   |/           ");
-			generator.WriteLine(TokenType.Comment, @"//                                                              ");
-			generator.WriteLine(TokenType.Comment, @"//                 V I S U A L    S C R I P T I N G             ");
-			generator.WriteLine(TokenType.Comment, @"//--------------------------------------------------------------");
-			generator.WriteLine(TokenType.Comment, @"//                                                              ");
-			generator.WriteLine(TokenType.Comment, @"// THIS FILE IS AUTO-GENERATED.                                 ");
-			generator.WriteLine(TokenType.Comment, @"//                                                              ");
-			generator.WriteLine(TokenType.Comment, @"// ANY CHANGES WILL BE LOST NEXT TIME THIS SCRIPT IS GENERATED. ");
-			generator.WriteLine(TokenType.Comment, @"//                                                              ");
-			generator.WriteLine(TokenType.Comment, @"//--------------------------------------------------------------");
+            generator.WriteLine(TokenType.Comment, @"//--------------------------------------------------------------");
+            generator.WriteLine(TokenType.Comment, @"//              _______      _____      __       ________       ");
+            generator.WriteLine(TokenType.Comment, @"//             |  ___  \    /     \    |  |     |___  ___|      ");
+            generator.WriteLine(TokenType.Comment, @"//             | |   \  |  /  ___  \   |  |         / /         ");
+            generator.WriteLine(TokenType.Comment, @"//             | |___/ /  /  /   \  \  |  |        / /_         ");
+            generator.WriteLine(TokenType.Comment, @"//             | |   \ \  \  \___/  /  |  |       /_  /         ");
+            generator.WriteLine(TokenType.Comment, @"//             | |___/  |  \       /   |  |____    | /          ");
+            generator.WriteLine(TokenType.Comment, @"//             |_______/    \_____/    |_______|   |/           ");
+            generator.WriteLine(TokenType.Comment, @"//                                                              ");
+            generator.WriteLine(TokenType.Comment, @"//                 V I S U A L    S C R I P T I N G             ");
+            generator.WriteLine(TokenType.Comment, @"//--------------------------------------------------------------");
+            generator.WriteLine(TokenType.Comment, @"//                                                              ");
+            generator.WriteLine(TokenType.Comment, @"// THIS FILE IS AUTO-GENERATED.                                 ");
+            generator.WriteLine(TokenType.Comment, @"//                                                              ");
+            generator.WriteLine(TokenType.Comment, @"// ANY CHANGES WILL BE LOST NEXT TIME THIS SCRIPT IS GENERATED. ");
+            generator.WriteLine(TokenType.Comment, @"//                                                              ");
+            generator.WriteLine(TokenType.Comment, @"//--------------------------------------------------------------");
 
             StartDirectives.Generate(generator);
-			if (StartDirectives.Count > 0) generator.WriteLine();
+            if (StartDirectives.Count > 0) generator.WriteLine();
 
-			Usings.Generate(generator);
+            Usings.Generate(generator);
 
             if (AssemblyCustomAttributes.Count > 0)
             {
@@ -60,14 +60,14 @@ namespace Ludiq.PeekCore.CodeDom
                 generator.WriteLine();
             }
 
-			generator.PushUsingSet(Usings);
+            generator.PushUsingSet(Usings);
             Namespaces.Generate(generator);
-			generator.PopUsingSet();
+            generator.PopUsingSet();
 
-			if (EndDirectives.Count > 0) generator.WriteLine();
+            if (EndDirectives.Count > 0) generator.WriteLine();
             EndDirectives.Generate(generator);
 
-			generator.ExitElement();
-		}
-	}
+            generator.ExitElement();
+        }
+    }
 }

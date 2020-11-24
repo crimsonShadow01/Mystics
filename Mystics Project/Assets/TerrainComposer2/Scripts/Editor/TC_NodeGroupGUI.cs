@@ -1,8 +1,5 @@
-using UnityEngine;
 using UnityEditor;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -17,19 +14,19 @@ namespace TerrainComposer2
             Rect dropDownRect;
             float activeMultiOld = activeMulti;
             activeMulti *= nodeGroup.active ? 1 : 0.75f;
-            
+
             bool isCulled = false;
             TC_GlobalSettings g = TC_Settings.instance.global;
 
             // if ((nodeGroup.foldout == 1 && nodeGroup.itemList.Count == 1) || nodeGroup.itemList.Count == 0) nodeGroup.foldout = 0;
-            
+
             // Closing Bracket
             TD.DrawBracket(ref pos, nodeFoldout, true, colBracket * activeMultiOld, ref nodeGroup.foldout, true, nodeGroup.itemList.Count > 0);
-            
+
             if (nodeGroup.foldout > 0)
             {
                 if ((nodeGroup.itemList.Count != 1 || nodeGroup.foldout != 1) && nodeGroup.itemList.Count != 0 && !hideSelectNodes) pos.x -= TD.texCardBody.width;
-                
+
                 if (nodeGroup.itemList.Count > 1 && !hideSelectNodes)
                 {
                     dropDownRect = TD.DrawNode(nodeGroup, pos, colGroupNode, Color.white, ref isCulled, activeMulti, nodeFoldout, drawMethod, false);
@@ -57,7 +54,7 @@ namespace TerrainComposer2
                 //    }
                 //    startOffset.x -= TD.nodeWidthSpace;
                 //}
-                
+
                 if (nodeGroup.foldout == 2 && !hideSelectNodes)
                 {
                     if (nodeGroup.itemList.Count > 1 && nodeFoldout) TD.DrawMethod(nodeGroup, pos + new Vector2(TD.texCardBody.width - 18, 172), true, colNode, activeMulti);
@@ -74,12 +71,12 @@ namespace TerrainComposer2
                             {
                                 TD.DrawMethod(node, pos + new Vector2(TD.texCardBody.width - 18, 172), false, colNode, (node.active ? 1 : 0.5f) * activeMulti);
                             }
-                                
+
                         }
                         else
                         {
                             TC_NodeGroup nodeGroupChild = nodeGroup.itemList[i] as TC_NodeGroup;
-                            
+
                             if (nodeGroupChild != null)
                             {
                                 pos.x += TD.nodeWidthHSpace;
@@ -106,7 +103,7 @@ namespace TerrainComposer2
 
             return 0;
         }
-        
+
         static public void DropDownMenu(Rect rect, TC_NodeGroup nodeGroup)
         {
             if (TD.ClickRect(rect) != 1) return;
@@ -117,7 +114,7 @@ namespace TerrainComposer2
             string instanceID = nodeGroup.GetInstanceID().ToString();
 
             menu.AddItem(new GUIContent("Clear Nodes"), false, LeftClickMenu, instanceID + ":Clear Nodes");
-            
+
             menu.ShowAsContext();
         }
 

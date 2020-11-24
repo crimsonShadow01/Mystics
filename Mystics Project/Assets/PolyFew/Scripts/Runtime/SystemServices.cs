@@ -712,19 +712,19 @@ namespace BrainFailProductions.PolyFew
             await SendHTTPRequestAsync(testUrl, method, (string response, HttpStatusCode? statusCode) =>
             {
 
-            /*
-            if (Regex.IsMatch(response, regexPatterns.netError, RegexOptions.Compiled))
-            {
-                Debug.Log("No internet connection or system services are down");
-                if (callback != null) { callback(false); }
-            }
+                /*
+                if (Regex.IsMatch(response, regexPatterns.netError, RegexOptions.Compiled))
+                {
+                    Debug.Log("No internet connection or system services are down");
+                    if (callback != null) { callback(false); }
+                }
 
-            else
-            {
-                Debug.Log("Connection to the internet exists");
-                if (callback != null) { callback(true); }
-            }
-            */
+                else
+                {
+                    Debug.Log("Connection to the internet exists");
+                    if (callback != null) { callback(true); }
+                }
+                */
 
                 if (statusCode != null && statusCode == HttpStatusCode.OK)
                 {
@@ -753,19 +753,19 @@ namespace BrainFailProductions.PolyFew
             SendHTTPRequestBlocking(url, method, (string response, HttpStatusCode? statusCode) =>
             {
 
-            /*
-            if (Regex.IsMatch(response, regexPatterns.netError, RegexOptions.Compiled))
-            {
-                Debug.Log("No internet connection or system services are down");
-                if (callback != null) { callback(false); }
-            }
+                /*
+                if (Regex.IsMatch(response, regexPatterns.netError, RegexOptions.Compiled))
+                {
+                    Debug.Log("No internet connection or system services are down");
+                    if (callback != null) { callback(false); }
+                }
 
-            else
-            {
-                Debug.Log("Connection to the internet exists");
-                if (callback != null) { callback(true); }
-            }
-            */
+                else
+                {
+                    Debug.Log("Connection to the internet exists");
+                    if (callback != null) { callback(true); }
+                }
+                */
 
                 if (statusCode != null && statusCode == HttpStatusCode.OK)
                 {

@@ -6,196 +6,196 @@ using System.Threading.Tasks;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class Task
-	{
-		public ITaskRunner runner { get; }
+    public sealed class Task
+    {
+        public ITaskRunner runner { get; }
 
-		public string title { get; }
+        public string title { get; }
 
-		public Func<EditorTexture> getIcon { get; }
+        public Func<EditorTexture> getIcon { get; }
 
-		public EditorTexture icon { get; private set; }
+        public EditorTexture icon { get; private set; }
 
-		public int totalSteps { get; }
-		
-		public int completedSteps { get; private set; }
+        public int totalSteps { get; }
 
-		public float ratio => (float)completedSteps / totalSteps;
+        public int completedSteps { get; private set; }
 
-		public float animatedRatio;
+        public float ratio => (float)completedSteps / totalSteps;
 
-		public string currentStepLabel { get; set; }
-		
-		public bool stepsHaveStarted { get; private set; }
+        public float animatedRatio;
 
-		public bool stepsHaveCompleted => completedSteps == totalSteps;
+        public string currentStepLabel { get; set; }
 
-		private readonly object @lock = new object();
-		
-		private ManualResetEvent stepsWaitHandle;
+        public bool stepsHaveStarted { get; private set; }
 
-		private Stopwatch stopwatch;
+        public bool stepsHaveCompleted => completedSteps == totalSteps;
 
-		public TimeSpan elapsed => stopwatch.Elapsed;
+        private readonly object @lock = new object();
 
-		private readonly Action<Task> work;
+        private ManualResetEvent stepsWaitHandle;
 
-		private CancellationTokenSource cancellation { get; }
+        private Stopwatch stopwatch;
 
-		private CancellationToken cancellationToken { get; }
+        public TimeSpan elapsed => stopwatch.Elapsed;
+
+        private readonly Action<Task> work;
+
+        private CancellationTokenSource cancellation { get; }
+
+        private CancellationToken cancellationToken { get; }
 
 #if UNITY_2020_1_OR_NEWER
-		public int progressItemId { get; set; }
+        public int progressItemId { get; set; }
 #endif
 
-		public Task(ITaskRunner runner, string title, int totalSteps, Action<Task> work)
-		{
-			Ensure.That(nameof(runner)).IsNotNull(runner);
-			Ensure.That(nameof(title)).IsNotNull(title);
-			Ensure.That(nameof(totalSteps)).IsGt(totalSteps, 0);
-			Ensure.That(nameof(work)).IsNotNull(work);
+        public Task(ITaskRunner runner, string title, int totalSteps, Action<Task> work)
+        {
+            Ensure.That(nameof(runner)).IsNotNull(runner);
+            Ensure.That(nameof(title)).IsNotNull(title);
+            Ensure.That(nameof(totalSteps)).IsGt(totalSteps, 0);
+            Ensure.That(nameof(work)).IsNotNull(work);
 
-			this.title = title;
-			this.totalSteps = totalSteps;
-			this.runner = runner;
-			this.work = work;
+            this.title = title;
+            this.totalSteps = totalSteps;
+            this.runner = runner;
+            this.work = work;
 
-			cancellation = new CancellationTokenSource();
-			cancellationToken = cancellation.Token;
-		}
+            cancellation = new CancellationTokenSource();
+            cancellationToken = cancellation.Token;
+        }
 
-		public void Run()
-		{
-			work(this);
-		}
+        public void Run()
+        {
+            work(this);
+        }
 
-		public void Begin()
-		{
-			stopwatch = Stopwatch.StartNew();
-			ProfilingUtility.BeginSample(title);
-		}
+        public void Begin()
+        {
+            stopwatch = Stopwatch.StartNew();
+            ProfilingUtility.BeginSample(title);
+        }
 
-		public void End()
-		{
-			stopwatch.Stop();
-			cancellation.Dispose();
-			ProfilingUtility.EndSample();
-		}
+        public void End()
+        {
+            stopwatch.Stop();
+            cancellation.Dispose();
+            ProfilingUtility.EndSample();
+        }
 
-		public void Cancel()
-		{
-			cancellation.Cancel();
+        public void Cancel()
+        {
+            cancellation.Cancel();
 
-			stepsWaitHandle?.Set();
-		}
+            stepsWaitHandle?.Set();
+        }
 
-		public ParallelOptions parallelOptions => new ParallelOptions() {CancellationToken = cancellationToken};
+        public ParallelOptions parallelOptions => new ParallelOptions() { CancellationToken = cancellationToken };
 
-		public void AllowCancellation()
-		{
-			cancellationToken.ThrowIfCancellationRequested();
-		}
+        public void AllowCancellation()
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+        }
 
-		public void StartStep(string label = null)
-		{
-			lock (@lock)
-			{
-				AllowCancellation();
+        public void StartStep(string label = null)
+        {
+            lock (@lock)
+            {
+                AllowCancellation();
 
-				if (stepsHaveCompleted)
-				{
-					throw new ArgumentOutOfRangeException($"Over-starting progress task: '{title}'.");
-				}
-				
-				currentStepLabel = label;
-				stepsHaveStarted = true;
-				runner.Report(this);
-			}
-		}
+                if (stepsHaveCompleted)
+                {
+                    throw new ArgumentOutOfRangeException($"Over-starting progress task: '{title}'.");
+                }
 
-		public void CompleteStep()
-		{
-			lock (@lock)
-			{
-				if (stepsHaveCompleted)
-				{
-					throw new ArgumentOutOfRangeException($"Over-completing progress task: '{title}'.");
-				}
-			
-				completedSteps++;
-				currentStepLabel = null;
-				runner.Report(this);
-				
-				AllowCancellation();
+                currentStepLabel = label;
+                stepsHaveStarted = true;
+                runner.Report(this);
+            }
+        }
 
-				if (stepsHaveCompleted)
-				{
-					stepsWaitHandle?.Set();
-				}
-			}
-		}
+        public void CompleteStep()
+        {
+            lock (@lock)
+            {
+                if (stepsHaveCompleted)
+                {
+                    throw new ArgumentOutOfRangeException($"Over-completing progress task: '{title}'.");
+                }
 
-		public void WaitUntilStepsHaveCompleted()
-		{
-			if (stepsWaitHandle == null)
-			{
-				stepsWaitHandle = new ManualResetEvent(false);
-			}
+                completedSteps++;
+                currentStepLabel = null;
+                runner.Report(this);
 
-			if (!stepsHaveCompleted)
-			{
-				stepsWaitHandle.WaitOne();
-			}
+                AllowCancellation();
 
-			AllowCancellation();
-		}
+                if (stepsHaveCompleted)
+                {
+                    stepsWaitHandle?.Set();
+                }
+            }
+        }
 
-		private static IEnumerable<ITaskRunner> runners
-		{
-			get
-			{
-				yield return ForegroundTaskRunner.instance;
-				yield return BackgroundTaskRunner.instance;
-				yield return WindowTaskRunner.instance;
-			}
-		}
+        public void WaitUntilStepsHaveCompleted()
+        {
+            if (stepsWaitHandle == null)
+            {
+                stepsWaitHandle = new ManualResetEvent(false);
+            }
 
-		public static bool allowWindowRunner { get; set; } = true;
+            if (!stepsHaveCompleted)
+            {
+                stepsWaitHandle.WaitOne();
+            }
 
-		private static ITaskRunner ChooseRunner()
-		{
-			foreach (var runner in runners)
-			{
-				if (runner.runsCurrentThread)
-				{
-					return runner;
-				}
-			}
+            AllowCancellation();
+        }
 
-			if (UnityThread.isRunningOnMainThread || TaskWindow.instance != null)
-			{
-				if (allowWindowRunner)
-				{
-					return WindowTaskRunner.instance;
-				}
-				else
-				{
-					return ForegroundTaskRunner.instance;
-				}
-			}
-			else
-			{
-				return BackgroundTaskRunner.instance;
-			}
-		}
+        private static IEnumerable<ITaskRunner> runners
+        {
+            get
+            {
+                yield return ForegroundTaskRunner.instance;
+                yield return BackgroundTaskRunner.instance;
+                yield return WindowTaskRunner.instance;
+            }
+        }
 
-		public static void Run(string title, int steps, Action<Task> work)
-		{
-			var runner = ChooseRunner();
+        public static bool allowWindowRunner { get; set; } = true;
 
-			var task = new Task(runner, title, steps, work);
-			
-			runner.Run(task);
-		}
-	}
+        private static ITaskRunner ChooseRunner()
+        {
+            foreach (var runner in runners)
+            {
+                if (runner.runsCurrentThread)
+                {
+                    return runner;
+                }
+            }
+
+            if (UnityThread.isRunningOnMainThread || TaskWindow.instance != null)
+            {
+                if (allowWindowRunner)
+                {
+                    return WindowTaskRunner.instance;
+                }
+                else
+                {
+                    return ForegroundTaskRunner.instance;
+                }
+            }
+            else
+            {
+                return BackgroundTaskRunner.instance;
+            }
+        }
+
+        public static void Run(string title, int steps, Action<Task> work)
+        {
+            var runner = ChooseRunner();
+
+            var task = new Task(runner, title, steps, work);
+
+            runner.Run(task);
+        }
+    }
 }

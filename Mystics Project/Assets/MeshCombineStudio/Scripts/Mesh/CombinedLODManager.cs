@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace MeshCombineStudio
@@ -17,7 +16,7 @@ namespace MeshCombineStudio
         public int showLod = 0;
         public bool lodCulled;
         public float lodCullDistance = 500;
-        
+
         public Vector3 octreeCenter = Vector3.zero;
         public Vector3 octreeSize = new Vector3(256, 256, 256);
         public int maxLevels = 4;
@@ -50,11 +49,11 @@ namespace MeshCombineStudio
         {
             if (octree.cellsUsed != null) Lod(lodMode);
         }
-        
+
         public void UpdateLods(MeshCombiner meshCombiner, int lodAmount)
         {
             if (lods != null && lods.Length == lodAmount) return;
-            
+
             lods = new LOD[lodAmount];
             float[] newDistances = new float[lodAmount];
 

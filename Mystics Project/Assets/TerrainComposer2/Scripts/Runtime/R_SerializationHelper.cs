@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.Text;
+using UnityEngine;
 
 
 static public class R_SerializationHelper
@@ -11,16 +10,16 @@ static public class R_SerializationHelper
     // Serilization
     // ====================================================================================================================================
 
-    static public void SerializeString     (List<byte> bytes, string v)    { bytes.AddRange(BitConverter.GetBytes(v.Length)); bytes.AddRange(Encoding.ASCII.GetBytes(v)); }
-    static public void SerializeFloat      (List<byte> bytes, float v)     { bytes.AddRange(BitConverter.GetBytes(v)); }
-    static public void SerializeInt        (List<byte> bytes, int v)       { bytes.AddRange(BitConverter.GetBytes(v)); }
-    static public void SerializeBool       (List<byte> bytes, bool v)      { bytes.Add(v ? (byte)1 : (byte)0); }
-    static public void SerializeVector2     (List<byte> bytes, Vector2 v)   {  bytes.AddRange(BitConverter.GetBytes(v.x)); bytes.AddRange(BitConverter.GetBytes(v.y)); }
-    static public void SerializeVector3     (List<byte> bytes, Vector3 v)   { bytes.AddRange(BitConverter.GetBytes(v.x)); bytes.AddRange(BitConverter.GetBytes(v.y)); bytes.AddRange(BitConverter.GetBytes(v.z)); }
-    static public void SerializeVector4     (List<byte> bytes, Vector4 v)   { bytes.AddRange(BitConverter.GetBytes(v.x)); bytes.AddRange(BitConverter.GetBytes(v.y)); bytes.AddRange(BitConverter.GetBytes(v.z)); bytes.AddRange(BitConverter.GetBytes(v.w)); }
-    static public void SerializeQuaternion  (List<byte> bytes, Quaternion v) { bytes.AddRange(BitConverter.GetBytes(v.x)); bytes.AddRange(BitConverter.GetBytes(v.y)); bytes.AddRange(BitConverter.GetBytes(v.z)); bytes.AddRange(BitConverter.GetBytes(v.w)); }
-    static public void SerializeTransform  (List<byte> bytes, Transform t) { SerializeVector3(bytes, t.position); SerializeVector4(bytes, new Vector4(t.rotation.x, t.rotation.y, t.rotation.z, t.rotation.w)); SerializeVector3(bytes, t.localScale); }
-    static public void SerializeColor (List<byte> bytes, Color color) { bytes.AddRange(BitConverter.GetBytes(color.r)); bytes.AddRange(BitConverter.GetBytes(color.g)); bytes.AddRange(BitConverter.GetBytes(color.b)); bytes.AddRange(BitConverter.GetBytes(color.a)); }
+    static public void SerializeString(List<byte> bytes, string v) { bytes.AddRange(BitConverter.GetBytes(v.Length)); bytes.AddRange(Encoding.ASCII.GetBytes(v)); }
+    static public void SerializeFloat(List<byte> bytes, float v) { bytes.AddRange(BitConverter.GetBytes(v)); }
+    static public void SerializeInt(List<byte> bytes, int v) { bytes.AddRange(BitConverter.GetBytes(v)); }
+    static public void SerializeBool(List<byte> bytes, bool v) { bytes.Add(v ? (byte)1 : (byte)0); }
+    static public void SerializeVector2(List<byte> bytes, Vector2 v) { bytes.AddRange(BitConverter.GetBytes(v.x)); bytes.AddRange(BitConverter.GetBytes(v.y)); }
+    static public void SerializeVector3(List<byte> bytes, Vector3 v) { bytes.AddRange(BitConverter.GetBytes(v.x)); bytes.AddRange(BitConverter.GetBytes(v.y)); bytes.AddRange(BitConverter.GetBytes(v.z)); }
+    static public void SerializeVector4(List<byte> bytes, Vector4 v) { bytes.AddRange(BitConverter.GetBytes(v.x)); bytes.AddRange(BitConverter.GetBytes(v.y)); bytes.AddRange(BitConverter.GetBytes(v.z)); bytes.AddRange(BitConverter.GetBytes(v.w)); }
+    static public void SerializeQuaternion(List<byte> bytes, Quaternion v) { bytes.AddRange(BitConverter.GetBytes(v.x)); bytes.AddRange(BitConverter.GetBytes(v.y)); bytes.AddRange(BitConverter.GetBytes(v.z)); bytes.AddRange(BitConverter.GetBytes(v.w)); }
+    static public void SerializeTransform(List<byte> bytes, Transform t) { SerializeVector3(bytes, t.position); SerializeVector4(bytes, new Vector4(t.rotation.x, t.rotation.y, t.rotation.z, t.rotation.w)); SerializeVector3(bytes, t.localScale); }
+    static public void SerializeColor(List<byte> bytes, Color color) { bytes.AddRange(BitConverter.GetBytes(color.r)); bytes.AddRange(BitConverter.GetBytes(color.g)); bytes.AddRange(BitConverter.GetBytes(color.b)); bytes.AddRange(BitConverter.GetBytes(color.a)); }
 
     static public void SerializeIntArray(List<byte> bytes, int[] array) { SerializeInt(bytes, array.Length); for (int i = 0; i < array.Length; i++) SerializeInt(bytes, array[i]); }
     static public void SerializeFloatArray(List<byte> bytes, float[] array) { SerializeInt(bytes, array.Length); for (int i = 0; i < array.Length; i++) SerializeFloat(bytes, array[i]); }
@@ -30,8 +29,8 @@ static public class R_SerializationHelper
     static public void SerializeVector4Array(List<byte> bytes, Vector4[] array) { SerializeInt(bytes, array.Length); for (int i = 0; i < array.Length; i++) SerializeVector4(bytes, array[i]); }
     static public void SerializeTransformArray(List<byte> bytes, Transform[] array) { SerializeInt(bytes, array.Length); for (int i = 0; i < array.Length; i++) SerializeTransform(bytes, array[i]); }
 
-    static public void SerializeAnimationCurve (List<byte> bytes, AnimationCurve curve) { SerializeInt(bytes, curve.length); for (int i = 0; i < curve.length; i++) { SerializeVector2(bytes, new Vector2(curve.keys[i].time, curve.keys[i].value)); } }
-    static public void SerializeAnimationCurveExact (List<byte> bytes, AnimationCurve curve)
+    static public void SerializeAnimationCurve(List<byte> bytes, AnimationCurve curve) { SerializeInt(bytes, curve.length); for (int i = 0; i < curve.length; i++) { SerializeVector2(bytes, new Vector2(curve.keys[i].time, curve.keys[i].value)); } }
+    static public void SerializeAnimationCurveExact(List<byte> bytes, AnimationCurve curve)
     {
         SerializeInt(bytes, curve.length);
         for (int i = 0; i < curve.length; i++)
@@ -45,19 +44,19 @@ static public class R_SerializationHelper
         }
     }
 
-    static public void Serialize2DFloatArray(List <byte> bytes, float[,] array)
+    static public void Serialize2DFloatArray(List<byte> bytes, float[,] array)
     {
         int yLength = array.GetLength(0);
         int xLength = array.GetLength(1);
 
         bytes.AddRange(BitConverter.GetBytes(yLength));
         bytes.AddRange(BitConverter.GetBytes(xLength));
-        
+
         for (int y = 0; y < yLength; y++)
         {
             for (int x = 0; x < xLength; x++)
             {
-                bytes.AddRange(BitConverter.GetBytes(array[y,x]));
+                bytes.AddRange(BitConverter.GetBytes(array[y, x]));
             }
         }
     }
@@ -74,7 +73,7 @@ static public class R_SerializationHelper
         {
             for (int x = 0; x < xLength; x++)
             {
-                bytes.Add((byte)array[y,x]);
+                bytes.Add((byte)array[y, x]);
             }
         }
     }
@@ -103,7 +102,7 @@ static public class R_SerializationHelper
     }
 
     static public bool DeserializeBool(byte[] bytes, ref int index) { return (bytes[index++] == 1 ? true : false); }
-        
+
     static public Vector2 DeserializeVector2(byte[] bytes, ref int index)
     {
         Vector2 v;
@@ -177,7 +176,7 @@ static public class R_SerializationHelper
     {
         int length = DeserializeInt(bytes, ref index);
         Keyframe[] keys = new Keyframe[length];
-        
+
         for (int i = 0; i < length; i++)
         {
             float time = DeserializeFloat(bytes, ref index);
@@ -206,7 +205,7 @@ static public class R_SerializationHelper
         for (int i = 0; i < length; i++) array[i] = DeserializeFloat(bytes, ref index);
         return array;
     }
-    
+
     static public bool[] DeserializeBoolArray(byte[] bytes, ref int index)
     {
         int length = DeserializeInt(bytes, ref index);

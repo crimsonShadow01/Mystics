@@ -4,103 +4,103 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class NamingSchemePage : Page
-	{
-		public NamingSchemePage(EditorWindow window) : base(window)
-		{
-			title = "Naming Scheme";
-			shortTitle = "Naming";
-			icon = LudiqCore.Resources.LoadIcon("Icons/Windows/SetupWizard/NamingSchemePage.png");
-		}
-		
-		protected override void OnContentGUI()
-		{
-			var previousIconSize = EditorGUIUtility.GetIconSize();
-			EditorGUIUtility.SetIconSize(new Vector2(IconSize.Small, IconSize.Small));
+    public sealed class NamingSchemePage : Page
+    {
+        public NamingSchemePage(EditorWindow window) : base(window)
+        {
+            title = "Naming Scheme";
+            shortTitle = "Naming";
+            icon = LudiqCore.Resources.LoadIcon("Icons/Windows/SetupWizard/NamingSchemePage.png");
+        }
 
-			GUILayout.BeginVertical(Styles.background, GUILayout.ExpandHeight(true));
+        protected override void OnContentGUI()
+        {
+            var previousIconSize = EditorGUIUtility.GetIconSize();
+            EditorGUIUtility.SetIconSize(new Vector2(IconSize.Small, IconSize.Small));
 
-			var question = "How do you want names to be displayed?" + "\n";
-			question += "If you're not an experienced programmer, we recommend Human Naming.";
+            GUILayout.BeginVertical(Styles.background, GUILayout.ExpandHeight(true));
 
-			LudiqGUI.FlexibleSpace();
-			GUILayout.Label(question, LudiqStyles.centeredLabel);
-			LudiqGUI.FlexibleSpace();
-			LudiqGUI.BeginHorizontal();
-			LudiqGUI.FlexibleSpace();
+            var question = "How do you want names to be displayed?" + "\n";
+            question += "If you're not an experienced programmer, we recommend Human Naming.";
 
-			LudiqGUI.BeginVertical();
+            LudiqGUI.FlexibleSpace();
+            GUILayout.Label(question, LudiqStyles.centeredLabel);
+            LudiqGUI.FlexibleSpace();
+            LudiqGUI.BeginHorizontal();
+            LudiqGUI.FlexibleSpace();
 
-			if (GUILayout.Button("Human Naming", Styles.modeButton))
-			{
-				LudiqCore.Configuration.humanNaming = true;
-				LudiqCore.Configuration.Save();
-				Complete();
-			}
+            LudiqGUI.BeginVertical();
 
-			LudiqGUI.Space(-1);
-			GUILayout.BeginVertical(Styles.modeBox);
-			GUILayout.Label(new GUIContent(" Transform: Get Position", typeof(Transform).Icon()[IconSize.Small]), Styles.example);
-			GUILayout.Label(new GUIContent(" Integer", typeof(int).Icon()[IconSize.Small]), Styles.example);
-			GUILayout.Label(new GUIContent(" List of Game Object", typeof(List<GameObject>).Icon()[IconSize.Small]), Styles.example);
-			GUILayout.Label(new GUIContent(" Rigidbody: Add Force (Force)", typeof(Rigidbody).Icon()[IconSize.Small]), Styles.example);
-			LudiqGUI.EndVertical();
-			LudiqGUI.EndVertical();
+            if (GUILayout.Button("Human Naming", Styles.modeButton))
+            {
+                LudiqCore.Configuration.humanNaming = true;
+                LudiqCore.Configuration.Save();
+                Complete();
+            }
 
-			LudiqGUI.Space(10);
+            LudiqGUI.Space(-1);
+            GUILayout.BeginVertical(Styles.modeBox);
+            GUILayout.Label(new GUIContent(" Transform: Get Position", typeof(Transform).Icon()[IconSize.Small]), Styles.example);
+            GUILayout.Label(new GUIContent(" Integer", typeof(int).Icon()[IconSize.Small]), Styles.example);
+            GUILayout.Label(new GUIContent(" List of Game Object", typeof(List<GameObject>).Icon()[IconSize.Small]), Styles.example);
+            GUILayout.Label(new GUIContent(" Rigidbody: Add Force (Force)", typeof(Rigidbody).Icon()[IconSize.Small]), Styles.example);
+            LudiqGUI.EndVertical();
+            LudiqGUI.EndVertical();
 
-			LudiqGUI.BeginVertical();
+            LudiqGUI.Space(10);
 
-			if (GUILayout.Button("Programmer Naming", Styles.modeButton))
-			{
-				LudiqCore.Configuration.humanNaming = false;
-				LudiqCore.Configuration.Save();
-				Complete();
-			}
+            LudiqGUI.BeginVertical();
 
-			LudiqGUI.Space(-1);
-			GUILayout.BeginVertical(Styles.modeBox);
-			GUILayout.Label(new GUIContent(" Transform.position (Get)", typeof(Transform).Icon()[IconSize.Small]), Styles.example);
-			GUILayout.Label(new GUIContent(" int", typeof(int).Icon()[IconSize.Small]), Styles.example);
-			GUILayout.Label(new GUIContent(" List<GameObject>", typeof(List<GameObject>).Icon()[IconSize.Small]), Styles.example);
-			GUILayout.Label(new GUIContent(" Rigidbody.AddForce(force)", typeof(Rigidbody).Icon()[IconSize.Small]), Styles.example);
-			LudiqGUI.EndVertical();
-			LudiqGUI.EndVertical();
+            if (GUILayout.Button("Programmer Naming", Styles.modeButton))
+            {
+                LudiqCore.Configuration.humanNaming = false;
+                LudiqCore.Configuration.Save();
+                Complete();
+            }
 
-			LudiqGUI.FlexibleSpace();
-			LudiqGUI.EndHorizontal();
-			LudiqGUI.FlexibleSpace();
-			GUILayout.Label("You can change this setting at any time from the setup or configuration.", EditorStyles.centeredGreyMiniLabel);
-			LudiqGUI.FlexibleSpace();
+            LudiqGUI.Space(-1);
+            GUILayout.BeginVertical(Styles.modeBox);
+            GUILayout.Label(new GUIContent(" Transform.position (Get)", typeof(Transform).Icon()[IconSize.Small]), Styles.example);
+            GUILayout.Label(new GUIContent(" int", typeof(int).Icon()[IconSize.Small]), Styles.example);
+            GUILayout.Label(new GUIContent(" List<GameObject>", typeof(List<GameObject>).Icon()[IconSize.Small]), Styles.example);
+            GUILayout.Label(new GUIContent(" Rigidbody.AddForce(force)", typeof(Rigidbody).Icon()[IconSize.Small]), Styles.example);
+            LudiqGUI.EndVertical();
+            LudiqGUI.EndVertical();
 
-			LudiqGUI.EndVertical();
+            LudiqGUI.FlexibleSpace();
+            LudiqGUI.EndHorizontal();
+            LudiqGUI.FlexibleSpace();
+            GUILayout.Label("You can change this setting at any time from the setup or configuration.", EditorStyles.centeredGreyMiniLabel);
+            LudiqGUI.FlexibleSpace();
 
-			EditorGUIUtility.SetIconSize(previousIconSize);
-		}
+            LudiqGUI.EndVertical();
 
-		public static class Styles
-		{
-			static Styles()
-			{
-				background = new GUIStyle(LudiqStyles.windowBackground);
-				background.padding = new RectOffset(10, 10, 10, 16);
+            EditorGUIUtility.SetIconSize(previousIconSize);
+        }
 
-				modeButton = new GUIStyle("Button");
-				modeButton.padding = new RectOffset(6, 6, 6, 6);
-				modeButton.margin = new RectOffset(0, 0, 0, 0);
+        public static class Styles
+        {
+            static Styles()
+            {
+                background = new GUIStyle(LudiqStyles.windowBackground);
+                background.padding = new RectOffset(10, 10, 10, 16);
 
-				modeBox = new GUIStyle("TextField");
-				modeBox.fixedHeight = 0;
-				modeBox.margin = new RectOffset(0, 0, 0, 0);
-				modeBox.padding = new RectOffset(5, 7, 8, 7);
+                modeButton = new GUIStyle("Button");
+                modeButton.padding = new RectOffset(6, 6, 6, 6);
+                modeButton.margin = new RectOffset(0, 0, 0, 0);
 
-				example = new GUIStyle(EditorStyles.label);
-			}
+                modeBox = new GUIStyle("TextField");
+                modeBox.fixedHeight = 0;
+                modeBox.margin = new RectOffset(0, 0, 0, 0);
+                modeBox.padding = new RectOffset(5, 7, 8, 7);
 
-			public static readonly GUIStyle background;
-			public static readonly GUIStyle modeButton;
-			public static readonly GUIStyle modeBox;
-			public static readonly GUIStyle example;
-		}
-	}
+                example = new GUIStyle(EditorStyles.label);
+            }
+
+            public static readonly GUIStyle background;
+            public static readonly GUIStyle modeButton;
+            public static readonly GUIStyle modeBox;
+            public static readonly GUIStyle example;
+        }
+    }
 }

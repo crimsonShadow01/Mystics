@@ -49,7 +49,7 @@ namespace PixelCrushers
         private void Update()
         {
             if (!monitorInput) return;
-            if (InputDeviceManager.IsKeyDown(key) || 
+            if (InputDeviceManager.IsKeyDown(key) ||
                 (!string.IsNullOrEmpty(buttonName) && InputDeviceManager.IsButtonDown(buttonName)) ||
                 (anyKeyOrButton && InputDeviceManager.IsAnyKeyDown()))
             {

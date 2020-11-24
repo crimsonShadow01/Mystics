@@ -19,9 +19,9 @@ namespace Databox.OdinSerializer.Utilities
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
-    using System.Globalization;
 
     /// <summary>
     /// MemberInfo method extensions.

@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 namespace SensorToolkit
 {
@@ -86,7 +84,7 @@ namespace SensorToolkit
                 int currentCount;
                 triggerStayLag.TryGetValue(c, out currentCount);
                 if (currentCount >= 10)
-                {   
+                {
                     collidersToRemove.Add(c);
                 }
                 else
@@ -110,13 +108,13 @@ namespace SensorToolkit
             if (RequiresLineOfSight && LineOfSightUpdateMode == UpdateMode.FixedInterval)
             {
                 timer += Time.deltaTime;
-                if (timer > CheckLineOfSightInterval) 
+                if (timer > CheckLineOfSightInterval)
                 {
                     testSensor();
                     timer = 0f;
                 }
             }
-            else 
+            else
             {
                 timer = 0f;
             }

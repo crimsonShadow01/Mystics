@@ -8,25 +8,25 @@ namespace Ludiq.PeekCore.CodeDom
     {
         public CodeVariableReferenceExpression(string variableName)
         {
-			Ensure.That(nameof(variableName)).IsNotNullOrEmpty(variableName);
+            Ensure.That(nameof(variableName)).IsNotNullOrEmpty(variableName);
 
             VariableName = variableName;
         }
 
         public string VariableName { get; }
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
-			if (VariableName == "value" && generator.IsInSetterProperty)
-			{
-				generator.OutputIdentifier(TokenType.Keyword, VariableName);
-			}
-			else
-			{
-				generator.OutputIdentifier(TokenType.Identifier, VariableName);
-			}
-		}
-	}
+        protected override void GenerateInner(CodeGenerator generator)
+        {
+            if (VariableName == "value" && generator.IsInSetterProperty)
+            {
+                generator.OutputIdentifier(TokenType.Keyword, VariableName);
+            }
+            else
+            {
+                generator.OutputIdentifier(TokenType.Identifier, VariableName);
+            }
+        }
+    }
 }

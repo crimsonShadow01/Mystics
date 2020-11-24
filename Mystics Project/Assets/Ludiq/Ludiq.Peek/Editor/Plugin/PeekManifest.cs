@@ -5,19 +5,19 @@ using Ludiq.PeekCore;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public sealed class PeekManifest : PluginManifest
-	{
-		private PeekManifest(PeekPlugin plugin) : base(plugin) { }
+    public sealed class PeekManifest : PluginManifest
+    {
+        private PeekManifest(PeekPlugin plugin) : base(plugin) { }
 
-		public override string name => "Peek";
+        public override string name => "Peek";
 
-		public override string author => "Ludiq";
+        public override string author => "Ludiq";
 
-		public override string description => "Workflow Tools for Unity.";
+        public override string description => "Workflow Tools for Unity.";
 
-		public override SemanticVersion version => "1.3.1";
-	}
+        public override SemanticVersion version => "1.3.1";
+    }
 }

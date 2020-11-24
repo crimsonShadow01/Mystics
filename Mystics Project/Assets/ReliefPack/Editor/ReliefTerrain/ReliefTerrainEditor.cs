@@ -1,9 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using System;
-using System.Reflection;
-using System.Collections;
-using UnityEditor.Callbacks;
 #if UNITY_EDITOR	
 using System.IO;
 #endif
@@ -398,11 +395,11 @@ public class ReliefTerrainEditor : Editor
 
         if (_target.show_details)
         {
-        #region Detail maps unfold
+            #region Detail maps unfold
 
             if (_target.numLayers > 0)
             {
-        #region Detail maps unfold	- layers
+                #region Detail maps unfold	- layers
 
                 if (!terrainComp)
                 {
@@ -1076,7 +1073,7 @@ public class ReliefTerrainEditor : Editor
                                 EditorGUILayout.HelpBox("You can consider baking esp. when your surface is very smooth (Detail A channel) and it containts high frequency details together with layer normalmap. Baking can reduce specular spot pixels jittering when using higher texture MIP levels.", MessageType.Warning, true);
                             }
                             EditorGUI.BeginDisabledGroup(!canBake);
-                            if (GUILayout.Button("Prepare gloss in higher texture MIP levels" + ((prep_atlas >= 0) ? "\n(whole atlas - no variance)":"")))
+                            if (GUILayout.Button("Prepare gloss in higher texture MIP levels" + ((prep_atlas >= 0) ? "\n(whole atlas - no variance)" : "")))
                             {
                                 AssetImporter _importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(_target.Bumps[n]));
                                 if (_importer)
@@ -1092,7 +1089,7 @@ public class ReliefTerrainEditor : Editor
                                 _importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(glossTexToBake));
                                 if (_importer)
                                 {
-                                    _target.GlossBakeJob(glossTexToBake, prep_atlas>=0 ? null : _target.Bumps[n]);
+                                    _target.GlossBakeJob(glossTexToBake, prep_atlas >= 0 ? null : _target.Bumps[n]);
                                     AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(glossTexToBake), ImportAssetOptions.ForceUpdate);
                                 }
                             }
@@ -1528,9 +1525,9 @@ public class ReliefTerrainEditor : Editor
                             //nval=_target.TERRAIN_WaterSpecularity[n];
                             //checkChange(ref nval, EditorGUILayout.Slider("Water spec boost", _target.TERRAIN_WaterSpecularity[n], -1f, 1f));
                             //_target.TERRAIN_WaterSpecularity[n]=nval;		
-                            nval=_target.TERRAIN_WaterMetallic[n];
+                            nval = _target.TERRAIN_WaterMetallic[n];
                             checkChange(ref nval, EditorGUILayout.Slider("Water metalness", _target.TERRAIN_WaterMetallic[n], 0f, 1f));
-                            _target.TERRAIN_WaterMetallic[n]=nval;		
+                            _target.TERRAIN_WaterMetallic[n] = nval;
 
                             nval = _target.TERRAIN_WaterGloss[n];
                             checkChange(ref nval, EditorGUILayout.Slider("Water gloss", _target.TERRAIN_WaterGloss[n], 0f, 1f));
@@ -1638,18 +1635,18 @@ public class ReliefTerrainEditor : Editor
                     _target.Refresh(null, _targetRT);
                 }
 
-        #endregion Detail maps unfold	- layers
+                #endregion Detail maps unfold	- layers
             }
 
 
-        #endregion Detail maps unfold
+            #endregion Detail maps unfold
         }
 
         //bool nshow_controlmaps=EditorGUILayout.Foldout(_target.show_controlmaps, "Control (alpha) maps");
         //if (nshow_controlmaps) {
         if (_target.show_controlmaps)
         {
-        #region Control maps
+            #region Control maps
             Color skin_color;
             toolbarStrings = new string[3] { "Compose", "Acquire", "Control maps" };
             GUILayout.Space(6);
@@ -1668,7 +1665,7 @@ public class ReliefTerrainEditor : Editor
             switch (_target.submenu_control_textures)
             {
                 case ReliefTerrainControlTexturesItems.Compose:
-        #region Control maps - compose maps
+                    #region Control maps - compose maps
                     GUILayout.Space(10);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -2022,10 +2019,10 @@ public class ReliefTerrainEditor : Editor
                     }
 
                     EditorGUILayout.EndVertical();
-        #endregion Control maps - compose maps
+                    #endregion Control maps - compose maps
                     break;
                 case ReliefTerrainControlTexturesItems.Acquire:
-        #region Control maps - acquire mask textures
+                    #region Control maps - acquire mask textures
                     GUILayout.Space(10);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -2093,10 +2090,10 @@ public class ReliefTerrainEditor : Editor
 
                     EditorGUILayout.Space();
                     EditorGUILayout.EndVertical();
-        #endregion Control maps - acquire mask textures					
+                    #endregion Control maps - acquire mask textures					
                     break;
                 case ReliefTerrainControlTexturesItems.Controlmaps:
-        #region Control maps - splats					
+                    #region Control maps - splats					
                     GUILayout.Space(10);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -2244,18 +2241,18 @@ public class ReliefTerrainEditor : Editor
                             }
                         }
                     }
-        #endregion Control maps - splats					
+                    #endregion Control maps - splats					
                     EditorGUILayout.EndVertical();
                     break;
             }
 
-        #endregion Control maps
+            #endregion Control maps
         }
 
         //_target.show_heightmaps=EditorGUILayout.Foldout(_target.show_heightmaps, "Height maps (combined)");
         if (_target.show_derivedmaps)
         {
-        #region Derived textures
+            #region Derived textures
             Color skin_color;
             toolbarStrings = new string[4] { "Atlasing", "Height maps", "Normal maps", "Special" };
             GUILayout.Space(6);
@@ -2275,7 +2272,7 @@ public class ReliefTerrainEditor : Editor
             switch (_target.submenu_derived_textures)
             {
                 case ReliefTerrainDerivedTexturesItems.Atlasing:
-        #region Derived textures - Atlasing features
+                    #region Derived textures - Atlasing features
                     GUILayout.Space(10);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -2358,10 +2355,10 @@ public class ReliefTerrainEditor : Editor
                     }
 
                     EditorGUILayout.EndVertical();
-        #endregion Derived textures - Atlasing features		
+                    #endregion Derived textures - Atlasing features		
                     break;
                 case ReliefTerrainDerivedTexturesItems.Heightmaps:
-        #region Derived textures - Heightmaps
+                    #region Derived textures - Heightmaps
                     GUILayout.Space(10);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -2417,10 +2414,10 @@ public class ReliefTerrainEditor : Editor
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.EndVertical();
-        #endregion Derived textures - Heightmaps
+                    #endregion Derived textures - Heightmaps
                     break;
                 case ReliefTerrainDerivedTexturesItems.Bumpmaps:
-        #region Derived textures - Bumpmaps
+                    #region Derived textures - Bumpmaps
                     GUILayout.Space(10);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -2521,10 +2518,10 @@ public class ReliefTerrainEditor : Editor
                     }
 
                     EditorGUILayout.EndVertical();
-        #endregion Derived textures - Bumpmaps
+                    #endregion Derived textures - Bumpmaps
                     break;
                 case ReliefTerrainDerivedTexturesItems.Globalnormal:
-        #region Derived textures - Global normal
+                    #region Derived textures - Global normal
                     GUILayout.Space(10);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -2564,15 +2561,15 @@ public class ReliefTerrainEditor : Editor
                     //EditorGUILayout.EndVertical();
 
                     EditorGUILayout.EndVertical();
-        #endregion Derived textures - Global normal
+                    #endregion Derived textures - Global normal
                     break;
             } // derived textures submenu switch
-        #endregion Derived textures
+            #endregion Derived textures
         }
 
         if (_target.show_settings)
         {
-        #region ALLSettings
+            #region ALLSettings
             GUIContent[] toolbarIcons1 = new GUIContent[5] { new GUIContent("Main", icoLayersSmall), new GUIContent("UV blend", icoUVBlend), new GUIContent("Global\nmaps", icoGlobalcolor), new GUIContent("Perlin\nnormal", icoPerlinNormal), new GUIContent("S. detail", icoSuperdetail) };
             GUIContent[] toolbarIcons2 = new GUIContent[5] { new GUIContent("Parallax", icoPOM), new GUIContent("Vertical\ntexture", icoVerticalTexture), new GUIContent("Snow", icoSnow), new GUIContent("Water &\ncaustic", icoWater), new GUIContent("Glitter", icoGlitter) };
             ReliefTerrainSettingsItems prev_submenu_settings = _target.submenu_settings;
@@ -2614,7 +2611,7 @@ public class ReliefTerrainEditor : Editor
             switch (_target.submenu_settings)
             {
                 case ReliefTerrainSettingsItems.MainSettings:
-        #region Settings	 - main settings
+                    #region Settings	 - main settings
 
                     GUILayout.Space(6);
                     EditorGUILayout.BeginVertical("Box");
@@ -2895,7 +2892,7 @@ public class ReliefTerrainEditor : Editor
                                         // to not deal with assets on disk but only with instances in mem saved in scene
                                         ReliefTerrainPresetHolder loadedPresetCopy = UnityEngine.Object.Instantiate(loadedPreset) as ReliefTerrainPresetHolder;
 
-                                        if (terrainComp && (loadedPresetCopy.terrainLayers==null || loadedPresetCopy.terrainLayers.Length==0))
+                                        if (terrainComp && (loadedPresetCopy.terrainLayers == null || loadedPresetCopy.terrainLayers.Length == 0))
                                         {
                                             // U2018.3 upgrade
                                             loadedPresetCopy.terrainLayers = new TerrainLayer[terrainComp.terrainData.terrainLayers.Length];
@@ -2969,13 +2966,13 @@ public class ReliefTerrainEditor : Editor
                         _target.Refresh(null, _targetRT);
                     }
 
-        #endregion Settings - main settings
+                    #endregion Settings - main settings
 
                     break;
 
                 case ReliefTerrainSettingsItems.UVblend:
 
-        #region Detail maps unfold - UV blend
+                    #region Detail maps unfold - UV blend
                     // UV blend on/off global properties
                     GUILayout.Space(6);
 
@@ -3031,11 +3028,11 @@ public class ReliefTerrainEditor : Editor
                     }
                     EditorGUILayout.EndVertical();
 
-        #endregion Detail maps unfold - UV blend						
+                    #endregion Detail maps unfold - UV blend						
                     break;
 
                 case ReliefTerrainSettingsItems.POMSettings:
-        #region Settings - POM
+                    #region Settings - POM
                     GUILayout.Space(6);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -3081,11 +3078,11 @@ public class ReliefTerrainEditor : Editor
                         _target.Refresh(null, _targetRT);
                     }
 
-        #endregion Settings - POM
+                    #endregion Settings - POM
                     break;
 
                 case ReliefTerrainSettingsItems.GlobalColor:
-        #region Settings - Global color
+                    #region Settings - Global color
                     _target.paint_wetmask = false;
                     GUILayout.Space(6);
 
@@ -3149,7 +3146,7 @@ public class ReliefTerrainEditor : Editor
                     checkChange(ref _target.GlobalColorMapSaturationFar, EditorGUILayout.Slider(_target.GlobalColorMapSaturationFar, 0, 1));
                     EditorGUILayout.EndHorizontal();
                     //if (!RTP_SUPER_SIMPLE || RTP_USE_PERLIN_ADD || RTP_USE_PERLIN_FIRST)
-                    
+
                     {
                         //EditorGUILayout.BeginHorizontal();
                         //EditorGUILayout.LabelField("   mod by perlin", GUILayout.MinWidth(100), GUILayout.MaxWidth(100));
@@ -3900,11 +3897,11 @@ public class ReliefTerrainEditor : Editor
                         _target.Refresh(null, _targetRT);
                     }
 
-        #endregion Settings - Global color
+                    #endregion Settings - Global color
                     break;
 
                 case ReliefTerrainSettingsItems.GlobalNormal:
-        #region Settings - Global normal 
+                    #region Settings - Global normal 
                     GUILayout.Space(6);
                     ;
                     EditorGUILayout.BeginVertical("Box");
@@ -4014,11 +4011,11 @@ public class ReliefTerrainEditor : Editor
                         _target.Refresh(null, _targetRT);
                     }
 
-        #endregion Settings - Global normal	
+                    #endregion Settings - Global normal	
                     break;
 
                 case ReliefTerrainSettingsItems.Superdetail:
-        #region Settings - superdetail					
+                    #region Settings - superdetail					
                     GUILayout.Space(6);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -4188,10 +4185,10 @@ public class ReliefTerrainEditor : Editor
 
                     EditorGUILayout.EndVertical();
 
-        #endregion Settings - superdetail					
+                    #endregion Settings - superdetail					
                     break;
                 case ReliefTerrainSettingsItems.VerticalTex:
-        #region Settings - Vertical texture		
+                    #region Settings - Vertical texture		
                     GUILayout.Space(6);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -4279,11 +4276,11 @@ public class ReliefTerrainEditor : Editor
 
                     EditorGUILayout.EndVertical();
 
-        #endregion Settings - Vertical texture
+                    #endregion Settings - Vertical texture
                     break;
 
                 case ReliefTerrainSettingsItems.Snow:
-        #region Settings - Snow
+                    #region Settings - Snow
                     GUILayout.Space(6);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -4469,11 +4466,11 @@ public class ReliefTerrainEditor : Editor
 
                     EditorGUILayout.EndVertical();
 
-        #endregion Settings - Snow
+                    #endregion Settings - Snow
                     break;
 
                 case ReliefTerrainSettingsItems.Water:
-        #region Settings - Water
+                    #region Settings - Water
                     _target.paint_wetmask = true;
                     GUILayout.Space(6);
 
@@ -4790,9 +4787,9 @@ public class ReliefTerrainEditor : Editor
 
                     EditorGUILayout.EndVertical();
 
-        #endregion Settings - Water
+                    #endregion Settings - Water
 
-        #region Settings - Caustics
+                    #region Settings - Caustics
                     GUILayout.Space(6);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -4873,11 +4870,11 @@ public class ReliefTerrainEditor : Editor
 
                     EditorGUILayout.EndVertical();
 
-        #endregion Settings - Caustics
+                    #endregion Settings - Caustics
                     break;
 
                 case ReliefTerrainSettingsItems.Glitter:
-        #region Settings - Glitter
+                    #region Settings - Glitter
                     GUILayout.Space(6);
 
                     EditorGUILayout.BeginVertical("Box");
@@ -4954,7 +4951,7 @@ public class ReliefTerrainEditor : Editor
 
                     EditorGUILayout.EndVertical();
 
-        #endregion Settings - Glitter
+                    #endregion Settings - Glitter
                     break;
 
             }
@@ -4972,7 +4969,7 @@ public class ReliefTerrainEditor : Editor
                 }
             }
 
-        #endregion ALLSettings
+            #endregion ALLSettings
         }
 
         if (dirtyFlag)
@@ -5758,7 +5755,7 @@ public class ReliefTerrainEditor : Editor
                     tex_importer.isReadable = true;
                     reimport_flag = true;
                 }
-                if (!tex_importer.DoesSourceTextureHaveAlpha() && tex_importer.alphaSource!=TextureImporterAlphaSource.FromGrayScale)
+                if (!tex_importer.DoesSourceTextureHaveAlpha() && tex_importer.alphaSource != TextureImporterAlphaSource.FromGrayScale)
                 {
                     Debug.LogWarning("Height texture " + n + " (" + Heights[n].name + ") has been reimported to have alpha channel.");
                     tex_importer.alphaSource = TextureImporterAlphaSource.FromGrayScale;
@@ -6086,7 +6083,7 @@ public class ReliefTerrainEditor : Editor
         ReliefTerrain.cur_EditorTarget = (ReliefTerrain)target;
         ReliefTerrainEditor.cur_Editor = this;
 #if UNITY_2019_1_OR_NEWER
-		SceneView.duringSceneGui += CustomOnSceneGUI_S;
+        SceneView.duringSceneGui += CustomOnSceneGUI_S;
 #else
         ReliefTerrain._SceneGUI = new SceneView.OnSceneFunc(CustomOnSceneGUI);
 		SceneView.onSceneGUIDelegate += ReliefTerrain._SceneGUI;
@@ -6095,7 +6092,7 @@ public class ReliefTerrainEditor : Editor
     static void RemoveSceneViewCallback()
     {
 #if UNITY_2019_1_OR_NEWER
-		SceneView.duringSceneGui -= CustomOnSceneGUI_S;
+        SceneView.duringSceneGui -= CustomOnSceneGUI_S;
 #else
 		SceneView.onSceneGUIDelegate -= ReliefTerrain._SceneGUI;
 #endif

@@ -17,9 +17,7 @@
 //-----------------------------------------------------------------------
 namespace Databox.OdinSerializer.Utilities
 {
-    using System;
     using System.IO;
-    using System.Text;
 
     /// <summary>
     /// DirectoryInfo method extensions.

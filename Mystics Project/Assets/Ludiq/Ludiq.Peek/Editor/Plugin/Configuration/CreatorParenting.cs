@@ -1,9 +1,9 @@
 ﻿namespace Ludiq.Peek
 {
-	public enum CreatorParenting
-	{
-		Root,
-		Sibling,
-		SiblingOutsidePrefabs
-	}
+    public enum CreatorParenting
+    {
+        Root,
+        Sibling,
+        SiblingOutsidePrefabs
+    }
 }

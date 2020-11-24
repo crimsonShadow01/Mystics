@@ -2,10 +2,10 @@
 
 namespace Ludiq.PeekCore
 {
-	public class RightShiftHandler : BinaryOperatorHandler
-	{
-		public RightShiftHandler() : base(OperatorCategory.Bitwise, BinaryOperator.RightShift, "Right Shift", "Right Shift", ">>", ">>", "op_RightShift")
-		{
+    public class RightShiftHandler : BinaryOperatorHandler
+    {
+        public RightShiftHandler() : base(OperatorCategory.Bitwise, BinaryOperator.RightShift, "Right Shift", "Right Shift", ">>", ">>", "op_RightShift")
+        {
             Handle<byte, byte>((a, b) => a >> b, typeof(byte));
             Handle<byte, sbyte>((a, b) => a >> b, typeof(byte));
             Handle<byte, short>((a, b) => a >> b, typeof(byte));
@@ -53,8 +53,8 @@ namespace Ludiq.PeekCore
             Handle<ulong, short>((a, b) => a >> b, typeof(ulong));
             Handle<ulong, ushort>((a, b) => a >> b, typeof(ulong));
             Handle<ulong, int>((a, b) => a >> b, typeof(ulong));
-		}
+        }
 
-		public override string GetDescriptionFormat(Type leftType, Type rightType) => "Takes {0}, and returns the first input shifted right by the second.";
-	}
+        public override string GetDescriptionFormat(Type leftType, Type rightType) => "Takes {0}, and returns the first input shifted right by the second.";
+    }
 }

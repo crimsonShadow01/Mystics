@@ -1,7 +1,7 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public interface IPluginAddon
-	{
-		Plugin plugin { get; }
-	}
+    public interface IPluginAddon
+    {
+        Plugin plugin { get; }
+    }
 }

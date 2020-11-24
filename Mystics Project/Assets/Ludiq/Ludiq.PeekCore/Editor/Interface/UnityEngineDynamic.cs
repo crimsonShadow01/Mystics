@@ -1,19 +1,19 @@
-﻿using System.Reflection;
-using Ludiq.PeekCore.ReflectionMagic;
+﻿using Ludiq.PeekCore.ReflectionMagic;
+using System.Reflection;
 using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public static class UnityEngineDynamic
-	{
-		public static readonly Assembly UnityGUIAssembly;
+    public static class UnityEngineDynamic
+    {
+        public static readonly Assembly UnityGUIAssembly;
 
-		public static readonly dynamic GUIClip;
+        public static readonly dynamic GUIClip;
 
-		static UnityEngineDynamic()
-		{
-			UnityGUIAssembly = typeof(GUI).Assembly;
-			GUIClip = UnityGUIAssembly.GetType("UnityEngine.GUIClip", true).AsDynamicType();
-		}
-	}
+        static UnityEngineDynamic()
+        {
+            UnityGUIAssembly = typeof(GUI).Assembly;
+            GUIClip = UnityGUIAssembly.GetType("UnityEngine.GUIClip", true).AsDynamicType();
+        }
+    }
 }

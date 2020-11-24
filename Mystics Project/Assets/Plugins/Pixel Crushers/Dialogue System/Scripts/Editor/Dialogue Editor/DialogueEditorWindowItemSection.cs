@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
-using UnityEditor;
-using UnityEditorInternal;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using UnityEditor;
+using UnityEditorInternal;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem.DialogueEditor
 {

@@ -5,11 +5,11 @@ using Ludiq.PeekCore;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public sealed class PeekPaths : PluginPaths
-	{
-		private PeekPaths(PeekPlugin plugin) : base(plugin) { }
-	}
+    public sealed class PeekPaths : PluginPaths
+    {
+        private PeekPaths(PeekPlugin plugin) : base(plugin) { }
+    }
 }

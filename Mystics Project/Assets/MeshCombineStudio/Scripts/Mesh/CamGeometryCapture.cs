@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MeshCombineStudio
@@ -18,7 +16,7 @@ namespace MeshCombineStudio
         public RenderTexture rtCapture;
 
         float[] heights;
-        
+
         Bounds bounds;
 
         float maxSize;
@@ -55,11 +53,11 @@ namespace MeshCombineStudio
 
             rt.Release();
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             DestroyImmediate(rt);
-            #else
+#else
             Destroy(rt);    
-            #endif
+#endif
 
             rt = null;
         }
@@ -126,7 +124,7 @@ namespace MeshCombineStudio
                             else
                             {
                                 vertexIsBelow[vertexIndex] = isBelow = aboveSurface;
-                            } 
+                            }
                         }
 
                         if (isBelow != belowSurface) { isAboveSurface = true; break; }

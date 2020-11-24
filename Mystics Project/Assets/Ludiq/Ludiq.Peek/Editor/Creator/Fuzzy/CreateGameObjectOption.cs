@@ -1,222 +1,219 @@
 using System;
 using System.IO;
 using System.Linq;
-using Ludiq.OdinSerializer;
 using UnityEditor;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
-using UEditor = UnityEditor.Editor;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public class CreateGameObjectOption : FuzzyOption<LudiqGUI.PopupFunc>
-	{
-		public string primitivePath { get; private set; }
+    public class CreateGameObjectOption : FuzzyOption<LudiqGUI.PopupFunc>
+    {
+        public string primitivePath { get; private set; }
 
-		public string primitiveFolder => PathUtility.NaiveParent(primitivePath);
+        public string primitiveFolder => PathUtility.NaiveParent(primitivePath);
 
-		public HierarchyPropertyCache assetDatabaseEntry { get; private set; }
+        public HierarchyPropertyCache assetDatabaseEntry { get; private set; }
 
-		public string assetFolder { get; private set; }
+        public string assetFolder { get; private set; }
 
-		public string assetPath { get; private set; }
+        public string assetPath { get; private set; }
 
-		public bool assetIsLoaded { get; private set; }
+        public bool assetIsLoaded { get; private set; }
 
-		private UnityObject _asset;
+        private UnityObject _asset;
 
-		public UnityObject asset
-		{
-			get
-			{
-				if (!assetIsLoaded)
-				{
-					_asset = UnityAPI.Await(LoadAsset);
-					assetIsLoaded = true;
-				}
+        public UnityObject asset
+        {
+            get
+            {
+                if (!assetIsLoaded)
+                {
+                    _asset = UnityAPI.Await(LoadAsset);
+                    assetIsLoaded = true;
+                }
 
-				return _asset;
-			}
-		}
+                return _asset;
+            }
+        }
 
-		public GameObject prefab => asset as GameObject;
+        public GameObject prefab => asset as GameObject;
 
-		public Sprite sprite => asset as Sprite;
+        public Sprite sprite => asset as Sprite;
 
-		public bool isAsset => assetDatabaseEntry != null;
+        public bool isAsset => assetDatabaseEntry != null;
 
-		public bool isPrimitive => primitivePath != null;
-		
-		private CreateGameObjectOption() : base(FuzzyOptionMode.Leaf) { }
-		
-		public static CreateGameObjectOption Primitive(string primitivePath)
-		{
-			var option = new CreateGameObjectOption();
-			option.primitivePath = primitivePath;
-			option.label = primitivePath.PartAfterLast(EditorMainMenu.Separator).TrimStart("Create ");
-			option.value = option.CreatePrimitive;
-			option.getIcon = () => PeekPlugin.Icons.createGameObject;
-			return option;
-		}
+        public bool isPrimitive => primitivePath != null;
 
-		private static CreateGameObjectOption Asset(HierarchyPropertyCache assetDatabaseEntry)
-		{
-			var option = new CreateGameObjectOption();
-			option.assetDatabaseEntry = assetDatabaseEntry;
-			option.label = assetDatabaseEntry.name;
-			option.getIcon = option.GetAssetIcon;
-			option.assetPath = assetDatabaseEntry.assetPath;
-			option.assetFolder = PathUtility.NaiveNormalize(Path.GetDirectoryName(option.assetPath));
-			return option;
-		}
+        private CreateGameObjectOption() : base(FuzzyOptionMode.Leaf) { }
 
-		public static CreateGameObjectOption Prefab(HierarchyPropertyCache assetDatabaseEntry)
-		{
-			var option = Asset(assetDatabaseEntry);
-			option.value = option.InstantiatePrefab;
-			return option;
-		}
+        public static CreateGameObjectOption Primitive(string primitivePath)
+        {
+            var option = new CreateGameObjectOption();
+            option.primitivePath = primitivePath;
+            option.label = primitivePath.PartAfterLast(EditorMainMenu.Separator).TrimStart("Create ");
+            option.value = option.CreatePrimitive;
+            option.getIcon = () => PeekPlugin.Icons.createGameObject;
+            return option;
+        }
 
-		public static CreateGameObjectOption Model(HierarchyPropertyCache assetDatabaseEntry)
-		{
-			// Models are still prefabs as far as Unity is concerned
-			return Prefab(assetDatabaseEntry);
-		}
+        private static CreateGameObjectOption Asset(HierarchyPropertyCache assetDatabaseEntry)
+        {
+            var option = new CreateGameObjectOption();
+            option.assetDatabaseEntry = assetDatabaseEntry;
+            option.label = assetDatabaseEntry.name;
+            option.getIcon = option.GetAssetIcon;
+            option.assetPath = assetDatabaseEntry.assetPath;
+            option.assetFolder = PathUtility.NaiveNormalize(Path.GetDirectoryName(option.assetPath));
+            return option;
+        }
 
-		public static CreateGameObjectOption Sprite(HierarchyPropertyCache assetDatabaseEntry)
-		{
-			var option = Asset(assetDatabaseEntry);
-			option.value = option.InstantiateSprite;
-			return option;
-		}
+        public static CreateGameObjectOption Prefab(HierarchyPropertyCache assetDatabaseEntry)
+        {
+            var option = Asset(assetDatabaseEntry);
+            option.value = option.InstantiatePrefab;
+            return option;
+        }
 
-		private UnityObject LoadAsset()
-		{
-			if (assetDatabaseEntry == null)
-			{
-				throw new InvalidOperationException();
-			}
+        public static CreateGameObjectOption Model(HierarchyPropertyCache assetDatabaseEntry)
+        {
+            // Models are still prefabs as far as Unity is concerned
+            return Prefab(assetDatabaseEntry);
+        }
 
-			// Make sure the object is loaded into memory; this is not guaranteed by instanceID existence
-			AssetDatabase.LoadMainAssetAtPath(assetPath);
-			AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath);
+        public static CreateGameObjectOption Sprite(HierarchyPropertyCache assetDatabaseEntry)
+        {
+            var option = Asset(assetDatabaseEntry);
+            option.value = option.InstantiateSprite;
+            return option;
+        }
 
-			var result = EditorUtility.InstanceIDToObject(assetDatabaseEntry.instanceID);
+        private UnityObject LoadAsset()
+        {
+            if (assetDatabaseEntry == null)
+            {
+                throw new InvalidOperationException();
+            }
 
-			if (result == null)
-			{
-				Debug.LogWarning($"Failed to lazy load asset for creator:\n{assetPath}::{assetDatabaseEntry.instanceID}");
-			}
-			
-			return result;
-		}
+            // Make sure the object is loaded into memory; this is not guaranteed by instanceID existence
+            AssetDatabase.LoadMainAssetAtPath(assetPath);
+            AssetDatabase.LoadAllAssetRepresentationsAtPath(assetPath);
 
-		private EditorTexture GetAssetIcon()
-		{
-			if (PeekPlugin.Configuration.enablePreviewIcons &&
-				AssetDatabase.IsMainAssetAtPathLoaded(assetPath) &&
-				PreviewUtility.TryGetPreview(asset, out var preview) && 
-			    !AssetPreview.IsLoadingAssetPreview(asset.GetInstanceID()) && 
-				preview != null)
-			{
-				return EditorTexture.Single(preview);
-			}
-			else
-			{
-				return EditorTexture.Single(AssetDatabase.GetCachedIcon(assetPath));
-			}
-		}
+            var result = EditorUtility.InstanceIDToObject(assetDatabaseEntry.instanceID);
 
-		private bool InstantiatePrefab(out object value)
-		{
-			var instance = PrefabUtility.InstantiatePrefab(prefab);
-			Undo.RegisterCreatedObjectUndo(instance, "Create " + instance.name);
-			value = instance;
-			return true;
-		}
+            if (result == null)
+            {
+                Debug.LogWarning($"Failed to lazy load asset for creator:\n{assetPath}::{assetDatabaseEntry.instanceID}");
+            }
 
-		private bool InstantiateSprite(out object value)
-		{
-			var instance = new GameObject(sprite.name);
-			var renderer = instance.AddComponent<SpriteRenderer>();
-			renderer.sprite = sprite;
-			Undo.RegisterCreatedObjectUndo(instance, "Create " + instance.name);
-			value = instance;
-			return true;
-		}
+            return result;
+        }
 
-		private bool CreatePrimitive(out object value)
-		{
-			var objectsBefore = UnityObject.FindObjectsOfType(typeof(GameObject));
-			EditorApplication.ExecuteMenuItem(primitivePath);
-			var objectsAfter = UnityObject.FindObjectsOfType(typeof(GameObject));
-			var createdPrimitives = objectsAfter.Except(objectsBefore).Cast<GameObject>().ToArray();
+        private EditorTexture GetAssetIcon()
+        {
+            if (PeekPlugin.Configuration.enablePreviewIcons &&
+                AssetDatabase.IsMainAssetAtPathLoaded(assetPath) &&
+                PreviewUtility.TryGetPreview(asset, out var preview) &&
+                !AssetPreview.IsLoadingAssetPreview(asset.GetInstanceID()) &&
+                preview != null)
+            {
+                return EditorTexture.Single(preview);
+            }
+            else
+            {
+                return EditorTexture.Single(AssetDatabase.GetCachedIcon(assetPath));
+            }
+        }
 
-			GameObject topmostPrimitive = null;
+        private bool InstantiatePrefab(out object value)
+        {
+            var instance = PrefabUtility.InstantiatePrefab(prefab);
+            Undo.RegisterCreatedObjectUndo(instance, "Create " + instance.name);
+            value = instance;
+            return true;
+        }
 
-			foreach (var createPrimitive in createdPrimitives)
-			{
-				var isTopmost = true;
+        private bool InstantiateSprite(out object value)
+        {
+            var instance = new GameObject(sprite.name);
+            var renderer = instance.AddComponent<SpriteRenderer>();
+            renderer.sprite = sprite;
+            Undo.RegisterCreatedObjectUndo(instance, "Create " + instance.name);
+            value = instance;
+            return true;
+        }
 
-				foreach (var otherCreatedObject in createdPrimitives)
-				{
-					if (createPrimitive == otherCreatedObject)
-					{
-						continue;
-					}
+        private bool CreatePrimitive(out object value)
+        {
+            var objectsBefore = UnityObject.FindObjectsOfType(typeof(GameObject));
+            EditorApplication.ExecuteMenuItem(primitivePath);
+            var objectsAfter = UnityObject.FindObjectsOfType(typeof(GameObject));
+            var createdPrimitives = objectsAfter.Except(objectsBefore).Cast<GameObject>().ToArray();
 
-					if (createPrimitive.transform.IsChildOf(otherCreatedObject.transform))
-					{
-						isTopmost = false;
-						break;
-					}
-				}
+            GameObject topmostPrimitive = null;
 
-				if (isTopmost)
-				{
-					topmostPrimitive = createPrimitive;
-				}
-			}
+            foreach (var createPrimitive in createdPrimitives)
+            {
+                var isTopmost = true;
 
-			value = topmostPrimitive;
+                foreach (var otherCreatedObject in createdPrimitives)
+                {
+                    if (createPrimitive == otherCreatedObject)
+                    {
+                        continue;
+                    }
 
-			return topmostPrimitive != null;
-		}
+                    if (createPrimitive.transform.IsChildOf(otherCreatedObject.transform))
+                    {
+                        isTopmost = false;
+                        break;
+                    }
+                }
 
-		public override bool hasFooter =>
-			isAsset &&
-			PreviewUtility.TryGetPreview(asset, out var preview) &&
-			!AssetPreview.IsLoadingAssetPreview(asset.GetInstanceID()) &&
-			preview != null;
+                if (isTopmost)
+                {
+                    topmostPrimitive = createPrimitive;
+                }
+            }
 
-		public override float GetFooterHeight(FuzzyOptionNode node, float width)
-		{
-			return 128;
-		}
+            value = topmostPrimitive;
 
-		public override void OnFooterGUI(FuzzyOptionNode node, Rect position)
-		{
-			GUI.DrawTexture(position, PreviewUtility.GetPreview(asset), ScaleMode.ScaleToFit);
-		}
+            return topmostPrimitive != null;
+        }
 
-		public override string SearchResultLabel(string query)
-		{
-			var label = base.SearchResultLabel(query);
+        public override bool hasFooter =>
+            isAsset &&
+            PreviewUtility.TryGetPreview(asset, out var preview) &&
+            !AssetPreview.IsLoadingAssetPreview(asset.GetInstanceID()) &&
+            preview != null;
 
-			if (isPrimitive)
-			{
-				label += LudiqGUIUtility.DimString($" (in {primitiveFolder})");
-			}
-			else if (isAsset)
-			{
-				label += LudiqGUIUtility.DimString($" (in {assetFolder})");
-			}
+        public override float GetFooterHeight(FuzzyOptionNode node, float width)
+        {
+            return 128;
+        }
 
-			return label;
-		}
-	}
+        public override void OnFooterGUI(FuzzyOptionNode node, Rect position)
+        {
+            GUI.DrawTexture(position, PreviewUtility.GetPreview(asset), ScaleMode.ScaleToFit);
+        }
+
+        public override string SearchResultLabel(string query)
+        {
+            var label = base.SearchResultLabel(query);
+
+            if (isPrimitive)
+            {
+                label += LudiqGUIUtility.DimString($" (in {primitiveFolder})");
+            }
+            else if (isAsset)
+            {
+                label += LudiqGUIUtility.DimString($" (in {assetFolder})");
+            }
+
+            return label;
+        }
+    }
 }

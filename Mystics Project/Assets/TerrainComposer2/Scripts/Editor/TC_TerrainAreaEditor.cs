@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System;
-using System.Reflection;
 #if !UNITY_5_1 && !UNITY_5_2
 using UnityEditor.SceneManagement;
 #endif
@@ -30,15 +27,15 @@ namespace TerrainComposer2
             terrainArea = (TC_TerrainArea)target;
             settings = TC_Settings.instance;
             if (settings != null) g = settings.global;
-            if (terrainArea != null) terrainArea.GetAll(); 
+            if (terrainArea != null) terrainArea.GetAll();
             TC.GetInstallPath();
         }
 
         void OnDisable()
         {
             if (target == null || settings == null || TC_Generate.instance == null) return;
-            
-            if (TC_Generate.instance.CheckForTerrain(false)) 
+
+            if (TC_Generate.instance.CheckForTerrain(false))
             {
                 if (settings.masterTerrain != null) Apply();
             }
@@ -73,30 +70,30 @@ namespace TerrainComposer2
                 return;
             }
 
-            #if !UNITY_5 && !UNITY_2017 && !UNITY_2018_1 && !UNITY_2018_2
+#if !UNITY_5 && !UNITY_2017 && !UNITY_2018_1 && !UNITY_2018_2
             GUILayout.Space(10);
-                DrawPerformance();
-            #endif
+            DrawPerformance();
+#endif
             GUILayout.Space(10);
-                DrawTerrainAreaTiles();
+            DrawTerrainAreaTiles();
             GUILayout.Space(10);
 
             DrawRTP();
-            
+
             DrawTerrain(terrainArea.terrainSelect, -15);
 
             if (GUI.changed)
             {
                 // Debug.Log("Set Dirty");
                 EditorUtility.SetDirty(terrainArea);
-                #if !UNITY_5_1 && !UNITY_5_2
-                    if (!Application.isPlaying) EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-                #else
+#if !UNITY_5_1 && !UNITY_5_2
+                if (!Application.isPlaying) EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+#else
                     EditorApplication.MarkSceneDirty();
-                #endif
+#endif
             }
 
-            if (TC_Settings.instance == null) return; 
+            if (TC_Settings.instance == null) return;
             if (TC_Settings.instance.drawDefaultInspector) base.OnInspectorGUI();
         }
 
@@ -125,7 +122,7 @@ namespace TerrainComposer2
 
             if (addRTPButton)
             {
-                if (GUILayout.Button("Enable RTP",GUILayout.Width(100)))
+                if (GUILayout.Button("Enable RTP", GUILayout.Width(100)))
                 {
                     terrainArea.AddRTPTOTerrains();
                 }
@@ -156,7 +153,7 @@ namespace TerrainComposer2
 
             TD.DrawSpacer();
         }
-        
+
         public void DrawCreateTerrain()
         {
             EditorGUILayout.BeginHorizontal();
@@ -166,7 +163,7 @@ namespace TerrainComposer2
                 terrainArea.createTerrainTab = !terrainArea.createTerrainTab;
             }
             GUI.backgroundColor = Color.white;
-            
+
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(5);
 
@@ -177,7 +174,7 @@ namespace TerrainComposer2
             }
         }
 
-        #if !UNITY_5 && !UNITY_2017 && !UNITY_2018_1 && !UNITY_2018_2
+#if !UNITY_5 && !UNITY_2017 && !UNITY_2018_1 && !UNITY_2018_2
         public void DrawPerformance()
         {
             TD.DrawLabelWidthUnderline("Performance", 14);
@@ -185,7 +182,7 @@ namespace TerrainComposer2
             GUI.color = Color.green;
             EditorGUILayout.BeginVertical("Box");
             GUI.color = Color.white;
-            
+
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Draw Instanced", GUILayout.Width(160));
             GUI.changed = false;
@@ -198,14 +195,14 @@ namespace TerrainComposer2
 
             EditorGUILayout.EndVertical();
         }
-        #endif
-        
+#endif
+
         public void DrawTerrainAreaTiles()
         {
             int countTiles = terrainArea.tiles.x * terrainArea.tiles.y;
 
             if (countTiles <= 1) return;
-            
+
             int terrainIndex = 0;
             for (int y = terrainArea.tiles.y - 1; y >= 0; y--)
             {
@@ -281,7 +278,7 @@ namespace TerrainComposer2
         {
             if (terrainArea.terrains == null) { terrainArea.createTerrainTab = true; return; }
             if (terrainArea.terrains.Count == 0) { terrainArea.createTerrainTab = true; return; }
-            
+
             if (index > terrainArea.terrains.Count - 1) return;
 
             TD.DrawLabelWidthUnderline("Terrain Setup", 14);
@@ -304,12 +301,12 @@ namespace TerrainComposer2
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(space + 15);
 
-            space -= 15; 
+            space -= 15;
             // terrain foldout
             currentTerrain.terrain = EditorGUILayout.ObjectField(currentTerrain.terrain, typeof(Terrain), true) as Terrain;
-            
+
             if (hasTerrain && !hasTerrainData) EditorGUILayout.LabelField("Missing TerrainData. Fix this manually in the Scene or create a new terrain");
-            
+
             EditorGUILayout.LabelField("Act", GUILayout.Width(28.0f));
             currentTerrain.active = EditorGUILayout.Toggle(currentTerrain.active, GUILayout.Width(25.0f));
 
@@ -406,7 +403,7 @@ namespace TerrainComposer2
 
 
             GUILayout.Space(10);
-            
+
 
 
             // Size Tab
@@ -606,7 +603,7 @@ namespace TerrainComposer2
                 EditorGUILayout.LabelField("Cast Shadows", GUILayout.Width(147.0f));
                 currentTerrain.castShadows = EditorGUILayout.Toggle(currentTerrain.castShadows, GUILayout.Width(25.0f));
 #else
-                EditorGUILayout.LabelField("Shadow Casting Mode", GUILayout.Width(147.0f)); 
+                EditorGUILayout.LabelField("Shadow Casting Mode", GUILayout.Width(147.0f));
                 currentTerrain.shadowCastingMode = (UnityEngine.Rendering.ShadowCastingMode)EditorGUILayout.EnumPopup(currentTerrain.shadowCastingMode);
 #endif
                 EditorGUILayout.EndHorizontal();
@@ -649,8 +646,8 @@ namespace TerrainComposer2
                     EditorGUILayout.EndHorizontal();
                 }
 #else
-                    currentTerrain.materialTemplate = (Material)EditorGUILayout.ObjectField(currentTerrain.materialTemplate, typeof(Material), true);
-                    EditorGUILayout.EndHorizontal(); 
+                currentTerrain.materialTemplate = (Material)EditorGUILayout.ObjectField(currentTerrain.materialTemplate, typeof(Material), true);
+                EditorGUILayout.EndHorizontal();
 #endif
 
                 EditorGUILayout.BeginHorizontal();
@@ -769,7 +766,7 @@ namespace TerrainComposer2
                 //    EditorGUILayout.EndVertical();
                 //    return;
                 //}
-                
+
                 TD.DrawLabelWidthUnderline("Terrain Splat Textures", 14);
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Space(30 + space);
@@ -784,20 +781,20 @@ namespace TerrainComposer2
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
-                    GUILayout.Space(30 + space);
-                    // if (currentTerrain.splatPrototypes.Count == 0)
-                    //{
-                        if (TC_Settings.instance.global.tooltip) tooltipText = "Add a new Splat Texture";
-                        if (GUILayout.Button(new GUIContent("+", tooltipText), GUILayout.Width(25.0f)))
-                        {
-                            UndoRegister("Add Splat Texture");
-                            currentTerrain.AddSplatTexture(currentTerrain.splatPrototypes.Count);
-                        }
-                    //}
+                GUILayout.Space(30 + space);
+                // if (currentTerrain.splatPrototypes.Count == 0)
+                //{
+                if (TC_Settings.instance.global.tooltip) tooltipText = "Add a new Splat Texture";
+                if (GUILayout.Button(new GUIContent("+", tooltipText), GUILayout.Width(25.0f)))
+                {
+                    UndoRegister("Add Splat Texture");
+                    currentTerrain.AddSplatTexture(currentTerrain.splatPrototypes.Count);
+                }
+                //}
 
-                    if (TC_Settings.instance.global.tooltip) tooltipText = "Enable/Disable Colormap as splat texture\n(Shift Click)";
+                if (TC_Settings.instance.global.tooltip) tooltipText = "Enable/Disable Colormap as splat texture\n(Shift Click)";
 
-                    GUI.backgroundColor = Color.white;
+                GUI.backgroundColor = Color.white;
                 EditorGUILayout.EndHorizontal();
 
                 GUILayout.Space(5);
@@ -810,46 +807,46 @@ namespace TerrainComposer2
                     if (countSplat == 0)
                     {
                         EditorGUILayout.BeginHorizontal();
-                            GUILayout.Space(59 + space);
-                            EditorGUILayout.LabelField("Splat", GUILayout.Width(55.0f));
-                            EditorGUILayout.LabelField("Normal", GUILayout.Width(55.0f));
+                        GUILayout.Space(59 + space);
+                        EditorGUILayout.LabelField("Splat", GUILayout.Width(55.0f));
+                        EditorGUILayout.LabelField("Normal", GUILayout.Width(55.0f));
                         EditorGUILayout.EndHorizontal();
                     }
 
                     EditorGUILayout.BeginHorizontal();
-                        GUILayout.Space(30 + space);
-                        EditorGUILayout.LabelField("" + (countSplat + 1) + ")", GUILayout.Width(25.0f));
+                    GUILayout.Space(30 + space);
+                    EditorGUILayout.LabelField("" + (countSplat + 1) + ")", GUILayout.Width(25.0f));
 
-                        currentTerrain.splatPrototypes[countSplat].texture = (Texture2D)EditorGUILayout.ObjectField(currentTerrain.splatPrototypes[countSplat].texture, typeof(Texture), true, GUILayout.Width(55.0f), GUILayout.Height(55.0f));
-                        currentTerrain.splatPrototypes[countSplat].normalMap = (Texture2D)EditorGUILayout.ObjectField(currentTerrain.splatPrototypes[countSplat].normalMap, typeof(Texture), true, GUILayout.Width(55.0f), GUILayout.Height(55.0f));
+                    currentTerrain.splatPrototypes[countSplat].texture = (Texture2D)EditorGUILayout.ObjectField(currentTerrain.splatPrototypes[countSplat].texture, typeof(Texture), true, GUILayout.Width(55.0f), GUILayout.Height(55.0f));
+                    currentTerrain.splatPrototypes[countSplat].normalMap = (Texture2D)EditorGUILayout.ObjectField(currentTerrain.splatPrototypes[countSplat].normalMap, typeof(Texture), true, GUILayout.Width(55.0f), GUILayout.Height(55.0f));
 
-                   
-                        if (TC_Settings.instance.global.tooltip) tooltipText = "Move Splat Texture up";
-                        if (countSplat > 0)
-                        {
-                            if (GUILayout.Button(new GUIContent("▲", tooltipText), GUILayout.Width(25.0f))) currentTerrain.SwapSplatTexture(countSplat, countSplat - 1);
-                        }
-                        else GUILayout.Space(29.0f);
 
-                        if (countSplat < currentTerrain.splatPrototypes.Count - 1)
-                        {
-                            if (TC_Settings.instance.global.tooltip) tooltipText = "Move Splat Texture down";
-                            if (GUILayout.Button(new GUIContent("▼", tooltipText), GUILayout.Width(25.0f))) currentTerrain.SwapSplatTexture(countSplat, countSplat + 1);
-                        }
-                        else GUILayout.Space(29.0f);
+                    if (TC_Settings.instance.global.tooltip) tooltipText = "Move Splat Texture up";
+                    if (countSplat > 0)
+                    {
+                        if (GUILayout.Button(new GUIContent("▲", tooltipText), GUILayout.Width(25.0f))) currentTerrain.SwapSplatTexture(countSplat, countSplat - 1);
+                    }
+                    else GUILayout.Space(29.0f);
 
-                        if (TC_Settings.instance.global.tooltip) tooltipText = "Insert a new Splat Texture";
+                    if (countSplat < currentTerrain.splatPrototypes.Count - 1)
+                    {
+                        if (TC_Settings.instance.global.tooltip) tooltipText = "Move Splat Texture down";
+                        if (GUILayout.Button(new GUIContent("▼", tooltipText), GUILayout.Width(25.0f))) currentTerrain.SwapSplatTexture(countSplat, countSplat + 1);
+                    }
+                    else GUILayout.Space(29.0f);
 
-                        if (GUILayout.Button(new GUIContent("+", tooltipText), GUILayout.Width(25.0f))) currentTerrain.AddSplatTexture(countSplat + 1);
-                        if (TC_Settings.instance.global.tooltip) tooltipText = "Erase this Splat Texture";
+                    if (TC_Settings.instance.global.tooltip) tooltipText = "Insert a new Splat Texture";
 
-                        if (GUILayout.Button(new GUIContent("-", tooltipText), GUILayout.Width(25.0f)))
-                        {
-                            currentTerrain.EraseSplatTexture(countSplat);
-                            --countSplat;
-                            Repaint();
-                            continue;
-                        }
+                    if (GUILayout.Button(new GUIContent("+", tooltipText), GUILayout.Width(25.0f))) currentTerrain.AddSplatTexture(countSplat + 1);
+                    if (TC_Settings.instance.global.tooltip) tooltipText = "Erase this Splat Texture";
+
+                    if (GUILayout.Button(new GUIContent("-", tooltipText), GUILayout.Width(25.0f)))
+                    {
+                        currentTerrain.EraseSplatTexture(countSplat);
+                        --countSplat;
+                        Repaint();
+                        continue;
+                    }
                     EditorGUILayout.EndHorizontal();
 
                     if (currentTerrain != null) //! Rtp
@@ -873,7 +870,7 @@ namespace TerrainComposer2
 
                             float tileSize = splat.tileSize.x;
                             tileSize = EditorGUILayout.FloatField("Tile Size", tileSize);
-                           
+
                             EditorGUILayout.EndHorizontal();
 
                             EditorGUILayout.BeginHorizontal();
@@ -956,21 +953,21 @@ namespace TerrainComposer2
 
                 // if (currentTerrain.treePrototypes.Count == 0)
                 // {
-                    EditorGUILayout.BeginHorizontal();
-                    GUILayout.Space(30 + space);
-                    if (TC_Settings.instance.global.tooltip) tooltipText = "Add a new Tree";
-                    
-                    if (GUILayout.Button(new GUIContent("+", tooltipText), GUILayout.Width(25.0f)))
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Space(30 + space);
+                if (TC_Settings.instance.global.tooltip) tooltipText = "Add a new Tree";
+
+                if (GUILayout.Button(new GUIContent("+", tooltipText), GUILayout.Width(25.0f)))
+                {
+                    currentTerrain.AddTreePrototype(currentTerrain.treePrototypes.Count);
+                    if (eventCurrent.shift && currentTerrain.treePrototypes.Count > 1)
                     {
-                        currentTerrain.AddTreePrototype(currentTerrain.treePrototypes.Count);
-                        if (eventCurrent.shift && currentTerrain.treePrototypes.Count > 1)
-                        {
-                            // !script.copy_terrain_tree(currentTerrain.treePrototypes[currentTerrain.treePrototypes.Count - 2], currentTerrain.treePrototypes[currentTerrain.treePrototypes.Count - 1]);
-                        }
+                        // !script.copy_terrain_tree(currentTerrain.treePrototypes[currentTerrain.treePrototypes.Count - 2], currentTerrain.treePrototypes[currentTerrain.treePrototypes.Count - 1]);
                     }
-                    if (TC_Settings.instance.global.tooltip) tooltipText = "Erase the last Tree\n\n(Control Click)";
-                   
-                    EditorGUILayout.EndHorizontal();
+                }
+                if (TC_Settings.instance.global.tooltip) tooltipText = "Erase the last Tree\n\n(Control Click)";
+
+                EditorGUILayout.EndHorizontal();
                 //}
                 GUILayout.Space(5);
 
@@ -1003,17 +1000,17 @@ namespace TerrainComposer2
                             if (GUILayout.Button(new GUIContent("▲", tooltipText), GUILayout.Width(25.0f))) { currentTerrain.SwapTree(countTree, countTree - 1); }
                         }
                         else GUILayout.Space(29.0f);
-                        
+
                         if (countTree < currentTerrain.treePrototypes.Count - 1)
                         {
                             if (TC_Settings.instance.global.tooltip) tooltipText = "Move Tree down";
-                            
+
                             if (GUILayout.Button(new GUIContent("▼", tooltipText), GUILayout.Width(25.0f))) { currentTerrain.SwapTree(countTree, countTree + 1); }
                         }
                         else GUILayout.Space(29.0f);
                     }
                     if (TC_Settings.instance.global.tooltip) tooltipText = "Insert a new Tree";
-                    
+
                     if (GUILayout.Button(new GUIContent("+", tooltipText), GUILayout.Width(25.0f)))
                     {
                         UndoRegister("Add Tree");
@@ -1021,17 +1018,17 @@ namespace TerrainComposer2
                         if (eventCurrent.shift)
                         {
                             currentTerrain.CopyTree(currentTerrain.treePrototypes[countTree], currentTerrain.treePrototypes[countTree + 1]);
-                        } 
+                        }
                     }
                     if (TC_Settings.instance.global.tooltip) tooltipText = "Erase this Tree\n\n(Control Click)";
-                    
+
                     if (GUILayout.Button(new GUIContent("-", tooltipText), GUILayout.Width(25.0f)))
                     {
                         UndoRegister("Erase Tree");
                         currentTerrain.EraseTreeProtoType(countTree);
                     }
                     EditorGUILayout.EndHorizontal();
-                    
+
                     if (currentTerrain.treeSettingsFoldout)
                     {
                         EditorGUILayout.BeginHorizontal();
@@ -1046,7 +1043,7 @@ namespace TerrainComposer2
                         //    // UndoRegister("Set All Trees Settings");
                         //    if (!eventCurrent.shift)
                         //    {
-                                
+
                         //        // !script.set_all_trees_settings_terrain(current_terrain, count_tree);
                         //    }
                         EditorGUILayout.EndHorizontal();
@@ -1097,31 +1094,31 @@ namespace TerrainComposer2
                 TD.DrawLabelWidthUnderline("Terrain Grass", 14);
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Space(30 + space);
-                
+
                 if (currentTerrain.detailSettingsFoldout) GUI.backgroundColor = Color.green;
                 if (GUILayout.Button("Settings", GUILayout.Width(70)))
                 {
                     currentTerrain.detailSettingsFoldout = !currentTerrain.detailSettingsFoldout;
                 }
                 GUI.backgroundColor = Color.white;
-                    
+
                 EditorGUILayout.EndHorizontal();
 
                 //if (currentTerrain.detailPrototypes.Count == 0)
                 //{
-                    EditorGUILayout.BeginHorizontal();
-                    GUILayout.Space(30 + space);
-               
-                    if (TC_Settings.instance.global.tooltip) tooltipText = "Add a new Grass/Detail";
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Space(30 + space);
 
-                    if (GUILayout.Button(new GUIContent("+", tooltipText), GUILayout.Width(25.0f)))
-                    {
-                        currentTerrain.AddDetailPrototype(currentTerrain.detailPrototypes.Count);
-                    }
-                    EditorGUILayout.EndHorizontal();
+                if (TC_Settings.instance.global.tooltip) tooltipText = "Add a new Grass/Detail";
+
+                if (GUILayout.Button(new GUIContent("+", tooltipText), GUILayout.Width(25.0f)))
+                {
+                    currentTerrain.AddDetailPrototype(currentTerrain.detailPrototypes.Count);
+                }
+                EditorGUILayout.EndHorizontal();
                 //}
                 GUILayout.Space(5);
-                
+
                 for (int countGrass = 0; countGrass < currentTerrain.detailPrototypes.Count; ++countGrass)
                 {
                     EditorGUILayout.BeginHorizontal();
@@ -1139,7 +1136,7 @@ namespace TerrainComposer2
                         {
                             EditorGUILayout.LabelField(currentTerrain.detailPrototypes[countGrass].prototypeTexture.name, GUILayout.Width(85));
                         }
-                        else 
+                        else
                         {
                             GUILayout.Space(60.0f);
                         }
@@ -1366,7 +1363,7 @@ namespace TerrainComposer2
                 EditorGUILayout.EndHorizontal();
                 GUILayout.Space(5);
             }
-            
+
             EditorGUILayout.EndVertical();
         }
 

@@ -1,7 +1,7 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -300,7 +300,7 @@ namespace PixelCrushers.DialogueSystem
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            DialogueManager.instance.displaySettings.localizationSettings.textTable = (TextTable) EditorGUILayout.ObjectField("Text Table", DialogueManager.instance.displaySettings.localizationSettings.textTable, typeof(TextTable), false, GUILayout.Width(360));
+            DialogueManager.instance.displaySettings.localizationSettings.textTable = (TextTable)EditorGUILayout.ObjectField("Text Table", DialogueManager.instance.displaySettings.localizationSettings.textTable, typeof(TextTable), false, GUILayout.Width(360));
             EditorGUILayout.HelpBox("Assign an optional Text Table asset containing translations to use for UI elements outside of your dialogue database content.", MessageType.None);
             EditorGUILayout.EndHorizontal();
 

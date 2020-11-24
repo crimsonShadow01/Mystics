@@ -6,205 +6,205 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public abstract class ReflectedEditor : Editor
-	{
-		protected ReflectedEditor(Accessor accessor) : base(accessor) { }
+    public abstract class ReflectedEditor : Editor
+    {
+        protected ReflectedEditor(Accessor accessor) : base(accessor) { }
 
-		public override void Initialize()
-		{
-			base.Initialize();
+        public override void Initialize()
+        {
+            base.Initialize();
 
-			bindingFlags = MemberAccessor.DefaultBindingFlags;
+            bindingFlags = MemberAccessor.DefaultBindingFlags;
 
-			accessor.valueTypeChanged += previousType => Reflect();
-		}
+            accessor.valueTypeChanged += previousType => Reflect();
+        }
 
-		public BindingFlags bindingFlags { get; private set; }
+        public BindingFlags bindingFlags { get; private set; }
 
-		private float _adaptiveWidth;
+        private float _adaptiveWidth;
 
-		protected virtual bool Include(MemberInfo m)
-		{
-			return m.HasAttribute<InspectableAttribute>() || m.HasAttribute<InspectableIfAttribute>();
-		}
+        protected virtual bool Include(MemberInfo m)
+        {
+            return m.HasAttribute<InspectableAttribute>() || m.HasAttribute<InspectableIfAttribute>();
+        }
 
-		private readonly List<string> inspectedMemberNames = new List<string>();
+        private readonly List<string> inspectedMemberNames = new List<string>();
 
-		protected IEnumerable<Inspector> memberInspectors
-		{
-			get
-			{
-				return inspectedMemberNames.Select(name => ChildInspector(accessor.Member(name, bindingFlags), ConfigureMemberInspector));
-			}
-		}
+        protected IEnumerable<Inspector> memberInspectors
+        {
+            get
+            {
+                return inspectedMemberNames.Select(name => ChildInspector(accessor.Member(name, bindingFlags), ConfigureMemberInspector));
+            }
+        }
 
-		protected virtual void ConfigureMemberInspector(Inspector inspector)
-		{
+        protected virtual void ConfigureMemberInspector(Inspector inspector)
+        {
 
-		}
+        }
 
-		public virtual void Reflect()
-		{
-			var adaptiveWidthAttribute = accessor.valueType.GetAttribute<InspectorFieldWidthAttribute>();
-			_adaptiveWidth = adaptiveWidthAttribute?.width ?? 200;
+        public virtual void Reflect()
+        {
+            var adaptiveWidthAttribute = accessor.valueType.GetAttribute<InspectorFieldWidthAttribute>();
+            _adaptiveWidth = adaptiveWidthAttribute?.width ?? 200;
 
-			inspectedMemberNames.Clear();
+            inspectedMemberNames.Clear();
 
-			inspectedMemberNames.AddRange(accessor.valueType
-			                               .GetMembers(bindingFlags)
-			                               .Where(Include)
-			                               .Select(mi => mi.ToMember())
-			                               .Where(m => m.isAccessor)
-			                               .OrderBy(m => m.info.GetAttribute<InspectableAttribute>()?.order ?? int.MaxValue)
-			                               .ThenBy(m => m.info.MetadataToken)
-			                               .Select(m => m.name));
+            inspectedMemberNames.AddRange(accessor.valueType
+                                           .GetMembers(bindingFlags)
+                                           .Where(Include)
+                                           .Select(mi => mi.ToMember())
+                                           .Where(m => m.isAccessor)
+                                           .OrderBy(m => m.info.GetAttribute<InspectableAttribute>()?.order ?? int.MaxValue)
+                                           .ThenBy(m => m.info.MetadataToken)
+                                           .Select(m => m.name));
 
-			SetHeightDirty();
-		}
+            SetHeightDirty();
+        }
 
-		public virtual bool Display(Accessor memberAccessor)
-		{
-			if (memberAccessor.TryGetAttribute<InspectableIfAttribute>(out var conditionalAttribute))
-			{
-				return AttributeUtility.CheckCondition(accessor.valueType, accessor.value, conditionalAttribute.conditionMemberName, false);
-			}
+        public virtual bool Display(Accessor memberAccessor)
+        {
+            if (memberAccessor.TryGetAttribute<InspectableIfAttribute>(out var conditionalAttribute))
+            {
+                return AttributeUtility.CheckCondition(accessor.valueType, accessor.value, conditionalAttribute.conditionMemberName, false);
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public virtual bool ShowInFooter(Accessor memberAccessor)
-		{
-			return memberAccessor.HasAttribute<InspectorShowInFooterAttribute>();
-		}
+        public virtual bool ShowInFooter(Accessor memberAccessor)
+        {
+            return memberAccessor.HasAttribute<InspectorShowInFooterAttribute>();
+        }
 
-		protected override float GetInnerHeight(float width)
-		{
-			var height = 0f;
+        protected override float GetInnerHeight(float width)
+        {
+            var height = 0f;
 
-			var addedSpace = false;
+            var addedSpace = false;
 
-			foreach (var memberInspector in memberInspectors)
-			{
-				if (!Display(memberInspector.accessor) || ShowInFooter(memberInspector.accessor))
-				{
-					continue;
-				}
+            foreach (var memberInspector in memberInspectors)
+            {
+                if (!Display(memberInspector.accessor) || ShowInFooter(memberInspector.accessor))
+                {
+                    continue;
+                }
 
-				height += GetMemberHeight(memberInspector, width);
-				height += EditorGUIUtility.standardVerticalSpacing;
+                height += GetMemberHeight(memberInspector, width);
+                height += EditorGUIUtility.standardVerticalSpacing;
 
-				addedSpace = true;
-			}
+                addedSpace = true;
+            }
 
-			if (addedSpace)
-			{
-				height -= EditorGUIUtility.standardVerticalSpacing;
-			}
-			
-			return height;
-		}
+            if (addedSpace)
+            {
+                height -= EditorGUIUtility.standardVerticalSpacing;
+            }
 
-		protected override void OnInnerGUI(Rect position)
-		{
-			var addedSpace = false;
+            return height;
+        }
 
-			foreach (var memberInspector in memberInspectors)
-			{
-				if (!Display(memberInspector.accessor) || ShowInFooter(memberInspector.accessor))
-				{
-					continue;
-				}
+        protected override void OnInnerGUI(Rect position)
+        {
+            var addedSpace = false;
 
-				var memberPosition = position.VerticalSection(ref y, GetMemberHeight(memberInspector, position.width));
+            foreach (var memberInspector in memberInspectors)
+            {
+                if (!Display(memberInspector.accessor) || ShowInFooter(memberInspector.accessor))
+                {
+                    continue;
+                }
 
-				OnMemberGUI(memberInspector, memberPosition);
+                var memberPosition = position.VerticalSection(ref y, GetMemberHeight(memberInspector, position.width));
 
-				y += EditorGUIUtility.standardVerticalSpacing;
+                OnMemberGUI(memberInspector, memberPosition);
 
-				addedSpace = true;
-			}
+                y += EditorGUIUtility.standardVerticalSpacing;
 
-			if (addedSpace)
-			{
-				y -= EditorGUIUtility.standardVerticalSpacing;
-			}
-		}
+                addedSpace = true;
+            }
 
-		protected override float GetFooterHeight(float width)
-		{
-			var height = 0f;
+            if (addedSpace)
+            {
+                y -= EditorGUIUtility.standardVerticalSpacing;
+            }
+        }
 
-			var addedSpace = false;
+        protected override float GetFooterHeight(float width)
+        {
+            var height = 0f;
 
-			foreach (var memberInspector in memberInspectors)
-			{
-				if (!Display(memberInspector.accessor) || !ShowInFooter(memberInspector.accessor))
-				{
-					continue;
-				}
+            var addedSpace = false;
 
-				height += GetMemberHeight(memberInspector, width);
-				height += EditorGUIUtility.standardVerticalSpacing;
+            foreach (var memberInspector in memberInspectors)
+            {
+                if (!Display(memberInspector.accessor) || !ShowInFooter(memberInspector.accessor))
+                {
+                    continue;
+                }
 
-				addedSpace = true;
-			}
+                height += GetMemberHeight(memberInspector, width);
+                height += EditorGUIUtility.standardVerticalSpacing;
 
-			if (addedSpace)
-			{
-				height -= EditorGUIUtility.standardVerticalSpacing;
-			}
+                addedSpace = true;
+            }
 
-			return height;
-		}
+            if (addedSpace)
+            {
+                height -= EditorGUIUtility.standardVerticalSpacing;
+            }
 
-		protected override void OnFooterGUI(Rect position)
-		{
-			var addedSpace = false;
+            return height;
+        }
 
-			foreach (var memberInspector in memberInspectors)
-			{
-				if (!Display(memberInspector.accessor) || !ShowInFooter(memberInspector.accessor))
-				{
-					continue;
-				}
+        protected override void OnFooterGUI(Rect position)
+        {
+            var addedSpace = false;
 
-				var memberPosition = position.VerticalSection(ref y, GetMemberHeight(memberInspector, position.width));
+            foreach (var memberInspector in memberInspectors)
+            {
+                if (!Display(memberInspector.accessor) || !ShowInFooter(memberInspector.accessor))
+                {
+                    continue;
+                }
 
-				OnMemberGUI(memberInspector, memberPosition);
+                var memberPosition = position.VerticalSection(ref y, GetMemberHeight(memberInspector, position.width));
 
-				y += EditorGUIUtility.standardVerticalSpacing;
+                OnMemberGUI(memberInspector, memberPosition);
 
-				addedSpace = true;
-			}
+                y += EditorGUIUtility.standardVerticalSpacing;
 
-			if (addedSpace)
-			{
-				y -= EditorGUIUtility.standardVerticalSpacing;
-			}
-		}
+                addedSpace = true;
+            }
 
-		protected virtual float GetMemberHeight(Inspector memberInspector, float width)
-		{
-			return memberInspector.FieldHeight(width);
-		}
+            if (addedSpace)
+            {
+                y -= EditorGUIUtility.standardVerticalSpacing;
+            }
+        }
 
-		protected virtual void OnMemberGUI(Inspector memberInspector, Rect memberPosition)
-		{
-			EditorGUI.BeginChangeCheck();
+        protected virtual float GetMemberHeight(Inspector memberInspector, float width)
+        {
+            return memberInspector.FieldHeight(width);
+        }
 
-			memberInspector.DrawField(memberPosition);
+        protected virtual void OnMemberGUI(Inspector memberInspector, Rect memberPosition)
+        {
+            EditorGUI.BeginChangeCheck();
 
-			if (EditorGUI.EndChangeCheck())
-			{
-				OnMemberChange((MemberAccessor)memberInspector.accessor);
-			}
-		}
+            memberInspector.DrawField(memberPosition);
 
-		protected virtual void OnMemberChange(MemberAccessor member) { }
+            if (EditorGUI.EndChangeCheck())
+            {
+                OnMemberChange((MemberAccessor)memberInspector.accessor);
+            }
+        }
 
-		protected override float GetControlWidth()
-		{
-			return _adaptiveWidth;
-		}
-	}
+        protected virtual void OnMemberChange(MemberAccessor member) { }
+
+        protected override float GetControlWidth()
+        {
+            return _adaptiveWidth;
+        }
+    }
 }

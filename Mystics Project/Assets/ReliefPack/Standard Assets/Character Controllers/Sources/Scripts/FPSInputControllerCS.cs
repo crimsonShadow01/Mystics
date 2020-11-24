@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(CharacterMotorCS))]
-public class FPSInputControllerCS : MonoBehaviour {
+public class FPSInputControllerCS : MonoBehaviour
+{
 
     private CharacterMotorCS motor;
 

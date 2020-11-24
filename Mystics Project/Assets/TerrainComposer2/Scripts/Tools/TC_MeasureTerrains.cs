@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -55,7 +54,7 @@ namespace TerrainComposer2
                 }
             }
         }
-        
+
         public class GrassLayer
         {
             public int[,] grass;

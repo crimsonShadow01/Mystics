@@ -6,10 +6,10 @@ namespace Ludiq.PeekCore.CodeDom
 {
     public sealed class CodeThisReferenceExpression : CodeExpression
     {
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
-		protected override void GenerateInner(CodeGenerator generator)
-		{
-           generator.Write(TokenType.Keyword, "this");
-		}
-	}
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
+        protected override void GenerateInner(CodeGenerator generator)
+        {
+            generator.Write(TokenType.Keyword, "this");
+        }
+    }
 }

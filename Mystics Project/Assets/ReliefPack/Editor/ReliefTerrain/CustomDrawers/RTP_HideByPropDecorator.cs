@@ -1,8 +1,5 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using System.Collections;
-using System;
-using System.Reflection;
 
 public class RTP_HideByPropDecorator : MaterialPropertyDrawer
 {
@@ -22,7 +19,7 @@ public class RTP_HideByPropDecorator : MaterialPropertyDrawer
     }
     public RTP_HideByPropDecorator(string prop1) : base()
     {
-        if (prop1.IndexOf("not_")>=0)
+        if (prop1.IndexOf("not_") >= 0)
         {
             invertFlag = true;
             prop1 = prop1.Substring(4);

@@ -40,8 +40,8 @@ namespace Doozy.Installer
                                 {
                                     Run();
 #if !dUI_MASTER
-                                      if (Settings != null && !Settings.InstallExecuted && DoozyInstallerWindow.Instance == null)
-                                          EditorWindow.GetWindow<DoozyInstallerWindow>(true);
+                                    if (Settings != null && !Settings.InstallExecuted && DoozyInstallerWindow.Instance == null)
+                                        EditorWindow.GetWindow<DoozyInstallerWindow>(true);
 #endif
                                 });
 

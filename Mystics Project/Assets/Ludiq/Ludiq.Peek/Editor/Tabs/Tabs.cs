@@ -1,317 +1,315 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Ludiq.Peek;
 using Ludiq.PeekCore;
 using Ludiq.PeekCore.ReflectionMagic;
+using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
-using UnityObject = UnityEngine.Object;
 
 [assembly: InitializeAfterPlugins(typeof(Tabs))]
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public static class Tabs
-	{
-		private static Event e => Event.current;
+    public static class Tabs
+    {
+        private static Event e => Event.current;
 
-		private static readonly ToolbarControlProvider toolbarControlProvider = new ToolbarControlProvider(ToolbarWindow.Scene);
+        private static readonly ToolbarControlProvider toolbarControlProvider = new ToolbarControlProvider(ToolbarWindow.Scene);
 
-		public static TabsToolbar toolbar { get; }
+        public static TabsToolbar toolbar { get; }
 
-		public static ToolbarControl toolbarControl { get; }
+        public static ToolbarControl toolbarControl { get; }
 
-		private static bool reopenedTabs;
-		
-		private static EditorWindow lastFocusedWindow;
+        private static bool reopenedTabs;
 
-		private static bool lastFocusedWindowWasMaximized;
+        private static EditorWindow lastFocusedWindow;
 
-		static Tabs()
-		{
-			toolbar = new TabsToolbar();
-			toolbar.Initialize();
+        private static bool lastFocusedWindowWasMaximized;
 
-			toolbarControl = toolbarControlProvider.GetControl(toolbar);
-			toolbarControl.isDraggable = true;
-			toolbarControl.isActivator = true;
+        static Tabs()
+        {
+            toolbar = new TabsToolbar();
+            toolbar.Initialize();
 
-			ShortcutsIntegration.secondaryToolbar = toolbarControl;
-			EditorApplication.update += WatchWindowLayout;
-			toolbarControlProvider.cleaningUp += SaveOpenTabs;
-		}
+            toolbarControl = toolbarControlProvider.GetControl(toolbar);
+            toolbarControl.isDraggable = true;
+            toolbarControl.isActivator = true;
 
-		private static void SaveOpenTabs()
-		{
-			PeekPlugin.Configuration.openTabs.Clear();
+            ShortcutsIntegration.secondaryToolbar = toolbarControl;
+            EditorApplication.update += WatchWindowLayout;
+            toolbarControlProvider.cleaningUp += SaveOpenTabs;
+        }
 
-			foreach (var tool in toolbar.OfType<TabTool>())
-			{
-				if (tool is TabTool tabTool && tabTool.isActive)
-				{
-					PeekPlugin.Configuration.openTabs.Add(tabTool.tabKey);
-				}
-			}
+        private static void SaveOpenTabs()
+        {
+            PeekPlugin.Configuration.openTabs.Clear();
 
-			PeekPlugin.Configuration.Save(nameof(PeekConfiguration.openTabs));
-		}
+            foreach (var tool in toolbar.OfType<TabTool>())
+            {
+                if (tool is TabTool tabTool && tabTool.isActive)
+                {
+                    PeekPlugin.Configuration.openTabs.Add(tabTool.tabKey);
+                }
+            }
 
-		private static void ReopenTabs()
-		{
-			foreach (var tabKey in PeekPlugin.Configuration.openTabs)
-			{
-				foreach (var tabTool in toolbar.OfType<TabTool>())
-				{
-					if (tabTool.tabKey == tabKey)
-					{
-						tabTool.Open(toolbarControl.GetToolControl(tabTool));
-						break;
-					}
-				}
-			}
-		}
+            PeekPlugin.Configuration.Save(nameof(PeekConfiguration.openTabs));
+        }
 
-		private static void WatchWindowLayout()
-		{
-			var focusedWindow = EditorWindow.focusedWindow;
-			var isMaximized = focusedWindow != null && focusedWindow.maximized;
+        private static void ReopenTabs()
+        {
+            foreach (var tabKey in PeekPlugin.Configuration.openTabs)
+            {
+                foreach (var tabTool in toolbar.OfType<TabTool>())
+                {
+                    if (tabTool.tabKey == tabKey)
+                    {
+                        tabTool.Open(toolbarControl.GetToolControl(tabTool));
+                        break;
+                    }
+                }
+            }
+        }
 
-			if (focusedWindow != lastFocusedWindow ||
-			    isMaximized != lastFocusedWindowWasMaximized)
-			{
-				AnalyzeWindowLayout();
-				lastFocusedWindow = focusedWindow;
-				lastFocusedWindowWasMaximized = isMaximized;
-			}
-		}
+        private static void WatchWindowLayout()
+        {
+            var focusedWindow = EditorWindow.focusedWindow;
+            var isMaximized = focusedWindow != null && focusedWindow.maximized;
 
-		private static void AnalyzeWindowLayout()
-		{
-			var tabs = ListPool<EditorWindow>.New();
-			
-			try
-			{
-				foreach (var window in Resources.FindObjectsOfTypeAll<EditorWindow>())
-				{
-					// Skip invalid windows
-					if (window == null)
-					{
-						continue;
-					}
+            if (focusedWindow != lastFocusedWindow ||
+                isMaximized != lastFocusedWindowWasMaximized)
+            {
+                AnalyzeWindowLayout();
+                lastFocusedWindow = focusedWindow;
+                lastFocusedWindowWasMaximized = isMaximized;
+            }
+        }
 
-					// Abort the operation if any window is maximized, we don't want to save that layout
-					if (window.maximized)
-					{
-						return;
-					}
+        private static void AnalyzeWindowLayout()
+        {
+            var tabs = ListPool<EditorWindow>.New();
 
-					// Skip windows that are invalid or not part of the layout
-					dynamic dWindow = window.AsDynamic();
+            try
+            {
+                foreach (var window in Resources.FindObjectsOfTypeAll<EditorWindow>())
+                {
+                    // Skip invalid windows
+                    if (window == null)
+                    {
+                        continue;
+                    }
 
-					if (dWindow.m_Parent == null || dWindow.m_Parent.window == null || dWindow.m_Parent.window.m_DontSaveToLayout)
-					{
-						continue;
-					}
+                    // Abort the operation if any window is maximized, we don't want to save that layout
+                    if (window.maximized)
+                    {
+                        return;
+                    }
 
-					var parentWindowShowMode = (int)dWindow.m_Parent.window.showMode;
+                    // Skip windows that are invalid or not part of the layout
+                    dynamic dWindow = window.AsDynamic();
 
-					// Skip windows not in the main window (4 in the ShowMode enum)
-					if (parentWindowShowMode != 4)
-					{
-						continue;
-					}
+                    if (dWindow.m_Parent == null || dWindow.m_Parent.window == null || dWindow.m_Parent.window.m_DontSaveToLayout)
+                    {
+                        continue;
+                    }
 
-					tabs.Add(window);
-				}
+                    var parentWindowShowMode = (int)dWindow.m_Parent.window.showMode;
 
-				// Sort tabs by screen position
-				tabs.Sort(compareLayoutTab);
+                    // Skip windows not in the main window (4 in the ShowMode enum)
+                    if (parentWindowShowMode != 4)
+                    {
+                        continue;
+                    }
 
-				// Store the tabs in the configuration
-				// To minimize serialization operations, first check if changed from last time
-				var config = PeekPlugin.Configuration;
-				var tabsChanged = tabs.Count != config.tabsInLayout.Count;
-				var positionsChanged = false;
-				var dataChanged = false;
-				
-				// Store the fact that this tab is in the layout, which we'll need as fallback
-				// in case the assembly reloads while the scene view is already maximized
-				if (!tabsChanged)
-				{
-					for (int i = 0; i < tabs.Count; i++)
-					{
-						var tabKey = Codebase.SerializeType(tabs[i].GetType());
-						var configTabKey = config.tabsInLayout[i];
+                    tabs.Add(window);
+                }
 
-						if (tabKey != configTabKey)
-						{
-							tabsChanged = true;
-							break;
-						}
-					}
-				}
+                // Sort tabs by screen position
+                tabs.Sort(compareLayoutTab);
 
-				if (tabsChanged)
-				{
-					config.tabsInLayout.Clear();
+                // Store the tabs in the configuration
+                // To minimize serialization operations, first check if changed from last time
+                var config = PeekPlugin.Configuration;
+                var tabsChanged = tabs.Count != config.tabsInLayout.Count;
+                var positionsChanged = false;
+                var dataChanged = false;
 
-					foreach (var tab in tabs)
-					{
-						var tabKey = Codebase.SerializeType(tab.GetType());
-						config.tabsInLayout.Add(tabKey);
-					}
+                // Store the fact that this tab is in the layout, which we'll need as fallback
+                // in case the assembly reloads while the scene view is already maximized
+                if (!tabsChanged)
+                {
+                    for (int i = 0; i < tabs.Count; i++)
+                    {
+                        var tabKey = Codebase.SerializeType(tabs[i].GetType());
+                        var configTabKey = config.tabsInLayout[i];
 
-					config.Save(nameof(PeekConfiguration.tabsInLayout));
-				}
+                        if (tabKey != configTabKey)
+                        {
+                            tabsChanged = true;
+                            break;
+                        }
+                    }
+                }
 
-				foreach (var tab in tabs)
-				{
-					var tabKey = Codebase.SerializeType(tab.GetType());
-					
-					// Store the position if the user hasn't configured it already
-					if (!config.tabsPositions.ContainsKey(tabKey))
-					{
-						config.tabsPositions[tabKey] = tab.position;
-						positionsChanged = true;
-					}
+                if (tabsChanged)
+                {
+                    config.tabsInLayout.Clear();
 
-					// Store the data if the user hasn't configured it already
-					if (!config.tabsData.ContainsKey(tabKey))
-					{
-						config.tabsData[tabKey] = EditorJsonUtility.ToJson(tab);
-						dataChanged = true;
-					}
-				}
+                    foreach (var tab in tabs)
+                    {
+                        var tabKey = Codebase.SerializeType(tab.GetType());
+                        config.tabsInLayout.Add(tabKey);
+                    }
 
-				if (positionsChanged)
-				{
-					config.Save(nameof(PeekConfiguration.tabsPositions));
-				}
+                    config.Save(nameof(PeekConfiguration.tabsInLayout));
+                }
 
-				if (dataChanged)
-				{
-					config.Save(nameof(PeekConfiguration.tabsData));
-				}
-			}
-			catch (Exception ex)
-			{
-				Debug.LogWarning($"Failed to analyze window layout:\n{ex}");
-			}
-			finally
-			{
-				tabs.Free();
-			}
-		}
+                foreach (var tab in tabs)
+                {
+                    var tabKey = Codebase.SerializeType(tab.GetType());
 
-		private static readonly Comparison<EditorWindow> compareLayoutTab = CompareLayoutTab;
+                    // Store the position if the user hasn't configured it already
+                    if (!config.tabsPositions.ContainsKey(tabKey))
+                    {
+                        config.tabsPositions[tabKey] = tab.position;
+                        positionsChanged = true;
+                    }
 
-		private static int CompareLayoutTab(EditorWindow a, EditorWindow b)
-		{
-			var xComparison = a.position.x.CompareTo(b.position.x);
+                    // Store the data if the user hasn't configured it already
+                    if (!config.tabsData.ContainsKey(tabKey))
+                    {
+                        config.tabsData[tabKey] = EditorJsonUtility.ToJson(tab);
+                        dataChanged = true;
+                    }
+                }
 
-			if (xComparison != 0)
-			{
-				return xComparison;
-			}
+                if (positionsChanged)
+                {
+                    config.Save(nameof(PeekConfiguration.tabsPositions));
+                }
 
-			var yComparison = a.position.y.CompareTo(b.position.y);
+                if (dataChanged)
+                {
+                    config.Save(nameof(PeekConfiguration.tabsData));
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Failed to analyze window layout:\n{ex}");
+            }
+            finally
+            {
+                tabs.Free();
+            }
+        }
 
-			if (yComparison != 0)
-			{
-				return yComparison;
-			}
-			
-			// TODO: Compare tab order when docked in same container
-			return 0;
-		}
+        private static readonly Comparison<EditorWindow> compareLayoutTab = CompareLayoutTab;
 
-		internal static void OnSceneGUI(SceneView sceneView)
-		{
-			if (!PeekPlugin.Configuration.enableTabs.Display(sceneView.maximized))
-			{
-				// TODO: Generalize, make faster, and also call the Move event when moving the window.
-				toolbarControl?.CloseAllTools();
-				return;
-			}
+        private static int CompareLayoutTab(EditorWindow a, EditorWindow b)
+        {
+            var xComparison = a.position.x.CompareTo(b.position.x);
 
-			Profiler.BeginSample("Peek." + nameof(Tabs));
+            if (xComparison != 0)
+            {
+                return xComparison;
+            }
 
-			if (toolbarControl == null || !toolbarControl.toolbar.isValid)
-			{
-				return;
-			}
+            var yComparison = a.position.y.CompareTo(b.position.y);
 
-			toolbarControl.toolbar.Update();
+            if (yComparison != 0)
+            {
+                return yComparison;
+            }
 
-			var position = sceneView.GetInnerGuiPosition();
+            // TODO: Compare tab order when docked in same container
+            return 0;
+        }
 
-			Handles.BeginGUI();
+        internal static void OnSceneGUI(SceneView sceneView)
+        {
+            if (!PeekPlugin.Configuration.enableTabs.Display(sceneView.maximized))
+            {
+                // TODO: Generalize, make faster, and also call the Move event when moving the window.
+                toolbarControl?.CloseAllTools();
+                return;
+            }
 
-			var toolbarSize = toolbarControl.GetSceneViewSize();
+            Profiler.BeginSample("Peek." + nameof(Tabs));
 
-			if (!toolbarControl.isDragging)
-			{
-				toolbarControl.guiPosition = new Rect
-				(
-					PeekPlugin.Configuration.tabsOrigin.x,
-					PeekPlugin.Configuration.tabsOrigin.y,
-					toolbarSize.x,
-					toolbarSize.y
-				);
-			}
+            if (toolbarControl == null || !toolbarControl.toolbar.isValid)
+            {
+                return;
+            }
 
-			toolbarControl.DrawInSceneView();
-			
-			if (!reopenedTabs)
-			{
-				// Wait until we drew once to set the GUI positions
-				// ReopenTabs(); // Calling in delayCall to avoid occasional dWindow.parent crash in TabTool.SaveWindowPosition 
-				EditorApplication.delayCall += ReopenTabs;
-				reopenedTabs = true;
-			}
+            toolbarControl.toolbar.Update();
 
-			if (e.type == EventType.Repaint)
-			{
-				var origin = toolbarControl.guiPosition.position;
+            var position = sceneView.GetInnerGuiPosition();
 
-				var margin = PeekStyles.tabsScreenMargin;
+            Handles.BeginGUI();
 
-				origin.x = Mathf.Clamp
-				(
-					origin.x,
-					margin.x,
-					position.width - toolbarSize.x - margin.x
-				);
+            var toolbarSize = toolbarControl.GetSceneViewSize();
 
-				origin.y = Mathf.Clamp
-				(
-					origin.y,
-					margin.y,
-					position.height - toolbarSize.y - margin.y
-				);
+            if (!toolbarControl.isDragging)
+            {
+                toolbarControl.guiPosition = new Rect
+                (
+                    PeekPlugin.Configuration.tabsOrigin.x,
+                    PeekPlugin.Configuration.tabsOrigin.y,
+                    toolbarSize.x,
+                    toolbarSize.y
+                );
+            }
 
-				PeekPlugin.Configuration.tabsOrigin = origin;
+            toolbarControl.DrawInSceneView();
 
-				if (toolbarControl.isDragging)
-				{
-					PeekPlugin.Configuration.Save(nameof(PeekConfiguration.tabsOrigin));
-				}
-			}
+            if (!reopenedTabs)
+            {
+                // Wait until we drew once to set the GUI positions
+                // ReopenTabs(); // Calling in delayCall to avoid occasional dWindow.parent crash in TabTool.SaveWindowPosition 
+                EditorApplication.delayCall += ReopenTabs;
+                reopenedTabs = true;
+            }
 
-			if (toolbarControl.guiPosition.Contains(e.mousePosition))
-			{
-				sceneView.Repaint();
-				SceneViewIntegration.Use();
-			}
+            if (e.type == EventType.Repaint)
+            {
+                var origin = toolbarControl.guiPosition.position;
 
-			Handles.EndGUI();
+                var margin = PeekStyles.tabsScreenMargin;
 
-			Profiler.EndSample();
-		}
-	}
+                origin.x = Mathf.Clamp
+                (
+                    origin.x,
+                    margin.x,
+                    position.width - toolbarSize.x - margin.x
+                );
+
+                origin.y = Mathf.Clamp
+                (
+                    origin.y,
+                    margin.y,
+                    position.height - toolbarSize.y - margin.y
+                );
+
+                PeekPlugin.Configuration.tabsOrigin = origin;
+
+                if (toolbarControl.isDragging)
+                {
+                    PeekPlugin.Configuration.Save(nameof(PeekConfiguration.tabsOrigin));
+                }
+            }
+
+            if (toolbarControl.guiPosition.Contains(e.mousePosition))
+            {
+                sceneView.Repaint();
+                SceneViewIntegration.Use();
+            }
+
+            Handles.EndGUI();
+
+            Profiler.EndSample();
+        }
+    }
 }

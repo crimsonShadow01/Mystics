@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace MeshCombineStudio
@@ -10,7 +9,7 @@ namespace MeshCombineStudio
     {
         HashSet<GameObjectLayer> gos = new HashSet<GameObjectLayer>();
 
-        bool hasRegistered; 
+        bool hasRegistered;
 
         void Awake()
         {
@@ -19,13 +18,13 @@ namespace MeshCombineStudio
 
         void OnEnable()
         {
-            Register(false); 
+            Register(false);
         }
 
         void Register(bool first)
         {
             if (hasRegistered) return;
-            
+
             if (first)
             {
                 if (MeshCombiner.instances.Count == 0) return;
@@ -100,7 +99,7 @@ namespace MeshCombineStudio
         }
         void OnCombineReady(MeshCombiner meshCombiner)
         {
-            foreach(var goLayer in gos)
+            foreach (var goLayer in gos)
             {
                 goLayer.RestoreLayer();
             }

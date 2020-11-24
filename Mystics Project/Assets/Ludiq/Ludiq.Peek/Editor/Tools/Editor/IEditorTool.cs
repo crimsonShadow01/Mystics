@@ -1,13 +1,11 @@
 ﻿using System;
-using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public interface IEditorTool : ITool
-	{
-		Type targetType { get; }
-	}
+    public interface IEditorTool : ITool
+    {
+        Type targetType { get; }
+    }
 }

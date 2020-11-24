@@ -1,7 +1,6 @@
-﻿using UnityEngine;
+﻿using System.IO;
 using UnityEditor;
-using System.Collections;
-using System.IO;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -14,8 +13,8 @@ namespace TerrainComposer2
             for (int i = 0; i < importedAssets.Length; i++)
             {
                 path = importedAssets[i];
-                
-                if (path.Contains("/RawFiles/") )
+
+                if (path.Contains("/RawFiles/"))
                 {
                     string extension = path.Substring(path.Length - 3);
                     if (extension.Contains("raw") || extension.Contains("Raw") || extension.Contains("r16") || extension.Contains("R16")) ConvertToImage(path);
@@ -42,14 +41,14 @@ namespace TerrainComposer2
 
             int newResolution = resolution;
             if (newResolution > 512) newResolution = 512;
-            
+
             Texture2D tex = new Texture2D(newResolution, newResolution, TextureFormat.RGB24, false);
             newBytes = new byte[newResolution * newResolution * 3];
 
             int index;
 
             float resConversion = (float)resolution / (float)newResolution;
-            
+
             for (int y = 0; y < newResolution; y++)
             {
                 for (int x = 0; x < newResolution; x++)
@@ -63,9 +62,9 @@ namespace TerrainComposer2
                     newBytes[index + 2] = newBytes[index];
                 }
             }
-            
+
             tex.LoadRawTextureData(newBytes);
-            
+
             index = newPath.LastIndexOf("/");
 
             string file = newPath.Substring(index + 1);
@@ -73,10 +72,10 @@ namespace TerrainComposer2
             file += "Jpg";
 
             newPath = newPath.Substring(0, index + 1);
-            
+
             newPath = newPath.Replace("RawFiles/", "") + file;
             File.WriteAllBytes(newPath, tex.EncodeToJPG());
-            
+
             newPath = newPath.Replace(Application.dataPath, "Assets");
             Object.DestroyImmediate(tex);
             AssetDatabase.ImportAsset(newPath);

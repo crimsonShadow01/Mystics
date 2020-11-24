@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Collections.Generic;
 #if USE_NEW_INPUT
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;

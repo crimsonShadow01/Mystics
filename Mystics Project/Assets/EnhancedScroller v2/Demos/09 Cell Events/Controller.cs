@@ -1,7 +1,6 @@
-﻿using UnityEngine;
+﻿using EnhancedUI.EnhancedScroller;
 using System.Collections.Generic;
-using EnhancedUI;
-using EnhancedUI.EnhancedScroller;
+using UnityEngine;
 
 namespace EnhancedScrollerDemos.CellEvents
 {

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace MeshCombineStudio
@@ -35,7 +34,7 @@ namespace MeshCombineStudio
                 }
 
                 for (int i = 0; i < meshCombinerList.Count; i++)
-                { 
+                {
                     meshCombinerList[i].SwapCombine();
                 }
             }

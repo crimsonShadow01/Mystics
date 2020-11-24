@@ -2,9 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem.DialogueEditor
 {
@@ -97,7 +97,7 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
 
         private Dictionary<string, VariableGroup> GenerateGroupedVariableList()
         {
-            var dict = new Dictionary<string, VariableGroup>();            
+            var dict = new Dictionary<string, VariableGroup>();
             if (string.IsNullOrEmpty(variableFilter) && !showVariableGroupFoldouts)
             {
                 // If no filter and not showing groups, add a single group that uses database.variables directly to allow dragging:
@@ -332,7 +332,7 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
             public CreateNewVariableDelegate createNewVariable = null;
 
             public VariableGroup(DialogueDatabase database, string group, List<Variable> variableList,
-                List<string> variableGroupFoldouts, HashSet<string> conflictedVariableNames, 
+                List<string> variableGroupFoldouts, HashSet<string> conflictedVariableNames,
                 bool canShowRuntimeValues, Dictionary<string, string> runtimeValues,
                 System.Action refreshVariablesView, CreateNewVariableDelegate createNewVariable)
             {
@@ -497,6 +497,6 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
             }
         }
 
-     }
+    }
 
 }

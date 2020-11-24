@@ -1,7 +1,7 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -221,7 +221,7 @@ namespace PixelCrushers.DialogueSystem
         /// so the cache can be restored when loading a game. Only saves built-in panel numbers,
         /// not custom panels.
         /// </summary>
-        public virtual void RecordActorPanelCache(out List<string> actorGOs, out List<SubtitlePanelNumber> actorGOPanels, 
+        public virtual void RecordActorPanelCache(out List<string> actorGOs, out List<SubtitlePanelNumber> actorGOPanels,
             out List<int> actorIDs, out List<SubtitlePanelNumber> actorIDPanels)
         {
             actorGOs = new List<string>();
@@ -280,7 +280,8 @@ namespace PixelCrushers.DialogueSystem
                     m_actorIdOverridePanel[m_queuedActorIDs[i]] = panel;
                 }
             }
-            finally {
+            finally
+            {
                 m_queuedActorGOs = null;
                 m_queuedActorGOPanels = null;
                 m_queuedActorIDs = null;
@@ -404,7 +405,7 @@ namespace PixelCrushers.DialogueSystem
         }
 
         protected virtual void SupercedeOtherPanelsInList(List<StandardUISubtitlePanel> list, StandardUISubtitlePanel newPanel)
-        { 
+        {
             for (int i = 0; i < list.Count; i++)
             {
                 var panel = list[i];

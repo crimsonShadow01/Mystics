@@ -30,7 +30,7 @@ namespace Doozy.Installer
 
         private void Update()
         {
-            if (Time.realtimeSinceStartup - (double) m_startupTime < m_delay) return;
+            if (Time.realtimeSinceStartup - (double)m_startupTime < m_delay) return;
             if (EditorApplication.update != null) EditorApplication.update -= Update;
             if (m_callback != null) m_callback();
         }
@@ -39,7 +39,7 @@ namespace Doozy.Installer
         {
             if (EditorApplication.update != null) EditorApplication.update -= Update;
         }
-        
+
         public static DelayedCall Run(float delay, Action callback)
         {
             return new DelayedCall(delay, callback);

@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
 namespace MeshCombineStudio
 {
@@ -81,7 +79,7 @@ namespace MeshCombineStudio
             GUIDraw.Label("Modifications to this LOD Group will apply to all children", 12);
             EditorGUILayout.EndVertical();
             GUIDraw.DrawSpacer();
-            
+
         }
     }
 }

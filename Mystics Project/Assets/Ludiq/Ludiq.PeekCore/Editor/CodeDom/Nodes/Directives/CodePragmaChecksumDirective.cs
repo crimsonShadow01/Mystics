@@ -20,10 +20,10 @@ namespace Ludiq.PeekCore.CodeDom
         public Guid ChecksumAlgorithmId { get; }
         public byte[] ChecksumData { get; }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
+        protected override void GenerateInner(CodeGenerator generator)
+        {
             generator.Write(TokenType.Directive, "#pragma checksum ");
-			generator.Write(TokenType.StringLiteral, '\"');
+            generator.Write(TokenType.StringLiteral, '\"');
             generator.Write(TokenType.StringLiteral, FileName);
             generator.Write(TokenType.StringLiteral, '\"');
             generator.Write(TokenType.Space, ' ');
@@ -40,6 +40,6 @@ namespace Ludiq.PeekCore.CodeDom
                 }
             }
             generator.Write(TokenType.StringLiteral, '\"');
-		}
-	}
+        }
+    }
 }

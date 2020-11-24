@@ -1,7 +1,7 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -523,7 +523,7 @@ namespace PixelCrushers.DialogueSystem
             {
                 pcPortraitName = m_actorInfo.Name;
                 pcPortraitSprite = m_actorInfo.portrait;
-            } 
+            }
             else if (m_conversantInfo.isPlayer)
             {
                 pcPortraitName = m_conversantInfo.Name;
@@ -655,7 +655,7 @@ namespace PixelCrushers.DialogueSystem
             {
                 // Check if named image is already assigned to actor. Otherwise load as asset.
                 var sprite = actor.GetPortraitSprite(imageName);
-                return (sprite != null) ? sprite 
+                return (sprite != null) ? sprite
                     : UITools.CreateSprite(DialogueManager.LoadAsset(imageName) as Texture2D);
             }
         }

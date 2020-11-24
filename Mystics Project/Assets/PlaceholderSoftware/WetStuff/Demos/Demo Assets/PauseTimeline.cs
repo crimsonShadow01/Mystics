@@ -24,7 +24,7 @@ namespace PlaceholderSoftware.WetStuff.Demos.Demo_Assets
             }
         }
 
-        private void Update ()
+        private void Update()
         {
             if (_isCameraFree)
                 FreeLook();
@@ -44,14 +44,16 @@ namespace PlaceholderSoftware.WetStuff.Demos.Demo_Assets
 
                 if (!_isCameraFree)
                 {
-                    if (GUI.Button(freeBox, "Free Camera")) {
+                    if (GUI.Button(freeBox, "Free Camera"))
+                    {
                         _isCameraFree = true;
                         timeline.Pause();
                     }
                 }
                 else
                 {
-                    if (GUI.Button(freeBox, timeline.isActiveAndEnabled ? "Resume Timeline" : "Lock Camera")) {
+                    if (GUI.Button(freeBox, timeline.isActiveAndEnabled ? "Resume Timeline" : "Lock Camera"))
+                    {
                         _isCameraFree = false;
                         timeline.Resume();
                     }

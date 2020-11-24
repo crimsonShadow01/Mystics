@@ -51,7 +51,7 @@ namespace PlaceholderSoftware.WetStuff.Rendering
 
         public override bool Equals(object obj)
         {
-            return obj is MaterialProperties && Equals((MaterialProperties) obj);
+            return obj is MaterialProperties && Equals((MaterialProperties)obj);
         }
 
         public bool Equals(MaterialProperties other)

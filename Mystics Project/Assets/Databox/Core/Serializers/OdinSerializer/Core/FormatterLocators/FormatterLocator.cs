@@ -173,7 +173,7 @@ namespace Databox.OdinSerializer
             }
 
             // Order formatters and formatter locators by priority and then by name, to ensure consistency regardless of the order of loaded types, which is important for cross-platform cases.
-            
+
             FormatterInfos.Sort((a, b) =>
             {
                 int compare = -a.Priority.CompareTo(b.Priority);
@@ -185,7 +185,7 @@ namespace Databox.OdinSerializer
 
                 return compare;
             });
-            
+
             FormatterLocators.Sort((a, b) =>
             {
                 int compare = -a.Priority.CompareTo(b.Priority);

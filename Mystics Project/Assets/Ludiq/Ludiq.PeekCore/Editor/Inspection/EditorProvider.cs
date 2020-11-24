@@ -2,79 +2,79 @@
 
 namespace Ludiq.PeekCore
 {
-	public class EditorProvider : SingleDecoratorProvider<Accessor, Editor, RegisterEditorAttribute>
-	{
-		protected override bool cache => false;
-		
-		protected override Type GetDecoratedType(Accessor accessor)
-		{
-			return accessor.definedType;
-		}
+    public class EditorProvider : SingleDecoratorProvider<Accessor, Editor, RegisterEditorAttribute>
+    {
+        protected override bool cache => false;
 
-		protected override Type ResolveDecoratorType(Type decoratedType)
-		{
-			return ResolveDecoratorTypeByHierarchy(decoratedType) ??
-				   AutomaticReflectedEditor(decoratedType) ??
-			       typeof(UnknownEditor);
-		}
+        protected override Type GetDecoratedType(Accessor accessor)
+        {
+            return accessor.definedType;
+        }
 
-		private Type AutomaticReflectedEditor(Type type)
-		{
-			if (type.HasAttribute<InspectableAttribute>())
-			{
-				return typeof(AutomaticReflectedInspector);
-			}
+        protected override Type ResolveDecoratorType(Type decoratedType)
+        {
+            return ResolveDecoratorTypeByHierarchy(decoratedType) ??
+                   AutomaticReflectedEditor(decoratedType) ??
+                   typeof(UnknownEditor);
+        }
 
-			return null;
-		}
+        private Type AutomaticReflectedEditor(Type type)
+        {
+            if (type.HasAttribute<InspectableAttribute>())
+            {
+                return typeof(AutomaticReflectedInspector);
+            }
 
-		public bool HasEditor(Type type)
-		{
-			return GetDecoratorType(type) != typeof(UnknownEditor);
-		}
+            return null;
+        }
 
-		static EditorProvider()
-		{
-			instance = new EditorProvider();
-		}
+        public bool HasEditor(Type type)
+        {
+            return GetDecoratorType(type) != typeof(UnknownEditor);
+        }
 
-		public static EditorProvider instance { get; private set; }
-	}
+        static EditorProvider()
+        {
+            instance = new EditorProvider();
+        }
 
-	public static class XEditorProvider
-	{
-		public static Editor CreateUninitializedEditor(this Accessor accessor)
-		{
-			return EditorProvider.instance.GetDecorator(accessor);
-		}
-		
-		public static TEditor CreateUninitializedEditor<TEditor>(this Accessor accessor) where TEditor : Editor
-		{
-			return EditorProvider.instance.GetDecorator<TEditor>(accessor);
-		}
+        public static EditorProvider instance { get; private set; }
+    }
 
-		public static Editor CreateInitializedEditor(this Accessor accessor)
-		{
-			var editor = CreateUninitializedEditor(accessor);
-			editor.Initialize();
-			return editor;
-		}
-		
-		public static TEditor CreateInitializedEditor<TEditor>(this Accessor accessor) where TEditor : Editor
-		{
-			var editor = CreateUninitializedEditor<TEditor>(accessor);
-			editor.Initialize();
-			return editor;
-		}
+    public static class XEditorProvider
+    {
+        public static Editor CreateUninitializedEditor(this Accessor accessor)
+        {
+            return EditorProvider.instance.GetDecorator(accessor);
+        }
 
-		public static bool HasEditor(this Type type)
-		{
-			return EditorProvider.instance.HasEditor(type);
-		}
+        public static TEditor CreateUninitializedEditor<TEditor>(this Accessor accessor) where TEditor : Editor
+        {
+            return EditorProvider.instance.GetDecorator<TEditor>(accessor);
+        }
 
-		public static bool HasEditor(this Accessor accessor)
-		{
-			return EditorProvider.instance.HasEditor(accessor.definedType);
-		}
-	}
+        public static Editor CreateInitializedEditor(this Accessor accessor)
+        {
+            var editor = CreateUninitializedEditor(accessor);
+            editor.Initialize();
+            return editor;
+        }
+
+        public static TEditor CreateInitializedEditor<TEditor>(this Accessor accessor) where TEditor : Editor
+        {
+            var editor = CreateUninitializedEditor<TEditor>(accessor);
+            editor.Initialize();
+            return editor;
+        }
+
+        public static bool HasEditor(this Type type)
+        {
+            return EditorProvider.instance.HasEditor(type);
+        }
+
+        public static bool HasEditor(this Accessor accessor)
+        {
+            return EditorProvider.instance.HasEditor(accessor.definedType);
+        }
+    }
 }

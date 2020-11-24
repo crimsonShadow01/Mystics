@@ -10,7 +10,8 @@ namespace PlaceholderSoftware.WetStuff
         [NotNull]
         public static Mesh CreateFullscreenQuad()
         {
-            var mesh = new Mesh {
+            var mesh = new Mesh
+            {
                 vertices = new[] {
                     new Vector3(-1, -1, 0),
                     new Vector3(-1, 1, 0),

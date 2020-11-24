@@ -8,210 +8,210 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public static class ScriptUtility
-	{
-		private static HashSet<string> guids;
-		private static Dictionary<string, DateTime> guidTimestamps;
-		private static Dictionary<Type, HashSet<string>> typesToGuids;
-		private static Dictionary<string, HashSet<Type>> guidsToTypes;
-		private static bool analyzed;
+    public static class ScriptUtility
+    {
+        private static HashSet<string> guids;
+        private static Dictionary<string, DateTime> guidTimestamps;
+        private static Dictionary<Type, HashSet<string>> typesToGuids;
+        private static Dictionary<string, HashSet<Type>> guidsToTypes;
+        private static bool analyzed;
 
-		private static void EnsureAnalyzed()
-		{
-			if (!analyzed)
-			{
-				Analyze();
-			}
-		}
+        private static void EnsureAnalyzed()
+        {
+            if (!analyzed)
+            {
+                Analyze();
+            }
+        }
 
-		private static void Analyze()
-		{
-			UnityAPI.AwaitForever(() =>
-			{
-				guids = new HashSet<string>();
-				guidTimestamps = new Dictionary<string, DateTime>();
-				typesToGuids = new Dictionary<Type, HashSet<string>>();
-				guidsToTypes = new Dictionary<string, HashSet<Type>>();
+        private static void Analyze()
+        {
+            UnityAPI.AwaitForever(() =>
+            {
+                guids = new HashSet<string>();
+                guidTimestamps = new Dictionary<string, DateTime>();
+                typesToGuids = new Dictionary<Type, HashSet<string>>();
+                guidsToTypes = new Dictionary<string, HashSet<Type>>();
 
-				foreach (var script in Resources.FindObjectsOfTypeAll<MonoScript>())
-				{
-					if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(script, out var guid, out long localId))
-					{
-						Debug.LogWarning("Failed to get GUID for script: " + script);;
-					}
-					
-					guids.Add(guid);
+                foreach (var script in Resources.FindObjectsOfTypeAll<MonoScript>())
+                {
+                    if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(script, out var guid, out long localId))
+                    {
+                        Debug.LogWarning("Failed to get GUID for script: " + script); ;
+                    }
 
-					var type = script.GetClass();
-					
-					if (!guidsToTypes.ContainsKey(guid))
-					{
-						guidsToTypes.Add(guid, new HashSet<Type>());
-					}
+                    guids.Add(guid);
 
-					if (!guidTimestamps.ContainsKey(guid))
-					{
-						var path = AssetDatabase.GetAssetPath(script);
+                    var type = script.GetClass();
 
-						if (path.StartsWith("Assets"))
-						{
-							path = Path.Combine(Paths.project, path);
-						}
+                    if (!guidsToTypes.ContainsKey(guid))
+                    {
+                        guidsToTypes.Add(guid, new HashSet<Type>());
+                    }
 
-						var timestamp = File.GetLastWriteTimeUtc(path);
-						guidTimestamps.Add(guid, timestamp);
-					}
+                    if (!guidTimestamps.ContainsKey(guid))
+                    {
+                        var path = AssetDatabase.GetAssetPath(script);
 
-					if (type != null)
-					{
-						if (!typesToGuids.ContainsKey(type))
-						{
-							typesToGuids.Add(type, new HashSet<string>());
-						}
+                        if (path.StartsWith("Assets"))
+                        {
+                            path = Path.Combine(Paths.project, path);
+                        }
 
-						typesToGuids[type].Add(guid);
-						guidsToTypes[guid].Add(type);
-					}
-				}
+                        var timestamp = File.GetLastWriteTimeUtc(path);
+                        guidTimestamps.Add(guid, timestamp);
+                    }
 
-				analyzed = true;
-			});
-		}
+                    if (type != null)
+                    {
+                        if (!typesToGuids.ContainsKey(type))
+                        {
+                            typesToGuids.Add(type, new HashSet<string>());
+                        }
 
-		public static string GetScriptGuid(Type type)
-		{
-			return GetScriptGuids(type).SingleOrDefault();
-		}
+                        typesToGuids[type].Add(guid);
+                        guidsToTypes[guid].Add(type);
+                    }
+                }
 
-		public static IEnumerable<string> GetScriptGuids(Type type)
-		{
-			EnsureAnalyzed();
+                analyzed = true;
+            });
+        }
 
-			using (var recursion = Recursion.New(1))
-			{
-				return GetScriptGuids(recursion, type).ToArray(); // No delayed execution for recursion disposal
-			}
-		}
+        public static string GetScriptGuid(Type type)
+        {
+            return GetScriptGuids(type).SingleOrDefault();
+        }
 
-		private static IEnumerable<string> GetScriptGuids(Recursion recursion, Type type)
-		{
-			if (!recursion?.TryEnter(type) ?? false)
-			{
-				yield break;
-			}
+        public static IEnumerable<string> GetScriptGuids(Type type)
+        {
+            EnsureAnalyzed();
 
-			if (typesToGuids.ContainsKey(type))
-			{
-				foreach (var guid in typesToGuids[type])
-				{
-					yield return guid;
-				}
-			}
+            using (var recursion = Recursion.New(1))
+            {
+                return GetScriptGuids(recursion, type).ToArray(); // No delayed execution for recursion disposal
+            }
+        }
 
-			// Recurse inside the type.
-			// For example, a List<Enemy> or an Enemy[] type should return the script GUID for Enemy.
-			if (type.IsGenericType)
-			{
-				foreach (var genericArgument in type.GetGenericArguments())
-				{
-					foreach (var genericGuid in GetScriptGuids(recursion, genericArgument))
-					{
-						yield return genericGuid;
-					}
-				}
-			}
-			else if (type.HasElementType)
-			{
-				foreach (var genericGuid in GetScriptGuids(recursion, type.GetElementType()))
-				{
-					yield return genericGuid;
-				}
-			}
+        private static IEnumerable<string> GetScriptGuids(Recursion recursion, Type type)
+        {
+            if (!recursion?.TryEnter(type) ?? false)
+            {
+                yield break;
+            }
 
-			recursion?.Exit(type);
-		}
+            if (typesToGuids.ContainsKey(type))
+            {
+                foreach (var guid in typesToGuids[type])
+                {
+                    yield return guid;
+                }
+            }
 
-		public static IEnumerable<Type> GetScriptTypes(string guid)
-		{
-			EnsureAnalyzed();
+            // Recurse inside the type.
+            // For example, a List<Enemy> or an Enemy[] type should return the script GUID for Enemy.
+            if (type.IsGenericType)
+            {
+                foreach (var genericArgument in type.GetGenericArguments())
+                {
+                    foreach (var genericGuid in GetScriptGuids(recursion, genericArgument))
+                    {
+                        yield return genericGuid;
+                    }
+                }
+            }
+            else if (type.HasElementType)
+            {
+                foreach (var genericGuid in GetScriptGuids(recursion, type.GetElementType()))
+                {
+                    yield return genericGuid;
+                }
+            }
 
-			if (guidsToTypes.ContainsKey(guid))
-			{
-				return guidsToTypes[guid];
-			}
-			else
-			{
-				return Enumerable.Empty<Type>();
-			}
-		}
-		
-		public static IEnumerable<string> GetAllScriptGuids()
-		{
-			EnsureAnalyzed();
+            recursion?.Exit(type);
+        }
 
-			return guids;
-		}
+        public static IEnumerable<Type> GetScriptTypes(string guid)
+        {
+            EnsureAnalyzed();
 
-		public static IEnumerable<string> GetModifiedScriptGuids(DateTime sinceUtc)
-		{
-			EnsureAnalyzed();
+            if (guidsToTypes.ContainsKey(guid))
+            {
+                return guidsToTypes[guid];
+            }
+            else
+            {
+                return Enumerable.Empty<Type>();
+            }
+        }
 
-			foreach (var guidTimestamp in guidTimestamps)
-			{
-				if (guidTimestamp.Value > sinceUtc)
-				{
-					yield return guidTimestamp.Key;
-				}
-			}
-		}
-		
-		// The fileID for a loose script imported directly from a .cs file,
-		// which is the class ID for MonoScript multiplied by 100,000.
-		public const int CsFileID = 11500000;
+        public static IEnumerable<string> GetAllScriptGuids()
+        {
+            EnsureAnalyzed();
 
-		public static int GetFileID(Type type)
-		{
-			var guid = GetScriptGuid(type);
+            return guids;
+        }
 
-			var assetExtension = Path.GetExtension(AssetDatabase.GUIDToAssetPath(guid));
+        public static IEnumerable<string> GetModifiedScriptGuids(DateTime sinceUtc)
+        {
+            EnsureAnalyzed();
 
-			switch (assetExtension.ToLowerInvariant())
-			{
-				case ".cs": return CsFileID;
-				case ".dll": return GetDllFileID(type);
-				default: throw new NotSupportedException($"Unknown type declarer asset extension: '{assetExtension}'.");
-			}
-		}
+            foreach (var guidTimestamp in guidTimestamps)
+            {
+                if (guidTimestamp.Value > sinceUtc)
+                {
+                    yield return guidTimestamp.Key;
+                }
+            }
+        }
 
-		public static int GetDllFileID(Type type)
-		{
-			Ensure.That(nameof(type)).IsNotNull(type);
+        // The fileID for a loose script imported directly from a .cs file,
+        // which is the class ID for MonoScript multiplied by 100,000.
+        public const int CsFileID = 11500000;
 
-			return GetDllFileID(type.Namespace, type.Name);
-		}
+        public static int GetFileID(Type type)
+        {
+            var guid = GetScriptGuid(type);
 
-		public static int GetDllFileID(string @namespace, string name)
-		{
-			// Gets the fileID of a given type inside a DLL asset.
-			// "Given a type t, the fileID is equal to the first four bytes of the MD4 of the string `"s\0\0\0" + t.Namespace + t.Name' as a little endian 32-byte integer."
-			// https://forum.unity.com/threads/yaml-fileid-hash-function-for-dll-scripts.252075/#post-1695479
+            var assetExtension = Path.GetExtension(AssetDatabase.GUIDToAssetPath(guid));
 
-			string toBeHashed = "s\0\0\0" + @namespace + name;
+            switch (assetExtension.ToLowerInvariant())
+            {
+                case ".cs": return CsFileID;
+                case ".dll": return GetDllFileID(type);
+                default: throw new NotSupportedException($"Unknown type declarer asset extension: '{assetExtension}'.");
+            }
+        }
 
-			using (var hash = new MD4())
-			{
-				byte[] hashed = hash.ComputeHash(Encoding.UTF8.GetBytes(toBeHashed));
+        public static int GetDllFileID(Type type)
+        {
+            Ensure.That(nameof(type)).IsNotNull(type);
 
-				int result = 0;
+            return GetDllFileID(type.Namespace, type.Name);
+        }
 
-				for (int i = 3; i >= 0; --i)
-				{
-					result <<= 8;
-					result |= hashed[i];
-				}
+        public static int GetDllFileID(string @namespace, string name)
+        {
+            // Gets the fileID of a given type inside a DLL asset.
+            // "Given a type t, the fileID is equal to the first four bytes of the MD4 of the string `"s\0\0\0" + t.Namespace + t.Name' as a little endian 32-byte integer."
+            // https://forum.unity.com/threads/yaml-fileid-hash-function-for-dll-scripts.252075/#post-1695479
 
-				return result;
-			}
-		}
-	}
+            string toBeHashed = "s\0\0\0" + @namespace + name;
+
+            using (var hash = new MD4())
+            {
+                byte[] hashed = hash.ComputeHash(Encoding.UTF8.GetBytes(toBeHashed));
+
+                int result = 0;
+
+                for (int i = 3; i >= 0; --i)
+                {
+                    result <<= 8;
+                    result |= hashed[i];
+                }
+
+                return result;
+            }
+        }
+    }
 }

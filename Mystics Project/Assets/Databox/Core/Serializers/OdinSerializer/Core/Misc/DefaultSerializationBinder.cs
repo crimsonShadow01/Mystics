@@ -275,7 +275,7 @@ namespace Databox.OdinSerializer
             // Let's try it the traditional .NET way
             type = Type.GetType(typeName);
             if (type != null) return type;
-            
+
             // Generic/array type name handling
             type = ParseGenericAndOrArrayType(typeName, debugContext);
             if (type != null) return type;
@@ -345,7 +345,7 @@ namespace Databox.OdinSerializer
 
             //type = AssemblyUtilities.GetTypeByCachedFullName(typeStr);
             //if (type != null) return type;
-            
+
             return null;
         }
 
@@ -437,7 +437,7 @@ namespace Databox.OdinSerializer
 
             return type;
         }
-        
+
         private static bool TryParseGenericAndOrArrayTypeName(string typeName, out string actualTypeName, out bool isGeneric, out List<string> genericArgNames, out bool isArray, out int arrayRank)
         {
             isGeneric = false;
@@ -508,7 +508,7 @@ namespace Databox.OdinSerializer
                     break;
                 }
             }
-            
+
             return isArray || isGeneric;
         }
 

@@ -1,21 +1,20 @@
 using System.Collections.Generic;
-using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public interface IToolbar : IReadOnlyList<ITool>
-	{
-		ITool mainTool { get; }
+    public interface IToolbar : IReadOnlyList<ITool>
+    {
+        ITool mainTool { get; }
 
-		void Initialize();
+        void Initialize();
 
-		void Update();
+        void Update();
 
-		bool isValid { get; }
+        bool isValid { get; }
 
-		new NoAllocEnumerator<ITool> GetEnumerator();
-	}
+        new NoAllocEnumerator<ITool> GetEnumerator();
+    }
 }

@@ -1,4 +1,4 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public interface ISingleton { }
+    public interface ISingleton { }
 }

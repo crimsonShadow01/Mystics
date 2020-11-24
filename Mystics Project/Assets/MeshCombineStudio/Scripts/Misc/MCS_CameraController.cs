@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 
 namespace MeshCombineStudio
 {
-    public class MCS_CameraController : MonoBehaviour {
+    public class MCS_CameraController : MonoBehaviour
+    {
 
         public float speed = 10;
         public float mouseMoveSpeed = 1;

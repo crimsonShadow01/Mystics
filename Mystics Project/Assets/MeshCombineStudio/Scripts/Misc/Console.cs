@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace MeshCombineStudio
@@ -26,7 +25,7 @@ namespace MeshCombineStudio
         bool showUnityLog = true, showInputLog = true;
         MeshCombiner[] meshCombiners;
         MeshCombiner selectedMeshCombiner;
-        
+
         void Awake()
         {
             instance = this;
@@ -50,7 +49,7 @@ namespace MeshCombineStudio
             if (meshCombiners != null && meshCombiners.Length > 0) SelectMeshCombiner(meshCombiners[0].name);
             Log("");
             Log("Type '?' to show commands");
-            
+
             // ExecuteCommand("?");
         }
 
@@ -65,12 +64,12 @@ namespace MeshCombineStudio
             if (selectedMeshCombiner != null)
             {
                 Log("Selected MCS -> " + selectedMeshCombiner.name);
-            } 
+            }
         }
 
         void ReportMeshCombiner(MeshCombiner meshCombiner, bool foundText = false)
         {
-            Log((foundText ? "Found MCS -> " : "") + meshCombiner.name + " (" + (meshCombiner.combined ? "*color-green#Combined" : "*color-blue#Uncombined" ) + ")" + " -> Cell Size " + meshCombiner.cellSize + (meshCombiner.searchOptions.useMaxBoundsFactor ? " | Max Bounds Factor " + meshCombiner.searchOptions.maxBoundsFactor : "")
+            Log((foundText ? "Found MCS -> " : "") + meshCombiner.name + " (" + (meshCombiner.combined ? "*color-green#Combined" : "*color-blue#Uncombined") + ")" + " -> Cell Size " + meshCombiner.cellSize + (meshCombiner.searchOptions.useMaxBoundsFactor ? " | Max Bounds Factor " + meshCombiner.searchOptions.maxBoundsFactor : "")
                     + (meshCombiner.searchOptions.useVertexInputLimit ? " | Vertex Input Limit " + (meshCombiner.searchOptions.useVertexInputLimit ? meshCombiner.searchOptions.vertexInputLimit : 65534) : ""),
                     0, null, meshCombiner);
         }
@@ -84,7 +83,7 @@ namespace MeshCombineStudio
                 MeshCombiner meshCombiner = meshCombiners[i];
                 if (meshCombiner.name == name)
                 {
-                    Log("Selected MCS -> " + meshCombiner.name + " (" + (meshCombiner.combined ? "*color-green#Combined" : "*color-blue#Uncombined") + ")", 0, null, meshCombiner); 
+                    Log("Selected MCS -> " + meshCombiner.name + " (" + (meshCombiner.combined ? "*color-green#Combined" : "*color-blue#Uncombined") + ")", 0, null, meshCombiner);
                     selectedMeshCombiner = meshCombiner; return 2;
                 }
             }
@@ -141,7 +140,7 @@ namespace MeshCombineStudio
                 setFocus = true;
             }
         }
-        
+
         void ExecuteCommand(string cmd)
         {
             logs.Add(new LogEntry(cmd, "", LogType.Log, false, 1));

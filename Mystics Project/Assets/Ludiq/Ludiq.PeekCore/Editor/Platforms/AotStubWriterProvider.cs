@@ -1,14 +1,14 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public class AotStubWriterProvider : SingleDecoratorProvider<object, AotStubWriter, RegisterAotStubWriterAttribute>
-	{
-		static AotStubWriterProvider()
-		{
-			instance = new AotStubWriterProvider();
-		}
+    public class AotStubWriterProvider : SingleDecoratorProvider<object, AotStubWriter, RegisterAotStubWriterAttribute>
+    {
+        static AotStubWriterProvider()
+        {
+            instance = new AotStubWriterProvider();
+        }
 
-		public static AotStubWriterProvider instance { get; }
+        public static AotStubWriterProvider instance { get; }
 
-		protected override bool cache => true;
-	}
+        protected override bool cache => true;
+    }
 }

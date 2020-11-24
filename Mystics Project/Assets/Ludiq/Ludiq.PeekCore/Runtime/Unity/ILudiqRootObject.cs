@@ -1,15 +1,15 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public interface ILudiqRootObject
-	{
-		void ShowData();
+    public interface ILudiqRootObject
+    {
+        void ShowData();
 
-		void OnBeforeSerialize();
+        void OnBeforeSerialize();
 
-		void OnAfterSerialize();
+        void OnAfterSerialize();
 
-		void OnBeforeDeserialize();
+        void OnBeforeDeserialize();
 
-		void OnAfterDeserialize();
-	}
+        void OnAfterDeserialize();
+    }
 }

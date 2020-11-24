@@ -6,323 +6,323 @@ using System.Collections.Generic;
 
 namespace Ludiq.PeekCore
 {
-	public class MergedKeyedCollection<TKey, TItem> : IMergedCollection<TItem>, IKeyedCollection<TKey, TItem>
-	{
-		public MergedKeyedCollection() : base()
-		{
-			collections = new Dictionary<Type, IKeyedCollection<TKey, TItem>>();
-			collectionsLookup = new Dictionary<Type, IKeyedCollection<TKey, TItem>>();
-		}
+    public class MergedKeyedCollection<TKey, TItem> : IMergedCollection<TItem>, IKeyedCollection<TKey, TItem>
+    {
+        public MergedKeyedCollection() : base()
+        {
+            collections = new Dictionary<Type, IKeyedCollection<TKey, TItem>>();
+            collectionsLookup = new Dictionary<Type, IKeyedCollection<TKey, TItem>>();
+        }
 
-		protected readonly Dictionary<Type, IKeyedCollection<TKey, TItem>> collections;
+        protected readonly Dictionary<Type, IKeyedCollection<TKey, TItem>> collections;
 
-		// Used for performance optimization when finding the right collection for a type
-		protected readonly Dictionary<Type, IKeyedCollection<TKey, TItem>> collectionsLookup;
+        // Used for performance optimization when finding the right collection for a type
+        protected readonly Dictionary<Type, IKeyedCollection<TKey, TItem>> collectionsLookup;
 
-		public TItem this[int index] => throw new NotSupportedException();
-		
-		public TItem this[TKey key]
-		{
-			get
-			{
-				if (key == null)
-				{
-					throw new ArgumentNullException(nameof(key));
-				}
+        public TItem this[int index] => throw new NotSupportedException();
 
-				foreach (var collectionByType in collections)
-				{
-					if (collectionByType.Value.TryGetValue(key, out var item))
-					{
-						return item;
-					}
-				}
+        public TItem this[TKey key]
+        {
+            get
+            {
+                if (key == null)
+                {
+                    throw new ArgumentNullException(nameof(key));
+                }
 
-				throw new KeyNotFoundException();
-			}
-		}
+                foreach (var collectionByType in collections)
+                {
+                    if (collectionByType.Value.TryGetValue(key, out var item))
+                    {
+                        return item;
+                    }
+                }
 
-		public int Count
-		{
-			get
-			{
-				var count = 0;
+                throw new KeyNotFoundException();
+            }
+        }
 
-				foreach (var collectionByType in collections)
-				{
-					count += collectionByType.Value.Count;
-				}
+        public int Count
+        {
+            get
+            {
+                var count = 0;
 
-				return count;
-			}
-		}
+                foreach (var collectionByType in collections)
+                {
+                    count += collectionByType.Value.Count;
+                }
 
-		public bool IsReadOnly => false;
+                return count;
+            }
+        }
 
-		public bool Includes<TSubItem>() where TSubItem : TItem
-		{
-			return Includes(typeof(TSubItem));
-		}
+        public bool IsReadOnly => false;
 
-		public bool Includes(Type elementType)
-		{
-			return GetCollectionForType(elementType, false) != null;
-		}
+        public bool Includes<TSubItem>() where TSubItem : TItem
+        {
+            return Includes(typeof(TSubItem));
+        }
 
-		public IKeyedCollection<TKey, TSubItem> ForType<TSubItem>() where TSubItem : TItem
-		{
-			return ((VariantKeyedCollection<TItem, TSubItem, TKey>)GetCollectionForType(typeof(TSubItem))).implementation;
-		}
+        public bool Includes(Type elementType)
+        {
+            return GetCollectionForType(elementType, false) != null;
+        }
 
-		public virtual void Include<TSubItem>(IKeyedCollection<TKey, TSubItem> collection) where TSubItem : TItem
-		{
-			var type = typeof(TSubItem);
-			var variantCollection = new VariantKeyedCollection<TItem, TSubItem, TKey>(collection);
-			collections.Add(type, variantCollection);
-			collectionsLookup.Add(type, variantCollection);
-		}
+        public IKeyedCollection<TKey, TSubItem> ForType<TSubItem>() where TSubItem : TItem
+        {
+            return ((VariantKeyedCollection<TItem, TSubItem, TKey>)GetCollectionForType(typeof(TSubItem))).implementation;
+        }
 
-		protected IKeyedCollection<TKey, TItem> GetCollectionForItem(TItem item)
-		{
-			Ensure.That(nameof(item)).IsNotNull(item);
+        public virtual void Include<TSubItem>(IKeyedCollection<TKey, TSubItem> collection) where TSubItem : TItem
+        {
+            var type = typeof(TSubItem);
+            var variantCollection = new VariantKeyedCollection<TItem, TSubItem, TKey>(collection);
+            collections.Add(type, variantCollection);
+            collectionsLookup.Add(type, variantCollection);
+        }
 
-			return GetCollectionForType(item.GetType());
-		}
+        protected IKeyedCollection<TKey, TItem> GetCollectionForItem(TItem item)
+        {
+            Ensure.That(nameof(item)).IsNotNull(item);
 
-		protected IKeyedCollection<TKey, TItem> GetCollectionForType(Type type, bool throwOnFail = true)
-		{
-			Ensure.That(nameof(type)).IsNotNull(type);
+            return GetCollectionForType(item.GetType());
+        }
 
-			if (collectionsLookup.TryGetValue(type, out var collection))
-			{
-				return collection;
-			}
+        protected IKeyedCollection<TKey, TItem> GetCollectionForType(Type type, bool throwOnFail = true)
+        {
+            Ensure.That(nameof(type)).IsNotNull(type);
 
-			foreach (var collectionByType in collections)
-			{
-				if (collectionByType.Key.IsAssignableFrom(type))
-				{
-					collection = collectionByType.Value;
-					collectionsLookup.Add(type, collection);
-					return collection;
-				}
-			}
+            if (collectionsLookup.TryGetValue(type, out var collection))
+            {
+                return collection;
+            }
 
-			if (throwOnFail)
-			{
-				throw new InvalidOperationException($"No sub-collection available for type '{type}'.");
-			}
-			else
-			{
-				return null;
-			}
-		}
+            foreach (var collectionByType in collections)
+            {
+                if (collectionByType.Key.IsAssignableFrom(type))
+                {
+                    collection = collectionByType.Value;
+                    collectionsLookup.Add(type, collection);
+                    return collection;
+                }
+            }
 
-		protected IKeyedCollection<TKey, TItem> GetCollectionForKey(TKey key, bool throwOnFail = true)
-		{
-			// Optim: avoid boxing here. 
-			// Ensure.That(nameof(key)).IsNotNull(key);
+            if (throwOnFail)
+            {
+                throw new InvalidOperationException($"No sub-collection available for type '{type}'.");
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-			foreach (var collectionsByType in collections)
-			{
-				if (collectionsByType.Value.Contains(key))
-				{
-					return collectionsByType.Value;
-				}
-			}
+        protected IKeyedCollection<TKey, TItem> GetCollectionForKey(TKey key, bool throwOnFail = true)
+        {
+            // Optim: avoid boxing here. 
+            // Ensure.That(nameof(key)).IsNotNull(key);
 
-			if (throwOnFail)
-			{
-				throw new InvalidOperationException($"No sub-collection available for key '{key}'.");
-			}
-			else
-			{
-				return null;
-			}
-		}
+            foreach (var collectionsByType in collections)
+            {
+                if (collectionsByType.Value.Contains(key))
+                {
+                    return collectionsByType.Value;
+                }
+            }
 
-		public bool TryGetValue(TKey key, out TItem value)
-		{
-			var collection = GetCollectionForKey(key, false);
+            if (throwOnFail)
+            {
+                throw new InvalidOperationException($"No sub-collection available for key '{key}'.");
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-			value = default(TItem);
+        public bool TryGetValue(TKey key, out TItem value)
+        {
+            var collection = GetCollectionForKey(key, false);
 
-			return collection != null && collection.TryGetValue(key, out value);
-		}
+            value = default(TItem);
 
-		public virtual void Add(TItem item)
-		{
-			GetCollectionForItem(item).Add(item);
-		}
+            return collection != null && collection.TryGetValue(key, out value);
+        }
 
-		public virtual void Clear()
-		{
-			foreach (var collection in collections.Values)
-			{
-				collection.Clear();
-			}
-		}
+        public virtual void Add(TItem item)
+        {
+            GetCollectionForItem(item).Add(item);
+        }
 
-		public bool Contains(TItem item)
-		{
-			return GetCollectionForItem(item).Contains(item);
-		}
+        public virtual void Clear()
+        {
+            foreach (var collection in collections.Values)
+            {
+                collection.Clear();
+            }
+        }
 
-		public bool Remove(TItem item)
-		{
-			return GetCollectionForItem(item).Remove(item);
-		}
+        public bool Contains(TItem item)
+        {
+            return GetCollectionForItem(item).Contains(item);
+        }
 
-		public void CopyTo(TItem[] array, int arrayIndex)
-		{
-			if (array == null)
-			{
-				throw new ArgumentNullException(nameof(array));
-			}
+        public bool Remove(TItem item)
+        {
+            return GetCollectionForItem(item).Remove(item);
+        }
 
-			if (arrayIndex < 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-			}
+        public void CopyTo(TItem[] array, int arrayIndex)
+        {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
 
-			if (array.Length - arrayIndex < Count)
-			{
-				throw new ArgumentException();
-			}
+            if (arrayIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            }
 
-			var i = 0;
+            if (array.Length - arrayIndex < Count)
+            {
+                throw new ArgumentException();
+            }
 
-			foreach (var collection in collections.Values)
-			{
-				collection.CopyTo(array, arrayIndex + i);
-				i += collection.Count;
-			}
-		}
+            var i = 0;
 
-		public bool Contains(TKey key)
-		{
-			return GetCollectionForKey(key, false) != null;
-		}
+            foreach (var collection in collections.Values)
+            {
+                collection.CopyTo(array, arrayIndex + i);
+                i += collection.Count;
+            }
+        }
 
-		public bool Remove(TKey key)
-		{
-			return GetCollectionForKey(key).Remove(key);
-		}
+        public bool Contains(TKey key)
+        {
+            return GetCollectionForKey(key, false) != null;
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+        public bool Remove(TKey key)
+        {
+            return GetCollectionForKey(key).Remove(key);
+        }
 
-		IEnumerator<TItem> IEnumerable<TItem>.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-		public Enumerator GetEnumerator()
-		{
-			return new Enumerator(this);
-		}
+        IEnumerator<TItem> IEnumerable<TItem>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-		public struct Enumerator : IEnumerator<TItem>
-		{
-			private Dictionary<Type, IKeyedCollection<TKey, TItem>>.Enumerator collectionsEnumerator;
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
 
-			private TItem currentItem;
+        public struct Enumerator : IEnumerator<TItem>
+        {
+            private Dictionary<Type, IKeyedCollection<TKey, TItem>>.Enumerator collectionsEnumerator;
 
-			private IKeyedCollection<TKey, TItem> currentCollection;
+            private TItem currentItem;
 
-			private int indexInCurrentCollection;
+            private IKeyedCollection<TKey, TItem> currentCollection;
 
-			private bool exceeded;
+            private int indexInCurrentCollection;
 
-			public Enumerator(MergedKeyedCollection<TKey, TItem> merged) : this()
-			{
-				collectionsEnumerator = merged.collections.GetEnumerator();
-			}
+            private bool exceeded;
 
-			public void Dispose() { }
+            public Enumerator(MergedKeyedCollection<TKey, TItem> merged) : this()
+            {
+                collectionsEnumerator = merged.collections.GetEnumerator();
+            }
 
-			public bool MoveNext()
-			{
-				// We just started, so we're not in a collection yet
-				if (currentCollection == null)
-				{
-					// Try to find the first collection
-					if (collectionsEnumerator.MoveNext())
-					{
-						// There is at least a collection, start with this one
-						currentCollection = collectionsEnumerator.Current.Value;
+            public void Dispose() { }
 
-						if (currentCollection == null)
-						{
-							throw new InvalidOperationException("Merged sub collection is null.");
-						}
-					}
-					else
-					{
-						// There is no collection at all, stop
-						currentItem = default(TItem);
-						exceeded = true;
-						return false;
-					}
-				}
+            public bool MoveNext()
+            {
+                // We just started, so we're not in a collection yet
+                if (currentCollection == null)
+                {
+                    // Try to find the first collection
+                    if (collectionsEnumerator.MoveNext())
+                    {
+                        // There is at least a collection, start with this one
+                        currentCollection = collectionsEnumerator.Current.Value;
 
-				// Check if we're within the current collection
-				if (indexInCurrentCollection < currentCollection.Count)
-				{
-					// We are, return this element and move to the next
-					currentItem = currentCollection[indexInCurrentCollection];
-					indexInCurrentCollection++;
-					return true;
-				}
+                        if (currentCollection == null)
+                        {
+                            throw new InvalidOperationException("Merged sub collection is null.");
+                        }
+                    }
+                    else
+                    {
+                        // There is no collection at all, stop
+                        currentItem = default(TItem);
+                        exceeded = true;
+                        return false;
+                    }
+                }
 
-				// We're beyond the current collection, but there may be more,
-				// and because there may be many empty collections, we need to check
-				// them all until we find an element, not just the next one
-				while (collectionsEnumerator.MoveNext())
-				{
-					currentCollection = collectionsEnumerator.Current.Value;
-					indexInCurrentCollection = 0;
+                // Check if we're within the current collection
+                if (indexInCurrentCollection < currentCollection.Count)
+                {
+                    // We are, return this element and move to the next
+                    currentItem = currentCollection[indexInCurrentCollection];
+                    indexInCurrentCollection++;
+                    return true;
+                }
 
-					if (currentCollection == null)
-					{
-						throw new InvalidOperationException("Merged sub collection is null.");
-					}
+                // We're beyond the current collection, but there may be more,
+                // and because there may be many empty collections, we need to check
+                // them all until we find an element, not just the next one
+                while (collectionsEnumerator.MoveNext())
+                {
+                    currentCollection = collectionsEnumerator.Current.Value;
+                    indexInCurrentCollection = 0;
 
-					if (indexInCurrentCollection < currentCollection.Count)
-					{
-						currentItem = currentCollection[indexInCurrentCollection];
-						indexInCurrentCollection++;
-						return true;
-					}
-				}
+                    if (currentCollection == null)
+                    {
+                        throw new InvalidOperationException("Merged sub collection is null.");
+                    }
 
-				// We're beyond all collections, stop
-				currentItem = default(TItem);
-				exceeded = true;
-				return false;
-			}
+                    if (indexInCurrentCollection < currentCollection.Count)
+                    {
+                        currentItem = currentCollection[indexInCurrentCollection];
+                        indexInCurrentCollection++;
+                        return true;
+                    }
+                }
 
-			public TItem Current => currentItem;
+                // We're beyond all collections, stop
+                currentItem = default(TItem);
+                exceeded = true;
+                return false;
+            }
 
-			object IEnumerator.Current
-			{
-				get
-				{
-					if (exceeded)
-					{
-						throw new InvalidOperationException();
-					}
+            public TItem Current => currentItem;
 
-					return Current;
-				}
-			}
+            object IEnumerator.Current
+            {
+                get
+                {
+                    if (exceeded)
+                    {
+                        throw new InvalidOperationException();
+                    }
 
-			void IEnumerator.Reset()
-			{
-				throw new InvalidOperationException();
-			}
-		}
-	}
+                    return Current;
+                }
+            }
+
+            void IEnumerator.Reset()
+            {
+                throw new InvalidOperationException();
+            }
+        }
+    }
 }

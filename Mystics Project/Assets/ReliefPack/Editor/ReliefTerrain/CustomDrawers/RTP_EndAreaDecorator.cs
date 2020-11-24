@@ -1,8 +1,5 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using System.Collections;
-using System;
-using System.Reflection;
 
 public class RTP_EndAreaDecorator : MaterialPropertyDrawer
 {
@@ -14,7 +11,7 @@ public class RTP_EndAreaDecorator : MaterialPropertyDrawer
     }
     public RTP_EndAreaDecorator(string indent) : base()
     {
-        this.indent = indent=="true";
+        this.indent = indent == "true";
     }
 
     override public void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)

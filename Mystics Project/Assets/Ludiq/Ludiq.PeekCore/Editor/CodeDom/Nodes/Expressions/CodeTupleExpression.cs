@@ -10,29 +10,29 @@ namespace Ludiq.PeekCore.CodeDom
     {
         public CodeTupleExpression(IEnumerable<CodeExpression> items)
         {
-			Ensure.That(nameof(items)).IsNotNull(items);
+            Ensure.That(nameof(items)).IsNotNull(items);
 
             Items.AddRange(items);
         }
 
         public List<CodeExpression> Items { get; } = new List<CodeExpression>();
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				foreach (var child in Items) yield return child;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                foreach (var child in Items) yield return child;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
+        protected override void GenerateInner(CodeGenerator generator)
+        {
             generator.Write(TokenType.Punctuation, '(');
             Items.GenerateCommaSeparated(generator);
             generator.Write(TokenType.Punctuation, ')');
-		}
-	}
+        }
+    }
 }

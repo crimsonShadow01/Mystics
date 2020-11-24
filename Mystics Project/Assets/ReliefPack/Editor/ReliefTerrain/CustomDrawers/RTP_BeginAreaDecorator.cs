@@ -1,17 +1,16 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using System.Collections;
-using System;
-using System.Reflection;
 
-public class RTP_BeginAreaDrawer : MaterialPropertyDrawer {
+public class RTP_BeginAreaDrawer : MaterialPropertyDrawer
+{
     string type;
     bool indent;
-    int indentVal=20;
+    int indentVal = 20;
 
-    public RTP_BeginAreaDrawer(string type, string indent) {
+    public RTP_BeginAreaDrawer(string type, string indent)
+    {
         this.type = type;
-        this.indent = indent=="true";
+        this.indent = indent == "true";
     }
     public RTP_BeginAreaDrawer(string type, string indent, float indentVal)
     {

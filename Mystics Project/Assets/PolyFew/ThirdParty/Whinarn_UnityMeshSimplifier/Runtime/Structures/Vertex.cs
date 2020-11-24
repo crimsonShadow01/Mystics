@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
 namespace UnityMeshSimplifier
 {
 
-    
+
     public class Vertex : IEquatable<Vertex>
     {
         public int index;
@@ -88,5 +88,5 @@ namespace UnityMeshSimplifier
         }
 
     }
-    
+
 }

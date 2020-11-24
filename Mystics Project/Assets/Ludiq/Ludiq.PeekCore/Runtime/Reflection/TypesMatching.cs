@@ -1,9 +1,9 @@
 namespace Ludiq.PeekCore
 {
-	public enum TypesMatching
-	{
-		ConvertibleToAny,
-		AssignableToAll,
-		Any
-	}
+    public enum TypesMatching
+    {
+        ConvertibleToAny,
+        AssignableToAll,
+        Any
+    }
 }

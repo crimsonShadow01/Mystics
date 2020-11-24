@@ -6,131 +6,131 @@ using System.Runtime.InteropServices;
 
 namespace Ludiq.PeekCore
 {
-	public static class NativeUtility
-	{
-		[DllImport("kernel32", SetLastError = true)]
-		private static extern bool FreeLibrary(IntPtr handle);
+    public static class NativeUtility
+    {
+        [DllImport("kernel32", SetLastError = true)]
+        private static extern bool FreeLibrary(IntPtr handle);
 
-		[DllImport("kernel32", SetLastError = true)]
-		private static extern IntPtr LoadLibrary(string name);
+        [DllImport("kernel32", SetLastError = true)]
+        private static extern IntPtr LoadLibrary(string name);
 
-		private static readonly Dictionary<string, int> usageCount = new Dictionary<string, int>();
+        private static readonly Dictionary<string, int> usageCount = new Dictionary<string, int>();
 
-		private static readonly object @lock = new object();
-		
-		// See: https://stackoverflow.com/questions/41450065/c-sharp-pinvoke-and-reloading-a-dll
-		// https://stackoverflow.com/questions/28728891/have-to-do-freelibrary-2-times-although-i-have-done-loadlibrary-only-1-time-als
-		private static bool supported => false; // Should work on Windows, but too buggy at the moment.
+        private static readonly object @lock = new object();
 
-		public static void LoadModule(string name)
-		{
-			if (!supported)
-			{
-				return;
-			}
+        // See: https://stackoverflow.com/questions/41450065/c-sharp-pinvoke-and-reloading-a-dll
+        // https://stackoverflow.com/questions/28728891/have-to-do-freelibrary-2-times-although-i-have-done-loadlibrary-only-1-time-als
+        private static bool supported => false; // Should work on Windows, but too buggy at the moment.
 
-			lock (@lock)
-			{
-				if (!usageCount.ContainsKey(name))
-				{
-					usageCount.Add(name, 0);
-				}
+        public static void LoadModule(string name)
+        {
+            if (!supported)
+            {
+                return;
+            }
 
-				usageCount[name]++;
+            lock (@lock)
+            {
+                if (!usageCount.ContainsKey(name))
+                {
+                    usageCount.Add(name, 0);
+                }
 
-				foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
-				{
-					if (module.ModuleName == name)
-					{
-						UnityEngine.Debug.Log($"Module {name} is already loaded, skipping.\n");
+                usageCount[name]++;
 
-						return;
-					}
-				}
+                foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
+                {
+                    if (module.ModuleName == name)
+                    {
+                        UnityEngine.Debug.Log($"Module {name} is already loaded, skipping.\n");
 
-				UnityEngine.Debug.Log($"Loading module {name}.\n");
+                        return;
+                    }
+                }
 
-				foreach (var path in Directory.GetFiles(Paths.assets, name, SearchOption.AllDirectories))
-				{
-					UnityEngine.Debug.Log(path);
+                UnityEngine.Debug.Log($"Loading module {name}.\n");
 
-					if (LoadLibrary(path) != IntPtr.Zero)
-					{
-						return;
-					}
-				}
+                foreach (var path in Directory.GetFiles(Paths.assets, name, SearchOption.AllDirectories))
+                {
+                    UnityEngine.Debug.Log(path);
 
-				throw new FileNotFoundException($"Failed to load native module '{name}'.", name);
-			}
-		}
+                    if (LoadLibrary(path) != IntPtr.Zero)
+                    {
+                        return;
+                    }
+                }
 
-		public static void UnloadModule(string name)
-		{
-			if (!supported)
-			{
-				return;
-			}
+                throw new FileNotFoundException($"Failed to load native module '{name}'.", name);
+            }
+        }
 
-			lock (@lock)
-			{
-				if (usageCount.ContainsKey(name))
-				{
-					usageCount[name]--;
+        public static void UnloadModule(string name)
+        {
+            if (!supported)
+            {
+                return;
+            }
 
-					if (usageCount[name] == 0)
-					{
-						usageCount.Remove(name);
-					}
-				}
+            lock (@lock)
+            {
+                if (usageCount.ContainsKey(name))
+                {
+                    usageCount[name]--;
 
-				if (usageCount.ContainsKey(name))
-				{
-					// Module is still in use
-					return;
-				}
+                    if (usageCount[name] == 0)
+                    {
+                        usageCount.Remove(name);
+                    }
+                }
 
-				var unloaded = false;
+                if (usageCount.ContainsKey(name))
+                {
+                    // Module is still in use
+                    return;
+                }
 
-				foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
-				{
-					if (module.ModuleName == name)
-					{
-						UnityEngine.Debug.Log($"Unloading module {name}.\n");
+                var unloaded = false;
 
-						do { }
-						while (FreeLibrary(module.BaseAddress));
+                foreach (ProcessModule module in Process.GetCurrentProcess().Modules)
+                {
+                    if (module.ModuleName == name)
+                    {
+                        UnityEngine.Debug.Log($"Unloading module {name}.\n");
 
-						unloaded = true;
-					}
-				}
+                        do { }
+                        while (FreeLibrary(module.BaseAddress));
 
-				if (!unloaded)
-				{
-					UnityEngine.Debug.Log($"Module {name} was not found to unload.\n");
-				}
-			}
-		}
+                        unloaded = true;
+                    }
+                }
 
-		public static ModuleScope Module(string name)
-		{
-			return new ModuleScope(name);
-		}
+                if (!unloaded)
+                {
+                    UnityEngine.Debug.Log($"Module {name} was not found to unload.\n");
+                }
+            }
+        }
 
-		public struct ModuleScope : IDisposable
-		{
-			private readonly string name;
+        public static ModuleScope Module(string name)
+        {
+            return new ModuleScope(name);
+        }
 
-			public ModuleScope(string name)
-			{
-				this.name = name;
+        public struct ModuleScope : IDisposable
+        {
+            private readonly string name;
 
-				LoadModule(name);
-			}
+            public ModuleScope(string name)
+            {
+                this.name = name;
 
-			public void Dispose()
-			{
-				UnloadModule(name);
-			}
-		}
-	}
+                LoadModule(name);
+            }
+
+            public void Dispose()
+            {
+                UnloadModule(name);
+            }
+        }
+    }
 }

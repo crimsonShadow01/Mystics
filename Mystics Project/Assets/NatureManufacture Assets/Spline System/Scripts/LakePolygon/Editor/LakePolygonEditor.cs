@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
-using System.IO;
 using UnityEngine.Rendering;
 
 #if VEGETATION_STUDIO_PRO
@@ -137,12 +136,12 @@ public class LakePolygonEditor : Editor
 "Add point between existing points - SHIFT + Left Button Click \n" +
 "Remove point - CTRL + SHIFT + Left Button Click", MessageType.Info);
             EditorGUILayout.Space();
-            
+
 
             lakePolygon.currentProfile = (LakePolygonProfile)EditorGUILayout.ObjectField("Lake profile", lakePolygon.currentProfile, typeof(LakePolygonProfile), false);
 
 
-           
+
 
             if (GUILayout.Button("Create profile from settings"))
             {

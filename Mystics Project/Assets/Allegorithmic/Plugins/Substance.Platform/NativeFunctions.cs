@@ -7,12 +7,9 @@
 #endif
 
 using System;
-using UnityEngine;
-using System.Runtime.InteropServices;
-
 using System.IO;
-using System.Reflection;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using UnityEngine;
 
 namespace Substance.Platform
 {
@@ -271,9 +268,9 @@ namespace Substance.Platform
         }
 #endif // IMPORT_DYNAMIC
 
-                            // ======================================================================
+        // ======================================================================
 #if IMPORT_DYNAMIC
-            public delegate IntPtr cppHelloDelegate();
+        public delegate IntPtr cppHelloDelegate();
         public static IntPtr cppHello()
         {
             string myName = System.Reflection.MethodBase.GetCurrentMethod().Name;

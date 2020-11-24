@@ -1,115 +1,114 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public sealed class ToolbarControlProvider
-	{
-		private readonly Dictionary<Key, ToolbarControl> controlsByKeys = new Dictionary<Key, ToolbarControl>();
+    public sealed class ToolbarControlProvider
+    {
+        private readonly Dictionary<Key, ToolbarControl> controlsByKeys = new Dictionary<Key, ToolbarControl>();
 
-		public ToolbarWindow window { get; }
+        public ToolbarWindow window { get; }
 
-		public event Action cleaningUp;
+        public event Action cleaningUp;
 
-		public ToolbarControlProvider(ToolbarWindow window)
-		{
-			this.window = window;
+        public ToolbarControlProvider(ToolbarWindow window)
+        {
+            this.window = window;
 
-			AssemblyReloadEvents.beforeAssemblyReload += Cleanup;
-			EditorApplication.quitting += Cleanup;
-			EditorApplication.update += FreeInvalid;
-		}
+            AssemblyReloadEvents.beforeAssemblyReload += Cleanup;
+            EditorApplication.quitting += Cleanup;
+            EditorApplication.update += FreeInvalid;
+        }
 
-		private void Cleanup()
-		{
-			cleaningUp?.Invoke();
+        private void Cleanup()
+        {
+            cleaningUp?.Invoke();
 
-			foreach (var stripControl in controlsByKeys.Values)
-			{
-				stripControl?.CloseAllTools();
-			}
-		}
+            foreach (var stripControl in controlsByKeys.Values)
+            {
+                stripControl?.CloseAllTools();
+            }
+        }
 
-		public ToolbarControl GetControl(IToolbar toolbar, object tag = null)
-		{
-			var key = new Key(toolbar, tag);
+        public ToolbarControl GetControl(IToolbar toolbar, object tag = null)
+        {
+            var key = new Key(toolbar, tag);
 
-			if (!controlsByKeys.TryGetValue(key, out var toolbarControl))
-			{
-				toolbarControl = new ToolbarControl(toolbar, window);
-				controlsByKeys.Add(key, toolbarControl);
-			}
+            if (!controlsByKeys.TryGetValue(key, out var toolbarControl))
+            {
+                toolbarControl = new ToolbarControl(toolbar, window);
+                controlsByKeys.Add(key, toolbarControl);
+            }
 
-			return toolbarControl;
-		}
-		
-		private struct Key
-		{
-			private readonly IToolbar toolbar;
+            return toolbarControl;
+        }
 
-			private readonly object tag;
+        private struct Key
+        {
+            private readonly IToolbar toolbar;
 
-			public Key(IToolbar toolbar, object tag = null)
-			{
-				this.toolbar = toolbar;
-				this.tag = tag;
-			}
+            private readonly object tag;
 
-			public override bool Equals(object obj)
-			{
-				if (!(obj is Key other))
-				{
-					return false;
-				}
+            public Key(IToolbar toolbar, object tag = null)
+            {
+                this.toolbar = toolbar;
+                this.tag = tag;
+            }
 
-				return toolbar == other.toolbar &&
-				       tag == other.tag;
-			}
+            public override bool Equals(object obj)
+            {
+                if (!(obj is Key other))
+                {
+                    return false;
+                }
 
-			public override int GetHashCode()
-			{
-				return HashUtility.GetHashCode(toolbar, tag);
-			}
-		}
+                return toolbar == other.toolbar &&
+                       tag == other.tag;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashUtility.GetHashCode(toolbar, tag);
+            }
+        }
 
 
 
-		#region Freeing
+        #region Freeing
 
-		private DateTime lastFreeTime;
+        private DateTime lastFreeTime;
 
-		private readonly TimeSpan freeInterval = TimeSpan.FromSeconds(30);
-		
-		private void FreeInvalid()
-		{
-			if (DateTime.UtcNow > lastFreeTime + freeInterval)
-			{
-				var toRemove = HashSetPool<Key>.New();
+        private readonly TimeSpan freeInterval = TimeSpan.FromSeconds(30);
 
-				foreach (var controlByKey in controlsByKeys)
-				{
-					if (!controlByKey.Value.toolbar.isValid)
-					{
-						toRemove.Add(controlByKey.Key);
-					}
-				}
+        private void FreeInvalid()
+        {
+            if (DateTime.UtcNow > lastFreeTime + freeInterval)
+            {
+                var toRemove = HashSetPool<Key>.New();
 
-				foreach (var tr in toRemove)
-				{
-					controlsByKeys.Remove(tr);
-				}
+                foreach (var controlByKey in controlsByKeys)
+                {
+                    if (!controlByKey.Value.toolbar.isValid)
+                    {
+                        toRemove.Add(controlByKey.Key);
+                    }
+                }
 
-				toRemove.Free();
+                foreach (var tr in toRemove)
+                {
+                    controlsByKeys.Remove(tr);
+                }
 
-				lastFreeTime = DateTime.UtcNow;
-			}
-		}
+                toRemove.Free();
 
-		#endregion
-	}
+                lastFreeTime = DateTime.UtcNow;
+            }
+        }
+
+        #endregion
+    }
 }

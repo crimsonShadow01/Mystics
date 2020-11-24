@@ -1,4 +1,3 @@
-using System;
 using PlaceholderSoftware.WetStuff.Components;
 using UnityEditor;
 using UnityEngine;
@@ -46,7 +45,7 @@ namespace PlaceholderSoftware.WetStuff
                 EditorGUILayout.PropertyField(_edgeSharpness);
                 EditorGUILayout.PropertyField(_layerMode);
 
-                var showLayerSettings = !_layerMode.hasMultipleDifferentValues && (LayerMode) _layerMode.enumValueIndex != LayerMode.None;
+                var showLayerSettings = !_layerMode.hasMultipleDifferentValues && (LayerMode)_layerMode.enumValueIndex != LayerMode.None;
                 using (new EditorGUI.DisabledScope(!showLayerSettings))
                 {
                     EditorGUILayout.PropertyField(_layerProjectionMode);

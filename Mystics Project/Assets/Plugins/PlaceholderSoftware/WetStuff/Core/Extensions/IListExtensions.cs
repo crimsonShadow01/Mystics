@@ -4,7 +4,7 @@ namespace PlaceholderSoftware.WetStuff.Extensions
 {
     internal static class IListExtensions
     {
-        public static void RemoveNulls<T>([NotNull] [ItemCanBeNull] this IList<T> list, int nulls) where T : class
+        public static void RemoveNulls<T>([NotNull][ItemCanBeNull] this IList<T> list, int nulls) where T : class
         {
             if (nulls == 0)
                 return;

@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using static BrainFailProductions.PolyFew.MaterialCombiner.CombiningInformation;
@@ -785,7 +784,7 @@ namespace BrainFailProductions.PolyFew
 
                         bool hasTint = false;
 
-                        if ((shaderName == "standard" || shaderName == "standard (specular setup)" ) && material.mainTexture == null && renderer.sharedMaterials.Length == 1)
+                        if ((shaderName == "standard" || shaderName == "standard (specular setup)") && material.mainTexture == null && renderer.sharedMaterials.Length == 1)
                         {
                             hasTint = true;
                             Color albedoColor = material.color;
@@ -794,7 +793,7 @@ namespace BrainFailProductions.PolyFew
                             material.mainTexture = texture;
                             texture.Apply(false);
                         }
-                       
+
 
 
                         MaterialEntity materialEntity = null;

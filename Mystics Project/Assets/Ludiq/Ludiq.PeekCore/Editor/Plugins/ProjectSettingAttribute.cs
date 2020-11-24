@@ -1,9 +1,9 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public class ProjectSettingAttribute : PluginConfigurationItemAttribute
-	{
-		public ProjectSettingAttribute() : base() { }
+    public class ProjectSettingAttribute : PluginConfigurationItemAttribute
+    {
+        public ProjectSettingAttribute() : base() { }
 
-		public ProjectSettingAttribute(string key) : base(key) { }
-	}
+        public ProjectSettingAttribute(string key) : base(key) { }
+    }
 }

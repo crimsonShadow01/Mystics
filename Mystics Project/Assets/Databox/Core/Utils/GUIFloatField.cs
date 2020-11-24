@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Collections.Generic;
- 
+using UnityEngine;
+
 
 
 
@@ -14,13 +14,13 @@ public static class GUIFloatField
 	private static string activeFloatFieldString = "";
 #endif
 
-/// <summary>
-/// Float Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.FloatField
-/// </summary>
-	public static float FloatField (float value)
-	{
+    /// <summary>
+    /// Float Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.FloatField
+    /// </summary>
+    public static float FloatField(float value)
+    {
 #if UNITY_EDITOR
-		return UnityEditor.EditorGUILayout.FloatField (value);
+        return UnityEditor.EditorGUILayout.FloatField(value);
 #else
    
 		// Get rect and control for this float field for identification
@@ -74,15 +74,15 @@ public static class GUIFloatField
    
 		return value;
 #endif
-	}
- 
-	/// <summary>
-	/// Float Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.FloatField
-	/// </summary>
-	public static float FloatField (GUIContent label, float value)
-	{
+    }
+
+    /// <summary>
+    /// Float Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.FloatField
+    /// </summary>
+    public static float FloatField(GUIContent label, float value)
+    {
 #if UNITY_EDITOR
-		return UnityEditor.EditorGUILayout.FloatField (label, value);
+        return UnityEditor.EditorGUILayout.FloatField(label, value);
 #else
 		GUILayout.BeginHorizontal ();
 		GUILayout.Label (label, label != GUIContent.none? GUILayout.ExpandWidth (true) : GUILayout.ExpandWidth (false));
@@ -90,46 +90,46 @@ public static class GUIFloatField
 		GUILayout.EndHorizontal ();
 		return value;
 #endif
-	}
- 
-	/// <summary>
-	/// Forces to parse to float by cleaning string if necessary
-	/// </summary>
-	public static float ForceParse (this string str)
-	{
-		// try parse
-		float value;
-		if (float.TryParse (str, out value))
-			return value;
-   
-		// Clean string if it could not be parsed
-		bool recordedDecimalPoint = false;
-		List<char> strVal = new List<char> (str);
-		for (int cnt = 0; cnt < strVal.Count; cnt++)
-		{
-			UnicodeCategory type = CharUnicodeInfo.GetUnicodeCategory (str[cnt]);
-			if (type != UnicodeCategory.DecimalDigitNumber)
-			{
-				strVal.RemoveRange (cnt, strVal.Count-cnt);
-				break;
-			}
-			else if (str[cnt] == '.')
-			{
-				if (recordedDecimalPoint)
-				{
-					strVal.RemoveRange (cnt, strVal.Count-cnt);
-					break;
-				}
-				recordedDecimalPoint = true;
-			}
-		}
-   
-		// Parse again
-		if (strVal.Count == 0)
-			return 0;
-		str = new string (strVal.ToArray ());
-		if (!float.TryParse (str, out value))
-			Debug.LogError ("Could not parse " + str);
-		return value;
-	}
+    }
+
+    /// <summary>
+    /// Forces to parse to float by cleaning string if necessary
+    /// </summary>
+    public static float ForceParse(this string str)
+    {
+        // try parse
+        float value;
+        if (float.TryParse(str, out value))
+            return value;
+
+        // Clean string if it could not be parsed
+        bool recordedDecimalPoint = false;
+        List<char> strVal = new List<char>(str);
+        for (int cnt = 0; cnt < strVal.Count; cnt++)
+        {
+            UnicodeCategory type = CharUnicodeInfo.GetUnicodeCategory(str[cnt]);
+            if (type != UnicodeCategory.DecimalDigitNumber)
+            {
+                strVal.RemoveRange(cnt, strVal.Count - cnt);
+                break;
+            }
+            else if (str[cnt] == '.')
+            {
+                if (recordedDecimalPoint)
+                {
+                    strVal.RemoveRange(cnt, strVal.Count - cnt);
+                    break;
+                }
+                recordedDecimalPoint = true;
+            }
+        }
+
+        // Parse again
+        if (strVal.Count == 0)
+            return 0;
+        str = new string(strVal.ToArray());
+        if (!float.TryParse(str, out value))
+            Debug.LogError("Could not parse " + str);
+        return value;
+    }
 }

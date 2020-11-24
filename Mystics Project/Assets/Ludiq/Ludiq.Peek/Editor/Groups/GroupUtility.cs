@@ -6,175 +6,175 @@ using UnityEngine;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public static class GroupUtility
-	{
-		public static Type InferTransformType(Transform[] targets)
-		{
-			var has2D = false;
-			var has3D = false;
+    public static class GroupUtility
+    {
+        public static Type InferTransformType(Transform[] targets)
+        {
+            var has2D = false;
+            var has3D = false;
 
-			foreach (var target in targets)
-			{
-				if (target.gameObject.GetComponent<RectTransform>() != null)
-				{
-					has2D = true;
-				}
-				else
-				{
-					has3D = true;
-				}
+            foreach (var target in targets)
+            {
+                if (target.gameObject.GetComponent<RectTransform>() != null)
+                {
+                    has2D = true;
+                }
+                else
+                {
+                    has3D = true;
+                }
 
-				if (has2D && has3D)
-				{
-					break;
-				}
-			}
+                if (has2D && has3D)
+                {
+                    break;
+                }
+            }
 
-			if (has3D && !has2D)
-			{
-				return typeof(Transform);
-			}
-			else if (has2D && !has3D)
-			{
-				return typeof(RectTransform);
-			}
-			else
-			{
-				return null;
-			}
-		}
+            if (has3D && !has2D)
+            {
+                return typeof(Transform);
+            }
+            else if (has2D && !has3D)
+            {
+                return typeof(RectTransform);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-		public static Type InferTransformTypeOrFail(Transform[] targets)
-		{
-			Ensure.That(nameof(targets)).IsNotNull(targets);
+        public static Type InferTransformTypeOrFail(Transform[] targets)
+        {
+            Ensure.That(nameof(targets)).IsNotNull(targets);
 
-			var transformType = InferTransformType(targets);
+            var transformType = InferTransformType(targets);
 
-			if (transformType == null)
-			{
-				throw new InvalidOperationException("Cannot create a group containing both Transforms and RectTransforms.");
-			}
+            if (transformType == null)
+            {
+                throw new InvalidOperationException("Cannot create a group containing both Transforms and RectTransforms.");
+            }
 
-			return transformType;
-		}
-		
-		private static GameObject CreateGroup(string name, Type transformType)
-		{
-			if (transformType == typeof(RectTransform))
-			{
-				return new GameObject(name, transformType);
-			}
-			else
-			{
-				return new GameObject(name);
-			}
-		}
-		
-		public static Transform GroupLocally(Transform[] targets, string name = "Group")
-		{
-			var transformType = InferTransformTypeOrFail(targets);
-			
-			var firstSiblingIndex = targets.Select(t => t.GetSiblingIndex()).Min();
+            return transformType;
+        }
 
-			var group = CreateGroup(name, transformType);
-			Undo.RegisterCreatedObjectUndo(group, "Group");
+        private static GameObject CreateGroup(string name, Type transformType)
+        {
+            if (transformType == typeof(RectTransform))
+            {
+                return new GameObject(name, transformType);
+            }
+            else
+            {
+                return new GameObject(name);
+            }
+        }
 
-			var shallowestTarget = TransformOperations.FindShallowest(targets);
-			Undo.SetTransformParent(group.transform, shallowestTarget.transform.parent, "Group");
+        public static Transform GroupLocally(Transform[] targets, string name = "Group")
+        {
+            var transformType = InferTransformTypeOrFail(targets);
 
-			foreach (var target in targets.OrderBy(t => t.GetSiblingIndex()))
-			{
-				Undo.SetTransformParent(target.transform, group.transform, "Group");
-			}
-			
-			Undo.RecordObject(group.transform, "Group");
-			group.transform.SetSiblingIndex(firstSiblingIndex);
+            var firstSiblingIndex = targets.Select(t => t.GetSiblingIndex()).Min();
 
-			if (transformType == typeof(RectTransform))
-			{
-				TransformOperations.CenterOnPivots(group.transform);
-			}
-			else
-			{
-				TransformOperations.CenterOnBounds(group.transform);
-			}
+            var group = CreateGroup(name, transformType);
+            Undo.RegisterCreatedObjectUndo(group, "Group");
 
-			return group.transform;
-		}
+            var shallowestTarget = TransformOperations.FindShallowest(targets);
+            Undo.SetTransformParent(group.transform, shallowestTarget.transform.parent, "Group");
 
-		public static Transform GroupGlobally(Transform[] targets, string name = "Group")
-		{
-			var transformType = InferTransformTypeOrFail(targets);
-			
-			var group = CreateGroup(name, transformType);
-			Undo.RegisterCreatedObjectUndo(group, "Group");
-			
-			foreach (var target in targets.OrderBy(t => t.GetSiblingIndex()))
-			{
-				Undo.SetTransformParent(target.transform, group.transform, "Group");
-			}
-			
-			return group.transform;
-		}
+            foreach (var target in targets.OrderBy(t => t.GetSiblingIndex()))
+            {
+                Undo.SetTransformParent(target.transform, group.transform, "Group");
+            }
 
-		public static Transform[] Ungroup(Transform[] targets)
-		{
-			var ungrouped = new List<Transform>();
+            Undo.RecordObject(group.transform, "Group");
+            group.transform.SetSiblingIndex(firstSiblingIndex);
 
-			foreach (var target in targets)
-			{
-				foreach (var _ungrouped in Ungroup(target))
-				{
-					ungrouped.Add(_ungrouped);
-				}
-			}
+            if (transformType == typeof(RectTransform))
+            {
+                TransformOperations.CenterOnPivots(group.transform);
+            }
+            else
+            {
+                TransformOperations.CenterOnBounds(group.transform);
+            }
 
-			return ungrouped.ToArray();
-		}
+            return group.transform;
+        }
 
-		public static Transform[] Ungroup(Transform target)
-		{
-			if (!IsGroup(target))
-			{
-				return new[] {target};
-			}
+        public static Transform GroupGlobally(Transform[] targets, string name = "Group")
+        {
+            var transformType = InferTransformTypeOrFail(targets);
 
-			for (var i = 0; i < target.childCount; i++)
-			{
-				if (!TransformOperations.WarnRestructurable(target.GetChild(i)))
-				{
-					return new[] {target};
-				}
-			}
+            var group = CreateGroup(name, transformType);
+            Undo.RegisterCreatedObjectUndo(group, "Group");
 
-			var ungrouped = new Transform[target.childCount];
+            foreach (var target in targets.OrderBy(t => t.GetSiblingIndex()))
+            {
+                Undo.SetTransformParent(target.transform, group.transform, "Group");
+            }
 
-			var siblingIndex = target.GetSiblingIndex();
+            return group.transform;
+        }
 
-			var j = 0;
+        public static Transform[] Ungroup(Transform[] targets)
+        {
+            var ungrouped = new List<Transform>();
 
-			while (target.childCount >  0)
-			{
-				var child = target.GetChild(0);
-				Undo.SetTransformParent(child, target.parent, "Ungroup");
-				Undo.RecordObject(child, "Ungroup");
-				child.SetSiblingIndex(siblingIndex);
-				ungrouped[j] = child;
-				j++;
-			}
+            foreach (var target in targets)
+            {
+                foreach (var _ungrouped in Ungroup(target))
+                {
+                    ungrouped.Add(_ungrouped);
+                }
+            }
 
-			Undo.DestroyObjectImmediate(target.gameObject);
+            return ungrouped.ToArray();
+        }
 
-			return ungrouped;
-		}
+        public static Transform[] Ungroup(Transform target)
+        {
+            if (!IsGroup(target))
+            {
+                return new[] { target };
+            }
 
-		public static bool IsGroup(Transform target)
-		{
-			// TODO: Tag? Better check?
-			return target.childCount > 0 && target.gameObject.GetComponents<Component>().Length == 1;
-		}
-	}
+            for (var i = 0; i < target.childCount; i++)
+            {
+                if (!TransformOperations.WarnRestructurable(target.GetChild(i)))
+                {
+                    return new[] { target };
+                }
+            }
+
+            var ungrouped = new Transform[target.childCount];
+
+            var siblingIndex = target.GetSiblingIndex();
+
+            var j = 0;
+
+            while (target.childCount > 0)
+            {
+                var child = target.GetChild(0);
+                Undo.SetTransformParent(child, target.parent, "Ungroup");
+                Undo.RecordObject(child, "Ungroup");
+                child.SetSiblingIndex(siblingIndex);
+                ungrouped[j] = child;
+                j++;
+            }
+
+            Undo.DestroyObjectImmediate(target.gameObject);
+
+            return ungrouped;
+        }
+
+        public static bool IsGroup(Transform target)
+        {
+            // TODO: Tag? Better check?
+            return target.childCount > 0 && target.gameObject.GetComponents<Component>().Length == 1;
+        }
+    }
 }

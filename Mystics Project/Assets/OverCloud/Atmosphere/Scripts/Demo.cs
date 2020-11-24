@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BrunetonsImprovedAtmosphere
 {
-	[ExecuteInEditMode]
+    [ExecuteInEditMode]
     public class Demo : MonoBehaviour
     {
 
@@ -32,24 +32,24 @@ namespace BrunetonsImprovedAtmosphere
 
         private Model m_model;
 
-		private void Awake ()
-		{
-			Initialize();
-		}
-
-		private void OnValidate ()
-		{
-			Initialize();
-		}
-
-		/// <summary>
-		/// The "real" initialization work, which is specific to our atmosphere model,
-		/// is done in the following method. It starts with the creation of an atmosphere
-		/// Model instance, with parameters corresponding to the Earth atmosphere:
-		/// </summary>
-		void Initialize () 
+        private void Awake()
         {
-             // Values from "Reference Solar Spectral Irradiance: ASTM G-173", ETR column
+            Initialize();
+        }
+
+        private void OnValidate()
+        {
+            Initialize();
+        }
+
+        /// <summary>
+        /// The "real" initialization work, which is specific to our atmosphere model,
+        /// is done in the following method. It starts with the creation of an atmosphere
+        /// Model instance, with parameters corresponding to the Earth atmosphere:
+        /// </summary>
+        void Initialize()
+        {
+            // Values from "Reference Solar Spectral Irradiance: ASTM G-173", ETR column
             // (see http://rredc.nrel.gov/solar/spectra/am1.5/ASTMG173/ASTMG173.html),
             // summed and averaged in each bin (e.g. the value for 360nm is the average
             // of the ASTM G-173 values for all wavelengths between 360 and 370nm).
@@ -174,16 +174,16 @@ namespace BrunetonsImprovedAtmosphere
                 m_model.Release();
         }
 
-		private void LateUpdate ()
-		{
-			UpdateShaderVariables();
-		}
+        private void LateUpdate()
+        {
+            UpdateShaderVariables();
+        }
 
-		void UpdateShaderVariables ()
-		{
+        void UpdateShaderVariables()
+        {
             Shader.SetGlobalVector("_ScattEarthCenter", new Vector3(0.0f, -kBottomRadius / kLengthUnitInMeters, 0.0f));
             Shader.SetGlobalVector("_ScattSunSize", new Vector2(Mathf.Tan(kSunAngularRadius), Mathf.Cos(kSunAngularRadius)));
             Shader.SetGlobalVector("_ScattSunDir", ((Sun == null) ? Vector3.up : Sun.transform.forward) * -1.0f);
-		}
+        }
     }
 }

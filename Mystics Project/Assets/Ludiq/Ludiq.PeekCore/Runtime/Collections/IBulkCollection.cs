@@ -2,8 +2,8 @@
 
 namespace Ludiq.PeekCore
 {
-	public interface IBulkCollection<T> : ICollection<T>
-	{
-		void Add(IEnumerable<T> items);
-	}
+    public interface IBulkCollection<T> : ICollection<T>
+    {
+        void Add(IEnumerable<T> items);
+    }
 }

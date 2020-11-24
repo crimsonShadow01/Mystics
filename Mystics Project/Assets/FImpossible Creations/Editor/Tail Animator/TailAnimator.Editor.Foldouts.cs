@@ -924,7 +924,7 @@ namespace FIMSpace.FTail
                     if (Get.Springiness > 0.2f)
                         drawSmoothing = true;
 
-                        FGUI_Inspector.FoldHeaderStart(ref drawSmoothing, Lang("Smoothing Motion"), FGUI_Resources.BGInBoxStyle, FGUI_Resources.TexSmallOptimizeIcon, 21);
+            FGUI_Inspector.FoldHeaderStart(ref drawSmoothing, Lang("Smoothing Motion"), FGUI_Resources.BGInBoxStyle, FGUI_Resources.TexSmallOptimizeIcon, 21);
 
             if (drawSmoothing)
             {
@@ -1036,8 +1036,8 @@ namespace FIMSpace.FTail
             FGUI_Inspector.FoldHeaderStart(ref drawTweakAdditional, Lang("Additional Parameters"), null, FGUI_Resources.TexMotionIcon, 21);
             GUILayout.FlexibleSpace();
 
-            if (( Get._TransformsGhostChain.Count > 0 && Get._TransformsGhostChain.Count < 22) )
-            EditorGUILayout.LabelField(new GUIContent(FGUI_Resources.Tex_Info, "If your chain is not bending enough you can try increasing 'Unify Bendiness' down below in this tab and then lowering 'Curling' to adjust it more"), GUILayout.Width(16));
+            if ((Get._TransformsGhostChain.Count > 0 && Get._TransformsGhostChain.Count < 22))
+                EditorGUILayout.LabelField(new GUIContent(FGUI_Resources.Tex_Info, "If your chain is not bending enough you can try increasing 'Unify Bendiness' down below in this tab and then lowering 'Curling' to adjust it more"), GUILayout.Width(16));
             EditorGUILayout.EndHorizontal();
 
             if (drawTweakAdditional)

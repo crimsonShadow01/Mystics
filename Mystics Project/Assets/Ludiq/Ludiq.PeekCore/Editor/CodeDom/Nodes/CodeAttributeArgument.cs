@@ -20,20 +20,20 @@ namespace Ludiq.PeekCore.CodeDom
         public string Name { get; }
         public CodeExpression Value { get; }
 
-		public void Generate(CodeGenerator generator)
-		{
-			generator.EnterElement(this);
+        public void Generate(CodeGenerator generator)
+        {
+            generator.EnterElement(this);
 
             if (!string.IsNullOrEmpty(Name))
             {
                 generator.OutputIdentifier(TokenType.Identifier, Name);
-				generator.Write(TokenType.Space, ' ');
+                generator.Write(TokenType.Space, ' ');
                 generator.Write(TokenType.Punctuation, '=');
-				generator.Write(TokenType.Space, ' ');
+                generator.Write(TokenType.Space, ' ');
             }
             Value.Generate(generator);
 
-			generator.ExitElement();
-		}
-	}
+            generator.ExitElement();
+        }
+    }
 }

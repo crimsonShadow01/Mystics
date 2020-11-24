@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Runtime.CompilerServices;
+﻿using UnityEngine;
 
 namespace MeshCombineStudio
 {
@@ -302,7 +299,7 @@ namespace MeshCombineStudio
             GetMinMax(v0[2], v1[2], v2[2], out min, out max);
 
             if (min > boxHalfSize[2] || max < -boxHalfSize[2]) return false;
-             
+
             normal = Vector3.Cross(e0, e1);
             if (!PlaneBoxOverlap(normal, v0, boxHalfSize)) return false;
 

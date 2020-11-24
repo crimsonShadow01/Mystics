@@ -38,17 +38,20 @@ namespace PlaceholderSoftware.WetStuff
 
         static Styles()
         {
-            tickStyleRight = new GUIStyle("Label") {
+            tickStyleRight = new GUIStyle("Label")
+            {
                 alignment = TextAnchor.MiddleRight,
                 fontSize = 9
             };
 
-            tickStyleLeft = new GUIStyle("Label") {
+            tickStyleLeft = new GUIStyle("Label")
+            {
                 alignment = TextAnchor.MiddleLeft,
                 fontSize = 9
             };
 
-            tickStyleCenter = new GUIStyle("Label") {
+            tickStyleCenter = new GUIStyle("Label")
+            {
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 9
             };
@@ -60,7 +63,8 @@ namespace PlaceholderSoftware.WetStuff
 
             preLabel = new GUIStyle("ShurikenLabel");
 
-            hueCenterCursor = new GUIStyle("ColorPicker2DThumb") {
+            hueCenterCursor = new GUIStyle("ColorPicker2DThumb")
+            {
                 normal = {
                     background = (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/ShurikenPlus.png")
                 },
@@ -68,7 +72,8 @@ namespace PlaceholderSoftware.WetStuff
                 fixedHeight = 6
             };
 
-            hueRangeCursor = new GUIStyle(hueCenterCursor) {
+            hueRangeCursor = new GUIStyle(hueCenterCursor)
+            {
                 normal = {
                     background = (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/CircularToggle_ON.png")
                 }
@@ -76,12 +81,14 @@ namespace PlaceholderSoftware.WetStuff
 
             wheelThumb = new GUIStyle("ColorPicker2DThumb");
 
-            centeredBoldLabel = new GUIStyle(GUI.skin.GetStyle("Label")) {
+            centeredBoldLabel = new GUIStyle(GUI.skin.GetStyle("Label"))
+            {
                 alignment = TextAnchor.UpperCenter,
                 fontStyle = FontStyle.Bold
             };
 
-            centeredMiniLabel = new GUIStyle(EditorStyles.centeredGreyMiniLabel) {
+            centeredMiniLabel = new GUIStyle(EditorStyles.centeredGreyMiniLabel)
+            {
                 alignment = TextAnchor.UpperCenter
             };
 
@@ -90,7 +97,8 @@ namespace PlaceholderSoftware.WetStuff
                 !Mathf.Approximately(wheelThumb.fixedHeight, 0f) ? wheelThumb.fixedHeight : wheelThumb.padding.vertical
             );
 
-            header = new GUIStyle("ShurikenModuleTitle") {
+            header = new GUIStyle("ShurikenModuleTitle")
+            {
                 font = new GUIStyle("Label").font,
                 border = new RectOffset(15, 7, 4, 4),
                 fixedHeight = 22,
@@ -100,20 +108,22 @@ namespace PlaceholderSoftware.WetStuff
             headerCheckbox = new GUIStyle("ShurikenCheckMark");
             headerFoldout = new GUIStyle("Foldout");
 
-            playIcon = (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/IN foldout act.png");
-            checkerIcon = (Texture2D) EditorGUIUtility.LoadRequired("Icons/CheckerFloor.png");
-            helpIcon = (Texture2D) EditorGUIUtility.IconContent("_Help").image;
+            playIcon = (Texture2D)EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/IN foldout act.png");
+            checkerIcon = (Texture2D)EditorGUIUtility.LoadRequired("Icons/CheckerFloor.png");
+            helpIcon = (Texture2D)EditorGUIUtility.IconContent("_Help").image;
 
             if (EditorGUIUtility.isProSkin)
-                paneOptionsIcon = (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/pane options.png");
+                paneOptionsIcon = (Texture2D)EditorGUIUtility.LoadRequired("Builtin Skins/DarkSkin/Images/pane options.png");
             else
-                paneOptionsIcon = (Texture2D) EditorGUIUtility.LoadRequired("Builtin Skins/LightSkin/Images/pane options.png");
+                paneOptionsIcon = (Texture2D)EditorGUIUtility.LoadRequired("Builtin Skins/LightSkin/Images/pane options.png");
 
-            LeftPadding = new GUIStyle {
+            LeftPadding = new GUIStyle
+            {
                 padding = new RectOffset(15, 0, 0, 0)
             };
 
-            ContentOutline = new GUIStyle(EditorStyles.helpBox) {
+            ContentOutline = new GUIStyle(EditorStyles.helpBox)
+            {
                 padding = new RectOffset(0, 0, 0, 1),
                 margin = new RectOffset(0, 0, 0, 3)
             };

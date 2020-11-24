@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -24,7 +23,7 @@ namespace TerrainComposer2
         public override void OnDestroy()
         {
             DisposeTextures();
-            
+
         }
 
         public override void DisposeTextures()
@@ -52,7 +51,7 @@ namespace TerrainComposer2
         public override void SetLockChildrenPosition(bool lockPos)
         {
             lockPosParent = lockPos;
-            
+
             for (int i = 0; i < itemList.Count; i++)
             {
                 TC_Node node = itemList[i] as TC_Node;
@@ -78,7 +77,7 @@ namespace TerrainComposer2
 
             ComputeBuffer nodeBuffer = null;
             ComputeBuffer totalBuffer = null;
-            
+
             bool inputCurrent;
 
             if (totalActive > 1) InitPreviewRenderTexture(true, name);
@@ -94,9 +93,9 @@ namespace TerrainComposer2
                 if (node != null)
                 {
                     node.Init();
-                    
+
                     if (!node.active) continue;
-                    
+
                     if (node.clamp)
                     {
                         // if (node.OutOfBounds()) continue;
@@ -187,19 +186,19 @@ namespace TerrainComposer2
             itemList.Clear();
 
             active = visible;
-            
+
             firstActive = lastActive = -1;
             totalActive = 0;
 
             bool newBounds = true;
             int listIndex = 0;
-            
+
             for (int i = childCount - 1; i >= 0; i--)
             {
                 Transform child = t.GetChild(i);
-                
+
                 TC_Node node = child.GetComponent<TC_Node>();
-                
+
                 if (node != null)
                 {
                     if (resetTextures) node.DisposeTextures();
@@ -263,7 +262,7 @@ namespace TerrainComposer2
                     //{
                     //    TC_NodeClone nodeClone = child.GetComponent<TC_NodeClone>();
                     //}
-                        
+
                 }
             }
 
@@ -272,7 +271,7 @@ namespace TerrainComposer2
                 if (itemList[0].active) active = visible = true;
             }
 
-            if (!active) totalActive = 0; 
+            if (!active) totalActive = 0;
             if (totalActive == 0) active = false;
         }
     }

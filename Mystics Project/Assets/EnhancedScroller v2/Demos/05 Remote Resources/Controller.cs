@@ -1,9 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-using System.Collections.Generic;
+﻿using EnhancedUI;
 using EnhancedUI.EnhancedScroller;
-using EnhancedUI;
+using UnityEngine;
 
 namespace EnhancedScrollerDemos.RemoteResourcesDemo
 {

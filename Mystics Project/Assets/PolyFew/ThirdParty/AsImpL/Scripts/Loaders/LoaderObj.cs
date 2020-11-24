@@ -1,14 +1,12 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.IO;
 using System.Globalization;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static BrainFailProductions.PolyFewRuntime.PolyfewRuntime;
-using System.Text;
+using UnityEngine;
+using UnityEngine.Networking;
 
 namespace AsImpL
 {
@@ -115,7 +113,7 @@ namespace AsImpL
 
         protected override async Task LoadModelFileNetworked(string objURL)
         {
-         
+
             bool isWorking = true;
             byte[] downloadedBytes = null;
             Exception ex = null;
@@ -137,7 +135,7 @@ namespace AsImpL
                 }));
             }
 
-            catch(Exception exc)
+            catch (Exception exc)
             {
                 ObjectImporter.activeDownloads -= 1;
                 individualProgress.Value = oldProgress;
@@ -154,7 +152,7 @@ namespace AsImpL
                 await Task.Delay(1);
             }
 
-            if (ex != null) {  throw ex; }
+            if (ex != null) { throw ex; }
 
             ObjectImporter.downloadProgress.Value = (individualProgress.Value / ObjectImporter.activeDownloads) * 100f;
 
@@ -166,7 +164,7 @@ namespace AsImpL
                 }
             }
 
-            
+
             //yield return LoadOrDownloadText(url);
 
             if (string.IsNullOrEmpty(loadedText))
@@ -291,7 +289,7 @@ namespace AsImpL
             }
             else
             {
-                if(Path.IsPathRooted(mtlLib))
+                if (Path.IsPathRooted(mtlLib))
                 {
                     mtlPath = "file:///" + mtlLib;
                 }
@@ -319,16 +317,16 @@ namespace AsImpL
 
             //yield return LoadOrDownloadText(mtlPath,false);
 
-                /*
-                if (loadedText == null)
-                {
-                    mtlLib = Path.GetFileName(mtlLib);
-                    mtlPath = "file:///" + basePath + mtlLib;
-                    Debug.LogWarningFormat("Material library {0} loaded from the same directory as the OBJ file.\n", mtlLib);
+            /*
+            if (loadedText == null)
+            {
+                mtlLib = Path.GetFileName(mtlLib);
+                mtlPath = "file:///" + basePath + mtlLib;
+                Debug.LogWarningFormat("Material library {0} loaded from the same directory as the OBJ file.\n", mtlLib);
 
-                    yield return LoadOrDownloadText(mtlPath);
-                }
-                */
+                yield return LoadOrDownloadText(mtlPath);
+            }
+            */
 
             if (!string.IsNullOrWhiteSpace(loadedText))
             {
@@ -371,7 +369,7 @@ namespace AsImpL
                 ObjectImporter.downloadProgress.Value = (individualProgress.Value / ObjectImporter.activeDownloads) * 100f; isWorking = false;
                 throw exc;
             }
-            
+
 
 
             while (isWorking)
@@ -400,7 +398,7 @@ namespace AsImpL
 
         }
 
-        
+
 
         protected override IEnumerator LoadMaterialLibraryWebGL(string materialURL)
         {
@@ -409,7 +407,7 @@ namespace AsImpL
             bool isWorking = true;
             float oldProgress = individualProgress.Value;
 
- 
+
             StartCoroutine(DownloadFileWebGL(materialURL, individualProgress, (text) =>
             {
                 isWorking = false;
@@ -422,7 +420,7 @@ namespace AsImpL
                 isWorking = false;
                 Debug.LogWarning("Failed to load the associated material file." + error);
             }));
- 
+
 
 
 
@@ -555,7 +553,7 @@ namespace AsImpL
             char[] separators = new char[] { ' ', '\t' };
 
             for (int i = 0; i < lines.Length; i++)
-            {   
+            {
                 string line = lines[i].Trim();
 
                 if (line.Length > 0 && line[0] == '#')

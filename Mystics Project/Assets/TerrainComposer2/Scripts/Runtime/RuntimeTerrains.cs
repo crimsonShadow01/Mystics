@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-// using UnityEditor;
-using System.Collections;
+﻿// using UnityEditor;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -25,7 +24,7 @@ namespace TerrainComposer2
         public TC_TerrainArea terrainArea;
 
         List<TCUnityTerrain> taskList = new List<TCUnityTerrain>();
-        
+
         void Start()
         {
             if (moveTerrainsWithCamera)
@@ -102,7 +101,7 @@ namespace TerrainComposer2
             {
                 TCUnityTerrain tcTerrain = tcTerrains[i];
                 Terrain terrain = tcTerrain.terrain;
-                
+
                 relativePos = mainCamera.position.x - initPos[i].x;
                 newPos = (Mathf.Round((relativePos - offset) / totalSize) * totalSize) + initPos[i].x;
 
@@ -111,7 +110,7 @@ namespace TerrainComposer2
                     if (newPos > terrain.transform.position.x)
                     {
                         // Debug.Log("->");
-                        
+
                         // terrainArea.terrainArray[terrainArea.tiles.x - 1, tcTerrain.tileZ] = 
                         // tcTerrain.tileX = terrainArea.tiles.x - 1;
                         // for (int x = 1; x < terrainArea.tiles.x; x++) terrainArea.GetTCUnityTerrainTile(x, tcTerrain.tileZ).tileX = x - 1;
@@ -133,7 +132,7 @@ namespace TerrainComposer2
                     taskList.Add(tcTerrain);
                 }
             }
-            
+
             oldPos.x = Mathf.Round(mainCamera.position.x / terrainSize) * terrainSize;
         }
 

@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
-using System.IO;
+﻿using System.IO;
 using System.Text;
+using UnityEditor;
+using UnityEngine;
 
 namespace MeshCombineStudio
 {

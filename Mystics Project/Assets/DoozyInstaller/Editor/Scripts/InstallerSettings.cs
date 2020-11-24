@@ -47,10 +47,10 @@ namespace Doozy.Installer
             {
                 switch (VersionStatus)
                 {
-                    case 0:  return "a"; //alpha
-                    case 1:  return "b"; //beta
-                    case 2:  return "c"; //commercial distribution
-                    case 3:  return "d"; //debug
+                    case 0: return "a"; //alpha
+                    case 1: return "b"; //beta
+                    case 2: return "c"; //commercial distribution
+                    case 3: return "d"; //debug
                     default: return "?";
                 }
             }
@@ -95,7 +95,7 @@ namespace Doozy.Installer
             // ReSharper disable once SuspiciousTypeConversion.Global
             if (!resourcesPath[resourcesPath.Length - 1].Equals(@"\")) resourcesPath += @"\";
 
-            var obj = (T) Resources.Load(fileName, typeof(T));
+            var obj = (T)Resources.Load(fileName, typeof(T));
 #if UNITY_EDITOR
             if (obj != null) return obj;
             obj = CreateAsset<T>(resourcesPath, fileName);
@@ -115,7 +115,7 @@ namespace Doozy.Installer
             AssetDatabase.CreateAsset(asset, relativePath + fileName + extension);
             EditorUtility.SetDirty(asset);
             AssetDatabase.SaveAssets();
-//            AssetDatabase.Refresh();
+            //            AssetDatabase.Refresh();
             return asset;
         }
 

@@ -13,7 +13,7 @@ namespace PlaceholderSoftware.WetStuff
 
         public override void OnInspectorGUI()
         {
-            var settings = (RenderSettings) target;
+            var settings = (RenderSettings)target;
 
             using (new EditorGUI.DisabledScope(EditorApplication.isPlaying))
             using (var changeCheckScope = new EditorGUI.ChangeCheckScope())

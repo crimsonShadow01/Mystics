@@ -48,7 +48,7 @@ namespace Databox.OdinSerializer.Utilities.Editor
         /// </summary>
         ExcludeFromAll,
     }
-    
+
     /// <summary>
     /// Utility for correctly setting import on OdinSerializer assemblies based on platform and scripting backend.
     /// </summary>
@@ -62,7 +62,7 @@ namespace Databox.OdinSerializer.Utilities.Editor
         /// <summary>
         /// All valid Unity BuildTarget platforms.
         /// </summary>
-        public static readonly ImmutableList<BuildTarget> Platforms; 
+        public static readonly ImmutableList<BuildTarget> Platforms;
 
         /// <summary>
         /// All valid Unity BuildTarget platforms that support Just In Time compilation.
@@ -185,10 +185,10 @@ namespace Databox.OdinSerializer.Utilities.Editor
                 throw new InvalidOperationException("Failed to get PluginImporter for " + assemblyFilePath);
             }
 
-            bool updateImportSettings = 
+            bool updateImportSettings =
                 importer.GetCompatibleWithAnyPlatform() // If the 'any platform' flag is true, then reapply settings no matter what to ensure that everything is correct.
-                //|| Platforms.Any(p => importer.GetCompatibleWithPlatform(p) != includeInBuild)
-                || importer.GetCompatibleWithPlatform(platform) != includeInBuild 
+                                                        //|| Platforms.Any(p => importer.GetCompatibleWithPlatform(p) != includeInBuild)
+                || importer.GetCompatibleWithPlatform(platform) != includeInBuild
                 || importer.GetCompatibleWithEditor() != includeInEditor;
 
             // Apply new import settings if necessary.

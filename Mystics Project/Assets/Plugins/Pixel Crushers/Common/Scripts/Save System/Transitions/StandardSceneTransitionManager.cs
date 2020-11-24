@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
 #if UNITY_5_3_OR_NEWER
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using System;
-using System.Collections;
 
 namespace PixelCrushers
 {

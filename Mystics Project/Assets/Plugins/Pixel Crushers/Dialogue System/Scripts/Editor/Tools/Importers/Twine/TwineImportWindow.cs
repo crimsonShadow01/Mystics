@@ -18,7 +18,7 @@ namespace PixelCrushers.DialogueSystem.Twine
     public class TwineImportWindow : EditorWindow
     {
 
-        #region Prefs
+#region Prefs
 
         [Serializable]
         public class StoryInfo
@@ -49,9 +49,9 @@ namespace PixelCrushers.DialogueSystem.Twine
             }
         }
 
-        #endregion
+#endregion
 
-        #region Initialization
+#region Initialization
 
         [MenuItem("Tools/Pixel Crushers/Dialogue System/Import/Twine 2 (Twison)", false, 1)]
         public static void Init()
@@ -93,9 +93,9 @@ namespace PixelCrushers.DialogueSystem.Twine
             return AssetDatabase.LoadAssetAtPath<DialogueDatabase>(AssetDatabase.GUIDToAssetPath(guid));
         }
 
-        #endregion
+#endregion
 
-        #region GUI
+#region GUI
 
         protected virtual void OnGUI()
         {
@@ -225,9 +225,9 @@ namespace PixelCrushers.DialogueSystem.Twine
             return -1;
         }
 
-        #endregion
+#endregion
 
-        #region Import
+#region Import
 
         protected virtual void Import()
         {
@@ -282,7 +282,7 @@ namespace PixelCrushers.DialogueSystem.Twine
             twineImporter.ConvertStoryToConversation(database, template, story, storyInfo.actorID, storyInfo.conversantID, storyInfo.splitPipes);
         }
 
-        #endregion
+#endregion
 
     }
 }

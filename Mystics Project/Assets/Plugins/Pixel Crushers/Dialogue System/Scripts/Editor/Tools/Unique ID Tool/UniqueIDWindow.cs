@@ -1,14 +1,10 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
-using UnityEditor;
-using System.IO;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml;
-using System.Xml.Serialization;
+using System.IO;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -49,7 +45,7 @@ namespace PixelCrushers.DialogueSystem
         void OnGUI()
         {
             // Validate prefs:
-            if (prefs == null) prefs = UniqueIDWindowPrefs.Load(); 
+            if (prefs == null) prefs = UniqueIDWindowPrefs.Load();
             if (prefs.databases == null) prefs.databases = new List<DialogueDatabase>();
 
             // Draw window:
@@ -255,7 +251,7 @@ namespace PixelCrushers.DialogueSystem
                 }
                 else
                 {
-                    var s = "Unable to process conversations. In database '" + database + 
+                    var s = "Unable to process conversations. In database '" + database +
                         "' two or more conversations have the same conversation ID " + conversation.id + ":";
                     for (int j = 0; j < database.conversations.Count; j++)
                     {

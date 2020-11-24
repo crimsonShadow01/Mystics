@@ -1,6 +1,7 @@
 ﻿using System;
 
-namespace Databox.FullSerializer {
+namespace Databox.FullSerializer
+{
     /// <summary>
     /// <para>
     /// Enables injecting code before/after an object has been serialized. This
@@ -15,7 +16,8 @@ namespace Databox.FullSerializer {
     /// p1#After.
     /// </para>
     /// </summary>
-    public abstract class fsObjectProcessor {
+    public abstract class fsObjectProcessor
+    {
         /// <summary>
         /// Is the processor interested in objects of the given type?
         /// </summary>

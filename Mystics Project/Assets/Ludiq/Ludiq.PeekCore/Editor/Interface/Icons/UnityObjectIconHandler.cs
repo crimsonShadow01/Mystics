@@ -2,5 +2,5 @@
 
 namespace Ludiq.PeekCore
 {
-	public delegate bool UnityObjectIconHandler(UnityObject uo, out EditorTexture icon);
+    public delegate bool UnityObjectIconHandler(UnityObject uo, out EditorTexture icon);
 }

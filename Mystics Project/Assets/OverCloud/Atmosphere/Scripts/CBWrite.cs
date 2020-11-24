@@ -1,7 +1,7 @@
-using UnityEngine;
-using UnityEngine.Rendering;
 using System;
 using System.IO;
+using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace BrunetonsImprovedAtmosphere
 {

@@ -20,7 +20,7 @@ namespace Doozy.Installer
             get
             {
                 if (s_currentLanguage != Language.Unknown) return s_currentLanguage;
-                CurrentLanguage = (Language) PlayerPrefs.GetInt(CURRENT_LANGUAGE_PREFS_KEY, (int) DEFAULT_LANGUAGE);
+                CurrentLanguage = (Language)PlayerPrefs.GetInt(CURRENT_LANGUAGE_PREFS_KEY, (int)DEFAULT_LANGUAGE);
                 return s_currentLanguage;
             }
             set
@@ -34,7 +34,7 @@ namespace Doozy.Installer
 
         private static void SaveLanguagePreference(string prefsKey, Language language)
         {
-            PlayerPrefs.SetInt(prefsKey, (int) language);
+            PlayerPrefs.SetInt(prefsKey, (int)language);
             PlayerPrefs.Save();
         }
     }

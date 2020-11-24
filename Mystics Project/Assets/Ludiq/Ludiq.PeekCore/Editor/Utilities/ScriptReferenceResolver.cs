@@ -8,252 +8,252 @@ using Debug = UnityEngine.Debug;
 
 namespace Ludiq.PeekCore
 {
-	public static class ScriptReferenceResolver
-	{
-		public enum Mode
-		{
-			Dialog,
-			Console,
-			Silent
-		}
+    public static class ScriptReferenceResolver
+    {
+        public enum Mode
+        {
+            Dialog,
+            Console,
+            Silent
+        }
 
-		public static bool canRun => EditorSettings.serializationMode == SerializationMode.ForceText;
+        public static bool canRun => EditorSettings.serializationMode == SerializationMode.ForceText;
 
-		private static IEnumerable<string> GetAllReplacementPaths()
-		{
-			var validExtensions = new HashSet<string>() { ".unity", ".asset", ".prefab" };
-			
-			return AssetDatabase.GetAllAssetPaths().Select(path => Path.Combine(Paths.project, path)).Where(File.Exists).Where(f => validExtensions.Contains(Path.GetExtension(f)));
-		}
+        private static IEnumerable<string> GetAllReplacementPaths()
+        {
+            var validExtensions = new HashSet<string>() { ".unity", ".asset", ".prefab" };
 
-		private static IEnumerable<string> GetSelectedReplacementPaths()
-		{
-			return Selection.assetGUIDs.Select(uo => Path.Combine(Paths.project, AssetDatabase.GUIDToAssetPath(uo))).Where(File.Exists);
-		}
+            return AssetDatabase.GetAllAssetPaths().Select(path => Path.Combine(Paths.project, path)).Where(File.Exists).Where(f => validExtensions.Contains(Path.GetExtension(f)));
+        }
 
-		private static readonly HashSet<ScriptReferenceReplacement> replacements = new HashSet<ScriptReferenceReplacement>();
-		
-		private static bool registeredDefaultReplacements = false;
+        private static IEnumerable<string> GetSelectedReplacementPaths()
+        {
+            return Selection.assetGUIDs.Select(uo => Path.Combine(Paths.project, AssetDatabase.GUIDToAssetPath(uo))).Where(File.Exists);
+        }
 
-		private static void RegisterDefaultReplacements()
-		{
-			foreach (var plugin in PluginContainer.plugins)
-			{
-				foreach (var scriptReferenceReplacement in plugin.scriptReferenceReplacements)
-				{
-					RegisterReplacement(scriptReferenceReplacement);
-				}
-			}
+        private static readonly HashSet<ScriptReferenceReplacement> replacements = new HashSet<ScriptReferenceReplacement>();
 
-			registeredDefaultReplacements = true;
-		}
+        private static bool registeredDefaultReplacements = false;
 
-		private static void EnsureDefaultReplacementsRegistered()
-		{
-			if (!registeredDefaultReplacements)
-			{
-				RegisterDefaultReplacements();
-			}
-		}
+        private static void RegisterDefaultReplacements()
+        {
+            foreach (var plugin in PluginContainer.plugins)
+            {
+                foreach (var scriptReferenceReplacement in plugin.scriptReferenceReplacements)
+                {
+                    RegisterReplacement(scriptReferenceReplacement);
+                }
+            }
 
-		public static void RegisterReplacement(ScriptReference previousReference, ScriptReference newReference)
-		{
-			replacements.Add(new ScriptReferenceReplacement(previousReference, newReference));
-		}
+            registeredDefaultReplacements = true;
+        }
 
-		public static void RegisterReplacement(ScriptReferenceReplacement replacement)
-		{
-			replacements.Add(replacement);
-		}
+        private static void EnsureDefaultReplacementsRegistered()
+        {
+            if (!registeredDefaultReplacements)
+            {
+                RegisterDefaultReplacements();
+            }
+        }
 
-		public static void RegisterReplacements(IEnumerable<ScriptReferenceReplacement> replacements)
-		{
-			ScriptReferenceResolver.replacements.UnionWith(replacements);
-		}
-		
-		public static void Run(string path, Mode mode)
-		{
-			EnsureDefaultReplacementsRegistered();
-			Run(new [] { path }, replacements, mode);
-		}
+        public static void RegisterReplacement(ScriptReference previousReference, ScriptReference newReference)
+        {
+            replacements.Add(new ScriptReferenceReplacement(previousReference, newReference));
+        }
 
-		public static void Run(IEnumerable<string> paths, Mode mode)
-		{
-			EnsureDefaultReplacementsRegistered();
-			Run(paths, replacements, mode);
-		}
-		[MenuItem("Tools/Peek/Ludiq/Fix Missing Scripts", priority = LudiqProduct.ToolsMenuPriority + 501)]
-		public static void Run()
-		{
-			EnsureDefaultReplacementsRegistered();
-			Run(GetAllReplacementPaths(), replacements, Mode.Dialog);
-		}
-		
-		// [MenuItem("Assets/Fix Missing Scripts")]
-		private static void RunContextual()
-		{
-			if (!CanRunContextual())
-			{
-				throw new InvalidOperationException();
-			}
-			
-			EnsureDefaultReplacementsRegistered();
-			Run(GetSelectedReplacementPaths(), replacements, Mode.Dialog);
-		}
+        public static void RegisterReplacement(ScriptReferenceReplacement replacement)
+        {
+            replacements.Add(replacement);
+        }
 
-		// [MenuItem("Assets/Fix Missing Scripts", true)]
-		private static bool CanRunContextual()
-		{
-			return canRun && GetSelectedReplacementPaths().Any();
-		}
+        public static void RegisterReplacements(IEnumerable<ScriptReferenceReplacement> replacements)
+        {
+            ScriptReferenceResolver.replacements.UnionWith(replacements);
+        }
+
+        public static void Run(string path, Mode mode)
+        {
+            EnsureDefaultReplacementsRegistered();
+            Run(new[] { path }, replacements, mode);
+        }
+
+        public static void Run(IEnumerable<string> paths, Mode mode)
+        {
+            EnsureDefaultReplacementsRegistered();
+            Run(paths, replacements, mode);
+        }
+        [MenuItem("Tools/Peek/Ludiq/Fix Missing Scripts", priority = LudiqProduct.ToolsMenuPriority + 501)]
+        public static void Run()
+        {
+            EnsureDefaultReplacementsRegistered();
+            Run(GetAllReplacementPaths(), replacements, Mode.Dialog);
+        }
+
+        // [MenuItem("Assets/Fix Missing Scripts")]
+        private static void RunContextual()
+        {
+            if (!CanRunContextual())
+            {
+                throw new InvalidOperationException();
+            }
+
+            EnsureDefaultReplacementsRegistered();
+            Run(GetSelectedReplacementPaths(), replacements, Mode.Dialog);
+        }
+
+        // [MenuItem("Assets/Fix Missing Scripts", true)]
+        private static bool CanRunContextual()
+        {
+            return canRun && GetSelectedReplacementPaths().Any();
+        }
 
 #if LUDIQ_DEVELOPER
 		[MenuItem("Tools/Peek/Ludiq/Developer/Log Script Reference Replacements", priority = LudiqProduct.InternalToolsMenuPriority + 601)]
 #endif
-		private static void LogReplacements()
-		{
-			EnsureDefaultReplacementsRegistered();
-			Debug.Log(replacements.ToLineSeparatedString());
-		}
+        private static void LogReplacements()
+        {
+            EnsureDefaultReplacementsRegistered();
+            Debug.Log(replacements.ToLineSeparatedString());
+        }
 
-		public static void Run(IEnumerable<string> paths, IEnumerable<ScriptReferenceReplacement> replacements, Mode mode)
-		{
-			if (!canRun)
-			{
-				var message = "Cannot run missing script resolver with the current serialization mode.\nSet the project serialization mode to 'Force Text' and try again.";
+        public static void Run(IEnumerable<string> paths, IEnumerable<ScriptReferenceReplacement> replacements, Mode mode)
+        {
+            if (!canRun)
+            {
+                var message = "Cannot run missing script resolver with the current serialization mode.\nSet the project serialization mode to 'Force Text' and try again.";
 
-				if (mode == Mode.Dialog)
-				{
-					EditorUtility.DisplayDialog("Script Reference Resolver", message, "OK");
-				}
-				else if (mode == Mode.Console)
-				{
-					Debug.LogWarning(message);
-				}
+                if (mode == Mode.Dialog)
+                {
+                    EditorUtility.DisplayDialog("Script Reference Resolver", message, "OK");
+                }
+                else if (mode == Mode.Console)
+                {
+                    Debug.LogWarning(message);
+                }
 
-				return;
-			}
-			
-			// Doing a naive approach here: replacing the exact string by regex instead of parsing the YAML,
-			// since Unity sometimes breaks YAML specifications. This is whitespace dependant, but it should work.
+                return;
+            }
 
-			var newContents = new Dictionary<string, string[]>();
+            // Doing a naive approach here: replacing the exact string by regex instead of parsing the YAML,
+            // since Unity sometimes breaks YAML specifications. This is whitespace dependant, but it should work.
 
-			var _paths = paths.ToArray();
-			var pathIndex = 0;
+            var newContents = new Dictionary<string, string[]>();
 
-			var regexes = new Dictionary<ScriptReferenceReplacement, Regex>();
+            var _paths = paths.ToArray();
+            var pathIndex = 0;
 
-			foreach (var replacement in replacements)
-			{
-				var regex = new Regex($@"\{{fileID: {replacement.previousReference.fileID}, guid: {replacement.previousReference.guid}, type: 3\}}", RegexOptions.Compiled);
-				regexes.Add(replacement, regex);
-			}
+            var regexes = new Dictionary<ScriptReferenceReplacement, Regex>();
 
-			foreach (var path in _paths)
-			{
-				if (newContents.ContainsKey(path))
-				{
-					// Duplicate path
-					continue;
-				}
-				
-				var replaced = false;
-				var fileContents = new List<string>();
-				
-				if (mode == Mode.Dialog)
-				{
-					ProgressUtility.DisplayProgressBar("Script Reference Resolver", $"Analyzing '{path}'...", pathIndex++ / (float)_paths.Length);
-				}
+            foreach (var replacement in replacements)
+            {
+                var regex = new Regex($@"\{{fileID: {replacement.previousReference.fileID}, guid: {replacement.previousReference.guid}, type: 3\}}", RegexOptions.Compiled);
+                regexes.Add(replacement, regex);
+            }
 
-				foreach (var line in File.ReadAllLines(path))
-				{
-					var newLine = line;
+            foreach (var path in _paths)
+            {
+                if (newContents.ContainsKey(path))
+                {
+                    // Duplicate path
+                    continue;
+                }
 
-					foreach (var replacement in replacements)
-					{
-						newLine = regexes[replacement].Replace(newLine, (match) =>
-						{
-							replaced = true;
+                var replaced = false;
+                var fileContents = new List<string>();
 
-							return $@"{{fileID: {replacement.newReference.fileID}, guid: {replacement.newReference.guid}, type: 3}}";
-						});
-					}
+                if (mode == Mode.Dialog)
+                {
+                    ProgressUtility.DisplayProgressBar("Script Reference Resolver", $"Analyzing '{path}'...", pathIndex++ / (float)_paths.Length);
+                }
 
-					fileContents.Add(newLine);
-				}
+                foreach (var line in File.ReadAllLines(path))
+                {
+                    var newLine = line;
 
-				if (replaced)
-				{
-					newContents.Add(path, fileContents.ToArray());
-				}
-			}
+                    foreach (var replacement in replacements)
+                    {
+                        newLine = regexes[replacement].Replace(newLine, (match) =>
+                        {
+                            replaced = true;
 
-			pathIndex = 0;
+                            return $@"{{fileID: {replacement.newReference.fileID}, guid: {replacement.newReference.guid}, type: 3}}";
+                        });
+                    }
 
-			if (newContents.Count > 0)
-			{
-				var pathMaxLength = 40;
-				var fileLimit = 15;
-				var fileList = newContents.Keys.Select(p => StringUtility.PathEllipsis(PathUtility.FromProject(p), pathMaxLength)).Take(fileLimit).ToLineSeparatedString();
+                    fileContents.Add(newLine);
+                }
 
-				if (newContents.Count > fileLimit)
-				{
-					fileList += "\n...";
-				}
+                if (replaced)
+                {
+                    newContents.Add(path, fileContents.ToArray());
+                }
+            }
 
-				var replace = true;
+            pathIndex = 0;
 
-				if (mode == Mode.Dialog)
-				{
-					var message = $"Missing script references have been found in {newContents.Count} file{(newContents.Count > 1 ? "s" : "")}: \n\n{fileList}\n\nProceed with replacement?";
+            if (newContents.Count > 0)
+            {
+                var pathMaxLength = 40;
+                var fileLimit = 15;
+                var fileList = newContents.Keys.Select(p => StringUtility.PathEllipsis(PathUtility.FromProject(p), pathMaxLength)).Take(fileLimit).ToLineSeparatedString();
 
-					replace = EditorUtility.DisplayDialog("Script Reference Resolver", message, "Replace References", "Cancel");
-				}
+                if (newContents.Count > fileLimit)
+                {
+                    fileList += "\n...";
+                }
 
-				if (replace)
-				{
-					foreach (var newContent in newContents)
-					{
-						if (mode == Mode.Dialog)
-						{
-							ProgressUtility.DisplayProgressBar("Script Reference Resolver", $"Fixing '{newContent.Key}'...", pathIndex++ / (float)_paths.Length);
-						}
-						
-						VersionControlUtility.Unlock(newContent.Key);
-						File.WriteAllLines(newContent.Key, newContent.Value);
-					}
-					
-					if (mode == Mode.Dialog)
-					{
-						EditorUtility.DisplayDialog("Script Reference Resolver", "Script references have been successfully replaced.\nRestarting Unity is recommended.", "OK");
-					}
-					else if (mode == Mode.Console)
-					{
-						Debug.Log($"Missing script references have been replaced in {newContents.Count} file{(newContents.Count > 1 ? "s" : "")}.\nRestarting Unity is recommended.\n{fileList}\n");
-					}
+                var replace = true;
 
-					AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-				}
-			}
-			else
-			{
-				var message = "No missing script reference was found.";
+                if (mode == Mode.Dialog)
+                {
+                    var message = $"Missing script references have been found in {newContents.Count} file{(newContents.Count > 1 ? "s" : "")}: \n\n{fileList}\n\nProceed with replacement?";
 
-				if (mode == Mode.Dialog)
-				{
-					EditorUtility.DisplayDialog("Script Reference Resolver", message, "OK");
-				}
-				else if (mode == Mode.Console)
-				{
-					// Debug.Log(message);
-				}
-			}
+                    replace = EditorUtility.DisplayDialog("Script Reference Resolver", message, "Replace References", "Cancel");
+                }
 
-			if (mode == Mode.Dialog)
-			{
-				ProgressUtility.ClearProgressBar();
-			}
-		}
-	}
+                if (replace)
+                {
+                    foreach (var newContent in newContents)
+                    {
+                        if (mode == Mode.Dialog)
+                        {
+                            ProgressUtility.DisplayProgressBar("Script Reference Resolver", $"Fixing '{newContent.Key}'...", pathIndex++ / (float)_paths.Length);
+                        }
+
+                        VersionControlUtility.Unlock(newContent.Key);
+                        File.WriteAllLines(newContent.Key, newContent.Value);
+                    }
+
+                    if (mode == Mode.Dialog)
+                    {
+                        EditorUtility.DisplayDialog("Script Reference Resolver", "Script references have been successfully replaced.\nRestarting Unity is recommended.", "OK");
+                    }
+                    else if (mode == Mode.Console)
+                    {
+                        Debug.Log($"Missing script references have been replaced in {newContents.Count} file{(newContents.Count > 1 ? "s" : "")}.\nRestarting Unity is recommended.\n{fileList}\n");
+                    }
+
+                    AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+                }
+            }
+            else
+            {
+                var message = "No missing script reference was found.";
+
+                if (mode == Mode.Dialog)
+                {
+                    EditorUtility.DisplayDialog("Script Reference Resolver", message, "OK");
+                }
+                else if (mode == Mode.Console)
+                {
+                    // Debug.Log(message);
+                }
+            }
+
+            if (mode == Mode.Dialog)
+            {
+                ProgressUtility.ClearProgressBar();
+            }
+        }
+    }
 }

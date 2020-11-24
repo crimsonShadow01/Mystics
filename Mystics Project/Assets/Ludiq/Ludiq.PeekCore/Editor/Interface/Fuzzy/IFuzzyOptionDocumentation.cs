@@ -2,26 +2,26 @@
 
 namespace Ludiq.PeekCore
 {
-	public interface IFuzzyOptionDocumentation
-	{
-		string summary { get; }
+    public interface IFuzzyOptionDocumentation
+    {
+        string summary { get; }
 
-		string returns { get; }
+        string returns { get; }
 
-		string remarks { get; }
+        string remarks { get; }
 
-		string returnType { get; }
+        string returnType { get; }
 
-		EditorTexture returnIcon { get; }
+        EditorTexture returnIcon { get; }
 
-		IEnumerable<string> parameters { get; }
+        IEnumerable<string> parameters { get; }
 
-		string GetParameterName(string parameter);
+        string GetParameterName(string parameter);
 
-		string GetParameterSummary(string parameter);
+        string GetParameterSummary(string parameter);
 
-		string GetParameterType(string parameter);
+        string GetParameterType(string parameter);
 
-		EditorTexture GetParameterIcon(string parameter);
-	}
+        EditorTexture GetParameterIcon(string parameter);
+    }
 }

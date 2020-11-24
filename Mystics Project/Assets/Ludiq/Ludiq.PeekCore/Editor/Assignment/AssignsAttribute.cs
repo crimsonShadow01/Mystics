@@ -1,21 +1,21 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
+using System;
 
 namespace Ludiq.PeekCore
 {
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-	[MeansImplicitUse]
-	public sealed class AssignsAttribute : Attribute
-	{
-		public AssignsAttribute() { }
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    [MeansImplicitUse]
+    public sealed class AssignsAttribute : Attribute
+    {
+        public AssignsAttribute() { }
 
-		public AssignsAttribute(string memberName)
-		{
-			this.memberName = memberName;
-		}
+        public AssignsAttribute(string memberName)
+        {
+            this.memberName = memberName;
+        }
 
-		public string memberName { get; }
+        public string memberName { get; }
 
-		public bool cache { get; set; } = true;
-	}
+        public bool cache { get; set; } = true;
+    }
 }

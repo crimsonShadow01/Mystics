@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Databox.FullSerializer.Internal;
+using System;
 using System.Collections.Generic;
-using Databox.FullSerializer.Internal;
 
-namespace Databox.FullSerializer {
+namespace Databox.FullSerializer
+{
     /// <summary>
     /// This class allows arbitrary code to easily register global converters. To
     /// add a converter, simply declare a new field called "Register_*" that
@@ -10,32 +11,41 @@ namespace Databox.FullSerializer {
     /// can do the same with a method called "Register_*"; just add the converter
     /// type to the `Converters` list.
     /// </summary>
-    public partial class fsConverterRegistrar {
-        static fsConverterRegistrar() {
+    public partial class fsConverterRegistrar
+    {
+        static fsConverterRegistrar()
+        {
             Converters = new List<Type>();
 
-            foreach (var field in typeof(fsConverterRegistrar).GetDeclaredFields()) {
+            foreach (var field in typeof(fsConverterRegistrar).GetDeclaredFields())
+            {
                 if (field.Name.StartsWith("Register_"))
                     Converters.Add(field.FieldType);
             }
 
-            foreach (var method in typeof(fsConverterRegistrar).GetDeclaredMethods()) {
+            foreach (var method in typeof(fsConverterRegistrar).GetDeclaredMethods())
+            {
                 if (method.Name.StartsWith("Register_"))
                     method.Invoke(null, null);
             }
 
             // Make sure we do not use any AOT Models which are out of date.
             var finalResult = new List<Type>(Converters);
-            foreach (Type t in Converters) {
+            foreach (Type t in Converters)
+            {
                 object instance = null;
-                try {
+                try
+                {
                     instance = Activator.CreateInstance(t);
-                } catch (Exception) {}
+                }
+                catch (Exception) { }
 
                 var aotConverter = instance as fsIAotConverter;
-                if (aotConverter != null) {
+                if (aotConverter != null)
+                {
                     var modelMetaType = fsMetaType.Get(new fsConfig(), aotConverter.ModelType);
-                    if (fsAotCompilationManager.IsAotModelUpToDate(modelMetaType, aotConverter) == false) {
+                    if (fsAotCompilationManager.IsAotModelUpToDate(modelMetaType, aotConverter) == false)
+                    {
                         finalResult.Remove(t);
                     }
                 }

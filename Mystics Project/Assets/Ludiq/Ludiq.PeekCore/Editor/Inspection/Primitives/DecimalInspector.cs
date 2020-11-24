@@ -4,8 +4,8 @@
 
 namespace Ludiq.PeekCore
 {
-	public class DecimalInspector : ContinuousNumberInspector<decimal>
-	{
-		public DecimalInspector(Accessor accessor) : base(accessor) { }
-	}
+    public class DecimalInspector : ContinuousNumberInspector<decimal>
+    {
+        public DecimalInspector(Accessor accessor) : base(accessor) { }
+    }
 }

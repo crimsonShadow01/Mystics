@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 
 namespace SensorToolkit
 {
@@ -106,7 +105,8 @@ namespace SensorToolkit
 
             EditorGUILayout.Space();
 
-            if (showEvents = EditorGUILayout.Foldout(showEvents, "Events")) {
+            if (showEvents = EditorGUILayout.Foldout(showEvents, "Events"))
+            {
                 EditorGUILayout.PropertyField(onDetected);
                 EditorGUILayout.PropertyField(onLostDetection);
             }
@@ -115,7 +115,8 @@ namespace SensorToolkit
 
             EditorGUILayout.PropertyField(initialBufferSize);
             EditorGUILayout.PropertyField(dynamicallyIncreaseBufferSize);
-            if (rangeSensor.CurrentBufferSize != 0 && rangeSensor.CurrentBufferSize != rangeSensor.InitialBufferSize) {
+            if (rangeSensor.CurrentBufferSize != 0 && rangeSensor.CurrentBufferSize != rangeSensor.InitialBufferSize)
+            {
                 EditorGUILayout.HelpBox("Buffer size expanded to: " + rangeSensor.CurrentBufferSize, MessageType.Info);
             }
 

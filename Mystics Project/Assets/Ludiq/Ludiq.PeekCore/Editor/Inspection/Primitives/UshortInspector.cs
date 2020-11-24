@@ -4,8 +4,8 @@
 
 namespace Ludiq.PeekCore
 {
-	public class UshortInspector : DiscreteNumberInspector<ushort>
-	{
-		public UshortInspector(Accessor accessor) : base(accessor) { }
-	}
+    public class UshortInspector : DiscreteNumberInspector<ushort>
+    {
+        public UshortInspector(Accessor accessor) : base(accessor) { }
+    }
 }

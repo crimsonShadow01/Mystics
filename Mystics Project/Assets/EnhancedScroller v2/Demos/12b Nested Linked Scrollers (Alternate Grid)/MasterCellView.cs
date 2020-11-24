@@ -1,8 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using EnhancedUI.EnhancedScroller;
-using System.Collections.Generic;
-using System;
+﻿using EnhancedUI.EnhancedScroller;
+using UnityEngine;
 
 namespace EnhancedScrollerDemos.NestedLinkedScrollers
 {

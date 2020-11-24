@@ -86,14 +86,14 @@ namespace MFlight.Demo
 
         private void RunAutopilot(Vector3 flyTarget, out float yaw, out float pitch, out float roll)
         {
-			// Freelook
-			if (Input.GetButton("Fire2"))
-			{
-				yaw = 0;
-				pitch = 0;
-				roll = 0;
-				return;
-			}
+            // Freelook
+            if (Input.GetButton("Fire2"))
+            {
+                yaw = 0;
+                pitch = 0;
+                roll = 0;
+                return;
+            }
 
             // This is my usual trick of converting the fly to position to local space.
             // You can derive a lot of information from where the target is relative to self.

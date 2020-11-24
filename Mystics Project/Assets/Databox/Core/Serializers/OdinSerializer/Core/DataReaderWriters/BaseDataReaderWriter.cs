@@ -141,7 +141,7 @@ namespace Databox.OdinSerializer
                 var current = this.nodes[this.nodesLength - 1];
                 this.nodes[this.nodesLength] = new NodeInfo(current.Name, current.Id, current.Type, true);
             }
-            
+
             this.nodesLength++;
         }
 

@@ -1,15 +1,15 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public enum OperatorCategory
-	{
-		None,
+    public enum OperatorCategory
+    {
+        None,
 
-		Math,
-		Logic,
-		Comparison,
-		Bitwise,
-		Incrementation,
+        Math,
+        Logic,
+        Comparison,
+        Bitwise,
+        Incrementation,
 
-		Count,
-	}
+        Count,
+    }
 }

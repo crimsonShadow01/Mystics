@@ -1,12 +1,4 @@
-﻿
-using System;
-using UnityEditor;
-using UnityEngine;
-using System.Runtime.InteropServices;
-
-using System.IO;
-using System.Reflection;
-using System.Collections.Generic;
+﻿using UnityEngine;
 
 namespace Substance.EditorHelper
 {
@@ -27,18 +19,18 @@ namespace Substance.EditorHelper
             public static bool IsHDRP()
             {
 #if UNITY_2019_3_OR_NEWER
-            bool bActive = false;
+                bool bActive = false;
 
-            UnityEngine.Rendering.RenderPipelineAsset asset;
-            asset = UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset;
+                UnityEngine.Rendering.RenderPipelineAsset asset;
+                asset = UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset;
 
-            if ((asset != null) &&
-                (asset.GetType().ToString().EndsWith(".HDRenderPipelineAsset")))
-            {
+                if ((asset != null) &&
+                    (asset.GetType().ToString().EndsWith(".HDRenderPipelineAsset")))
+                {
                     bActive = true;
-            }
+                }
 
-            return bActive;
+                return bActive;
 #else
                 return false;
 #endif

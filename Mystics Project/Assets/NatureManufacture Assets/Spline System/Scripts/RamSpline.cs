@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 
@@ -830,13 +829,13 @@ public class RamSpline : MonoBehaviour
         {
             if (item != null)
             {
-                
+
                 if (Application.isPlaying)
                     Destroy(item.gameObject);
                 else
                     DestroyImmediate(item.gameObject);
 
-                    Destroy(item.gameObject);
+                Destroy(item.gameObject);
 
 
 

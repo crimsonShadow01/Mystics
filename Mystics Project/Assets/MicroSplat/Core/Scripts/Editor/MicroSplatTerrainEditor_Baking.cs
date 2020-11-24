@@ -3,35 +3,34 @@
 // Copyright (c) Jason Booth
 //////////////////////////////////////////////////////
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using JBooth.MicroSplat;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 
-public partial class MicroSplatTerrainEditor : Editor 
+public partial class MicroSplatTerrainEditor : Editor
 {
-   public enum BakingResolutions
-   {
-      k256 = 256,
-      k512 = 512,
-      k1024 = 1024,
-      k2048 = 2048, 
-      k4096 = 4096, 
-      k8192 = 8192
-   };
+    public enum BakingResolutions
+    {
+        k256 = 256,
+        k512 = 512,
+        k1024 = 1024,
+        k2048 = 2048,
+        k4096 = 4096,
+        k8192 = 8192
+    };
 
-   public enum BakingPasses
-   {
-      Albedo = 1,
-      Height = 2,
-      Normal = 4,
-      Metallic = 8,
-      Smoothness = 16,
-      AO = 32,
-      Emissive = 64,
-      FinalNormal = 128,
+    public enum BakingPasses
+    {
+        Albedo = 1,
+        Height = 2,
+        Normal = 4,
+        Metallic = 8,
+        Smoothness = 16,
+        AO = 32,
+        Emissive = 64,
+        FinalNormal = 128,
 #if __MICROSPLAT_PROCTEX__
       ProceduralSplatOutput0 = 256,
       ProceduralSplatOutput1 = 512,
@@ -50,59 +49,59 @@ public partial class MicroSplatTerrainEditor : Editor
       ProceduralSplatOutput6A = 4194304,
       ProceduralSplatOutput7A = 8388608,
 #endif
-   };
+    };
 
-   public BakingPasses passes = 0;
-   public BakingResolutions res = BakingResolutions.k1024;
+    public BakingPasses passes = 0;
+    public BakingResolutions res = BakingResolutions.k1024;
 
-   public static MicroSplatCompressor.Options compressOptions = new MicroSplatCompressor.Options ();
+    public static MicroSplatCompressor.Options compressOptions = new MicroSplatCompressor.Options();
 
 
 #if __MICROSPLAT_PROCTEX__
    public bool bakeSplats = false;
 #endif
 
-   void DestroyTex(Texture2D tex)
-   {
-      if (tex != Texture2D.blackTexture)
-      {
-         DestroyImmediate (tex);
-      }
-   }
+    void DestroyTex(Texture2D tex)
+    {
+        if (tex != Texture2D.blackTexture)
+        {
+            DestroyImmediate(tex);
+        }
+    }
 
-   void GenerateWorldData(Terrain t, out Texture2D worldNormal, out Texture2D worldPos, int splatRes)
-   {
-      // World/normals are used in texturing, so we have to make them match.
-      worldPos = new Texture2D(splatRes, splatRes, TextureFormat.RGBAFloat, true, true);
-      worldNormal = new Texture2D(splatRes, splatRes, TextureFormat.RGBAFloat, true, true);
-      t.transform.rotation = Quaternion.identity;
-      for (int x = 0; x < splatRes; ++x)
-      {
-         float u = (float)x / (float)splatRes;
-         for (int y = 0; y < splatRes; ++y)
-         {
-            float v = (float)y / (float)splatRes;
-            float h = t.terrainData.GetInterpolatedHeight(u, v);
-            Vector3 n = t.terrainData.GetInterpolatedNormal(u, v);
+    void GenerateWorldData(Terrain t, out Texture2D worldNormal, out Texture2D worldPos, int splatRes)
+    {
+        // World/normals are used in texturing, so we have to make them match.
+        worldPos = new Texture2D(splatRes, splatRes, TextureFormat.RGBAFloat, true, true);
+        worldNormal = new Texture2D(splatRes, splatRes, TextureFormat.RGBAFloat, true, true);
+        t.transform.rotation = Quaternion.identity;
+        for (int x = 0; x < splatRes; ++x)
+        {
+            float u = (float)x / (float)splatRes;
+            for (int y = 0; y < splatRes; ++y)
+            {
+                float v = (float)y / (float)splatRes;
+                float h = t.terrainData.GetInterpolatedHeight(u, v);
+                Vector3 n = t.terrainData.GetInterpolatedNormal(u, v);
 
-            Vector3 wp = t.transform.localToWorldMatrix.MultiplyPoint(new Vector3(u * t.terrainData.size.x, h, v * t.terrainData.size.z));
-            worldPos.SetPixel(x, y, new Color(wp.x, wp.y, wp.z));
-            worldNormal.SetPixel(x, y, new Color(n.x, n.y, n.z));
-         }
-      }
-      worldPos.Apply();
-      worldNormal.Apply();
-   }
+                Vector3 wp = t.transform.localToWorldMatrix.MultiplyPoint(new Vector3(u * t.terrainData.size.x, h, v * t.terrainData.size.z));
+                worldPos.SetPixel(x, y, new Color(wp.x, wp.y, wp.z));
+                worldNormal.SetPixel(x, y, new Color(n.x, n.y, n.z));
+            }
+        }
+        worldPos.Apply();
+        worldNormal.Apply();
+    }
 
-   
-   bool needsBake = false;
-   public void BakingGUI(MicroSplatTerrain t)
-   {
-      if (needsBake && Event.current.type == EventType.Repaint)
-      {
-         needsBake = false;
-         Bake(t);
-      }
+
+    bool needsBake = false;
+    public void BakingGUI(MicroSplatTerrain t)
+    {
+        if (needsBake && Event.current.type == EventType.Repaint)
+        {
+            needsBake = false;
+            Bake(t);
+        }
 #if __MICROSPLAT_PROCTEX__
 
 
@@ -213,21 +212,21 @@ public partial class MicroSplatTerrainEditor : Editor
       }
 #endif
 
-      if (MicroSplatUtilities.DrawRollup ("Render Baking", false))
-      {
-         res = (BakingResolutions)EditorGUILayout.EnumPopup (new GUIContent ("Resolution"), res);
+        if (MicroSplatUtilities.DrawRollup("Render Baking", false))
+        {
+            res = (BakingResolutions)EditorGUILayout.EnumPopup(new GUIContent("Resolution"), res);
 
-         #if UNITY_2017_3_OR_NEWER
+#if UNITY_2017_3_OR_NEWER
             passes = (BakingPasses)EditorGUILayout.EnumFlagsField(new GUIContent("Features"), passes);
-         #else
+#else
          passes = (BakingPasses)EditorGUILayout.EnumMaskPopup (new GUIContent ("Features"), passes);
-         #endif
+#endif
 
-         if (GUILayout.Button ("Export Selected"))
-         {
-            needsBake = true;
-         }
-      }
+            if (GUILayout.Button("Export Selected"))
+            {
+                needsBake = true;
+            }
+        }
 #if __MICROSPLAT_PROCTEX__
       if (t.templateMaterial != null && t.keywordSO != null && t.keywordSO.IsKeywordEnabled("_PROCEDURALTEXTURE"))
       {
@@ -242,53 +241,53 @@ public partial class MicroSplatTerrainEditor : Editor
          }
       }
 #endif
-      MicroSplatCompressor.DrawGUI (t, compressOptions);
+        MicroSplatCompressor.DrawGUI(t, compressOptions);
 
-   }
-
-   
-   
-   bool IsEnabled(BakingPasses p)
-   {
-      return ((int)passes & (int)p) == (int)p;
-   }
-      
+    }
 
 
-   static MicroSplatBaseFeatures.DefineFeature FeatureFromOutput(MicroSplatBaseFeatures.DebugOutput p)
-   {
-      if (p == MicroSplatBaseFeatures.DebugOutput.Albedo)
-      {
-         return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_ALBEDO;
-      }
-      else if (p == MicroSplatBaseFeatures.DebugOutput.AO)
-      {
-         return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_AO;
-      }
-      else if (p == MicroSplatBaseFeatures.DebugOutput.Emission)
-      {
-         return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_EMISSION;
-      }
-      else if (p == MicroSplatBaseFeatures.DebugOutput.Height)
-      {
-         return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_HEIGHT;
-      }
-      else if (p == MicroSplatBaseFeatures.DebugOutput.Metallic)
-      {
-         return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_METAL;
-      }
-      else if (p == MicroSplatBaseFeatures.DebugOutput.Normal)
-      {
-         return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_NORMAL;
-      }
-      else if (p == MicroSplatBaseFeatures.DebugOutput.Smoothness)
-      {
-         return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_SMOOTHNESS;
-      }
-      else if (p == MicroSplatBaseFeatures.DebugOutput.FinalNormalTangent)
-      {
-         return MicroSplatBaseFeatures.DefineFeature._DEBUG_FINALNORMALTANGENT;
-      }
+
+    bool IsEnabled(BakingPasses p)
+    {
+        return ((int)passes & (int)p) == (int)p;
+    }
+
+
+
+    static MicroSplatBaseFeatures.DefineFeature FeatureFromOutput(MicroSplatBaseFeatures.DebugOutput p)
+    {
+        if (p == MicroSplatBaseFeatures.DebugOutput.Albedo)
+        {
+            return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_ALBEDO;
+        }
+        else if (p == MicroSplatBaseFeatures.DebugOutput.AO)
+        {
+            return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_AO;
+        }
+        else if (p == MicroSplatBaseFeatures.DebugOutput.Emission)
+        {
+            return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_EMISSION;
+        }
+        else if (p == MicroSplatBaseFeatures.DebugOutput.Height)
+        {
+            return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_HEIGHT;
+        }
+        else if (p == MicroSplatBaseFeatures.DebugOutput.Metallic)
+        {
+            return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_METAL;
+        }
+        else if (p == MicroSplatBaseFeatures.DebugOutput.Normal)
+        {
+            return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_NORMAL;
+        }
+        else if (p == MicroSplatBaseFeatures.DebugOutput.Smoothness)
+        {
+            return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_SMOOTHNESS;
+        }
+        else if (p == MicroSplatBaseFeatures.DebugOutput.FinalNormalTangent)
+        {
+            return MicroSplatBaseFeatures.DefineFeature._DEBUG_FINALNORMALTANGENT;
+        }
 #if __MICROSPLAT_PROCTEX__
       else if (p == MicroSplatBaseFeatures.DebugOutput.ProceduralSplatOutput0)
       {
@@ -355,43 +354,43 @@ public partial class MicroSplatTerrainEditor : Editor
          return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_SPLAT7A;
       }
 #endif
-      return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_ALBEDO;
-   }
+        return MicroSplatBaseFeatures.DefineFeature._DEBUG_OUTPUT_ALBEDO;
+    }
 
-   static MicroSplatBaseFeatures.DebugOutput OutputFromPass(BakingPasses p)
-   {
-      if (p == BakingPasses.Albedo)
-      {
-         return MicroSplatBaseFeatures.DebugOutput.Albedo;
-      }
-      else if (p == BakingPasses.AO)
-      {
-         return MicroSplatBaseFeatures.DebugOutput.AO;
-      }
-      else if (p == BakingPasses.Emissive)
-      {
-         return MicroSplatBaseFeatures.DebugOutput.Emission;
-      }
-      else if (p == BakingPasses.Height)
-      {
-         return MicroSplatBaseFeatures.DebugOutput.Height;
-      }
-      else if (p == BakingPasses.Metallic)
-      {
-         return MicroSplatBaseFeatures.DebugOutput.Metallic;
-      }
-      else if (p == BakingPasses.Normal)
-      {
-         return MicroSplatBaseFeatures.DebugOutput.Normal;
-      }
-      else if (p == BakingPasses.Smoothness)
-      {
-         return MicroSplatBaseFeatures.DebugOutput.Smoothness;
-      }
-      else if (p == BakingPasses.FinalNormal)
-      {
-         return MicroSplatBaseFeatures.DebugOutput.FinalNormalTangent;
-      }
+    static MicroSplatBaseFeatures.DebugOutput OutputFromPass(BakingPasses p)
+    {
+        if (p == BakingPasses.Albedo)
+        {
+            return MicroSplatBaseFeatures.DebugOutput.Albedo;
+        }
+        else if (p == BakingPasses.AO)
+        {
+            return MicroSplatBaseFeatures.DebugOutput.AO;
+        }
+        else if (p == BakingPasses.Emissive)
+        {
+            return MicroSplatBaseFeatures.DebugOutput.Emission;
+        }
+        else if (p == BakingPasses.Height)
+        {
+            return MicroSplatBaseFeatures.DebugOutput.Height;
+        }
+        else if (p == BakingPasses.Metallic)
+        {
+            return MicroSplatBaseFeatures.DebugOutput.Metallic;
+        }
+        else if (p == BakingPasses.Normal)
+        {
+            return MicroSplatBaseFeatures.DebugOutput.Normal;
+        }
+        else if (p == BakingPasses.Smoothness)
+        {
+            return MicroSplatBaseFeatures.DebugOutput.Smoothness;
+        }
+        else if (p == BakingPasses.FinalNormal)
+        {
+            return MicroSplatBaseFeatures.DebugOutput.FinalNormalTangent;
+        }
 #if __MICROSPLAT_PROCTEX__
       else if (p == BakingPasses.ProceduralSplatOutput0)
       {
@@ -459,159 +458,159 @@ public partial class MicroSplatTerrainEditor : Editor
       }
 
 #endif
-      return MicroSplatBaseFeatures.DebugOutput.Albedo;
-   }
+        return MicroSplatBaseFeatures.DebugOutput.Albedo;
+    }
 
-   static void RemoveKeyword(List<string> keywords, string keyword)
-   {
-      if (keywords.Contains(keyword))
-      {
-         keywords.Remove(keyword);
-      }
-   }
+    static void RemoveKeyword(List<string> keywords, string keyword)
+    {
+        if (keywords.Contains(keyword))
+        {
+            keywords.Remove(keyword);
+        }
+    }
 
-   static Material SetupMaterial(MicroSplatKeywords kwds, Material mat, MicroSplatBaseFeatures.DebugOutput debugOutput, bool useDebugTopo)
-   {
-      MicroSplatShaderGUI.MicroSplatCompiler comp = new MicroSplatShaderGUI.MicroSplatCompiler();
+    static Material SetupMaterial(MicroSplatKeywords kwds, Material mat, MicroSplatBaseFeatures.DebugOutput debugOutput, bool useDebugTopo)
+    {
+        MicroSplatShaderGUI.MicroSplatCompiler comp = new MicroSplatShaderGUI.MicroSplatCompiler();
 
-      List<string> keywords = new List<string>(kwds.keywords);
+        List<string> keywords = new List<string>(kwds.keywords);
 
-      RemoveKeyword(keywords, "_SNOW");
-      RemoveKeyword(keywords, "_TESSDISTANCE");
-      RemoveKeyword(keywords, "_WINDPARTICULATE");
-      RemoveKeyword(keywords, "_SNOWPARTICULATE");
-      RemoveKeyword(keywords, "_GLITTER");
-      RemoveKeyword(keywords, "_SNOWGLITTER");
-      RemoveKeyword (keywords, "_SPECULARFROMMETALLIC");
-      RemoveKeyword (keywords, "_USESPECULARWORKFLOW");
-      RemoveKeyword (keywords, "_BDRFLAMBERT");
-      RemoveKeyword (keywords, "_BDRF1");
-      RemoveKeyword (keywords, "_BDRF2");
-      RemoveKeyword (keywords, "_BDRF3");
+        RemoveKeyword(keywords, "_SNOW");
+        RemoveKeyword(keywords, "_TESSDISTANCE");
+        RemoveKeyword(keywords, "_WINDPARTICULATE");
+        RemoveKeyword(keywords, "_SNOWPARTICULATE");
+        RemoveKeyword(keywords, "_GLITTER");
+        RemoveKeyword(keywords, "_SNOWGLITTER");
+        RemoveKeyword(keywords, "_SPECULARFROMMETALLIC");
+        RemoveKeyword(keywords, "_USESPECULARWORKFLOW");
+        RemoveKeyword(keywords, "_BDRFLAMBERT");
+        RemoveKeyword(keywords, "_BDRF1");
+        RemoveKeyword(keywords, "_BDRF2");
+        RemoveKeyword(keywords, "_BDRF3");
 
-      keywords.Add(FeatureFromOutput(debugOutput).ToString());
-      if (useDebugTopo)
-      {
-         keywords.Add("_DEBUG_USE_TOPOLOGY");
-      }
+        keywords.Add(FeatureFromOutput(debugOutput).ToString());
+        if (useDebugTopo)
+        {
+            keywords.Add("_DEBUG_USE_TOPOLOGY");
+        }
 
-      keywords.Add ("_RENDERBAKE");
+        keywords.Add("_RENDERBAKE");
 
-      string shader = comp.Compile(keywords.ToArray(), "RenderBake_" + debugOutput.ToString());
-      Shader s = ShaderUtil.CreateShaderAsset(shader);
-      Material renderMat = new Material(mat);
-      renderMat.shader = s;
-      renderMat.CopyPropertiesFromMaterial(mat); // because the constructor doesn't do it right in URP
-      renderMat.enableInstancing = false; // for some reason instance drawing breaks in URP
-      return renderMat;
-   }
-
-
-   public static Texture2D Bake(MicroSplatTerrain mst, BakingPasses p, int resolution, Texture2D worldPos, Texture2D worldNormal)
-   {
-      Camera cam = new GameObject("cam").AddComponent<Camera>();
-      cam.orthographic = true;
-      cam.orthographicSize = 0.5f;
-      cam.transform.position = new Vector3(0.5f, 10000.5f, -1);
-      cam.nearClipPlane = 0.1f;
-      cam.farClipPlane = 2.0f;
-      cam.enabled = false;
-      cam.depthTextureMode = DepthTextureMode.None;
-      cam.clearFlags = CameraClearFlags.Color;
-      cam.backgroundColor = Color.grey;
-
-      var debugOutput = OutputFromPass(p);
-      var readWrite = (debugOutput == MicroSplatBaseFeatures.DebugOutput.Albedo || debugOutput == MicroSplatBaseFeatures.DebugOutput.Emission) ?
-         RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear;
-
-      RenderTexture rt = RenderTexture.GetTemporary(resolution, resolution, 0, RenderTextureFormat.ARGB32, readWrite);
-      RenderTexture.active = rt;
-      cam.targetTexture = rt;
-
-      GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-      go.transform.position = new Vector3(0, 10000, 0);
-      cam.transform.position = new Vector3(0, 10000, -1);
-      Material renderMat = SetupMaterial(MicroSplatUtilities.FindOrCreateKeywords(mst.templateMaterial), mst.matInstance, debugOutput, worldPos != null);
-      renderMat.SetTexture("_DebugWorldPos", worldPos);
-      renderMat.SetTexture("_DebugWorldNormal", worldNormal);
-
-      go.GetComponent<MeshRenderer>().sharedMaterial = renderMat;
-      bool fog = RenderSettings.fog;
-      if (p == BakingPasses.Normal)
-      {
-         cam.backgroundColor = Color.blue;
-      }
-      else
-      {
-         cam.backgroundColor = Color.gray;
-      }
-
-      // this is a strange one, at 0,0,0 rotation the albedo won't render on Windows platforms, so parent the cam to the quad and rotate it a bit
-      cam.transform.SetParent(go.transform);
-      go.transform.rotation = Quaternion.Euler(0.01f, 0, 0);
-
-      var ambInt = RenderSettings.ambientIntensity;
-      var reflectInt = RenderSettings.reflectionIntensity;
-      RenderSettings.ambientIntensity = 0;
-      RenderSettings.reflectionIntensity = 0;
-      Unsupported.SetRenderSettingsUseFogNoDirty(false);
-      cam.Render();
-      Unsupported.SetRenderSettingsUseFogNoDirty(fog);
-
-      RenderSettings.ambientIntensity = ambInt;
-      RenderSettings.reflectionIntensity = reflectInt;
-      Texture2D tex = new Texture2D(resolution, resolution, TextureFormat.ARGB32, false);
-      tex.ReadPixels(new Rect(0, 0, resolution, resolution), 0, 0);
-      RenderTexture.active = null;
-      RenderTexture.ReleaseTemporary(rt);
-
-      tex.Apply();
+        string shader = comp.Compile(keywords.ToArray(), "RenderBake_" + debugOutput.ToString());
+        Shader s = ShaderUtil.CreateShaderAsset(shader);
+        Material renderMat = new Material(mat);
+        renderMat.shader = s;
+        renderMat.CopyPropertiesFromMaterial(mat); // because the constructor doesn't do it right in URP
+        renderMat.enableInstancing = false; // for some reason instance drawing breaks in URP
+        return renderMat;
+    }
 
 
-      MeshRenderer mr = go.GetComponent<MeshRenderer>();
-      if (mr != null)
-      {
-         if (mr.sharedMaterial != null)
-         {
-            if (mr.sharedMaterial.shader != null)
-               GameObject.DestroyImmediate(mr.sharedMaterial.shader);
-            GameObject.DestroyImmediate(mr.sharedMaterial);
-         }
-      }
+    public static Texture2D Bake(MicroSplatTerrain mst, BakingPasses p, int resolution, Texture2D worldPos, Texture2D worldNormal)
+    {
+        Camera cam = new GameObject("cam").AddComponent<Camera>();
+        cam.orthographic = true;
+        cam.orthographicSize = 0.5f;
+        cam.transform.position = new Vector3(0.5f, 10000.5f, -1);
+        cam.nearClipPlane = 0.1f;
+        cam.farClipPlane = 2.0f;
+        cam.enabled = false;
+        cam.depthTextureMode = DepthTextureMode.None;
+        cam.clearFlags = CameraClearFlags.Color;
+        cam.backgroundColor = Color.grey;
 
-      GameObject.DestroyImmediate(go); // cam is child, so will be destroyed too
+        var debugOutput = OutputFromPass(p);
+        var readWrite = (debugOutput == MicroSplatBaseFeatures.DebugOutput.Albedo || debugOutput == MicroSplatBaseFeatures.DebugOutput.Emission) ?
+           RenderTextureReadWrite.sRGB : RenderTextureReadWrite.Linear;
 
-      return tex;
-   }
+        RenderTexture rt = RenderTexture.GetTemporary(resolution, resolution, 0, RenderTextureFormat.ARGB32, readWrite);
+        RenderTexture.active = rt;
+        cam.targetTexture = rt;
 
-   void Bake(MicroSplatTerrain mst)
-   {
-      
-      // for each pass
-      int pass = 1;
-      while (pass <= (int)(BakingPasses.Emissive))
-      {
-         BakingPasses p = (BakingPasses)pass;
-         pass *= 2;
-         if (!IsEnabled(p))
-         {
-            continue;
-         }
-         Texture2D worldPos, worldNormal;
-         GenerateWorldData(mst.terrain, out worldNormal, out worldPos, (int)res);
+        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        go.transform.position = new Vector3(0, 10000, 0);
+        cam.transform.position = new Vector3(0, 10000, -1);
+        Material renderMat = SetupMaterial(MicroSplatUtilities.FindOrCreateKeywords(mst.templateMaterial), mst.matInstance, debugOutput, worldPos != null);
+        renderMat.SetTexture("_DebugWorldPos", worldPos);
+        renderMat.SetTexture("_DebugWorldNormal", worldNormal);
 
-         var debugOutput = OutputFromPass(p);
-         var tex = Bake(mst, p, (int)res, worldPos, worldNormal);
-         var bytes = tex.EncodeToPNG();
+        go.GetComponent<MeshRenderer>().sharedMaterial = renderMat;
+        bool fog = RenderSettings.fog;
+        if (p == BakingPasses.Normal)
+        {
+            cam.backgroundColor = Color.blue;
+        }
+        else
+        {
+            cam.backgroundColor = Color.gray;
+        }
 
-         DestroyImmediate (worldPos, worldNormal);
-         string texPath = MicroSplatUtilities.RelativePathFromAsset(mst.terrain) + "/" + mst.terrain.name + "_" + debugOutput.ToString();
-         System.IO.File.WriteAllBytes(texPath + ".png", bytes);
+        // this is a strange one, at 0,0,0 rotation the albedo won't render on Windows platforms, so parent the cam to the quad and rotate it a bit
+        cam.transform.SetParent(go.transform);
+        go.transform.rotation = Quaternion.Euler(0.01f, 0, 0);
 
-      }
+        var ambInt = RenderSettings.ambientIntensity;
+        var reflectInt = RenderSettings.reflectionIntensity;
+        RenderSettings.ambientIntensity = 0;
+        RenderSettings.reflectionIntensity = 0;
+        Unsupported.SetRenderSettingsUseFogNoDirty(false);
+        cam.Render();
+        Unsupported.SetRenderSettingsUseFogNoDirty(fog);
 
-      AssetDatabase.Refresh();
-   }
+        RenderSettings.ambientIntensity = ambInt;
+        RenderSettings.reflectionIntensity = reflectInt;
+        Texture2D tex = new Texture2D(resolution, resolution, TextureFormat.ARGB32, false);
+        tex.ReadPixels(new Rect(0, 0, resolution, resolution), 0, 0);
+        RenderTexture.active = null;
+        RenderTexture.ReleaseTemporary(rt);
+
+        tex.Apply();
+
+
+        MeshRenderer mr = go.GetComponent<MeshRenderer>();
+        if (mr != null)
+        {
+            if (mr.sharedMaterial != null)
+            {
+                if (mr.sharedMaterial.shader != null)
+                    GameObject.DestroyImmediate(mr.sharedMaterial.shader);
+                GameObject.DestroyImmediate(mr.sharedMaterial);
+            }
+        }
+
+        GameObject.DestroyImmediate(go); // cam is child, so will be destroyed too
+
+        return tex;
+    }
+
+    void Bake(MicroSplatTerrain mst)
+    {
+
+        // for each pass
+        int pass = 1;
+        while (pass <= (int)(BakingPasses.Emissive))
+        {
+            BakingPasses p = (BakingPasses)pass;
+            pass *= 2;
+            if (!IsEnabled(p))
+            {
+                continue;
+            }
+            Texture2D worldPos, worldNormal;
+            GenerateWorldData(mst.terrain, out worldNormal, out worldPos, (int)res);
+
+            var debugOutput = OutputFromPass(p);
+            var tex = Bake(mst, p, (int)res, worldPos, worldNormal);
+            var bytes = tex.EncodeToPNG();
+
+            DestroyImmediate(worldPos, worldNormal);
+            string texPath = MicroSplatUtilities.RelativePathFromAsset(mst.terrain) + "/" + mst.terrain.name + "_" + debugOutput.ToString();
+            System.IO.File.WriteAllBytes(texPath + ".png", bytes);
+
+        }
+
+        AssetDatabase.Refresh();
+    }
 
 
 }

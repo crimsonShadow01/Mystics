@@ -5,43 +5,43 @@ using System.Linq;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class DictionaryValueAtIndexAccessor : DictionaryIndexAccessor
-	{
-		public DictionaryValueAtIndexAccessor(int index, Accessor parent) : base(SubpathPrefix, index, parent) { }
+    public sealed class DictionaryValueAtIndexAccessor : DictionaryIndexAccessor
+    {
+        public DictionaryValueAtIndexAccessor(int index, Accessor parent) : base(SubpathPrefix, index, parent) { }
 
-		protected override object rawValue
-		{
-			get
-			{
-				if (parentIsOrderedDictionary)
-				{
-					return ((IOrderedDictionary)parent.value)[index];
-				}
-				else
-				{
-					return ((IDictionary)parent.value).Values.Cast<object>().ElementAt(index);
-				}
-			}
-			set
-			{
-				if (parentIsOrderedDictionary)
-				{
-					((IOrderedDictionary)parent.value)[index] = value;
-				}
-				else
-				{
-					var key = ((IDictionary)parent.value).Keys.Cast<object>().ElementAt(index);
+        protected override object rawValue
+        {
+            get
+            {
+                if (parentIsOrderedDictionary)
+                {
+                    return ((IOrderedDictionary)parent.value)[index];
+                }
+                else
+                {
+                    return ((IDictionary)parent.value).Values.Cast<object>().ElementAt(index);
+                }
+            }
+            set
+            {
+                if (parentIsOrderedDictionary)
+                {
+                    ((IOrderedDictionary)parent.value)[index] = value;
+                }
+                else
+                {
+                    var key = ((IDictionary)parent.value).Keys.Cast<object>().ElementAt(index);
 
-					((IDictionary)parent.value)[key] = value;
-				}
-			}
-		}
+                    ((IDictionary)parent.value)[key] = value;
+                }
+            }
+        }
 
-		protected override Type GetDefinedType(Type dictionaryType)
-		{
-			return TypeUtility.GetDictionaryValueType(dictionaryType, true);
-		}
+        protected override Type GetDefinedType(Type dictionaryType)
+        {
+            return TypeUtility.GetDictionaryValueType(dictionaryType, true);
+        }
 
-		public const string SubpathPrefix = "__valueAt.";
-	}
+        public const string SubpathPrefix = "__valueAt.";
+    }
 }

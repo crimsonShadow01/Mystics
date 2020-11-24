@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace SensorToolkit.Example
 {
@@ -28,7 +28,7 @@ namespace SensorToolkit.Example
             get
             {
                 var detected = Sight.GetDetected();
-                for (int i = detected.Count-1; i >= 0 ; i--)
+                for (int i = detected.Count - 1; i >= 0; i--)
                 {
                     var detectedTeam = detected[i].GetComponent<TeamMember>();
                     if (detectedTeam == null || detectedTeam.Team == team || detectedTeam.Team == Teams.None)
@@ -80,7 +80,7 @@ namespace SensorToolkit.Example
 
         IEnumerator DefaultState()
         {
-            Start:
+        Start:
 
             if (movement.Held != null)
             {
@@ -224,7 +224,7 @@ namespace SensorToolkit.Example
 
         IEnumerator CarryToBaseState()
         {
-            Start:
+        Start:
 
             if (movement.Held == null)
             {

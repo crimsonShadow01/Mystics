@@ -2,14 +2,14 @@
 
 namespace Ludiq.PeekCore
 {
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-	public class PluginRuntimeAssemblyAttribute : Attribute
-	{
-		public PluginRuntimeAssemblyAttribute(string name)
-		{
-			assemblyName = name;
-		}
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public class PluginRuntimeAssemblyAttribute : Attribute
+    {
+        public PluginRuntimeAssemblyAttribute(string name)
+        {
+            assemblyName = name;
+        }
 
-		public LooseAssemblyName assemblyName { get; }
-	}
+        public LooseAssemblyName assemblyName { get; }
+    }
 }

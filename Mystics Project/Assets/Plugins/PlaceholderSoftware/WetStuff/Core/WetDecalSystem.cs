@@ -1,8 +1,8 @@
+using PlaceholderSoftware.WetStuff.Datastructures;
+using PlaceholderSoftware.WetStuff.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using PlaceholderSoftware.WetStuff.Datastructures;
-using PlaceholderSoftware.WetStuff.Rendering;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using RenderSettings = PlaceholderSoftware.WetStuff.Rendering.RenderSettings;
@@ -214,7 +214,7 @@ namespace PlaceholderSoftware.WetStuff
             {
                 if (ReferenceEquals(null, obj)) return false;
 
-                return obj is MaterialBatchId && Equals((MaterialBatchId) obj);
+                return obj is MaterialBatchId && Equals((MaterialBatchId)obj);
             }
 
             public override int GetHashCode()
@@ -255,7 +255,8 @@ namespace PlaceholderSoftware.WetStuff
                 BoundingSpheres = new BoundingSphere[16];
                 Decals = new ReadOnlyCollection<DecalRenderInstance>(_decals);
 
-                var material = new Material(shader) {
+                var material = new Material(shader)
+                {
                     hideFlags = HideFlags.DontSave
                 };
 
@@ -348,7 +349,7 @@ namespace PlaceholderSoftware.WetStuff
                 _batchesList = new List<MaterialBatch>();
                 _wetMaskShader = Shader.Find("WetStuff/WetSurfaceMask");
                 _dryMaskShader = Shader.Find("WetStuff/DrySurfaceMask");
-                BlueNoiseRGBA = (Texture2D) Resources.Load("FreeBlueNoiseTextures/128_128/LDR_RGBA_2");
+                BlueNoiseRGBA = (Texture2D)Resources.Load("FreeBlueNoiseTextures/128_128/LDR_RGBA_2");
                 Batches = new ReadOnlyCollection<MaterialBatch>(_batchesList);
                 LastUpdated = 0;
                 ToUpdate = new List<IWetDecal>();

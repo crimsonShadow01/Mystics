@@ -10,8 +10,8 @@ namespace Ludiq.PeekCore.CodeDom
     {
         public CodeFieldReferenceExpression(CodeExpression targetObject, string fieldName)
         {
-			Ensure.That(nameof(targetObject)).IsNotNull(targetObject);
-			Ensure.That(nameof(fieldName)).IsNotNull(fieldName);
+            Ensure.That(nameof(targetObject)).IsNotNull(targetObject);
+            Ensure.That(nameof(fieldName)).IsNotNull(fieldName);
 
             TargetObject = targetObject;
             FieldName = fieldName;
@@ -20,33 +20,33 @@ namespace Ludiq.PeekCore.CodeDom
         public CodeExpression TargetObject { get; }
         public string FieldName { get; }
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (TargetObject != null) yield return TargetObject;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (TargetObject != null) yield return TargetObject;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
-			bool needsTarget = true;
-			if (TargetObject is CodeThisReferenceExpression)
-			{
-				needsTarget = generator.ContainsLocalByName(FieldName);
-			}
+        protected override void GenerateInner(CodeGenerator generator)
+        {
+            bool needsTarget = true;
+            if (TargetObject is CodeThisReferenceExpression)
+            {
+                needsTarget = generator.ContainsLocalByName(FieldName);
+            }
 
-			if (needsTarget)
-			{				
-				if (TargetObject.Precedence > PrecedenceGroup.Primary) generator.Write(TokenType.Punctuation, '(');
-				TargetObject.Generate(generator);
-				if (TargetObject.Precedence > PrecedenceGroup.Primary) generator.Write(TokenType.Punctuation, ')');
-				generator.Write(TokenType.Punctuation, '.');
-			}
+            if (needsTarget)
+            {
+                if (TargetObject.Precedence > PrecedenceGroup.Primary) generator.Write(TokenType.Punctuation, '(');
+                TargetObject.Generate(generator);
+                if (TargetObject.Precedence > PrecedenceGroup.Primary) generator.Write(TokenType.Punctuation, ')');
+                generator.Write(TokenType.Punctuation, '.');
+            }
             generator.OutputIdentifier(TokenType.Identifier, FieldName);
-		}
-	}
+        }
+    }
 }

@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
+using PixelCrushers.DialogueSystem.UnityGUI;
 using UnityEngine;
 using UnityEngine.Events;
-using PixelCrushers.DialogueSystem.UnityGUI;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -212,9 +212,9 @@ namespace PixelCrushers.DialogueSystem
         /// Gets the current selection.
         /// </summary>
         /// <value>The selection.</value>
-        public Usable CurrentUsable 
-        { 
-            get { return usable; } 
+        public Usable CurrentUsable
+        {
+            get { return usable; }
             set { SetCurrentUsable(value); }
         }
 

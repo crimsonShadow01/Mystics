@@ -2,19 +2,19 @@
 
 namespace Ludiq.PeekCore
 {
-	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-	public class RegisterProductAttribute : Attribute, ITypeRegistrationAttribute
-	{
-		public RegisterProductAttribute(Type type, string id)
-		{
-			Ensure.That(nameof(type)).IsNotNull(type);
-			Ensure.That(nameof(id)).IsNotNull(id);
+    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
+    public class RegisterProductAttribute : Attribute, ITypeRegistrationAttribute
+    {
+        public RegisterProductAttribute(Type type, string id)
+        {
+            Ensure.That(nameof(type)).IsNotNull(type);
+            Ensure.That(nameof(id)).IsNotNull(id);
 
-			this.type = type;
-			this.id = id;
-		}
+            this.type = type;
+            this.id = id;
+        }
 
-		public Type type { get; }
-		public string id { get; }
-	}
+        public Type type { get; }
+        public string id { get; }
+    }
 }

@@ -11,33 +11,33 @@ namespace Ludiq.PeekCore.CodeDom
         public List<CodeDirective> StartDirectives { get; } = new List<CodeDirective>();
         public List<CodeDirective> EndDirectives { get; } = new List<CodeDirective>();
 
-		public void Generate(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			generator.EnterElement(this);
+        public void Generate(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.EnterElement(this);
 
             StartDirectives.Generate(generator);
-			GenerateInner(generator, emitOptions);
+            GenerateInner(generator, emitOptions);
             EndDirectives.Generate(generator);
 
-			generator.ExitElement();
-		}
+            generator.ExitElement();
+        }
 
-		public abstract bool IsTerminator { get; }
+        public abstract bool IsTerminator { get; }
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach(var child in base.Children) yield return child;
-				foreach(var child in StartDirectives) yield return child;
-				foreach(var child in EndDirectives) yield return child;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                foreach (var child in StartDirectives) yield return child;
+                foreach (var child in EndDirectives) yield return child;
+            }
+        }
 
-		public virtual void ReserveLocals(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-		}
+        public virtual void ReserveLocals(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+        }
 
-		protected abstract void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions);
-	}
+        protected abstract void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions);
+    }
 }

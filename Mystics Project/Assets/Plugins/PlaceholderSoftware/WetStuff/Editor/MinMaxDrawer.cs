@@ -13,7 +13,7 @@ namespace PlaceholderSoftware.WetStuff
         public override void OnGUI(Rect position, [NotNull] SerializedProperty property, [NotNull] GUIContent label)
         {
             // Cast the attribute to make life easier
-            var minMax = (MinMaxAttribute) attribute;
+            var minMax = (MinMaxAttribute)attribute;
 
             // Try to retrieve the tooltip
             var tooltipAttr = fieldInfo.GetCustomAttributes(typeof(TooltipAttribute), false).OfType<TooltipAttribute>().FirstOrDefault();
@@ -69,7 +69,7 @@ namespace PlaceholderSoftware.WetStuff
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            var minMax = (MinMaxAttribute) attribute;
+            var minMax = (MinMaxAttribute)attribute;
 
             // By default just return the standard line height
             var size = EditorGUIUtility.singleLineHeight;

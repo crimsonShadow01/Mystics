@@ -3,15 +3,7 @@
 // Copyright (c) Jason Booth
 //////////////////////////////////////////////////////
 
-
-using UnityEngine;
-using System.Collections;
-using UnityEditor;
-using UnityEditor.Callbacks;
-using System.Collections.Generic;
-using System.Text;
-
-namespace JBooth.MicroSplat 
+namespace JBooth.MicroSplat
 {
 #if __MICROSPLAT__ && (VEGETATION_STUDIO || VEGETATION_STUDIO_PRO)
    [InitializeOnLoad]

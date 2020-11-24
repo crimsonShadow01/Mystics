@@ -182,7 +182,7 @@ namespace Databox.OdinSerializer.Utilities
                 return this.enumerator.MoveNext();
             }
 
-			/// <summary>
+            /// <summary>
             /// Disposes the iterator.
             /// </summary>
             public void Dispose()

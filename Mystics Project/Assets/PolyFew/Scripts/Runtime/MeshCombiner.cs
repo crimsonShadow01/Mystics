@@ -1835,14 +1835,14 @@ namespace BrainFailProductions.PolyFewRuntime
 
                 meshFilter.sharedMesh = combinedMesh;
 
-//#if UNITY_EDITOR
-//                UnityEditor.MeshUtility.Optimize(meshFilter.sharedMesh);
+                //#if UNITY_EDITOR
+                //                UnityEditor.MeshUtility.Optimize(meshFilter.sharedMesh);
 
-//                if (generateUV2)
-//                {
-//                    UnityEditor.Unwrapping.GenerateSecondaryUVSet(meshFilter.sharedMesh);
-//                }
-//#endif
+                //                if (generateUV2)
+                //                {
+                //                    UnityEditor.Unwrapping.GenerateSecondaryUVSet(meshFilter.sharedMesh);
+                //                }
+                //#endif
 
                 newObject.transform.parent = parentTransform.parent;
 

@@ -18,10 +18,10 @@
 
 namespace Databox.OdinSerializer
 {
-    using System.Globalization;
     using Databox.OdinSerializer.Utilities;
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;

@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace SensorToolkit.Example
 {
@@ -30,7 +30,7 @@ namespace SensorToolkit.Example
         {
             var nextWaypoint = getNearestWaypointIndex();
 
-            Start:
+        Start:
 
             if (attackEnemyIfSpotted()) yield break;
             if (chaseIfAlarmSounded()) yield break;
@@ -75,7 +75,7 @@ namespace SensorToolkit.Example
             Steering.FaceTowardsTransform = ToAttack.transform;
             var alarmTimer = SoundAlarmTime;
 
-            Start:
+        Start:
 
             if (ToAttack == null)
             {
@@ -112,7 +112,7 @@ namespace SensorToolkit.Example
             Steering.Destination = position;
             float timer = 0f;
 
-            Start:
+        Start:
 
             if (attackEnemyIfSpotted()) yield break;
 
@@ -128,7 +128,7 @@ namespace SensorToolkit.Example
 
         IEnumerator Chase()
         {
-            Start:
+        Start:
 
             // Find a path from myself to the object who tripped the alarm, if it's a short path then we must be in the same
             // room, so just attack them. If it's a long path then follow it until we see them, and then attack them. If we
@@ -138,7 +138,7 @@ namespace SensorToolkit.Example
             {
                 var nextWaypoint = 0;
 
-                StartFollowPath:
+            StartFollowPath:
 
                 if (attackEnemyIfSpotted()) yield break;
 

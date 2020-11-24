@@ -6,9 +6,9 @@ namespace Ludiq.PeekCore.CodeDom
 {
     public sealed class CodeRegionEndDirective : CodeDirective
     {
-		protected override void GenerateInner(CodeGenerator generator)
-		{
+        protected override void GenerateInner(CodeGenerator generator)
+        {
             generator.Write(TokenType.Directive, "#endregion");
-		}
-	}
+        }
+    }
 }

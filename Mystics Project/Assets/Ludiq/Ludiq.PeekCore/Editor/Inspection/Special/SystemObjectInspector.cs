@@ -4,261 +4,261 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public class SystemObjectInspector : Inspector
-	{
-		public SystemObjectInspector(Accessor accessor) : base(accessor) { }
+    public class SystemObjectInspector : Inspector
+    {
+        public SystemObjectInspector(Accessor accessor) : base(accessor) { }
 
-		public override void Initialize()
-		{
-			base.Initialize();
-			
-			typeFilter = accessor.GetAttribute<TypeFilter>() ?? TypeFilter.Any;
+        public override void Initialize()
+        {
+            base.Initialize();
 
-			typeMemberName = accessor.GetAttribute<InspectorObjectTypeAttribute>()?.memberName;
-		}
+            typeFilter = accessor.GetAttribute<TypeFilter>() ?? TypeFilter.Any;
 
-		private Inspector castedInspector => ChildInspector(accessor.Cast(type));
+            typeMemberName = accessor.GetAttribute<InspectorObjectTypeAttribute>()?.memberName;
+        }
 
-		private TypeFilter _typeFilter;
-		
-		private Type type => chooseType ? typeTree.type : (Type)typeMemberAccessor.value;
-		
-		private TypeTree typeTree = new TypeTree(null);
+        private Inspector castedInspector => ChildInspector(accessor.Cast(type));
 
-		public bool chooseType => typeMemberName == null;
+        private TypeFilter _typeFilter;
 
-		public bool showValue => type != null && InspectorProvider.instance.GetDecoratorType(type) != typeof(SystemObjectInspector);
-		
-		private string typeMemberName;
+        private Type type => chooseType ? typeTree.type : (Type)typeMemberAccessor.value;
 
-		private Accessor typeMemberAccessor => chooseType ? null : accessor.parent[typeMemberName];
+        private TypeTree typeTree = new TypeTree(null);
 
-		public TypeFilter typeFilter
-		{
-			get
-			{
-				return _typeFilter;
-			}
-			private set
-			{
-				value = value.Clone().Configured();
-				value.Abstract = false;
-				value.Interfaces = false;
-				value.Object = false;
-				_typeFilter = value;
-			}
-		}
+        public bool chooseType => typeMemberName == null;
 
-		private Func<IFuzzyOptionTree> GetTypeOptions(TypeTree tree)
-		{
-			return () => new TypeOptionTree(Codebase.types, tree == typeTree ? typeFilter : typeTree.filter);
-		}
+        public bool showValue => type != null && InspectorProvider.instance.GetDecoratorType(type) != typeof(SystemObjectInspector);
 
-		private void InferType()
-		{
-			var newType = accessor.value?.GetType();
+        private string typeMemberName;
 
-			if (newType == typeTree.type || newType == null)
-			{
-				return;
-			}
-			
-			typeTree.ChangeType(newType);
-			EnforceType();
-			SetHeightDirty();
-		}
+        private Accessor typeMemberAccessor => chooseType ? null : accessor.parent[typeMemberName];
 
-		private void EnforceType()
-		{
-			if (accessor.value?.GetType() == type)
-			{
-				return;
-			}
+        public TypeFilter typeFilter
+        {
+            get
+            {
+                return _typeFilter;
+            }
+            private set
+            {
+                value = value.Clone().Configured();
+                value.Abstract = false;
+                value.Interfaces = false;
+                value.Object = false;
+                _typeFilter = value;
+            }
+        }
 
-			accessor.UnlinkChildren();
+        private Func<IFuzzyOptionTree> GetTypeOptions(TypeTree tree)
+        {
+            return () => new TypeOptionTree(Codebase.types, tree == typeTree ? typeFilter : typeTree.filter);
+        }
 
-			if (type == null)
-			{
-				accessor.value = null;
-			}
-			else if (ConversionUtility.CanConvert(accessor.value, type, true))
-			{
-				accessor.value = ConversionUtility.Convert(accessor.value, type);
-			}
-			else
-			{
-				accessor.value = type.TryInstantiate();
-			}
-		}
+        private void InferType()
+        {
+            var newType = accessor.value?.GetType();
 
-		protected override void OnControlGUI(Rect position)
-		{
-			InferType();
-			
-			var showLabels = !adaptiveWidth && position.width >= 120;
+            if (newType == typeTree.type || newType == null)
+            {
+                return;
+            }
 
-			if (chooseType)
-			{
-				var x = position.x;
-				var remainingWidth = position.width;
+            typeTree.ChangeType(newType);
+            EnforceType();
+            SetHeightDirty();
+        }
 
-				if (showLabels)
-				{
-					var typeLabel = label == GUIContent.none ? new GUIContent("Type") : new GUIContent(label.text + " Type");
+        private void EnforceType()
+        {
+            if (accessor.value?.GetType() == type)
+            {
+                return;
+            }
 
-					var typeLabelPosition = new Rect
-					(
-						x,
-						y,
-						Styles.labelWidth,
-						EditorGUIUtility.singleLineHeight
-					);
+            accessor.UnlinkChildren();
 
-					GUI.Label(typeLabelPosition, typeLabel, labelStyle);
+            if (type == null)
+            {
+                accessor.value = null;
+            }
+            else if (ConversionUtility.CanConvert(accessor.value, type, true))
+            {
+                accessor.value = ConversionUtility.Convert(accessor.value, type);
+            }
+            else
+            {
+                accessor.value = type.TryInstantiate();
+            }
+        }
 
-					x += typeLabelPosition.width;
-					remainingWidth -= typeLabelPosition.width;
-				}
+        protected override void OnControlGUI(Rect position)
+        {
+            InferType();
 
-				var typePosition = new Rect
-				(
-					x,
-					y,
-					remainingWidth,
-					LudiqGUI.GetTypeTreeFieldHeight(typeTree)
-				);
+            var showLabels = !adaptiveWidth && position.width >= 120;
 
-				EditorGUI.BeginChangeCheck();
+            if (chooseType)
+            {
+                var x = position.x;
+                var remainingWidth = position.width;
 
-				LudiqGUI.TypeTreeField(ref typePosition, GUIContent.none, typeTree, true, GetTypeOptions, Contents.nullTypeLabel);
+                if (showLabels)
+                {
+                    var typeLabel = label == GUIContent.none ? new GUIContent("Type") : new GUIContent(label.text + " Type");
 
-				if (EditorGUI.EndChangeCheck())
-				{
-					var newType = typeTree.GetSubstitutedType();
-					accessor.RecordUndo();
-					typeTree.ChangeType(newType);
-					EnforceType();
-					SetHeightDirty();
-				}
+                    var typeLabelPosition = new Rect
+                    (
+                        x,
+                        y,
+                        Styles.labelWidth,
+                        EditorGUIUtility.singleLineHeight
+                    );
 
-				y += typePosition.height;
-			}
+                    GUI.Label(typeLabelPosition, typeLabel, labelStyle);
 
-			if (chooseType && showValue)
-			{
-				y += Styles.spaceBetweenTypeAndValue;
-			}
+                    x += typeLabelPosition.width;
+                    remainingWidth -= typeLabelPosition.width;
+                }
 
-			if (showValue)
-			{
-				Rect valuePosition;
+                var typePosition = new Rect
+                (
+                    x,
+                    y,
+                    remainingWidth,
+                    LudiqGUI.GetTypeTreeFieldHeight(typeTree)
+                );
 
-				if (chooseType)
-				{
-					var x = position.x;
-					var remainingWidth = position.width;
+                EditorGUI.BeginChangeCheck();
 
-					if (showLabels)
-					{
-						var valueLabel = label == GUIContent.none ? new GUIContent("Value") : new GUIContent(label.text + " Value");
+                LudiqGUI.TypeTreeField(ref typePosition, GUIContent.none, typeTree, true, GetTypeOptions, Contents.nullTypeLabel);
 
-						var valueLabelPosition = new Rect
-						(
-							x,
-							y,
-							Styles.labelWidth,
-							EditorGUIUtility.singleLineHeight
-						);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    var newType = typeTree.GetSubstitutedType();
+                    accessor.RecordUndo();
+                    typeTree.ChangeType(newType);
+                    EnforceType();
+                    SetHeightDirty();
+                }
 
-						GUI.Label(valueLabelPosition, valueLabel, labelStyle);
+                y += typePosition.height;
+            }
 
-						x += valueLabelPosition.width;
-						remainingWidth -= valueLabelPosition.width;
-					}
+            if (chooseType && showValue)
+            {
+                y += Styles.spaceBetweenTypeAndValue;
+            }
 
-					valuePosition = new Rect
-					(
-						x,
-						y,
-						remainingWidth,
-						castedInspector.ControlHeight(remainingWidth)
-					);
+            if (showValue)
+            {
+                Rect valuePosition;
 
-					castedInspector.DrawControl(valuePosition);
-				}
-				else
-				{
-					valuePosition = new Rect
-					(
-						position.x,
-						y,
-						position.width,
-						castedInspector.ControlHeight(position.width)
-					);
+                if (chooseType)
+                {
+                    var x = position.x;
+                    var remainingWidth = position.width;
 
-					castedInspector.DrawControl(valuePosition);
-				}
+                    if (showLabels)
+                    {
+                        var valueLabel = label == GUIContent.none ? new GUIContent("Value") : new GUIContent(label.text + " Value");
 
-				y += valuePosition.height;
-			}
-			else
-			{
-				accessor.value = null;
-			}
-		}
+                        var valueLabelPosition = new Rect
+                        (
+                            x,
+                            y,
+                            Styles.labelWidth,
+                            EditorGUIUtility.singleLineHeight
+                        );
 
-		protected override float GetControlHeight(float width)
-		{
-			InferType();
+                        GUI.Label(valueLabelPosition, valueLabel, labelStyle);
 
-			var height = 0f;
+                        x += valueLabelPosition.width;
+                        remainingWidth -= valueLabelPosition.width;
+                    }
 
-			if (chooseType)
-			{
-				height += LudiqGUI.GetTypeTreeFieldHeight(typeTree);
-			}
+                    valuePosition = new Rect
+                    (
+                        x,
+                        y,
+                        remainingWidth,
+                        castedInspector.ControlHeight(remainingWidth)
+                    );
 
-			if (chooseType && showValue)
-			{
-				height += Styles.spaceBetweenTypeAndValue;
-			}
+                    castedInspector.DrawControl(valuePosition);
+                }
+                else
+                {
+                    valuePosition = new Rect
+                    (
+                        position.x,
+                        y,
+                        position.width,
+                        castedInspector.ControlHeight(position.width)
+                    );
 
-			if (showValue)
-			{
-				height += castedInspector.ControlHeight(width);
-			}
+                    castedInspector.DrawControl(valuePosition);
+                }
 
-			return height;
-		}
+                y += valuePosition.height;
+            }
+            else
+            {
+                accessor.value = null;
+            }
+        }
 
-		protected override float GetControlWidth()
-		{
-			var width = 0f;
+        protected override float GetControlHeight(float width)
+        {
+            InferType();
 
-			if (chooseType)
-			{
-				width = Mathf.Max(width, LudiqGUI.GetTypeFieldAdaptiveWidth(type));
-			}
+            var height = 0f;
 
-			if (showValue)
-			{
-				width = Mathf.Max(width, castedInspector.ControlWidth());
-			}
+            if (chooseType)
+            {
+                height += LudiqGUI.GetTypeTreeFieldHeight(typeTree);
+            }
 
-			width += Styles.labelWidth;
+            if (chooseType && showValue)
+            {
+                height += Styles.spaceBetweenTypeAndValue;
+            }
 
-			return width;
-		}
+            if (showValue)
+            {
+                height += castedInspector.ControlHeight(width);
+            }
 
-		public static class Styles
-		{
-			public static readonly float spaceBetweenTypeAndValue = 2;
-			public static readonly float labelWidth = 38;
-		}
+            return height;
+        }
 
-		public static class Contents
-		{
-			public static readonly GUIContent nullTypeLabel = new GUIContent("(Null)");
-		}
-	}
+        protected override float GetControlWidth()
+        {
+            var width = 0f;
+
+            if (chooseType)
+            {
+                width = Mathf.Max(width, LudiqGUI.GetTypeFieldAdaptiveWidth(type));
+            }
+
+            if (showValue)
+            {
+                width = Mathf.Max(width, castedInspector.ControlWidth());
+            }
+
+            width += Styles.labelWidth;
+
+            return width;
+        }
+
+        public static class Styles
+        {
+            public static readonly float spaceBetweenTypeAndValue = 2;
+            public static readonly float labelWidth = 38;
+        }
+
+        public static class Contents
+        {
+            public static readonly GUIContent nullTypeLabel = new GUIContent("(Null)");
+        }
+    }
 }

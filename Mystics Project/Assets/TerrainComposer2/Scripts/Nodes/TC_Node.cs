@@ -1,8 +1,5 @@
-﻿using UnityEngine;
-using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -27,7 +24,7 @@ namespace TerrainComposer2
         public ImageWrapMode wrapMode = ImageWrapMode.Repeat;
         public bool clamp;
         public float radius = 300;
-        
+
         public TC_RawImage rawImage;
 
         public TC_Image image;
@@ -63,7 +60,7 @@ namespace TerrainComposer2
         public class Shapes
         {
             public Vector2 topSize = new Vector2(500, 500);
-            public Vector2 bottomSize = new Vector2(1000,1000);
+            public Vector2 bottomSize = new Vector2(1000, 1000);
             public float size = 500;
         }
 
@@ -80,9 +77,9 @@ namespace TerrainComposer2
             base.OnDestroy();
             // Debug.Log("Node " + UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode + " --- "+ UnityEditor.EditorApplication.isPlaying);
 
-            #if UNITY_EDITOR
-                if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode || UnityEditor.EditorApplication.isPlaying) return;
-            #endif
+#if UNITY_EDITOR
+            if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode || UnityEditor.EditorApplication.isPlaying) return;
+#endif
 
             if (rawImage != null) rawImage.UnregisterReference();
             if (image != null) image.UnregisterReference();
@@ -119,10 +116,10 @@ namespace TerrainComposer2
 
         public override void ChangeYPosition(float y)
         {
-            #if UNITY_EDITOR
-                // UnityEditor.Undo.RecordObject(t, "Edit Transform");
-                UnityEditor.Undo.RecordObject(this, "Edit Transform");
-            #endif
+#if UNITY_EDITOR
+            // UnityEditor.Undo.RecordObject(t, "Edit Transform");
+            UnityEditor.Undo.RecordObject(this, "Edit Transform");
+#endif
             posY += y / t.lossyScale.y;
         }
 
@@ -173,7 +170,7 @@ namespace TerrainComposer2
             else if (inputKind == InputKind.Current) inputCurrent = (InputCurrent)popup;
             // else if (inputKind == InputKind.Portal) inputPortal = (InputPortal)popup;
         }
-        
+
         public void Init()
         {
             // Debug.Log("Init");
@@ -208,13 +205,13 @@ namespace TerrainComposer2
 
                     if (stampTex == null)
                     {
-                        #if UNITY_EDITOR
+#if UNITY_EDITOR
                         if (pathTexStamp != "")
                         {
                             stampTex = UnityEditor.AssetDatabase.LoadAssetAtPath(pathTexStamp, typeof(Texture2D)) as Texture2D;
                             if (stampTex == null) { active = false; return; }
                         }
-                        #endif
+#endif
                         if (pathTexStamp == "") { active = false; return; }
                     }
 
@@ -231,7 +228,7 @@ namespace TerrainComposer2
                     if (stampTex == null) active = false;
                 }
             }
-            
+
             else if (inputKind == InputKind.Portal)
             {
                 if (portalNode != null)
@@ -267,14 +264,14 @@ namespace TerrainComposer2
                     else if (inputNoise == InputNoise.Ridged) inputNoise = InputNoise.Billow;
                     else if (inputNoise == InputNoise.IQ) inputNoise = InputNoise.Random;
                 }
-                
+
                 SetVersionNumber();
             }
         }
 
         public bool DropTextureEditor(Texture tex)
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             if (tex != null)
             {
                 pathTexStamp = UnityEditor.AssetDatabase.GetAssetPath(tex);
@@ -284,7 +281,7 @@ namespace TerrainComposer2
 
                 index = path.IndexOf("/Resources/");
                 isStampInResourcesFolder = (index != -1);
-                
+
                 if (isStampInResourcesFolder)
                 {
                     path = path.Substring(index + 11);
@@ -295,7 +292,7 @@ namespace TerrainComposer2
                 else
                 {
                     path = path.Remove(path.Length - 3) + "raw";
-                    
+
                     if (!TC.FileExistsPath(path))
                     {
                         path = path.Remove(path.Length - 3) + "r16";
@@ -311,7 +308,7 @@ namespace TerrainComposer2
                         return false;
                     }
                 }
-                
+
                 TC_RawImage oldRawImage = rawImage;
                 if (oldRawImage) oldRawImage.UnregisterReference();
 
@@ -319,13 +316,13 @@ namespace TerrainComposer2
 
                 rawImage = TC_Settings.instance.AddRawFile(path, isStampInResourcesFolder);
             }
-            #else
+#else
                 if (isStampInResourcesFolder)
                 {
                     rawImage = TC_Settings.instance.AddRawFile(resourcesFolder, isStampInResourcesFolder);
                 }
-            #endif
-                
+#endif
+
             if (rawImage != null)
             {
                 stampTex = tex;
@@ -355,7 +352,7 @@ namespace TerrainComposer2
         public int octaves = 6;
         public float persistence = 0.5f;
         public float seed = 0;
-        
+
         public float amplitude = 7f;
         public float warp0 = 0.5f;
         public float warp = 0.25f;
@@ -383,7 +380,7 @@ namespace TerrainComposer2
             for (int i = 0; i < 4; i++) colChannels[i] = new ColChannel();
             colChannels[3].active = false;
         }
-        
+
         [Serializable]
         public class ColChannel
         {

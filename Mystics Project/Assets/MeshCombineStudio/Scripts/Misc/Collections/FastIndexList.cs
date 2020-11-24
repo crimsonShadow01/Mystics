@@ -34,7 +34,7 @@ namespace MeshCombineStudio
             items[index] = item;
             item.ListIndex = index;
             item.List = this;
-        } 
+        }
 
         new public int Add(T item)
         {

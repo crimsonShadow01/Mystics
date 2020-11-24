@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -37,11 +36,11 @@ namespace TerrainComposer2
 
             TC_Compute.DisposeRenderTexture(ref rt);
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             UnityEditor.Undo.DestroyObjectImmediate(gameObject);
-            #else
+#else
             Destroy(gameObject);
-            #endif
+#endif
         }
 
         public void UnregisterReference()

@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using UnityEngine;
 
 namespace SensorToolkit
 {
@@ -15,7 +13,7 @@ namespace SensorToolkit
      * optmization. Otherwise it will use the RayCastAll method.
      */
     [ExecuteInEditMode]
-	public class RaySensor : Sensor
+    public class RaySensor : Sensor
     {
         // Specified whether the ray sensor will pulse automatically each frame or will be updated manually by having its Pulse() method called when needed.
         public enum UpdateMode { EachFrame, Manual }
@@ -53,16 +51,17 @@ namespace SensorToolkit
         public int CurrentBufferSize { get; private set; }
 
         // Returns a list of all detected GameObjects in no particular order.
-		public override List<GameObject> DetectedObjects
+        public override List<GameObject> DetectedObjects
         {
             get
             {
                 detectedObjects.Clear();
                 var detectedEnumerator = detectedObjectsInternal.GetEnumerator();
-                while (detectedEnumerator.MoveNext()) 
+                while (detectedEnumerator.MoveNext())
                 {
                     var go = detectedEnumerator.Current;
-                    if (go != null && go.activeInHierarchy) {
+                    if (go != null && go.activeInHierarchy)
+                    {
                         detectedObjects.Add(go);
                     }
                 }
@@ -80,7 +79,7 @@ namespace SensorToolkit
         public Collider ObstructedBy { get { return obstructionRayHit.collider; } }
 
         // Returns the RaycastHit data for the collider that obstructed the rays path.
-		public RaycastHit ObstructionRayHit { get { return obstructionRayHit; } }
+        public RaycastHit ObstructionRayHit { get { return obstructionRayHit; } }
 
         // Returns true if the ray sensor is being obstructed and false otherwise
         public bool IsObstructed { get { return isObstructed && ObstructedBy != null; } }
@@ -101,8 +100,8 @@ namespace SensorToolkit
         RayDistanceComparer distanceComparer = new RayDistanceComparer();
 
         bool isObstructed = false;
-		RaycastHit obstructionRayHit;
-		Dictionary<GameObject, RaycastHit> detectedObjectHits = new Dictionary<GameObject, RaycastHit>();
+        RaycastHit obstructionRayHit;
+        Dictionary<GameObject, RaycastHit> detectedObjectHits = new Dictionary<GameObject, RaycastHit>();
         HashSet<GameObject> previousDetectedObjects = new HashSet<GameObject>();
         List<GameObject> detectedObjectsInternal = new List<GameObject>();
         List<GameObject> detectedObjects = new List<GameObject>();
@@ -110,9 +109,9 @@ namespace SensorToolkit
 
         // Returns true if the passed GameObject appears in the sensors list of detected gameobjects
         public override bool IsDetected(GameObject go)
-		{
-			return detectedObjectHits.ContainsKey(go);
-		}
+        {
+            return detectedObjectHits.ContainsKey(go);
+        }
 
         // Pulse the ray sensor
         public override void Pulse()
@@ -123,14 +122,14 @@ namespace SensorToolkit
         // detectedGameObject should be a GameObject that is detected by the sensor. In this case it will return
         // the Raycasthit data associated with this object.
         public RaycastHit GetRayHit(GameObject detectedGameObject)
-		{
-			RaycastHit val;
+        {
+            RaycastHit val;
             if (!detectedObjectHits.TryGetValue(detectedGameObject, out val))
             {
                 Debug.LogWarning("Tried to get the RaycastHit for a GameObject that isn't detected by RaySensor.");
             }
-			return val;
-		}
+            return val;
+        }
 
         protected override void Awake()
         {
@@ -138,19 +137,19 @@ namespace SensorToolkit
 
             CurrentBufferSize = 0;
 
-            if (OnObstruction == null) 
+            if (OnObstruction == null)
             {
                 OnObstruction = new SensorEventHandler();
             }
 
-            if (OnClear == null) 
+            if (OnClear == null)
             {
                 OnClear = new SensorEventHandler();
             }
         }
 
         void OnEnable()
-		{
+        {
             clearDetectedObjects();
             previousDetectedObjects.Clear();
         }
@@ -165,8 +164,8 @@ namespace SensorToolkit
             return ((lm | subsetOf) & (~subsetOf)) == 0;
         }
 
-		void testRay()
-		{
+        void testRay()
+        {
             var canDetectMultiple = !layerMaskIsSubsetOf(DetectsOnLayers, ObstructedByLayers) && (IgnoreList == null || IgnoreList.Count == 0);
             clearDetectedObjects();
             if (!canDetectMultiple && (IgnoreList == null || IgnoreList.Count == 0))
@@ -182,7 +181,7 @@ namespace SensorToolkit
             detectionEvents();
 
             if (OnSensorUpdate != null) OnSensorUpdate();
-		}
+        }
 
         void obstructionEvents()
         {
@@ -217,23 +216,23 @@ namespace SensorToolkit
         void testRaySingle()
         {
             Ray ray = new Ray(transform.position, direction);
-			RaycastHit hit;
-            if (Radius > 0) 
+            RaycastHit hit;
+            if (Radius > 0)
             {
-                if (Physics.SphereCast(ray, Radius, out hit, Length, ObstructedByLayers)) 
+                if (Physics.SphereCast(ray, Radius, out hit, Length, ObstructedByLayers))
                 {
-                    if ((1 << hit.collider.gameObject.layer & DetectsOnLayers) != 0) 
+                    if ((1 << hit.collider.gameObject.layer & DetectsOnLayers) != 0)
                     {
                         addRayHit(hit);
                     }
                     obstructionRayHit = hit;
                 }
-            } 
+            }
             else
             {
-                if (Physics.Raycast(ray, out hit, Length, ObstructedByLayers)) 
+                if (Physics.Raycast(ray, out hit, Length, ObstructedByLayers))
                 {
-                    if ((1 << hit.collider.gameObject.layer & DetectsOnLayers) != 0) 
+                    if ((1 << hit.collider.gameObject.layer & DetectsOnLayers) != 0)
                     {
                         addRayHit(hit);
                     }
@@ -242,14 +241,14 @@ namespace SensorToolkit
             }
         }
 
-		void testRayMulti()
-		{
-			Ray ray = new Ray(transform.position, direction);
-			LayerMask combinedLayers = DetectsOnLayers | ObstructedByLayers;
+        void testRayMulti()
+        {
+            Ray ray = new Ray(transform.position, direction);
+            LayerMask combinedLayers = DetectsOnLayers | ObstructedByLayers;
             RaycastHit[] hits;
             int numberOfHits;
-            
-            if (Radius > 0) 
+
+            if (Radius > 0)
             {
                 prepareHitsBuffer();
                 hits = hitsBuffer;
@@ -280,7 +279,7 @@ namespace SensorToolkit
                         CurrentBufferSize *= 2;
                         testRayMulti();
                         return;
-                    } 
+                    }
                     else
                     {
                         logInsufficientBufferSize();
@@ -334,8 +333,8 @@ namespace SensorToolkit
             }
         }
 
-		void addRayHit(RaycastHit hit)
-		{
+        void addRayHit(RaycastHit hit)
+        {
             GameObject go;
             if (DetectionMode == SensorMode.RigidBodies)
             {
@@ -346,9 +345,9 @@ namespace SensorToolkit
             {
                 go = hit.collider.gameObject;
             }
-			if (!detectedObjectHits.ContainsKey(go) && !shouldIgnore(go))
-			{
-				detectedObjectHits.Add(go, hit);
+            if (!detectedObjectHits.ContainsKey(go) && !shouldIgnore(go))
+            {
+                detectedObjectHits.Add(go, hit);
                 detectedObjectsInternal.Add(go);
                 if (!previousDetectedObjects.Contains(go))
                 {
@@ -358,19 +357,19 @@ namespace SensorToolkit
                 {
                     previousDetectedObjects.Remove(go);
                 }
-			}
-		}
+            }
+        }
 
         void clearDetectedObjects()
-		{
-			obstructionRayHit = new RaycastHit();
-			detectedObjectHits.Clear();
+        {
+            obstructionRayHit = new RaycastHit();
+            detectedObjectHits.Clear();
             detectedObjectsInternal.Clear();
             detectedObjects.Clear();
         }
 
         // Called by the RaySensorEditor in a SendMessage
-        void reset() 
+        void reset()
         {
             clearDetectedObjects();
             isObstructed = false;
@@ -388,19 +387,19 @@ namespace SensorToolkit
         }
 
         protected static readonly Color GizmoColor = new Color(51 / 255f, 255 / 255f, 255 / 255f);
-		protected static readonly Color GizmoBlockedColor = Color.red;
+        protected static readonly Color GizmoBlockedColor = Color.red;
         private static Mesh primitiveCylinderCache;
-        private static Mesh primitiveCylinder 
+        private static Mesh primitiveCylinder
         {
-            get 
+            get
             {
-                if (primitiveCylinderCache == null) 
+                if (primitiveCylinderCache == null)
                 {
                     var primitive = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     primitiveCylinderCache = primitive.GetComponent<MeshFilter>().sharedMesh;
                     DestroyImmediate(primitive);
-                } 
-                
+                }
+
                 return primitiveCylinderCache;
             }
         }
@@ -420,13 +419,13 @@ namespace SensorToolkit
                 endPosition = transform.position + direction * Length;
             }
 
-            if (Radius > 0f) 
+            if (Radius > 0f)
             {
                 Gizmos.DrawWireSphere(transform.position, Radius);
                 Gizmos.DrawWireSphere(endPosition, Radius);
 
                 var line = endPosition - transform.position;
-                if (line == Vector3.zero) 
+                if (line == Vector3.zero)
                 {
                     line = Vector3.forward * Length;
                 }
@@ -434,14 +433,14 @@ namespace SensorToolkit
                 var length = line.magnitude;
                 var rotation = Quaternion.LookRotation(line.normalized) * Quaternion.Euler(90f, 0f, 0f);
                 Gizmos.DrawWireMesh(primitiveCylinder, center, rotation, new Vector3(Radius * 2f, length / 2f, Radius * 2f));
-            } 
-            else 
+            }
+            else
             {
                 Gizmos.DrawLine(transform.position, endPosition);
             }
 
             Gizmos.color = GizmoColor;
-            foreach(RaycastHit hit in DetectedObjectRayHits)
+            foreach (RaycastHit hit in DetectedObjectRayHits)
             {
                 Gizmos.DrawIcon(hit.point, "SensorToolkit/eye.png", true);
             }

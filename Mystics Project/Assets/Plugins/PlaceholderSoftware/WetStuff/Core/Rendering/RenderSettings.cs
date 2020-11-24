@@ -22,7 +22,7 @@ namespace PlaceholderSoftware.WetStuff.Rendering
             {
                 var mac = Application.platform == RuntimePlatform.OSXEditor ||
                           Application.platform == RuntimePlatform.OSXPlayer;
-                
+
                 return !mac && !_disableInstancing;
             }
             set { _disableInstancing = !value; }

@@ -1,7 +1,7 @@
 ﻿// Cristian Pop - https://boxophobic.com/
 
-using UnityEngine;
 using Boxophobic.StyledGUI;
+using UnityEngine;
 
 namespace TheVegetationEngine
 {
@@ -14,7 +14,7 @@ namespace TheVegetationEngine
 
         [StyledMessage("Info", "Use the Min Max values to remap the light intensity used for Subsurface. This is useful in HDRP where the light intensity can reach high values.", 0, 10)]
         public bool styledMessage = true;
-        
+
         public Light mainLight;
 
         public float mainLightMin = 0;

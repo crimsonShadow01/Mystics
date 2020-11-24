@@ -20,19 +20,19 @@
 
 namespace Databox.OdinSerializer
 {
-    using System.Globalization;
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Text;
-    using Utilities;
-    using UnityEngine;
-    using UnityEngine.Events;
     using System.Runtime.CompilerServices;
-    using UnityEngine.Assertions;
     using System.Runtime.Serialization;
+    using System.Text;
+    using UnityEngine;
+    using UnityEngine.Assertions;
+    using UnityEngine.Events;
+    using Utilities;
 
 #if PREFAB_DEBUG && !SIRENIX_INTERNAL
 #warning "Prefab serialization debugging is enabled outside of Sirenix internal. Are you sure this is right?"
@@ -185,7 +185,7 @@ namespace Databox.OdinSerializer
         public static bool OdinWillSerialize(MemberInfo member, bool serializeUnityFields, ISerializationPolicy policy = null)
         {
             Dictionary<MemberInfo, CachedSerializationBackendResult> cacheForPolicy;
-            
+
             if (policy == null || object.ReferenceEquals(policy, UnityPolicy))
             {
                 cacheForPolicy = OdinWillSerializeCache_UnityPolicy;
@@ -501,7 +501,7 @@ namespace Databox.OdinSerializer
 
             // Check for synclists if legacy networking is present
             // it was removed in 2018.2
-            if (!UnityVersion.IsVersionOrGreater(2018, 2)) 
+            if (!UnityVersion.IsVersionOrGreater(2018, 2))
             {
                 Type current = type.BaseType;
 
@@ -562,7 +562,7 @@ namespace Databox.OdinSerializer
                     var stackFrames = new System.Diagnostics.StackTrace().GetFrames();
                     Type buildPipelineType = typeof(UnityEditor.BuildPipeline);
                     Type prefabUtilityType = typeof(UnityEditor.PrefabUtility);
-                    
+
 
                     for (int i = 0; i < stackFrames.Length; i++)
                     {
@@ -766,20 +766,20 @@ namespace Databox.OdinSerializer
                                 {
                                     //var prefabRoot = UnityEditor.PrefabUtility.FindPrefabRoot(((Component)data.Prefab).gameObject);
                                     //var instanceRoot = UnityEditor.PrefabUtility.FindPrefabRoot(((Component)unityObject).gameObject);
-	                                var instanceRoot = ((Component)unityObject).transform.root.gameObject;
-	                                
+                                    var instanceRoot = ((Component)unityObject).transform.root.gameObject;
+
                                     foreach (var reference in data.PrefabModificationsReferencedUnityObjects)
                                     {
                                         if (reference == null) continue;
                                         if (!(reference is GameObject || reference is Component)) continue;
                                         if (UnityEditor.AssetDatabase.Contains(reference)) continue;
 
-	                                    var referencePrefabType = UnityEditor.PrefabUtility.GetPrefabAssetType(reference);
+                                        var referencePrefabType = UnityEditor.PrefabUtility.GetPrefabAssetType(reference);
 
-	                                    bool mightBeInPrefab = referencePrefabType == UnityEditor.PrefabAssetType.Model
-		                                    || referencePrefabType == UnityEditor.PrefabAssetType.Regular;
-                                                            //|| referencePrefabType == UnityEditor.PrefabType.ModelPrefab
-                                                            //|| referencePrefabType == UnityEditor.PrefabType.ModelPrefabInstance;
+                                        bool mightBeInPrefab = referencePrefabType == UnityEditor.PrefabAssetType.Model
+                                            || referencePrefabType == UnityEditor.PrefabAssetType.Regular;
+                                        //|| referencePrefabType == UnityEditor.PrefabType.ModelPrefab
+                                        //|| referencePrefabType == UnityEditor.PrefabType.ModelPrefabInstance;
 
                                         if (!mightBeInPrefab)
                                         {
@@ -800,8 +800,8 @@ namespace Databox.OdinSerializer
 
                                         var gameObject = (GameObject)(reference is GameObject ? reference : (reference as Component).gameObject);
                                         //var referenceRoot = UnityEditor.PrefabUtility.FindPrefabRoot(gameObject);
-	                                    var referenceRoot = gameObject.transform.root.gameObject;
-	                                    
+                                        var referenceRoot = gameObject.transform.root.gameObject;
+
                                         if (referenceRoot != instanceRoot)
                                         {
                                             keep.Add(reference);
@@ -909,7 +909,7 @@ namespace Databox.OdinSerializer
 
                                 newContext.Value.Config.SerializationPolicy = serializationPolicy;
                                 newContext.Value.IndexReferenceResolver = resolver.Value;
-                                
+
                                 writer.Context = newContext;
 
                                 UnitySerializationUtility.SerializeUnityObject(unityObject, writer, serializeUnityFields);
@@ -1385,7 +1385,7 @@ namespace Databox.OdinSerializer
                 {
                     // The stored format says nodes, but there is no serialized node data.
                     // Figure out what format the serialized bytes are in, and deserialize that format instead
-                    
+
                     DataFormat formatGuess = data.SerializedBytes[0] == '{' ? DataFormat.JSON : DataFormat.Binary;
 
                     try
@@ -1817,7 +1817,7 @@ namespace Databox.OdinSerializer
                         }
 #endif
 
-                        message += 
+                        message +=
                             "IF YOU HAVE CONSISTENT REPRODUCTION STEPS THAT MAKE THIS ISSUE REOCCUR, please report it at this issue at 'https://bitbucket.org/sirenix/odin-inspector/issues/526', and copy paste this debug message into your comment, along with any potential actions or recent changes in the project that might have happened to cause this message to occur. " +
                             "If the data dump in this message is cut off, please find the editor's log file (see https://docs.unity3d.com/Manual/LogFiles.html) and copy paste the full version of this message from there.\n\n\n" +
                             "Data dump:\n\n" +
@@ -2568,14 +2568,14 @@ namespace Databox.OdinSerializer
                         {
                             if (!(n is GameObject)) return false;
 
-	                        var prefabType = UnityEditor.PrefabUtility.GetPrefabAssetType(n);
-	                        return prefabType == UnityEditor.PrefabAssetType.Model
-		                        || prefabType == UnityEditor.PrefabAssetType.Regular;
-                                //|| prefabType == UnityEditor.PrefabType.PrefabInstance
-                                //|| prefabType == UnityEditor.PrefabType.ModelPrefabInstance;
+                            var prefabType = UnityEditor.PrefabUtility.GetPrefabAssetType(n);
+                            return prefabType == UnityEditor.PrefabAssetType.Model
+                                || prefabType == UnityEditor.PrefabAssetType.Regular;
+                            //|| prefabType == UnityEditor.PrefabType.PrefabInstance
+                            //|| prefabType == UnityEditor.PrefabType.ModelPrefabInstance;
                         })
-	                    //.Select(n => UnityEditor.PrefabUtility.FindPrefabRoot((GameObject)n))
-	                    .Select(n => ((GameObject)n).transform.root.gameObject)
+                        //.Select(n => UnityEditor.PrefabUtility.FindPrefabRoot((GameObject)n))
+                        .Select(n => ((GameObject)n).transform.root.gameObject)
                         .Distinct();
 
                     foreach (var root in rootPrefabs)
@@ -2671,7 +2671,7 @@ namespace Databox.OdinSerializer
                 // Once, this was a 'while count > CACHE_SIZE' loop, but in certain cases that can infinite loop
                 //   so now it's a simpler and harder-to-break for loop with extra debugging clauses in the body.
                 int removeCount = CachedDeserializedModificationTimes.Count - CACHE_SIZE;
-                    
+
                 for (int i = 0; i < removeCount; i++)
                 {
                     object lowestObj = null;

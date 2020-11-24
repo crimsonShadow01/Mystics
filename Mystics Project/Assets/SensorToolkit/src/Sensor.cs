@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -58,7 +57,7 @@ namespace SensorToolkit
                 IgnoreList = new List<GameObject>();
             }
 
-            if (OnDetected == null) 
+            if (OnDetected == null)
             {
                 OnDetected = new SensorDetectionEventHandler();
             }
@@ -106,7 +105,7 @@ namespace SensorToolkit
         {
             var detectedEnumerator = DetectedObjectsOrderedByDistance.GetEnumerator();
             var filtered = new List<T>();
-            while(detectedEnumerator.MoveNext())
+            while (detectedEnumerator.MoveNext())
             {
                 var go = detectedEnumerator.Current;
                 var c = go.GetComponent<T>();

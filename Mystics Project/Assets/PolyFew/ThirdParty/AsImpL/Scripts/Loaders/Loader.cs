@@ -249,7 +249,7 @@ namespace AsImpL
         }
 
 
-        
+
 
         public async Task<GameObject> LoadFromNetwork(string objURL, string diffuseTexURL, string bumpTexURL, string specularTexURL, string opacityTexURL, string materialURL, string objName)
         {
@@ -303,7 +303,7 @@ namespace AsImpL
                     await LoadMaterialLibrary(materialURL);
                 }
 
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw ex;
                 }
@@ -373,10 +373,10 @@ namespace AsImpL
             float startTime = lastTime;
 
             // base model here
-            
+
             yield return StartCoroutine(LoadModelFileNetworkedWebGL(objURL, OnError));
-            
-            if(ObjectImporter.isException) { yield return null; }
+
+            if (ObjectImporter.isException) { yield return null; }
 
             loadStats.modelParseTime = Time.realtimeSinceStartup - lastTime;
 
@@ -399,7 +399,7 @@ namespace AsImpL
             {
                 ObjectImporter.activeDownloads -= 1;
             }
-            
+
             if (ObjectImporter.isException) { yield return null; }
 
 
@@ -460,7 +460,7 @@ namespace AsImpL
         /// <remarks>This is called by Load() method</remarks>
         protected abstract Task LoadMaterialLibrary(string absolutePath, string materialsFolderPath = "");
 
-        
+
         protected abstract Task LoadMaterialLibrary(string materialURL);
 
         protected abstract IEnumerator LoadMaterialLibraryWebGL(string materialURL);
@@ -498,7 +498,7 @@ namespace AsImpL
                         {
 
                             await LoadMaterialTexture(basePath, mtl.diffuseTexPath, texturesFolderPath);
-                            
+
                             mtl.diffuseTex = loadedTexture;
                         }
                     }
@@ -514,7 +514,7 @@ namespace AsImpL
 #endif
                         {
                             await LoadMaterialTexture(basePath, mtl.bumpTexPath, texturesFolderPath);
-                            
+
                             mtl.bumpTex = loadedTexture;
                         }
                     }
@@ -530,7 +530,7 @@ namespace AsImpL
 #endif
                         {
                             await LoadMaterialTexture(basePath, mtl.specularTexPath, texturesFolderPath);
-                            
+
                             mtl.specularTex = loadedTexture;
                         }
                     }
@@ -544,9 +544,9 @@ namespace AsImpL
                         }
                         else
 #endif
-                        {                          
+                        {
                             await LoadMaterialTexture(basePath, mtl.opacityTexPath, texturesFolderPath);
-                            
+
                             mtl.opacityTex = loadedTexture;
                         }
                     }
@@ -631,7 +631,7 @@ namespace AsImpL
                         else
 #endif
                         {
-                            if(!string.IsNullOrWhiteSpace(diffuseTexURL))
+                            if (!string.IsNullOrWhiteSpace(diffuseTexURL))
                             {
                                 try
                                 {
@@ -835,7 +835,7 @@ namespace AsImpL
 
 
 
-        
+
         protected IEnumerator NetworkedBuildWebGL(Transform parentTransform, string objName, string objURL, string diffuseTexURL, string bumpTexURL, string specularTexURL, string opacityTexURL)
         {
             float prevTime = Time.realtimeSinceStartup;
@@ -1162,7 +1162,7 @@ namespace AsImpL
             return texPath;
         }
 
-        private async Task LoadMaterialTexture(string basePath, string path, string texturesFolderPath="")
+        private async Task LoadMaterialTexture(string basePath, string path, string texturesFolderPath = "")
         {
             loadedTexture = null;
             //string texPath = GetTextureUrl(basePath, path);
@@ -1253,7 +1253,7 @@ namespace AsImpL
                 tex.LoadImage(downloadedBytes);
                 loadedTexture = tex;
             }
-            
+
 
             else
             {
@@ -1469,7 +1469,7 @@ namespace AsImpL
                     downloadProgress.Value = oldProgress + www.progress;
                 }
 
-                if(www.isDone && string.IsNullOrWhiteSpace(www.error))
+                if (www.isDone && string.IsNullOrWhiteSpace(www.error))
                 {
                     downloadProgress.Value = oldProgress + www.progress;
                     Debug.Log("Progress  " + www.progress);
@@ -1625,6 +1625,6 @@ namespace AsImpL
             www.Dispose();
         }
 
-        
+
     }
 }

@@ -1,15 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 using UnityEditor;
-using System;
+using UnityEngine;
 
 namespace MeshCombineStudio
-{ 
+{
     static public class GUIDraw
     {
         public static float indentSpace = 12;
-        
+
         public static void DrawHeader(SerializedProperty foldout, GUIContent guiContent, Color color)
         {
             GUI.color = color;
@@ -192,7 +190,7 @@ namespace MeshCombineStudio
                 // if (indent) EditorGUI.indentLevel++;
 
                 GUIContent elementNameCopy = new GUIContent(elementName);
-                
+
                 for (int i = 0; i < property.arraySize; i++)
                 {
                     SerializedProperty elementProperty = property.GetArrayElementAtIndex(i);
@@ -200,7 +198,7 @@ namespace MeshCombineStudio
                     elementNameCopy.text = elementName.text + " " + i;
 
                     PropertyField(elementProperty, elementNameCopy, true, indent ? 1 : 2);
-                    if (!indent) EditorGUI.indentLevel++; 
+                    if (!indent) EditorGUI.indentLevel++;
                 }
                 // if (indent) EditorGUI.indentLevel--;
             }

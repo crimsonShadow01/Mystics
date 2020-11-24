@@ -12,41 +12,41 @@ namespace Ludiq.PeekCore.CodeDom
         {
             Type = type;
             Name = name;
-			InitExpression = initExpression;
+            InitExpression = initExpression;
         }
 
         public CodeTypeReference Type { get; }
-        public string Name { get; } 
+        public string Name { get; }
         public CodeExpression InitExpression { get; }
 
-		public override bool IsTerminator => false;
+        public override bool IsTerminator => false;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (Type != null) yield return Type;
-				if (InitExpression != null) yield return InitExpression;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Type != null) yield return Type;
+                if (InitExpression != null) yield return InitExpression;
+            }
+        }
 
-		public override void ReserveLocals(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			generator.ReserveLocal(Name);
-		}
+        public override void ReserveLocals(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.ReserveLocal(Name);
+        }
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			if (!generator.JustWroteOpeningBrace && !generator.JustWroteVariableDeclaration && (emitOptions & CodeStatementEmitOptions.OmitSemiColon) == 0)
-			{
-				generator.WriteLine();
-			}
-			generator.WriteBlankLineIfJustExitedBlock();
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            if (!generator.JustWroteOpeningBrace && !generator.JustWroteVariableDeclaration && (emitOptions & CodeStatementEmitOptions.OmitSemiColon) == 0)
+            {
+                generator.WriteLine();
+            }
+            generator.WriteBlankLineIfJustExitedBlock();
 
             Type.Generate(generator);
-			generator.Write(TokenType.Space, ' ');
-			generator.OutputIdentifier(TokenType.Identifier, Name);
+            generator.Write(TokenType.Space, ' ');
+            generator.OutputIdentifier(TokenType.Identifier, Name);
             if (InitExpression != null)
             {
                 generator.Write(TokenType.Space, ' ');
@@ -54,8 +54,8 @@ namespace Ludiq.PeekCore.CodeDom
                 generator.Write(TokenType.Space, ' ');
                 InitExpression.Generate(generator);
             }
-			generator.WriteStatementEnd(emitOptions);
-			generator.JustWroteVariableDeclaration = true;
-		}
-	}
+            generator.WriteStatementEnd(emitOptions);
+            generator.JustWroteVariableDeclaration = true;
+        }
+    }
 }

@@ -142,7 +142,7 @@ namespace FIMSpace.FTail
             else
             {
                 if (lastSlithery != Slithery)
-                {  _ex_bone = TailSegments[0]; while (_ex_bone != null) { _ex_bone.Slithery = Slithery; _ex_bone = _ex_bone.ChildBone; } }
+                { _ex_bone = TailSegments[0]; while (_ex_bone != null) { _ex_bone.Slithery = Slithery; _ex_bone = _ex_bone.ChildBone; } }
             }
         }
 

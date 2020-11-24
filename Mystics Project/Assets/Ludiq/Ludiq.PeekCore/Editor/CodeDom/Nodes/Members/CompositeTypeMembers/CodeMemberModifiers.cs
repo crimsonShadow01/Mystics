@@ -11,10 +11,10 @@ namespace Ludiq.PeekCore.CodeDom
         Static = 0x0003,
         Override = 0x0004,
         Const = 0x0005,
-		Sealed = 0x0006,
+        Sealed = 0x0006,
         ScopeMask = 0x000F,
 
-		ReadOnly = 0x0010,
+        ReadOnly = 0x0010,
         ReadOnlyMask = 0x00F0,
 
         New = 0x0100,

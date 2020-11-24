@@ -3,68 +3,68 @@ using System.Linq;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class XmlFuzzyOptionDocumentation : IFuzzyOptionDocumentation
-	{
-		private readonly XmlDocumentationTags tags;
+    public sealed class XmlFuzzyOptionDocumentation : IFuzzyOptionDocumentation
+    {
+        private readonly XmlDocumentationTags tags;
 
-		public XmlFuzzyOptionDocumentation(XmlDocumentationTags tags)
-		{
-			this.tags = tags;
-		}
-		
-		public string summary => tags?.summary;
+        public XmlFuzzyOptionDocumentation(XmlDocumentationTags tags)
+        {
+            this.tags = tags;
+        }
 
-		public string returns => tags?.returns;
+        public string summary => tags?.summary;
 
-		public string remarks => tags?.remarks;
+        public string returns => tags?.returns;
 
-		public string returnType => tags?.returnType.DisplayName();
+        public string remarks => tags?.remarks;
 
-		public EditorTexture returnIcon => tags?.returnType.Icon();
+        public string returnType => tags?.returnType.DisplayName();
 
-		public IEnumerable<string> parameters => tags?.parameters.Keys ?? Enumerable.Empty<string>();
+        public EditorTexture returnIcon => tags?.returnType.Icon();
 
-		public string GetParameterName(string parameter)
-		{
-			if (LudiqCore.Configuration.humanNaming)
-			{
-				return parameter.Prettify();
-			}
-			else
-			{
-				return parameter;
-			}
-		}
+        public IEnumerable<string> parameters => tags?.parameters.Keys ?? Enumerable.Empty<string>();
 
-		public string GetParameterSummary(string parameter)
-		{
-			tags.parameters.TryGetValue(parameter, out var parameterSummary);
+        public string GetParameterName(string parameter)
+        {
+            if (LudiqCore.Configuration.humanNaming)
+            {
+                return parameter.Prettify();
+            }
+            else
+            {
+                return parameter;
+            }
+        }
 
-			return parameterSummary;
-		}
+        public string GetParameterSummary(string parameter)
+        {
+            tags.parameters.TryGetValue(parameter, out var parameterSummary);
 
-		public string GetParameterType(string parameter)
-		{
-			if (tags.parameterTypes.TryGetValue(parameter, out var parameterType))
-			{
-				return parameterType.DisplayName();
-			}
-			else
-			{
-				return null;
-			}
-		}
+            return parameterSummary;
+        }
 
-		public EditorTexture GetParameterIcon(string parameter)
-		{
-			if (tags.parameterTypes.TryGetValue(parameter, out var parameterType))
-			{
-				return parameterType.Icon();
-			}
-			else
-			{
-				return null;
-			}
-		}
-	}
+        public string GetParameterType(string parameter)
+        {
+            if (tags.parameterTypes.TryGetValue(parameter, out var parameterType))
+            {
+                return parameterType.DisplayName();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public EditorTexture GetParameterIcon(string parameter)
+        {
+            if (tags.parameterTypes.TryGetValue(parameter, out var parameterType))
+            {
+                return parameterType.Icon();
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
 }

@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 
 [ExecuteInEditMode]
-public class TC_AnimateTransform : MonoBehaviour {
+public class TC_AnimateTransform : MonoBehaviour
+{
 
     public bool animate = true;
     public float rotSpeed;
     public Vector3 moveSpeed;
 
     public float scaleSpeed, scaleAmplitude, scaleOffset;
-    
+
     Vector3 posOld;
     float time;
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     void OnEnable()
     {
         UnityEditor.EditorApplication.update += MyUpdate;
@@ -24,17 +24,17 @@ public class TC_AnimateTransform : MonoBehaviour {
     {
         UnityEditor.EditorApplication.update -= MyUpdate;
     }
-    #endif
-     
+#endif
+
     void Update()
     {
         MyUpdate();
     }
 
-	void MyUpdate ()
+    void MyUpdate()
     {
         // if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.A)) animate = !animate;
-       
+
         if (!animate) return;
 
         float deltaTime = Time.realtimeSinceStartup - time;
@@ -43,9 +43,9 @@ public class TC_AnimateTransform : MonoBehaviour {
 
         float sp = (Mathf.Sin(Time.realtimeSinceStartup * scaleSpeed) * scaleAmplitude) + scaleOffset;
         transform.localScale = new Vector3(sp, sp, sp);
-        
+
         time = Time.realtimeSinceStartup;
-	}
+    }
 
     void OnDrawGizmos()
     {

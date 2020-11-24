@@ -2,15 +2,15 @@
 {
     public sealed class CodeContinueStatement : CodeStatement
     {
-        public CodeContinueStatement() {}
+        public CodeContinueStatement() { }
 
-		public override bool IsTerminator => true;
+        public override bool IsTerminator => true;
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
         {
-			generator.WriteBlankLineIfJustExitedBlock();
+            generator.WriteBlankLineIfJustExitedBlock();
             generator.WriteLine(TokenType.Keyword, "continue");
-			generator.WriteStatementEnd(emitOptions);
+            generator.WriteStatementEnd(emitOptions);
         }
-	}
+    }
 }

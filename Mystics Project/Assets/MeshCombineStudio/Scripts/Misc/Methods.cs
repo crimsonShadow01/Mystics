@@ -1,8 +1,7 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
 using System.Reflection;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace MeshCombineStudio
@@ -43,7 +42,7 @@ namespace MeshCombineStudio
             if ((hideFlags & HideFlags.NotEditable) != 0) customHideFlags |= CustomHideFlags.NotEditable;
 
             if ((hideFlags & HideFlags.DontSaveInBuild) != 0) customHideFlags |= CustomHideFlags.DontSaveInBuild;
-            if ((hideFlags & HideFlags.DontUnloadUnusedAsset) !=0) customHideFlags |= CustomHideFlags.DontUnloadUnusedAsset;
+            if ((hideFlags & HideFlags.DontUnloadUnusedAsset) != 0) customHideFlags |= CustomHideFlags.DontUnloadUnusedAsset;
 
             return customHideFlags;
         }
@@ -156,7 +155,8 @@ namespace MeshCombineStudio
         static public T[] Search<T>(GameObject parentGO = null)
         {
             GameObject[] gos = null;
-            if (parentGO == null) {
+            if (parentGO == null)
+            {
                 gos = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
             }
 
@@ -317,7 +317,7 @@ namespace MeshCombineStudio
             if (go == null) return;
 
 #if UNITY_EDITOR
-                GameObject.DestroyImmediate(go);
+            GameObject.DestroyImmediate(go);
 #else
                 GameObject.Destroy(go);
 #endif

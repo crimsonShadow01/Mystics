@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 [ExecuteInEditMode]
@@ -11,7 +9,7 @@ public class RaycastTest : MonoBehaviour
     public LayerMask layerMask;
     public bool createTriangle;
     public int triangleIndex;
-    
+
     RaycastHit hitInfo;
 
     void Update()
@@ -32,7 +30,7 @@ public class RaycastTest : MonoBehaviour
         Vector3 p3 = new Vector3(0, 1, 0);
 
         float offset = 0.01f;
-        
+
         Vector3 p4 = new Vector3(offset, 0, 0);
         Vector3 p5 = new Vector3(offset, 0, 1);
         Vector3 p6 = new Vector3(offset, 1, 0);
@@ -41,7 +39,7 @@ public class RaycastTest : MonoBehaviour
                                     p6, p5, p4,
         };
 
-        
+
 
         var triangles = new int[] { 0, 1, 2,
                                     3, 4, 5,
@@ -72,7 +70,7 @@ public class RaycastTest : MonoBehaviour
         //float time = Time.realtimeSinceStartup - tStamp;
         //Debug.Log("Time " + time);
     }
-    
+
     void Swap<T>(ref T v1, ref T v2)
     {
         T temp = v1;
@@ -209,7 +207,7 @@ public class RaycastTest : MonoBehaviour
             //}
         }
 
-        Physics.queriesHitBackfaces = false; 
+        Physics.queriesHitBackfaces = false;
     }
 
     public bool step2;
@@ -248,7 +246,7 @@ public struct TriangleTest
         else if (_bc > _ab)
         {
             a = _c;
-            b = _b; 
+            b = _b;
             c = _a;
         }
 

@@ -1,10 +1,9 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
-    [CustomEditor (typeof(ReadMe))]
+    [CustomEditor(typeof(ReadMe))]
     public class ReadMeEditor : Editor
     {
         public override void OnInspectorGUI()
@@ -20,7 +19,7 @@ namespace TerrainComposer2
                 r.buttonEdit = !r.buttonEdit;
                 GUI.changed = true;
             }
-            
+
             GUILayout.Space(5);
 
             if (r.buttonEdit)
@@ -51,6 +50,6 @@ namespace TerrainComposer2
 
             if (GUI.changed) EditorUtility.SetDirty(target);
         }
-    
+
     }
 }

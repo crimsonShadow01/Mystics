@@ -1,7 +1,7 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public interface ISpecifiesCloner
-	{
-		ICloner cloner { get; }
-	}
+    public interface ISpecifiesCloner
+    {
+        ICloner cloner { get; }
+    }
 }

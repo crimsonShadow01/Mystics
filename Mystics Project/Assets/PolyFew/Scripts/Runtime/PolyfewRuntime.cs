@@ -4,26 +4,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using System.Linq;
 
 
 namespace BrainFailProductions.PolyFewRuntime
 {
-    
+
 
     public class PolyfewRuntime : MonoBehaviour
     {
-        
 
-#region DATA_STRUCTURES
+
+        #region DATA_STRUCTURES
 
 
         private const int MAX_LOD_COUNT = 8;
         //public const int MAX_CONCURRENT_THREADS = 16;
-//#pragma warning disable
+        //#pragma warning disable
         //private static int maxConcurrentThreads = SystemInfo.processorCount * 2;
 
 
@@ -286,12 +286,12 @@ namespace BrainFailProductions.PolyFewRuntime
         }
 
 
-#endregion DATA_STRUCTURES
+        #endregion DATA_STRUCTURES
 
 
 
 
-#region PUBLIC_METHODS
+        #region PUBLIC_METHODS
 
 
         /// <summary>
@@ -515,7 +515,7 @@ namespace BrainFailProductions.PolyFewRuntime
                             }
 
                             else
-                            {             
+                            {
                                 meshSimplifier.SimplifyMeshLossless();
                             }
 
@@ -718,7 +718,7 @@ namespace BrainFailProductions.PolyFewRuntime
                     OnEachMeshSimplified?.Invoke(gameObject, meshRendererPair);
 
                     var reducedMesh = meshSimplifier.ToMesh();
-                    reducedMesh.bindposes = meshRendererPair.mesh.bindposes;   
+                    reducedMesh.bindposes = meshRendererPair.mesh.bindposes;
                     reducedMesh.name = meshRendererPair.mesh.name.Replace("-POLY_REDUCED", "") + "-POLY_REDUCED";
 
                     if (meshSimplifier.RecalculateNormals)
@@ -975,7 +975,7 @@ namespace BrainFailProductions.PolyFewRuntime
                             lock (threadLock1)
                             {
                                 meshAssignments.Add(structure);
-                            
+
                                 threadsRunning--;
                                 meshesHandled++;
                             }
@@ -1115,7 +1115,7 @@ namespace BrainFailProductions.PolyFewRuntime
 
                     else
                     {
-                        meshSimplifier.SimplifyMeshLossless();       
+                        meshSimplifier.SimplifyMeshLossless();
                     }
 
 
@@ -1365,7 +1365,7 @@ namespace BrainFailProductions.PolyFewRuntime
 
                                 AssignReducedMesh(gameObject, meshRendererPair.mesh, reducedMesh, meshRendererPair.attachedToMeshFilter, true);
 
-                                if(meshSimplifier.RecalculateNormals)
+                                if (meshSimplifier.RecalculateNormals)
                                 {
                                     reducedMesh.RecalculateNormals();
                                     reducedMesh.RecalculateTangents();
@@ -1380,7 +1380,7 @@ namespace BrainFailProductions.PolyFewRuntime
                         try
                         {
                             if (!simplificationOptions.simplifyMeshLossless)
-                            {                    
+                            {
                                 meshSimplifier.SimplifyMesh(quality);
                             }
 
@@ -1529,7 +1529,7 @@ namespace BrainFailProductions.PolyFewRuntime
                                 targetObject = gameObject,
                                 preservationStrength = sphere.preservationStrength
                             };
-                            
+
                             tSpheres[a] = toleranceSphere;
                             a++;
                         }
@@ -1561,7 +1561,7 @@ namespace BrainFailProductions.PolyFewRuntime
 
 
                     meshSimplifier.Initialize(meshRendererPair.mesh, simplificationOptions.regardPreservationSpheres);
-                    
+
 
                     if (!simplificationOptions.simplifyMeshLossless)
                     {
@@ -2426,14 +2426,14 @@ namespace BrainFailProductions.PolyFewRuntime
                 }, importOptions);
             }
 
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 isWorking = false;
                 OnError(ex);
             }
 
-            
-            while(isWorking)
+
+            while (isWorking)
             {
                 await Task.Delay(1);
             }
@@ -2468,17 +2468,17 @@ namespace BrainFailProductions.PolyFewRuntime
             {
                 isWorking = false;
                 OnSuccess(importedObject);
-            }, 
-            (Exception ex) => 
+            },
+            (Exception ex) =>
             {
                 isWorking = false;
                 OnError(ex);
 
-            } , importOptions);
+            }, importOptions);
 
-            
-            while(isWorking)
-            {      
+
+            while (isWorking)
+            {
                 await Task.Delay(1);
             }
 
@@ -2522,7 +2522,7 @@ namespace BrainFailProductions.PolyFewRuntime
 
             try
             {
-                importerExporter.ExportGameObjectToOBJ(toExport, exportPath, exportOptions, ()=> 
+                importerExporter.ExportGameObjectToOBJ(toExport, exportPath, exportOptions, () =>
                 {
                     isWorking = false;
                     OnSuccess();
@@ -2536,7 +2536,7 @@ namespace BrainFailProductions.PolyFewRuntime
             }
 
 
-            while(isWorking)
+            while (isWorking)
             {
                 await Task.Delay(1);
             }
@@ -2635,12 +2635,12 @@ namespace BrainFailProductions.PolyFewRuntime
         }
 
 
-#endregion PUBLIC_METHODS
+        #endregion PUBLIC_METHODS
 
 
 
 
-#region PRIVATE_METHODS
+        #region PRIVATE_METHODS
 
 
         private static void SetParametersForSimplifier(SimplificationOptions simplificationOptions, UnityMeshSimplifier.MeshSimplifier meshSimplifier)
@@ -2743,7 +2743,7 @@ namespace BrainFailProductions.PolyFewRuntime
         }
 
 
-#endregion PRIVATE_METHODS
+        #endregion PRIVATE_METHODS
 
 
     }

@@ -16,7 +16,7 @@ namespace PixelCrushers.DialogueSystem.Twine
     public class TwineImporter
     {
 
-        #region Convert
+#region Convert
 
         protected DialogueDatabase database { get; set; }
         protected Template template { get; set; }
@@ -244,9 +244,9 @@ namespace PixelCrushers.DialogueSystem.Twine
             return block + ";\n" + extra;
         }
 
-        #endregion
+#endregion
 
-        #region Links and Hooks
+#region Links and Hooks
 
         protected const string LinkRegexPattern = @"\[\[.*?\]\]";
         protected static Regex LinkRegex = new Regex(LinkRegexPattern);
@@ -312,9 +312,9 @@ namespace PixelCrushers.DialogueSystem.Twine
             return (link.name.Length > 2) && (link.name[0] == '(') && (link.name[link.name.Length - 1] == ')');
         }
 
-        #endregion
+#endregion
 
-        #region Formatting
+#region Formatting
 
         protected virtual string RemoveFormatting(string s)
         {
@@ -385,9 +385,9 @@ namespace PixelCrushers.DialogueSystem.Twine
             return builder.ToString();
         }
 
-        #endregion
+#endregion
 
-        #region Macros
+#region Macros
 
         protected static Regex MacroRegex = new Regex(@"\(\w+:.+\)");
 
@@ -478,7 +478,7 @@ namespace PixelCrushers.DialogueSystem.Twine
             }
         }
 
-        #endregion
+#endregion
 
     }
 }

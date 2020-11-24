@@ -107,7 +107,7 @@
                 TailCalculations_SegmentRotation(GhostChild, GhostChild.LastKeyframeLocalPosition);
                 GhostChild.ParentBone.transform.rotation = GhostChild.ParentBone.TrueTargetRotation;
                 GhostChild.ParentBone.RefreshFinalRot(GhostChild.ParentBone.TrueTargetRotation);
-                
+
                 if (GhostChild.transform)
                 {
                     GhostChild.RefreshFinalPos(GhostChild.transform.position);

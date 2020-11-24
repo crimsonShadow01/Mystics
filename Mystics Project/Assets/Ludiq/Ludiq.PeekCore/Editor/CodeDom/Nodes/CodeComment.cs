@@ -6,12 +6,12 @@ namespace Ludiq.PeekCore.CodeDom
 {
     public sealed class CodeComment : CodeElement
     {
-		public enum CommentStyle
-		{
-			Line,
-			Block,
-			Documentation
-		}
+        public enum CommentStyle
+        {
+            Line,
+            Block,
+            Documentation
+        }
 
         public CodeComment(string text, CommentStyle commentStyle = CommentStyle.Line)
         {
@@ -22,17 +22,17 @@ namespace Ludiq.PeekCore.CodeDom
         public string Text { get; }
         public CommentStyle Style { get; }
 
-		public void Generate(CodeGenerator generator)
-		{
-			generator.EnterElement(this);
+        public void Generate(CodeGenerator generator)
+        {
+            generator.EnterElement(this);
 
-			switch (Style)
-			{            
-				case CommentStyle.Line: generator.Write(TokenType.Comment, "// "); break;
-				case CommentStyle.Block: generator.Write(TokenType.Comment, "/* "); break;
-				case CommentStyle.Documentation: generator.Write(TokenType.Comment, "/// "); break;
-				default: throw new UnexpectedEnumValueException<CommentStyle>(Style);
-			}
+            switch (Style)
+            {
+                case CommentStyle.Line: generator.Write(TokenType.Comment, "// "); break;
+                case CommentStyle.Block: generator.Write(TokenType.Comment, "/* "); break;
+                case CommentStyle.Documentation: generator.Write(TokenType.Comment, "/// "); break;
+                default: throw new UnexpectedEnumValueException<CommentStyle>(Style);
+            }
 
             string value = Text;
 
@@ -45,7 +45,7 @@ namespace Ludiq.PeekCore.CodeDom
 
                 generator.Write(TokenType.Comment, value[i]);
 
-				bool writeNewLine = false;
+                bool writeNewLine = false;
 
                 if (value[i] == '\r')
                 {
@@ -54,40 +54,40 @@ namespace Ludiq.PeekCore.CodeDom
                         i++;
                     }
 
-					writeNewLine = true;
+                    writeNewLine = true;
                 }
                 else if (value[i] == '\n' || value[i] == '\u2028' || value[i] == '\u2029' || value[i] == '\u0085')
                 {
-					writeNewLine = true;
-				}
+                    writeNewLine = true;
+                }
 
-				if (writeNewLine)
-				{
-					generator.WriteLine();
+                if (writeNewLine)
+                {
+                    generator.WriteLine();
 
-					switch (Style)
-					{            
-						case CommentStyle.Line: generator.Write(TokenType.Comment, "// "); break;
-						case CommentStyle.Block: generator.Write(TokenType.Comment, " * "); break;
-						case CommentStyle.Documentation: generator.Write(TokenType.Comment, "/// "); break;
-						default: throw new UnexpectedEnumValueException<CommentStyle>(Style);
-					}
+                    switch (Style)
+                    {
+                        case CommentStyle.Line: generator.Write(TokenType.Comment, "// "); break;
+                        case CommentStyle.Block: generator.Write(TokenType.Comment, " * "); break;
+                        case CommentStyle.Documentation: generator.Write(TokenType.Comment, "/// "); break;
+                        default: throw new UnexpectedEnumValueException<CommentStyle>(Style);
+                    }
                 }
             }
 
-			switch (Style)
-			{            
-				case CommentStyle.Line: break;
-				case CommentStyle.Block:
-				{
-					generator.Write(TokenType.Comment, " */");					
-					break;
-				}
-				case CommentStyle.Documentation: break;
-				default: throw new UnexpectedEnumValueException<CommentStyle>(Style);
-			}
+            switch (Style)
+            {
+                case CommentStyle.Line: break;
+                case CommentStyle.Block:
+                    {
+                        generator.Write(TokenType.Comment, " */");
+                        break;
+                    }
+                case CommentStyle.Documentation: break;
+                default: throw new UnexpectedEnumValueException<CommentStyle>(Style);
+            }
 
-			generator.ExitElement();
-		}
-	}
+            generator.ExitElement();
+        }
+    }
 }

@@ -4,8 +4,8 @@
 
 namespace Ludiq.PeekCore
 {
-	public class LongInspector : ContinuousNumberInspector<long>
-	{
-		public LongInspector(Accessor accessor) : base(accessor) { }
-	}
+    public class LongInspector : ContinuousNumberInspector<long>
+    {
+        public LongInspector(Accessor accessor) : base(accessor) { }
+    }
 }

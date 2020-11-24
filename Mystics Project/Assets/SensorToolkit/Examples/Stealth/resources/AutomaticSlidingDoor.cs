@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace SensorToolkit.Example
 {
@@ -23,7 +23,7 @@ namespace SensorToolkit.Example
 
         IEnumerator ClosingState()
         {
-            Start:
+        Start:
 
             if (ObjectSensor.GetNearest() != null)
             {
@@ -39,7 +39,7 @@ namespace SensorToolkit.Example
 
         IEnumerator OpeningState()
         {
-            Start:
+        Start:
 
             if (ObjectSensor.GetNearest() == null)
             {

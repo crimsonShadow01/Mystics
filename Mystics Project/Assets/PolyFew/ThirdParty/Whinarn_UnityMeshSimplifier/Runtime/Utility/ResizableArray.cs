@@ -112,7 +112,7 @@ namespace UnityMeshSimplifier
                 throw new ArgumentNullException(nameof(initialArray));
 
             if (initialArray.Length > 0)
-            {             
+            {
                 items = new T[initialArray.Length];
                 length = initialArray.Length;
                 Array.Copy(initialArray, 0, items, 0, initialArray.Length);

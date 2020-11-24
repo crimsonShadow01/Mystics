@@ -21,7 +21,6 @@ namespace Databox.OdinSerializer
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
-    using System.Linq;
 
     /// <summary>
     /// Not yet documented.

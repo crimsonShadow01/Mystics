@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 using System.Globalization;
-using System.Collections.Generic;
- 
+using UnityEngine;
+
 
 
 
@@ -14,13 +14,13 @@ public static class GUIIntField
 	private static string activeIntFieldString = "";
 #endif
 
-/// <summary>
-	/// Int Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.IntField
-/// </summary>
-	public static int IntField (int value)
-	{
+    /// <summary>
+    /// Int Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.IntField
+    /// </summary>
+    public static int IntField(int value)
+    {
 #if UNITY_EDITOR
-		return UnityEditor.EditorGUILayout.IntField (value);
+        return UnityEditor.EditorGUILayout.IntField(value);
 #else
    
 		// Get rect and control for this int field for identification
@@ -74,15 +74,15 @@ public static class GUIIntField
    
 		return value;
 #endif
-	}
- 
-	/// <summary>
-	/// Int Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.IntField
-	/// </summary>
-	public static int IntField (GUIContent label, int value)
-	{
+    }
+
+    /// <summary>
+    /// Int Field for ingame purposes. Behaves exactly like UnityEditor.EditorGUILayout.IntField
+    /// </summary>
+    public static int IntField(GUIContent label, int value)
+    {
 #if UNITY_EDITOR
-		return UnityEditor.EditorGUILayout.IntField (label, value);
+        return UnityEditor.EditorGUILayout.IntField(label, value);
 #else
 		GUILayout.BeginHorizontal ();
 		GUILayout.Label (label, label != GUIContent.none? GUILayout.ExpandWidth (true) : GUILayout.ExpandWidth (false));
@@ -90,46 +90,46 @@ public static class GUIIntField
 		GUILayout.EndHorizontal ();
 		return value;
 #endif
-	}
- 
-	/// <summary>
-	/// Forces to parse to int by cleaning string if necessary
-	/// </summary>
-	public static int ForceParseInt (this string str)
-	{
-		// try parse
-		int value;
-		if (int.TryParse (str, out value))
-			return value;
-   
-		// Clean string if it could not be parsed
-		bool recordedDecimalPoint = false;
-		List<char> strVal = new List<char> (str);
-		for (int cnt = 0; cnt < strVal.Count; cnt++)
-		{
-			UnicodeCategory type = CharUnicodeInfo.GetUnicodeCategory (str[cnt]);
-			if (type != UnicodeCategory.DecimalDigitNumber)
-			{
-				strVal.RemoveRange (cnt, strVal.Count-cnt);
-				break;
-			}
-			else if (str[cnt] == '.')
-			{
-				if (recordedDecimalPoint)
-				{
-					strVal.RemoveRange (cnt, strVal.Count-cnt);
-					break;
-				}
-				recordedDecimalPoint = true;
-			}
-		}
-   
-		// Parse again
-		if (strVal.Count == 0)
-			return 0;
-		str = new string (strVal.ToArray ());
-		if (!int.TryParse (str, out value))
-			Debug.LogError ("Could not parse " + str);
-		return value;
-	}
+    }
+
+    /// <summary>
+    /// Forces to parse to int by cleaning string if necessary
+    /// </summary>
+    public static int ForceParseInt(this string str)
+    {
+        // try parse
+        int value;
+        if (int.TryParse(str, out value))
+            return value;
+
+        // Clean string if it could not be parsed
+        bool recordedDecimalPoint = false;
+        List<char> strVal = new List<char>(str);
+        for (int cnt = 0; cnt < strVal.Count; cnt++)
+        {
+            UnicodeCategory type = CharUnicodeInfo.GetUnicodeCategory(str[cnt]);
+            if (type != UnicodeCategory.DecimalDigitNumber)
+            {
+                strVal.RemoveRange(cnt, strVal.Count - cnt);
+                break;
+            }
+            else if (str[cnt] == '.')
+            {
+                if (recordedDecimalPoint)
+                {
+                    strVal.RemoveRange(cnt, strVal.Count - cnt);
+                    break;
+                }
+                recordedDecimalPoint = true;
+            }
+        }
+
+        // Parse again
+        if (strVal.Count == 0)
+            return 0;
+        str = new string(strVal.ToArray());
+        if (!int.TryParse(str, out value))
+            Debug.LogError("Could not parse " + str);
+        return value;
+    }
 }

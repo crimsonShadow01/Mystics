@@ -18,25 +18,25 @@ namespace Ludiq.PeekCore.CodeDom
         public List<CodeAttributeDeclaration> CustomAttributes { get; } = new List<CodeAttributeDeclaration>();
         public bool HasConstructorConstraint { get; set; }
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				foreach (var child in Constraints) yield return child;
-				foreach (var child in CustomAttributes) yield return child;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                foreach (var child in Constraints) yield return child;
+                foreach (var child in CustomAttributes) yield return child;
+            }
+        }
 
-		public void GenerateDeclaration(CodeGenerator generator)
-		{
+        public void GenerateDeclaration(CodeGenerator generator)
+        {
             generator.GenerateAttributes(CustomAttributes, null, true);
             generator.Write(TokenType.GenericTypeParameter, Name);
-		}
+        }
 
-		public void GenerateConstraints(CodeGenerator generator)
-		{
-			generator.EnterElement(this);
+        public void GenerateConstraints(CodeGenerator generator)
+        {
+            generator.EnterElement(this);
 
             generator.WriteLine();
             generator.Indent++;
@@ -86,9 +86,9 @@ namespace Ludiq.PeekCore.CodeDom
 
             generator.Indent--;
 
-			generator.ExitElement();
-		}
-	}
+            generator.ExitElement();
+        }
+    }
 }
 
 

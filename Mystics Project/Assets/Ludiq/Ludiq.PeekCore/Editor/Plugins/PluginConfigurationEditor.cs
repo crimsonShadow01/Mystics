@@ -1,23 +1,23 @@
-﻿using System;
-using Ludiq.PeekCore;
+﻿using Ludiq.PeekCore;
+using System;
 using UnityEngine;
 
 [assembly: RegisterEditor(typeof(PluginConfiguration), typeof(PluginConfigurationEditor))]
 
 namespace Ludiq.PeekCore
 {
-	public sealed class PluginConfigurationEditor : Editor
-	{
-		public PluginConfigurationEditor(Accessor accessor) : base(accessor) { }
+    public sealed class PluginConfigurationEditor : Editor
+    {
+        public PluginConfigurationEditor(Accessor accessor) : base(accessor) { }
 
-		protected override float GetInnerHeight(float width)
-		{
-			throw new NotImplementedException();
-		}
+        protected override float GetInnerHeight(float width)
+        {
+            throw new NotImplementedException();
+        }
 
-		protected override void OnInnerGUI(Rect position)
-		{
-			throw new NotImplementedException();
-		}
-	}
+        protected override void OnInnerGUI(Rect position)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

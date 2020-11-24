@@ -1,9 +1,9 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
 #if !(USE_NLUA || OVERRIDE_LUA)
-using UnityEngine;
 using System;
 using System.Reflection;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {

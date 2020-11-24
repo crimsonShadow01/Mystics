@@ -4,8 +4,8 @@
 
 namespace Ludiq.PeekCore
 {
-	public class DoubleInspector : ContinuousNumberInspector<double>
-	{
-		public DoubleInspector(Accessor accessor) : base(accessor) { }
-	}
+    public class DoubleInspector : ContinuousNumberInspector<double>
+    {
+        public DoubleInspector(Accessor accessor) : base(accessor) { }
+    }
 }

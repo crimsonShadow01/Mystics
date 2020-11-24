@@ -1,7 +1,7 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public interface IFactoryConfiguration
-	{
+    public interface IFactoryConfiguration
+    {
 
-	}
+    }
 }

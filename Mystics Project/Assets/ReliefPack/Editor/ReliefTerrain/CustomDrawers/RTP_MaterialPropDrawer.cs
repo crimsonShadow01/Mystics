@@ -1,10 +1,9 @@
-﻿using UnityEditor;
+﻿using System.Collections;
+using UnityEditor;
 using UnityEngine;
-using System.Collections;
-using System;
-using System.Reflection;
 
-public class RTP_MaterialProp : MaterialPropertyDrawer {
+public class RTP_MaterialProp : MaterialPropertyDrawer
+{
     bool noAlphaFlag = false;
     bool miniThumbFlag = false;
     bool noTileOffsetFlag = false;
@@ -74,11 +73,12 @@ public class RTP_MaterialProp : MaterialPropertyDrawer {
             noTileOffsetFlag |= (props[i].ToLower() == "notileoffset");
             hdrFlag |= (props[i].ToLower() == "hdr");
             byLayerFlag |= (props[i].ToLower() == "layer");
-            if (props[i].Length>=13 && (props[i].ToLower().Substring(0, 12) == "active_layer")) {
+            if (props[i].Length >= 13 && (props[i].ToLower().Substring(0, 12) == "active_layer"))
+            {
                 if (!int.TryParse(props[i].ToLower().Substring(12), out show_for_active_layer))
                 {
                     show_for_active_layer = -1;
-                    Debug.LogWarning("Error parsing active layer for drawer parameter: "+props[i]);
+                    Debug.LogWarning("Error parsing active layer for drawer parameter: " + props[i]);
                 }
             }
         }
@@ -90,13 +90,14 @@ public class RTP_MaterialProp : MaterialPropertyDrawer {
                 sharedTex.Add(props[i].Substring(6));
             }
         }
-        if (sharedTex.Count>0)
+        if (sharedTex.Count > 0)
         {
             sharedTextures = sharedTex.ToArray(typeof(string)) as string[];
         }
     }
 
-    override public void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor) {
+    override public void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+    {
         //Debug.Log("OnGUI: " + label + " RTP_MaterialProp");
 
         if (!parsed)
@@ -110,7 +111,8 @@ public class RTP_MaterialProp : MaterialPropertyDrawer {
         {
             RTP_CustomShaderGUI customEditor = editor as RTP_CustomShaderGUI;
 
-            if (customEditor.showFlag && (show_for_active_layer == -1 || customEditor.active_layer == show_for_active_layer) && prop.name!= "dummy_end") {
+            if (customEditor.showFlag && (show_for_active_layer == -1 || customEditor.active_layer == show_for_active_layer) && prop.name != "dummy_end")
+            {
 
                 EditorGUI.BeginDisabledGroup(customEditor.inactiveFlag);
 
@@ -148,16 +150,17 @@ public class RTP_MaterialProp : MaterialPropertyDrawer {
                             EditorGUI.BeginChangeCheck();
                             if (miniThumbFlag)
                             {
-                                editor.TexturePropertyMiniThumbnail(position, prop, label,"");
-                            } else
+                                editor.TexturePropertyMiniThumbnail(position, prop, label, "");
+                            }
+                            else
                             {
                                 editor.TextureProperty(position, prop, label, !noTileOffsetFlag);
                             }
-                            if (EditorGUI.EndChangeCheck() && prop.textureValue!=null && sharedTextures!=null)
+                            if (EditorGUI.EndChangeCheck() && prop.textureValue != null && sharedTextures != null)
                             {
-                                for(int j=0; j<sharedTextures.Length; j++)
+                                for (int j = 0; j < sharedTextures.Length; j++)
                                 {
-                                    foreach(Material mat in editor.targets)
+                                    foreach (Material mat in editor.targets)
                                     {
                                         if (mat.HasProperty(sharedTextures[j]))
                                         {
@@ -190,9 +193,9 @@ public class RTP_MaterialProp : MaterialPropertyDrawer {
                                     EditorGUIUtility.labelWidth = 160;
                                     nval = EditorGUI.Slider(position, label, pval, minVal, maxVal);
                                 }
-                                if (pval!=nval)
+                                if (pval != nval)
                                 {
-                                    for(int i=0; i< prop.targets.Length; i++)
+                                    for (int i = 0; i < prop.targets.Length; i++)
                                     {
                                         Material mat = (prop.targets[i] as Material);
                                         Vector4 vec = mat.GetVector(prop.name);
@@ -211,11 +214,12 @@ public class RTP_MaterialProp : MaterialPropertyDrawer {
                         }
                     default:
                         {
-                            if (customEditor.nextLabelWidth>0)
+                            if (customEditor.nextLabelWidth > 0)
                             {
                                 EditorGUIUtility.labelWidth = customEditor.nextLabelWidth;
                                 customEditor.nextLabelWidth = 0;
-                            } else
+                            }
+                            else
                             {
                                 EditorGUIUtility.labelWidth -= 30;
                             }
@@ -224,29 +228,32 @@ public class RTP_MaterialProp : MaterialPropertyDrawer {
                         }
                 }
 
-			    EditorGUI.EndDisabledGroup();
-		    }
+                EditorGUI.EndDisabledGroup();
+            }
         }
 
     }
 
-    override public float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor) {
+    override public float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+    {
         //Debug.Log("GetHeight: " + label+ " RTP_MaterialProp" );
 
         if (editor is RTP_CustomShaderGUI)
         {
             RTP_CustomShaderGUI customEditor = editor as RTP_CustomShaderGUI;
-            if ( customEditor.showFlag && (show_for_active_layer==-1 || customEditor.active_layer==show_for_active_layer) && prop.name!="dummy_end")
+            if (customEditor.showFlag && (show_for_active_layer == -1 || customEditor.active_layer == show_for_active_layer) && prop.name != "dummy_end")
             {
                 if (miniThumbFlag)
                 {
                     return 20;
-                } else
+                }
+                else
                 {
-                    if ( (prop.type == MaterialProperty.PropType.Vector) && byLayerFlag)
+                    if ((prop.type == MaterialProperty.PropType.Vector) && byLayerFlag)
                     {
                         return 17;
-                    } else
+                    }
+                    else
                     {
                         return MaterialEditor.GetDefaultPropertyHeight(prop);
                     }

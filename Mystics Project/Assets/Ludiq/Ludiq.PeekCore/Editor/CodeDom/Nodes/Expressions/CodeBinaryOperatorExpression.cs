@@ -10,8 +10,8 @@ namespace Ludiq.PeekCore.CodeDom
     {
         public CodeBinaryOperatorExpression(CodeExpression left, CodeBinaryOperatorType op, CodeExpression right)
         {
-			Ensure.That(nameof(left)).IsNotNull(left);
-			Ensure.That(nameof(right)).IsNotNull(right);
+            Ensure.That(nameof(left)).IsNotNull(left);
+            Ensure.That(nameof(right)).IsNotNull(right);
 
             Left = left;
             Operator = op;
@@ -22,36 +22,36 @@ namespace Ludiq.PeekCore.CodeDom
         public CodeBinaryOperatorType Operator { get; }
         public CodeExpression Right { get; }
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Binary;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Binary;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (Left != null) yield return Left;
-				if (Right != null) yield return Right;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Left != null) yield return Left;
+                if (Right != null) yield return Right;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
-			var thisBinaryPrecedence = CodeGeneratorUtility.BinaryOperatorPrecedences[Operator];
+        protected override void GenerateInner(CodeGenerator generator)
+        {
+            var thisBinaryPrecedence = CodeGeneratorUtility.BinaryOperatorPrecedences[Operator];
 
-			bool leftParenthesized;
-			if (Left is CodeBinaryOperatorExpression leftBinary)
-			{
-				var leftBinaryPrecedence = CodeGeneratorUtility.BinaryOperatorPrecedences[leftBinary.Operator];
-				leftParenthesized = leftBinaryPrecedence > thisBinaryPrecedence || (leftBinaryPrecedence < thisBinaryPrecedence && leftBinaryPrecedence.ShouldParenthesizeWhenMixed());
-			}
-			else
-			{
-				leftParenthesized = Left.Precedence > PrecedenceGroup.Binary;
-			}
+            bool leftParenthesized;
+            if (Left is CodeBinaryOperatorExpression leftBinary)
+            {
+                var leftBinaryPrecedence = CodeGeneratorUtility.BinaryOperatorPrecedences[leftBinary.Operator];
+                leftParenthesized = leftBinaryPrecedence > thisBinaryPrecedence || (leftBinaryPrecedence < thisBinaryPrecedence && leftBinaryPrecedence.ShouldParenthesizeWhenMixed());
+            }
+            else
+            {
+                leftParenthesized = Left.Precedence > PrecedenceGroup.Binary;
+            }
 
-			if (leftParenthesized) generator.Write(TokenType.Punctuation, "(");
-			Left.Generate(generator);
-			if (leftParenthesized) generator.Write(TokenType.Punctuation, ")");
+            if (leftParenthesized) generator.Write(TokenType.Punctuation, "(");
+            Left.Generate(generator);
+            if (leftParenthesized) generator.Write(TokenType.Punctuation, ")");
             generator.Write(TokenType.Space, ' ');
 
             switch (Operator)
@@ -79,21 +79,21 @@ namespace Ludiq.PeekCore.CodeDom
                 case CodeBinaryOperatorType.NullCoalesce: generator.Write(TokenType.Operator, "??"); break;
             }
 
-			bool rightParenthesized;
-			if (Right is CodeBinaryOperatorExpression rightBinary)
-			{
-				var rightBinaryPrecedence = CodeGeneratorUtility.BinaryOperatorPrecedences[rightBinary.Operator];
-				rightParenthesized = rightBinaryPrecedence > thisBinaryPrecedence || (rightBinaryPrecedence < thisBinaryPrecedence && rightBinaryPrecedence.ShouldParenthesizeWhenMixed());
-			}
-			else
-			{
-				rightParenthesized = Right.Precedence > PrecedenceGroup.Binary;
-			}
+            bool rightParenthesized;
+            if (Right is CodeBinaryOperatorExpression rightBinary)
+            {
+                var rightBinaryPrecedence = CodeGeneratorUtility.BinaryOperatorPrecedences[rightBinary.Operator];
+                rightParenthesized = rightBinaryPrecedence > thisBinaryPrecedence || (rightBinaryPrecedence < thisBinaryPrecedence && rightBinaryPrecedence.ShouldParenthesizeWhenMixed());
+            }
+            else
+            {
+                rightParenthesized = Right.Precedence > PrecedenceGroup.Binary;
+            }
 
             generator.Write(TokenType.Space, ' ');
-			if (rightParenthesized) generator.Write(TokenType.Punctuation, "(");
-			Right.Generate(generator);
-			if (rightParenthesized) generator.Write(TokenType.Punctuation, ")");
-		}
-	}
+            if (rightParenthesized) generator.Write(TokenType.Punctuation, "(");
+            Right.Generate(generator);
+            if (rightParenthesized) generator.Write(TokenType.Punctuation, ")");
+        }
+    }
 }

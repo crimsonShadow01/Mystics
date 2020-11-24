@@ -4,225 +4,225 @@ using GUIEvent = UnityEngine.Event;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class EventWrapper
-	{
-		private static GUIEvent e => GUIEvent.current;
-		
-		public int controlHint { get; private set; }
+    public sealed class EventWrapper
+    {
+        private static GUIEvent e => GUIEvent.current;
 
-		public int control { get; private set; }
+        public int controlHint { get; private set; }
 
-		public EventWrapper(int controlHint)
-		{
-			this.controlHint = controlHint;
-		}
+        public int control { get; private set; }
 
-		public EventWrapper(object controlHint) : this(controlHint?.GetHashCode() ?? 0) { }
+        public EventWrapper(int controlHint)
+        {
+            this.controlHint = controlHint;
+        }
 
-		public EventWrapper() : this("EventWrapper") { }
+        public EventWrapper(object controlHint) : this(controlHint?.GetHashCode() ?? 0) { }
 
-		public event Action mouseCaptured;
+        public EventWrapper() : this("EventWrapper") { }
 
-		public event Action mouseReleased;
+        public event Action mouseCaptured;
 
-		public event Action keyboardCaptured;
+        public event Action mouseReleased;
 
-		public event Action keyboardReleased;
+        public event Action keyboardCaptured;
 
-		public bool supportsKeyboard { get; private set; }
+        public event Action keyboardReleased;
 
-		public void RegisterControl(FocusType focusType)
-		{
-			control = GUIUtility.GetControlID(controlHint, focusType);
-			supportsKeyboard = focusType == FocusType.Keyboard;
-		}
+        public bool supportsKeyboard { get; private set; }
 
-		private bool shouldReleaseMouse;
+        public void RegisterControl(FocusType focusType)
+        {
+            control = GUIUtility.GetControlID(controlHint, focusType);
+            supportsKeyboard = focusType == FocusType.Keyboard;
+        }
 
-		private bool canCaptureMouse;
+        private bool shouldReleaseMouse;
 
-		private bool canCaptureKeyboard;
+        private bool canCaptureMouse;
 
-		public void HandleCapture(bool canCaptureMouse, bool canCaptureKeyboard)
-		{
-			this.canCaptureMouse = canCaptureMouse;
-			this.canCaptureKeyboard = canCaptureKeyboard;
+        private bool canCaptureKeyboard;
 
-			if (e.type == EventType.MouseDown)
-			{
-				if (couldControlMouse && this.canCaptureMouse)
-				{
-					CaptureMouse();
-				}
+        public void HandleCapture(bool canCaptureMouse, bool canCaptureKeyboard)
+        {
+            this.canCaptureMouse = canCaptureMouse;
+            this.canCaptureKeyboard = canCaptureKeyboard;
 
-				if (supportsKeyboard && this.canCaptureKeyboard)
-				{
-					CaptureKeyboard();
-				}
-			}
+            if (e.type == EventType.MouseDown)
+            {
+                if (couldControlMouse && this.canCaptureMouse)
+                {
+                    CaptureMouse();
+                }
 
-			// Cache this here in case the code after HandleCapture uses the MouseUp event.
-			shouldReleaseMouse = e.rawType == EventType.MouseUp;
-		}
+                if (supportsKeyboard && this.canCaptureKeyboard)
+                {
+                    CaptureKeyboard();
+                }
+            }
 
-		public void HandleRelease()
-		{
-			if (shouldReleaseMouse)
-			{
-				ReleaseMouse();
-			}
-		}
+            // Cache this here in case the code after HandleCapture uses the MouseUp event.
+            shouldReleaseMouse = e.rawType == EventType.MouseUp;
+        }
 
-		public bool controlsMouse => GUIUtility.hotControl == control;
+        public void HandleRelease()
+        {
+            if (shouldReleaseMouse)
+            {
+                ReleaseMouse();
+            }
+        }
 
-		public bool controlsKeyboard => GUIUtility.keyboardControl == control;
+        public bool controlsMouse => GUIUtility.hotControl == control;
 
-		public static bool couldControlMouse => GUIUtility.hotControl == 0;
+        public bool controlsKeyboard => GUIUtility.keyboardControl == control;
 
-		public static bool couldControlKeyboard => GUIUtility.keyboardControl == 0;
+        public static bool couldControlMouse => GUIUtility.hotControl == 0;
 
-		public EventType freeType => e.type;
+        public static bool couldControlKeyboard => GUIUtility.keyboardControl == 0;
 
-		public EventType rawType => e.rawType;
+        public EventType freeType => e.type;
 
-		public EventType controlType => e.GetTypeForControl(control);
-		
-		public EventType mouseType => controlsMouse ? controlType : EventType.Ignore;
+        public EventType rawType => e.rawType;
 
-		public EventType keyboardType => controlsKeyboard ? controlType : EventType.Ignore;
+        public EventType controlType => e.GetTypeForControl(control);
 
-		public void CaptureMouse()
-		{
-			if (controlsMouse)
-			{
-				return;
-			}
-			
-			GUIUtility.hotControl = control;
-			mouseCaptured?.Invoke();
-		}
+        public EventType mouseType => controlsMouse ? controlType : EventType.Ignore;
 
-		public void ReleaseMouse()
-		{
-			if (!controlsMouse)
-			{
-				return;
-			}
-			
-			GUIUtility.hotControl = 0;
-			mouseReleased?.Invoke();
-		}
+        public EventType keyboardType => controlsKeyboard ? controlType : EventType.Ignore;
 
-		public void CaptureKeyboard()
-		{
-			if (!supportsKeyboard)
-			{
-				throw new NotSupportedException("Use FocusType.Keyboard to enable keyboard control.");
-			}
+        public void CaptureMouse()
+        {
+            if (controlsMouse)
+            {
+                return;
+            }
 
-			if (controlsKeyboard)
-			{
-				return;
-			}
-			
-			GUIUtility.keyboardControl = control;
-			keyboardCaptured?.Invoke();
-		}
+            GUIUtility.hotControl = control;
+            mouseCaptured?.Invoke();
+        }
 
-		public void ReleaseKeyboard()
-		{
-			if (!supportsKeyboard)
-			{
-				throw new NotSupportedException("Use FocusType.Keyboard to enable keyboard control.");
-			}
+        public void ReleaseMouse()
+        {
+            if (!controlsMouse)
+            {
+                return;
+            }
 
-			if (!controlsKeyboard)
-			{
-				return;
-			}
-			
-			GUIUtility.keyboardControl = 0;
-			keyboardReleased?.Invoke();
-		}
-		
-		public bool IsUsed => controlType == EventType.Used;
-		public bool IsRepaint => controlType == EventType.Repaint;
-		public bool IsLayout => controlType == EventType.Layout;
+            GUIUtility.hotControl = 0;
+            mouseReleased?.Invoke();
+        }
 
-		public bool IsAnyMouse => controlsMouse && e.isMouse;
-		public bool IsAnyMouseDown => mouseType == EventType.MouseDown;
-		public bool IsAnyMouseUp => mouseType == EventType.MouseUp;
-		public bool IsAnyMouseDrag => mouseType == EventType.MouseDrag;
-		public bool IsMouseMove => mouseType == EventType.MouseMove;
-		public bool IsMouseDown(MouseButton button) => IsAnyMouseDown && mouseButton == button;
-		public bool IsMouseDown(MouseButton button, EventModifiers modifiers) => IsMouseDown(button) && this.modifiers == modifiers;
-		public bool IsMouseUp(MouseButton button) => IsAnyMouseUp && mouseButton == button;
-		public bool IsMouseUp(MouseButton button, EventModifiers modifiers) => IsMouseUp(button) && this.modifiers == modifiers;
-		public bool IsMouseDrag(MouseButton button) => IsAnyMouseDrag && mouseButton == button;
-		public bool IsMouseDrag(MouseButton button, EventModifiers modifiers) => IsMouseDrag(button) && this.modifiers == modifiers;
+        public void CaptureKeyboard()
+        {
+            if (!supportsKeyboard)
+            {
+                throw new NotSupportedException("Use FocusType.Keyboard to enable keyboard control.");
+            }
 
-		public bool IsAnyKeyboard => controlsMouse && e.isKey;
-		public bool IsAnyKeyDown => keyboardType == EventType.KeyDown;
-		public bool IsAnyKeyUp => keyboardType == EventType.KeyUp;
-		public bool IsKeyDown(KeyCode key) => IsAnyKeyDown && keyCode == key;
-		public bool IsKeyDown(KeyCode key, EventModifiers modifiers) => IsKeyDown(key) && this.modifiers == modifiers;
-		public bool IsKeyUp(KeyCode key) => IsAnyKeyUp && keyCode == key;
-		public bool IsKeyUp(KeyCode key, EventModifiers modifiers) => IsKeyUp(key) && this.modifiers == modifiers;
+            if (controlsKeyboard)
+            {
+                return;
+            }
 
-		public bool IsContextClick => canCaptureMouse && (controlType == EventType.ContextClick || (IsKeyDown(KeyCode.E) && ctrlOrCmd));
+            GUIUtility.keyboardControl = control;
+            keyboardCaptured?.Invoke();
+        }
 
-		public bool IsValidateCommand(string name) => keyboardType == EventType.ValidateCommand && commandName == name;
-		public bool IsExecuteCommand(string name) => keyboardType == EventType.ExecuteCommand && commandName == name;
+        public void ReleaseKeyboard()
+        {
+            if (!supportsKeyboard)
+            {
+                throw new NotSupportedException("Use FocusType.Keyboard to enable keyboard control.");
+            }
 
-		public bool IsFree(EventType type) => freeType == type;
-		public bool IsRaw(EventType type) => rawType == type;
+            if (!controlsKeyboard)
+            {
+                return;
+            }
 
-		public void Use()
-		{
-			e.Use();
-		}
+            GUIUtility.keyboardControl = 0;
+            keyboardReleased?.Invoke();
+        }
 
-		public void TryUse()
-		{
-			e?.TryUse();
-		}
+        public bool IsUsed => controlType == EventType.Used;
+        public bool IsRepaint => controlType == EventType.Repaint;
+        public bool IsLayout => controlType == EventType.Layout;
 
-		public void ValidateCommand()
-		{
-			if (controlType != EventType.ValidateCommand)
-			{
-				throw new InvalidOperationException();
-			}
+        public bool IsAnyMouse => controlsMouse && e.isMouse;
+        public bool IsAnyMouseDown => mouseType == EventType.MouseDown;
+        public bool IsAnyMouseUp => mouseType == EventType.MouseUp;
+        public bool IsAnyMouseDrag => mouseType == EventType.MouseDrag;
+        public bool IsMouseMove => mouseType == EventType.MouseMove;
+        public bool IsMouseDown(MouseButton button) => IsAnyMouseDown && mouseButton == button;
+        public bool IsMouseDown(MouseButton button, EventModifiers modifiers) => IsMouseDown(button) && this.modifiers == modifiers;
+        public bool IsMouseUp(MouseButton button) => IsAnyMouseUp && mouseButton == button;
+        public bool IsMouseUp(MouseButton button, EventModifiers modifiers) => IsMouseUp(button) && this.modifiers == modifiers;
+        public bool IsMouseDrag(MouseButton button) => IsAnyMouseDrag && mouseButton == button;
+        public bool IsMouseDrag(MouseButton button, EventModifiers modifiers) => IsMouseDrag(button) && this.modifiers == modifiers;
 
-			// In Unity, validating a command means using the ValidateCommand event.
-			Use();
-		}
+        public bool IsAnyKeyboard => controlsMouse && e.isKey;
+        public bool IsAnyKeyDown => keyboardType == EventType.KeyDown;
+        public bool IsAnyKeyUp => keyboardType == EventType.KeyUp;
+        public bool IsKeyDown(KeyCode key) => IsAnyKeyDown && keyCode == key;
+        public bool IsKeyDown(KeyCode key, EventModifiers modifiers) => IsKeyDown(key) && this.modifiers == modifiers;
+        public bool IsKeyUp(KeyCode key) => IsAnyKeyUp && keyCode == key;
+        public bool IsKeyUp(KeyCode key, EventModifiers modifiers) => IsKeyUp(key) && this.modifiers == modifiers;
 
-		public Vector2 mousePosition => e.mousePosition;
-		public Vector2 mouseDelta => e.delta;
-		public int clickCount => e.clickCount;
-		public KeyCode keyCode => e.keyCode;
-		public string commandName => e.commandName;
+        public bool IsContextClick => canCaptureMouse && (controlType == EventType.ContextClick || (IsKeyDown(KeyCode.E) && ctrlOrCmd));
 
-		public EventModifiers modifiers => e.modifiers;
-		public bool alt => e.alt;
-		public bool shift => e.shift;
-		public bool ctrl => e.control;
-		public bool cmd => e.command;
-		public bool modified => e.modifiers != EventModifiers.None;
-		public bool ctrlOrCmd => Application.platform == RuntimePlatform.OSXEditor ? cmd : ctrl;
+        public bool IsValidateCommand(string name) => keyboardType == EventType.ValidateCommand && commandName == name;
+        public bool IsExecuteCommand(string name) => keyboardType == EventType.ExecuteCommand && commandName == name;
 
-		public MouseButton mouseButton
-		{
-			get
-			{
-				if (Application.platform == RuntimePlatform.OSXEditor && e.control && e.button == (int)MouseButton.Left)
-				{
-					return MouseButton.Right;
-				}
+        public bool IsFree(EventType type) => freeType == type;
+        public bool IsRaw(EventType type) => rawType == type;
 
-				return (MouseButton)e.button;
-			}
-		}
-	}
+        public void Use()
+        {
+            e.Use();
+        }
+
+        public void TryUse()
+        {
+            e?.TryUse();
+        }
+
+        public void ValidateCommand()
+        {
+            if (controlType != EventType.ValidateCommand)
+            {
+                throw new InvalidOperationException();
+            }
+
+            // In Unity, validating a command means using the ValidateCommand event.
+            Use();
+        }
+
+        public Vector2 mousePosition => e.mousePosition;
+        public Vector2 mouseDelta => e.delta;
+        public int clickCount => e.clickCount;
+        public KeyCode keyCode => e.keyCode;
+        public string commandName => e.commandName;
+
+        public EventModifiers modifiers => e.modifiers;
+        public bool alt => e.alt;
+        public bool shift => e.shift;
+        public bool ctrl => e.control;
+        public bool cmd => e.command;
+        public bool modified => e.modifiers != EventModifiers.None;
+        public bool ctrlOrCmd => Application.platform == RuntimePlatform.OSXEditor ? cmd : ctrl;
+
+        public MouseButton mouseButton
+        {
+            get
+            {
+                if (Application.platform == RuntimePlatform.OSXEditor && e.control && e.button == (int)MouseButton.Left)
+                {
+                    return MouseButton.Right;
+                }
+
+                return (MouseButton)e.button;
+            }
+        }
+    }
 }

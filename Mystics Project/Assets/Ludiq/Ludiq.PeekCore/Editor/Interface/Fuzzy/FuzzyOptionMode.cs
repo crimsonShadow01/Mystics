@@ -1,8 +1,8 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public enum FuzzyOptionMode
-	{
-		Branch,
-		Leaf
-	}
+    public enum FuzzyOptionMode
+    {
+        Branch,
+        Leaf
+    }
 }

@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
 
 
 namespace TerrainComposer2
@@ -15,7 +12,7 @@ namespace TerrainComposer2
         public bool SavePreviewTextures = true;
 
         public Color[] previewColors = { Color.red, Color.blue, Color.green, Color.yellow, Color.magenta, Color.cyan, Color.white, Color.grey };
-        
+
         public Color colLayerGroup;
         public Color colLayer;
         public Color colMaskNodeGroup;
@@ -46,7 +43,7 @@ namespace TerrainComposer2
 
         public KeyCode keyZoomIn = KeyCode.Plus;
         public KeyCode keyZoomOut = KeyCode.Minus;
-        
+
         public Color GetVisualizeColor(int index)
         {
             return previewColors[(int)Mathf.Repeat(index, previewColors.Length)];

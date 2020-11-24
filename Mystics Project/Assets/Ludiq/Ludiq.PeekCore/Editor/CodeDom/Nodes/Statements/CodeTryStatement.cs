@@ -25,34 +25,34 @@ namespace Ludiq.PeekCore.CodeDom
         public List<CodeCatchClause> CatchClauses { get; } = new List<CodeCatchClause>();
         public List<CodeStatement> FinallyStatements { get; } = new List<CodeStatement>();
 
-		public override bool IsTerminator => false;
+        public override bool IsTerminator => false;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				foreach (var child in TryStatements) yield return child;
-				foreach (var child in CatchClauses) yield return child;
-				foreach (var child in FinallyStatements) yield return child;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                foreach (var child in TryStatements) yield return child;
+                foreach (var child in CatchClauses) yield return child;
+                foreach (var child in FinallyStatements) yield return child;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			generator.WriteBlankLineBeforeEnteringBlock();
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.WriteBlankLineBeforeEnteringBlock();
             generator.Write(TokenType.Keyword, "try");
             generator.WriteOpeningBrace();
             generator.Indent++;
-			generator.EnterLocalScope();
+            generator.EnterLocalScope();
             TryStatements.ReserveLocals(generator, default(CodeStatementEmitOptions));
             TryStatements.Generate(generator, default(CodeStatementEmitOptions));
-			generator.ExitLocalScope();
+            generator.ExitLocalScope();
             generator.Indent--;
 
             foreach (var catchClause in CatchClauses)
             {
-				generator.WriteMiddleClosingBrace();
+                generator.WriteMiddleClosingBrace();
                 generator.Write(TokenType.Keyword, "catch");
                 generator.Write(TokenType.Space, ' ');
                 generator.Write(TokenType.Punctuation, '(');
@@ -62,27 +62,27 @@ namespace Ludiq.PeekCore.CodeDom
                 generator.Write(TokenType.Punctuation, ')');
                 generator.WriteOpeningBrace();
                 generator.Indent++;
-				generator.EnterLocalScope();
-				generator.ReserveLocal(catchClause.LocalName);
-				catchClause.Statements.ReserveLocals(generator, default(CodeStatementEmitOptions));
+                generator.EnterLocalScope();
+                generator.ReserveLocal(catchClause.LocalName);
+                catchClause.Statements.ReserveLocals(generator, default(CodeStatementEmitOptions));
                 catchClause.Statements.Generate(generator, default(CodeStatementEmitOptions));
-				generator.ExitLocalScope();
+                generator.ExitLocalScope();
                 generator.Indent--;
             }
 
             if (FinallyStatements.Count > 0)
             {
-				generator.WriteMiddleClosingBrace();
+                generator.WriteMiddleClosingBrace();
                 generator.Write(TokenType.Keyword, "finally");
                 generator.WriteOpeningBrace();
                 generator.Indent++;
-				generator.EnterLocalScope();
-				FinallyStatements.ReserveLocals(generator, default(CodeStatementEmitOptions));
+                generator.EnterLocalScope();
+                FinallyStatements.ReserveLocals(generator, default(CodeStatementEmitOptions));
                 FinallyStatements.Generate(generator, default(CodeStatementEmitOptions));
-				generator.ExitLocalScope();
+                generator.ExitLocalScope();
                 generator.Indent--;
             }
             generator.WriteClosingBrace();
-		}
-	}
+        }
+    }
 }

@@ -2,8 +2,8 @@
 
 namespace Ludiq.PeekCore
 {
-	public interface IAttributeProvider
-	{
-		Attribute[] GetCustomAttributes(bool inherit);
-	}
+    public interface IAttributeProvider
+    {
+        Attribute[] GetCustomAttributes(bool inherit);
+    }
 }

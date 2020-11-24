@@ -1,194 +1,190 @@
 using System;
-using Ludiq.Peek;
-using Ludiq.PeekCore;
 using UnityEditor;
-using UnityEditor.ShortcutManagement;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
-using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public static class Creator
-	{
-		private static Event e => Event.current;
+    public static class Creator
+    {
+        private static Event e => Event.current;
 
-		internal static void OnSceneGUI(SceneView sceneView)
-		{
-			if (!PeekPlugin.Configuration.enableCreator.Display(sceneView.maximized))
-			{
-				return;
-			}
+        internal static void OnSceneGUI(SceneView sceneView)
+        {
+            if (!PeekPlugin.Configuration.enableCreator.Display(sceneView.maximized))
+            {
+                return;
+            }
 
-			if (SceneViewIntegration.used)
-			{
-				return;
-			}
+            if (SceneViewIntegration.used)
+            {
+                return;
+            }
 
-			try
-			{
-				Profiler.BeginSample("Peek." + nameof(Creator));
+            try
+            {
+                Profiler.BeginSample("Peek." + nameof(Creator));
 
-				var position = sceneView.GetInnerGuiPosition();
+                var position = sceneView.GetInnerGuiPosition();
 
-				var shortcut = PeekPlugin.Configuration.creatorShortcut;
-				var preview = shortcut.Preview(e);
-				var activate = shortcut.Check(e);
-				
-				if (position.Contains(e.mousePosition) && (preview || activate))
-				{
-					Handles.BeginGUI();
+                var shortcut = PeekPlugin.Configuration.creatorShortcut;
+                var preview = shortcut.Preview(e);
+                var activate = shortcut.Check(e);
 
-					var filter = ProbeFilter.@default;
-					filter.proBuilder = false; // Too slow and useless here anyway
-					var hit = Probe.Pick(filter, sceneView, e.mousePosition, out var point);
+                if (position.Contains(e.mousePosition) && (preview || activate))
+                {
+                    Handles.BeginGUI();
 
-					if (preview)
-					{
-						var createIndicatorStyle = LudiqStyles.CommandButton(true, true);
-						var createIndicatorContent = LudiqGUIUtility.TempContent(PeekPlugin.Icons.createGameObjectOptions?[IconSize.Small]);
-						var createIndicatorSize = createIndicatorStyle.CalcSize(createIndicatorContent);
+                    var filter = ProbeFilter.@default;
+                    filter.proBuilder = false; // Too slow and useless here anyway
+                    var hit = Probe.Pick(filter, sceneView, e.mousePosition, out var point);
 
-						var createIndicatorPosition = new Rect
-						(
-							e.mousePosition.x - (createIndicatorSize.x / 2),
-							e.mousePosition.y + Styles.indicatorMargin,
-							createIndicatorSize.x,
-							createIndicatorSize.y
-						);
+                    if (preview)
+                    {
+                        var createIndicatorStyle = LudiqStyles.CommandButton(true, true);
+                        var createIndicatorContent = LudiqGUIUtility.TempContent(PeekPlugin.Icons.createGameObjectOptions?[IconSize.Small]);
+                        var createIndicatorSize = createIndicatorStyle.CalcSize(createIndicatorContent);
 
-						GUI.Label
-						(
-							createIndicatorPosition,
-							createIndicatorContent,
-							createIndicatorStyle
-						);
-					}
+                        var createIndicatorPosition = new Rect
+                        (
+                            e.mousePosition.x - (createIndicatorSize.x / 2),
+                            e.mousePosition.y + Styles.indicatorMargin,
+                            createIndicatorSize.x,
+                            createIndicatorSize.y
+                        );
 
-					if (activate)
-					{
-						var activatorPosition = new Rect(e.mousePosition, Vector2.zero);
-						activatorPosition.width = 220;
-						activatorPosition = LudiqGUIUtility.GUIToScreenRect(activatorPosition);
+                        GUI.Label
+                        (
+                            createIndicatorPosition,
+                            createIndicatorContent,
+                            createIndicatorStyle
+                        );
+                    }
 
-						// Delay closure allocations
-						var _hit = hit;
-						var _point = point;
-						var _sceneView = sceneView;
+                    if (activate)
+                    {
+                        var activatorPosition = new Rect(e.mousePosition, Vector2.zero);
+                        activatorPosition.width = 220;
+                        activatorPosition = LudiqGUIUtility.GUIToScreenRect(activatorPosition);
 
-						LudiqGUI.FuzzyDropdown
-						(
-							activatorPosition,
-							new CreateGameObjectOptionTree(),
-							null,
-							(_instance) =>
-							{
-								var instance = (GameObject)_instance;
+                        // Delay closure allocations
+                        var _hit = hit;
+                        var _point = point;
+                        var _sceneView = sceneView;
 
-								var is2D = instance.GetComponent<RectTransform>() != null ||
-								           instance.GetComponent<SpriteRenderer>() != null;
+                        LudiqGUI.FuzzyDropdown
+                        (
+                            activatorPosition,
+                            new CreateGameObjectOptionTree(),
+                            null,
+                            (_instance) =>
+                            {
+                                var instance = (GameObject)_instance;
 
-								if (_hit != null)
-								{
-									var parenting = PeekPlugin.Configuration.creatorParenting;
-									
-									Transform parent = null;
+                                var is2D = instance.GetComponent<RectTransform>() != null ||
+                                           instance.GetComponent<SpriteRenderer>() != null;
 
-									if (parenting == CreatorParenting.Root)
-									{
-										parent = null;
-									}
-									else if (parenting == CreatorParenting.Sibling)
-									{
-										parent = _hit.Value.transform.parent;
-									}
-									else if (parenting == CreatorParenting.SiblingOutsidePrefabs)
-									{
-										parent = _hit.Value.transform.parent;
+                                if (_hit != null)
+                                {
+                                    var parenting = PeekPlugin.Configuration.creatorParenting;
 
-										while (parent != null && PrefabUtility.IsPartOfPrefabInstance(parent))
-										{
-											parent = parent.parent;
-										}
-									}
+                                    Transform parent = null;
 
-									if (parent != null)
-									{
-										SceneManager.MoveGameObjectToScene(instance, parent.gameObject.scene);
-									}
+                                    if (parenting == CreatorParenting.Root)
+                                    {
+                                        parent = null;
+                                    }
+                                    else if (parenting == CreatorParenting.Sibling)
+                                    {
+                                        parent = _hit.Value.transform.parent;
+                                    }
+                                    else if (parenting == CreatorParenting.SiblingOutsidePrefabs)
+                                    {
+                                        parent = _hit.Value.transform.parent;
 
-									instance.transform.SetParent(parent, true);
-								}
+                                        while (parent != null && PrefabUtility.IsPartOfPrefabInstance(parent))
+                                        {
+                                            parent = parent.parent;
+                                        }
+                                    }
 
-								instance.transform.position = _point;
+                                    if (parent != null)
+                                    {
+                                        SceneManager.MoveGameObjectToScene(instance, parent.gameObject.scene);
+                                    }
 
-								if (!is2D && PeekPlugin.Configuration.createOnBounds && instance.CalculateBounds(out var bounds, Space.World, true, false, false, false, false))
-								{
-									var difference = _point.y - bounds.min.y;
+                                    instance.transform.SetParent(parent, true);
+                                }
 
-									instance.transform.position += difference * Vector3.up;
-								}
+                                instance.transform.position = _point;
 
-								Selection.activeGameObject = instance;
+                                if (!is2D && PeekPlugin.Configuration.createOnBounds && instance.CalculateBounds(out var bounds, Space.World, true, false, false, false, false))
+                                {
+                                    var difference = _point.y - bounds.min.y;
 
-								if (_hit == null && !_sceneView.in2DMode)
-								{
-									_sceneView.FrameSelected();
-								}
-							}
-						);
+                                    instance.transform.position += difference * Vector3.up;
+                                }
 
-						FuzzyWindow.instance.Focus();
+                                Selection.activeGameObject = instance;
 
-						e.Use();
-					}
+                                if (_hit == null && !_sceneView.in2DMode)
+                                {
+                                    _sceneView.FrameSelected();
+                                }
+                            }
+                        );
+
+                        FuzzyWindow.instance.Focus();
+
+                        e.Use();
+                    }
 
 #if LUDIQ_PEEK_INTEROP_PROBUILDER
 					UnityEditor.ProBuilder.EditorUtility.SynchronizeWithMeshFilter(null);
 #endif
 
-					if (preview)
-					{
-						Handles.EndGUI();
+                    if (preview)
+                    {
+                        Handles.EndGUI();
 
-						// Scale handles take depth into account for handle size, so they're more expressive than position handles
+                        // Scale handles take depth into account for handle size, so they're more expressive than position handles
 
-						if (sceneView.in2DMode)
-						{
-							Handles.PositionHandle(point, Quaternion.identity);
-						}
-						else
-						{
-							Handles.ScaleHandle(Vector3.one, point, Quaternion.identity, PeekPlugin.Configuration.creatorUnitSize);
-						}
+                        if (sceneView.in2DMode)
+                        {
+                            Handles.PositionHandle(point, Quaternion.identity);
+                        }
+                        else
+                        {
+                            Handles.ScaleHandle(Vector3.one, point, Quaternion.identity, PeekPlugin.Configuration.creatorUnitSize);
+                        }
 
-						Handles.BeginGUI();
-					}
+                        Handles.BeginGUI();
+                    }
 
-					sceneView.Repaint();
+                    sceneView.Repaint();
 
-					Handles.EndGUI();
-				}
-			}
-			catch (Exception ex)
-			{
-				Debug.LogException(ex);
-			}
-			finally
-			{
-				Profiler.EndSample();
-			}
-		}
+                    Handles.EndGUI();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+            finally
+            {
+                Profiler.EndSample();
+            }
+        }
 
-		private static class Styles
-		{
-			static Styles() { }
-			
-			public static readonly int indicatorMargin = 20;
-		}
-	}
+        private static class Styles
+        {
+            static Styles() { }
+
+            public static readonly int indicatorMargin = 20;
+        }
+    }
 }

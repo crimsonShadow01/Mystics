@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.Rendering;
 #if VEGETATION_STUDIO_PRO
 using AwesomeTechnologies.VegetationSystem;
@@ -170,10 +168,10 @@ public class LakePolygonProfileEditor : Editor
         lakePolygon.biomeType = EditorGUILayout.IntField("Select biome", lakePolygon.biomeType);
 #endif
 
-        if(EditorGUI.EndChangeCheck())
+        if (EditorGUI.EndChangeCheck())
         {
             EditorUtility.SetDirty(lakePolygon);
-           // AssetDatabase.Refresh();
+            // AssetDatabase.Refresh();
         }
     }
 }

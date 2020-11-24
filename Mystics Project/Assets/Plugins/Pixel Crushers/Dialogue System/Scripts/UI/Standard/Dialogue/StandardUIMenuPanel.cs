@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -566,7 +566,7 @@ namespace PixelCrushers.DialogueSystem
         /// <param name='timeout'>Timeout duration in seconds.</param>
         /// <param name="timeoutHandler">Invoke this handler on timeout.</param>
         public virtual void StartTimer(float timeout, System.Action timeoutHandler)
-        {            
+        {
             if (m_timer == null)
             {
                 if (timerSlider != null)

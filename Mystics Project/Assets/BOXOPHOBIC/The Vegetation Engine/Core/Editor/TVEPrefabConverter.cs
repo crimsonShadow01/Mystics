@@ -1,11 +1,11 @@
 ﻿// Cristian Pop - https://boxophobic.com/
 
-using UnityEngine;
-using UnityEditor;
 using Boxophobic.StyledGUI;
-using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
 
 namespace TheVegetationEngine
 {
@@ -753,9 +753,9 @@ namespace TheVegetationEngine
 
             EnableInvalidGameObjectsInPrefab();
 
-            PrefabUtility.ReplacePrefab(prefabInstance, prefabObject, ReplacePrefabOptions.ReplaceNameBased);
+            //PrefabUtility.ReplacePrefab(prefabInstance, prefabObject, ReplacePrefabOptions.ReplaceNameBased);
 
-            //PrefabUtility.SaveAsPrefabAssetAndConnect(prefabInstance, AssetDatabase.GetAssetPath(prefabObject), InteractionMode.AutomatedAction);
+            PrefabUtility.SaveAsPrefabAssetAndConnect(prefabInstance, AssetDatabase.GetAssetPath(prefabObject), InteractionMode.AutomatedAction);
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -774,9 +774,9 @@ namespace TheVegetationEngine
 
             var prefabBackup = prefabInstance.GetComponent<TVEPrefab>().storedPrefabBackup;
 
-            PrefabUtility.ReplacePrefab(prefabBackup, prefabObject, ReplacePrefabOptions.ReplaceNameBased);
+            //PrefabUtility.SavePrefabAssety(prefabBackup, prefabObject, ReplacePrefabOptions.ReplaceNameBased);
 
-            //PrefabUtility.SaveAsPrefabAssetAndConnect(prefabInstance, AssetDatabase.GetAssetPath(prefabObject), InteractionMode.AutomatedAction);
+            PrefabUtility.SaveAsPrefabAssetAndConnect(prefabInstance, AssetDatabase.GetAssetPath(prefabObject), InteractionMode.AutomatedAction);
 
             if (keepData == false)
             {

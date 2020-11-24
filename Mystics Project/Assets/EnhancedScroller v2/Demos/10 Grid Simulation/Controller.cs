@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using EnhancedUI;
+﻿using EnhancedUI;
 using EnhancedUI.EnhancedScroller;
+using UnityEngine;
 
 namespace EnhancedScrollerDemos.GridSimulation
 {
@@ -57,7 +56,7 @@ namespace EnhancedScrollerDemos.GridSimulation
         {
             // set up some simple data
             _data = new SmallList<Data>();
-            for (var i = 0; i < 1000; i ++)
+            for (var i = 0; i < 1000; i++)
             {
                 _data.Add(new Data() { someText = i.ToString() });
             }

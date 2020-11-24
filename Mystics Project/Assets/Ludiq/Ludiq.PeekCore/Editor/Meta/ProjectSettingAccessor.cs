@@ -3,37 +3,37 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class ProjectSettingAccessor : PluginConfigurationItemAccessor
-	{
-		public ProjectSettingAccessor(PluginConfiguration configuration, MemberInfo member, Accessor parent) : base(configuration, member, parent) { }
+    public sealed class ProjectSettingAccessor : PluginConfigurationItemAccessor
+    {
+        public ProjectSettingAccessor(PluginConfiguration configuration, MemberInfo member, Accessor parent) : base(configuration, member, parent) { }
 
-		public override bool exists => storage.ContainsKey(key);
-		
-		private DictionaryAsset storage => configuration.projectSettingsAsset;
+        public override bool exists => storage.ContainsKey(key);
 
-		public override void Load()
-		{
-			if (!definedType.IsAssignableFrom(valueType))
-			{
-				Debug.LogWarning($"Failed to cast project setting '{configuration.plugin.id}.{key}' as '{definedType.CSharpFullName()}', reverting to default.");
-				value = defaultValue;
-			}
+        private DictionaryAsset storage => configuration.projectSettingsAsset;
 
-			value = storage[key];
-		}
+        public override void Load()
+        {
+            if (!definedType.IsAssignableFrom(valueType))
+            {
+                Debug.LogWarning($"Failed to cast project setting '{configuration.plugin.id}.{key}' as '{definedType.CSharpFullName()}', reverting to default.");
+                value = defaultValue;
+            }
 
-		public override void Save()
-		{
-			if (storage.ContainsKey(key))
-			{
-				storage[key] = value;
-			}
-			else
-			{
-				storage.Add(key, value);
-			}
+            value = storage[key];
+        }
 
-			configuration.SaveProjectSettingsAsset();
-		}
-	}
+        public override void Save()
+        {
+            if (storage.ContainsKey(key))
+            {
+                storage[key] = value;
+            }
+            else
+            {
+                storage.Add(key, value);
+            }
+
+            configuration.SaveProjectSettingsAsset();
+        }
+    }
 }

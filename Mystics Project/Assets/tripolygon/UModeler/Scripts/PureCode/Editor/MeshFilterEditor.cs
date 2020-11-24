@@ -1,8 +1,8 @@
 ﻿// Copyright 2018-2020 tripolygon Inc. All Rights Reserved.
 
-using UnityEngine;
-using UnityEditor;
 using tripolygon.UModeler;
+using UnityEditor;
+using UnityEngine;
 
 namespace TPUModelerEditor
 {
@@ -22,7 +22,7 @@ namespace TPUModelerEditor
                 foldedOut = EditorUtil.Foldout(foldedOut, "UModeler .asset");
                 Mesh mesh = modeler.renderableMeshFilter != null ? modeler.renderableMeshFilter.sharedMesh : null;
                 if (foldedOut && mesh != null)
-                {   
+                {
                     if (modeler.IsAssetPathValid())
                         GUILayout.Label("File name : " + modeler.AssetFileName);
                     else

@@ -1,171 +1,170 @@
-﻿using System;
+﻿using Ludiq.PeekCore;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using Ludiq.PeekCore;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Ludiq.Peek
 {
-	public static class ComponentCache
-	{
-		private static Dictionary<GameObject[], List<List<Component>>> sharedComponents = new Dictionary<GameObject[], List<List<Component>>>();
-		
-		private static Dictionary<GameObject[], List<List<Component>>> inconsistentComponents = new Dictionary<GameObject[], List<List<Component>>>();
+    public static class ComponentCache
+    {
+        private static Dictionary<GameObject[], List<List<Component>>> sharedComponents = new Dictionary<GameObject[], List<List<Component>>>();
 
-		private static Dictionary<GameObject, List<RemovedComponent>> removedComponents = new Dictionary<GameObject, List<RemovedComponent>>();
+        private static Dictionary<GameObject[], List<List<Component>>> inconsistentComponents = new Dictionary<GameObject[], List<List<Component>>>();
 
-		static ComponentCache()
-		{
-			EditorApplication.projectChanged += Clear;
-			EditorApplication.hierarchyChanged += Clear;
-			EditorApplicationUtility.onEnterEditMode += Clear; // Components get destroyed but assembly doesn't get reloaded
-			PrefabUtility.prefabInstanceUpdated += (instance) => Clear();
-		}
+        private static Dictionary<GameObject, List<RemovedComponent>> removedComponents = new Dictionary<GameObject, List<RemovedComponent>>();
 
-		private static void FetchSharedComponents(GameObject[] targets, out List<List<Component>> sharedComponents, out List<List<Component>> inconsistentComponents)
-		{
-			sharedComponents = new List<List<Component>>();
-			inconsistentComponents = new List<List<Component>>();
+        static ComponentCache()
+        {
+            EditorApplication.projectChanged += Clear;
+            EditorApplication.hierarchyChanged += Clear;
+            EditorApplicationUtility.onEnterEditMode += Clear; // Components get destroyed but assembly doesn't get reloaded
+            PrefabUtility.prefabInstanceUpdated += (instance) => Clear();
+        }
 
-			if (targets.Length == 0 || targets[0] == null)
-			{
-				return;
-			}
+        private static void FetchSharedComponents(GameObject[] targets, out List<List<Component>> sharedComponents, out List<List<Component>> inconsistentComponents)
+        {
+            sharedComponents = new List<List<Component>>();
+            inconsistentComponents = new List<List<Component>>();
 
-			var referenceComponents = ListPool<Component>.New();
+            if (targets.Length == 0 || targets[0] == null)
+            {
+                return;
+            }
 
-			targets[0].GetComponents(referenceComponents);
+            var referenceComponents = ListPool<Component>.New();
 
-			// TODO: Figure out why some users have "dictionary not used by pool" when freeing below.
-			// Hacky hotfix.
-			//var componentCounters = DictionaryPool<Type, int>.New();
-			var componentCounters = new Dictionary<Type, int>();
+            targets[0].GetComponents(referenceComponents);
 
-			foreach (var component in referenceComponents)
-			{
-				if (component == null)
-				{
-					continue;
-				}
+            // TODO: Figure out why some users have "dictionary not used by pool" when freeing below.
+            // Hacky hotfix.
+            //var componentCounters = DictionaryPool<Type, int>.New();
+            var componentCounters = new Dictionary<Type, int>();
 
-				var presentOnAll = true;
-				var components = new List<Component>();
-				var type = component.GetType();
+            foreach (var component in referenceComponents)
+            {
+                if (component == null)
+                {
+                    continue;
+                }
 
-				if (!componentCounters.ContainsKey(type))
-				{
-					componentCounters[type] = 0;
-				}
+                var presentOnAll = true;
+                var components = new List<Component>();
+                var type = component.GetType();
 
-				if (!componentCounters.TryGetValue(type, out var componentCounter))
-				{
-					componentCounter = 0;
-				}
+                if (!componentCounters.ContainsKey(type))
+                {
+                    componentCounters[type] = 0;
+                }
 
-				foreach (var target in targets)
-				{
-					if (target == null)
-					{
-						continue;
-					}
+                if (!componentCounters.TryGetValue(type, out var componentCounter))
+                {
+                    componentCounter = 0;
+                }
 
-					var targetComponents = ListPool<Component>.New();
+                foreach (var target in targets)
+                {
+                    if (target == null)
+                    {
+                        continue;
+                    }
 
-					target.GetComponents(type, targetComponents);
+                    var targetComponents = ListPool<Component>.New();
 
-					var targetComponent = componentCounter < targetComponents.Count ? targetComponents[componentCounter] : null;
+                    target.GetComponents(type, targetComponents);
 
-					targetComponents.Free();
+                    var targetComponent = componentCounter < targetComponents.Count ? targetComponents[componentCounter] : null;
 
-					if (targetComponent != null)
-					{
-						components.Add(targetComponent);
-					}
-					else
-					{
-						presentOnAll = false;
-						break;
-					}
-				}
+                    targetComponents.Free();
 
-				if (presentOnAll)
-				{
-					sharedComponents.Add(components);
-				}
-				else
-				{
-					inconsistentComponents.Add(components);
-				}
+                    if (targetComponent != null)
+                    {
+                        components.Add(targetComponent);
+                    }
+                    else
+                    {
+                        presentOnAll = false;
+                        break;
+                    }
+                }
 
-				componentCounters[type] = componentCounter + 1;
-			}
+                if (presentOnAll)
+                {
+                    sharedComponents.Add(components);
+                }
+                else
+                {
+                    inconsistentComponents.Add(components);
+                }
 
-			referenceComponents.Free();
+                componentCounters[type] = componentCounter + 1;
+            }
 
-			//componentCounters.Free();
-		}
+            referenceComponents.Free();
 
-		private static List<RemovedComponent> FetchRemovedComponents(GameObject target)
-		{
-			var removedComponents = new List<RemovedComponent>();
+            //componentCounters.Free();
+        }
 
-			foreach (var removedComponent in PrefabUtility.GetRemovedComponents(target))
-			{
-				if (removedComponent.assetComponent == null) // Not sure why this happens
-				{
-					continue;
-				}
+        private static List<RemovedComponent> FetchRemovedComponents(GameObject target)
+        {
+            var removedComponents = new List<RemovedComponent>();
 
-				removedComponents.Add(removedComponent);
-			}
+            foreach (var removedComponent in PrefabUtility.GetRemovedComponents(target))
+            {
+                if (removedComponent.assetComponent == null) // Not sure why this happens
+                {
+                    continue;
+                }
 
-			return removedComponents;
-		}
+                removedComponents.Add(removedComponent);
+            }
 
-		public static List<List<Component>> GetSharedComponents(GameObject[] targets)
-		{
-			if (!sharedComponents.TryGetValue(targets, out var result))
-			{
-				FetchSharedComponents(targets, out var shared, out var inconsistent);
-				sharedComponents[targets] = shared;
-				inconsistentComponents[targets] = inconsistent;
-				result = shared;
-			}
+            return removedComponents;
+        }
 
-			return result;
-		}
+        public static List<List<Component>> GetSharedComponents(GameObject[] targets)
+        {
+            if (!sharedComponents.TryGetValue(targets, out var result))
+            {
+                FetchSharedComponents(targets, out var shared, out var inconsistent);
+                sharedComponents[targets] = shared;
+                inconsistentComponents[targets] = inconsistent;
+                result = shared;
+            }
 
-		public static List<List<Component>> GetInconsistentComponents(GameObject[] targets)
-		{
-			if (!inconsistentComponents.TryGetValue(targets, out var result))
-			{
-				FetchSharedComponents(targets, out var shared, out var inconsistent);
-				sharedComponents[targets] = shared;
-				inconsistentComponents[targets] = inconsistent;
-				result = inconsistent;
-			}
+            return result;
+        }
 
-			return result;
-		}
+        public static List<List<Component>> GetInconsistentComponents(GameObject[] targets)
+        {
+            if (!inconsistentComponents.TryGetValue(targets, out var result))
+            {
+                FetchSharedComponents(targets, out var shared, out var inconsistent);
+                sharedComponents[targets] = shared;
+                inconsistentComponents[targets] = inconsistent;
+                result = inconsistent;
+            }
 
-		public static List<RemovedComponent> GetRemovedComponents(GameObject target)
-		{
-			if (!removedComponents.TryGetValue(target, out var result))
-			{
-				result = FetchRemovedComponents(target);
-				removedComponents.Add(target, result);
-			}
+            return result;
+        }
 
-			return result;
-		}
+        public static List<RemovedComponent> GetRemovedComponents(GameObject target)
+        {
+            if (!removedComponents.TryGetValue(target, out var result))
+            {
+                result = FetchRemovedComponents(target);
+                removedComponents.Add(target, result);
+            }
 
-		public static void Clear()
-		{
-			sharedComponents.Clear();
-			inconsistentComponents.Clear();
-			removedComponents.Clear();
-		}
-	}
+            return result;
+        }
+
+        public static void Clear()
+        {
+            sharedComponents.Clear();
+            inconsistentComponents.Clear();
+            removedComponents.Clear();
+        }
+    }
 }

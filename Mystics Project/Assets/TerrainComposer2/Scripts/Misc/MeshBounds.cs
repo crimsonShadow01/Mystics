@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [ExecuteInEditMode]
-public class MeshBounds : MonoBehaviour {
+public class MeshBounds : MonoBehaviour
+{
 
-	void Start ()
+    void Start()
     {
         MeshFilter mf = GetComponent<MeshFilter>();
 
@@ -17,5 +17,5 @@ public class MeshBounds : MonoBehaviour {
         size.y = 4800;
         m.bounds = new Bounds(Vector3.zero, size);
         Debug.Log(name + " new bounds " + size);
-	}
+    }
 }

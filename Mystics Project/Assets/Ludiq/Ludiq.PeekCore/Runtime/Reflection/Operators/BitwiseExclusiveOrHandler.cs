@@ -2,10 +2,10 @@
 
 namespace Ludiq.PeekCore
 {
-	public class BitwiseExclusiveOrHandler : BinaryOperatorHandler
-	{
-		public BitwiseExclusiveOrHandler() : base(OperatorCategory.Bitwise, BinaryOperator.ExclusiveOr, "Bitwise Exclusive Or", "Bitwise Exclusive Or", "^", "\u2295", "op_ExclusiveOr")
-		{
+    public class BitwiseExclusiveOrHandler : BinaryOperatorHandler
+    {
+        public BitwiseExclusiveOrHandler() : base(OperatorCategory.Bitwise, BinaryOperator.ExclusiveOr, "Bitwise Exclusive Or", "Bitwise Exclusive Or", "^", "\u2295", "op_ExclusiveOr")
+        {
             Handle<bool, bool>((a, b) => a ^ b, typeof(bool));
 
             Handle<byte, byte>((a, b) => a ^ b, typeof(byte));
@@ -79,28 +79,28 @@ namespace Ludiq.PeekCore
             Handle<ulong, uint>((a, b) => a ^ b, typeof(ulong));
             //Handle<ulong, long>((a, b) => a ^ b, typeof(ulong));
             Handle<ulong, ulong>((a, b) => a ^ b, typeof(ulong));
-		}
+        }
 
-		public override string GetDescriptionFormat(Type leftType, Type rightType) => "Returns the bitwise symmetric difference between {0}.";
+        public override string GetDescriptionFormat(Type leftType, Type rightType) => "Returns the bitwise symmetric difference between {0}.";
 
-		protected override object CustomHandling(object leftOperand, object rightOperand)
-		{
-			if (leftOperand.GetType() is var leftType && leftType == rightOperand.GetType() && leftType.IsPseudoFlagsEnum())
-			{
-				return Enum.ToObject(leftType, (ulong) Convert.ChangeType(leftOperand, typeof(ulong)) | (ulong) Convert.ChangeType(rightOperand, typeof(ulong)));
-			}
+        protected override object CustomHandling(object leftOperand, object rightOperand)
+        {
+            if (leftOperand.GetType() is var leftType && leftType == rightOperand.GetType() && leftType.IsPseudoFlagsEnum())
+            {
+                return Enum.ToObject(leftType, (ulong)Convert.ChangeType(leftOperand, typeof(ulong)) | (ulong)Convert.ChangeType(rightOperand, typeof(ulong)));
+            }
 
-			return base.CustomHandling(leftOperand, rightOperand);
-		}
+            return base.CustomHandling(leftOperand, rightOperand);
+        }
 
-		protected override Type GetCustomHandlingType(Type leftType, Type rightType)
-		{
-			if (leftType == rightType && leftType.IsPseudoFlagsEnum())
-			{
-				return leftType;
-			}
+        protected override Type GetCustomHandlingType(Type leftType, Type rightType)
+        {
+            if (leftType == rightType && leftType.IsPseudoFlagsEnum())
+            {
+                return leftType;
+            }
 
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 }

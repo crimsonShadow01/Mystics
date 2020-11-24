@@ -1,19 +1,19 @@
-﻿using UnityEngine;
+﻿using System;
 using UnityEditor;
-using System;
+using UnityEngine;
 
 namespace MeshCombineStudio
 {
-	public class Products
-	{
+    public class Products
+    {
         public Texture mcsIcon;
         public Texture mcsCavesIcon;
         public Texture deIcon;
         public Texture tcIcon;
         public Texture wcIcon;
-        
+
         public bool mcsInProject, mcsCavesInProject, deInProject, tcInProject, wcInProject;
-        
+
         float scrollBarX;
 
         public Products()
@@ -26,15 +26,15 @@ namespace MeshCombineStudio
         }
 
         public static Type GetType(string typeName)
-		{
-			Type type = Type.GetType(typeName + ", Assembly-CSharp");
-			if (type != null) return type;
+        {
+            Type type = Type.GetType(typeName + ", Assembly-CSharp");
+            if (type != null) return type;
 
-			type = Type.GetType(typeName + ", Assembly-CSharp-firstpass");
-			return type;
-		}
+            type = Type.GetType(typeName + ", Assembly-CSharp-firstpass");
+            return type;
+        }
 
-		public void Draw(MonoBehaviour monoBehaviour)
+        public void Draw(MonoBehaviour monoBehaviour)
         {
             if (mcsCavesIcon == null || deIcon == null)
             {
@@ -43,9 +43,9 @@ namespace MeshCombineStudio
                 mcsCavesIcon = AssetDatabase.LoadAssetAtPath(path + "MCSCavesIcon.jpg", typeof(Texture)) as Texture;
                 deIcon = AssetDatabase.LoadAssetAtPath(path + "deIcon.jpg", typeof(Texture)) as Texture;
                 tcIcon = AssetDatabase.LoadAssetAtPath(path + "tcIcon.jpg", typeof(Texture)) as Texture;
-                wcIcon = AssetDatabase.LoadAssetAtPath(path + "wcIcon.jpg", typeof(Texture)) as Texture;  
+                wcIcon = AssetDatabase.LoadAssetAtPath(path + "wcIcon.jpg", typeof(Texture)) as Texture;
             }
-             
+
             Rect rect1 = GUILayoutUtility.GetLastRect();
 
             Rect rect = new Rect(rect1.x, rect1.y, 128, 128);

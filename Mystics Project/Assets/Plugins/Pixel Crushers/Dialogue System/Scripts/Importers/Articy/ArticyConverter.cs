@@ -16,7 +16,7 @@ namespace PixelCrushers.DialogueSystem.Articy
     public class ArticyConverter
     {
 
-        #region Public Static Utility Methods
+#region Public Static Utility Methods
 
         public delegate void ProgressCallbackDelegate(string info, float progress);
         public static event ProgressCallbackDelegate onProgressCallback = delegate { };
@@ -61,9 +61,9 @@ namespace PixelCrushers.DialogueSystem.Articy
             converter.Convert(articyData, prefs, template, database);
         }
 
-        #endregion
+#endregion
 
-        #region Private Variables
+#region Private Variables
 
         private const string ArticyIdFieldTitle = "Articy Id";
         private const string ArticyTechnicalNameFieldTitle = "Technical Name";
@@ -84,9 +84,9 @@ namespace PixelCrushers.DialogueSystem.Articy
 
         private HashSet<string> otherScriptFieldTitles = new HashSet<string>();
 
-        #endregion
+#endregion
 
-        #region Stacks
+#region Stacks
 
         private List<string> flowFragmentNameStack = new List<string>();
         private List<Conversation> conversationStack = new List<Conversation>();
@@ -183,9 +183,9 @@ namespace PixelCrushers.DialogueSystem.Articy
             }
         }
 
-        #endregion
+#endregion
 
-        #region Top Level Conversion Methods
+#region Top Level Conversion Methods
 
         /// <summary>
         /// Convert the ArticyData, using the preferences in Prefs, into a dialogue database.
@@ -248,9 +248,9 @@ namespace PixelCrushers.DialogueSystem.Articy
             database.author = articyData.ProjectAuthor;
         }
 
-        #endregion
+#endregion
 
-        #region Non-Dialogue Conversion
+#region Non-Dialogue Conversion
 
         /// <summary>
         /// Converts articy entities into Dialogue System actors and items/quests.
@@ -480,9 +480,9 @@ namespace PixelCrushers.DialogueSystem.Articy
             }
         }
 
-        #endregion
+#endregion
 
-        #region Dialogue Conversion
+#region Dialogue Conversion
 
         /// <summary>
         /// Converts dialogues using the articy project's hierarchy.
@@ -1678,9 +1678,9 @@ namespace PixelCrushers.DialogueSystem.Articy
             }
         }
 
-        #endregion
+#endregion
 
-        #region Em Var Set
+#region Em Var Set
 
         private void ConvertEmVarSet()
         {
@@ -1708,7 +1708,7 @@ namespace PixelCrushers.DialogueSystem.Articy
             return string.IsNullOrEmpty(variableName) ? null : database.GetVariable(variableName);
         }
 
-        #endregion
+#endregion
 
     }
 

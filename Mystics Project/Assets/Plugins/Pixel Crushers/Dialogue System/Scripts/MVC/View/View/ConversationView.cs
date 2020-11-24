@@ -1,7 +1,7 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using System;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -325,7 +325,7 @@ namespace PixelCrushers.DialogueSystem
         {
             if ((subtitle != null) && (settings != null) && (settings.subtitleSettings != null))
             {
-                if (subtitle.formattedText.noSubtitle || 
+                if (subtitle.formattedText.noSubtitle ||
                     string.Equals(subtitle.sequence, "None()") || string.Equals(subtitle.sequence, "None();") ||
                     string.Equals(subtitle.sequence, "Continue()") || string.Equals(subtitle.sequence, "Continue();"))
                 {

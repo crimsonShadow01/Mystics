@@ -1,296 +1,294 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public abstract class DocumentedFuzzyOption<T> : FuzzyOption<T>
-	{
-		public IFuzzyOptionDocumentation documentation { get; protected set; }
+    public abstract class DocumentedFuzzyOption<T> : FuzzyOption<T>
+    {
+        public IFuzzyOptionDocumentation documentation { get; protected set; }
 
-		public bool zoom { get; protected set; }
+        public bool zoom { get; protected set; }
 
-		private bool ZoomIcon(FuzzyOptionNode node) => zoom && node.icon != null && (!string.IsNullOrWhiteSpace(documentation.summary) || !string.IsNullOrWhiteSpace(documentation.remarks));
+        private bool ZoomIcon(FuzzyOptionNode node) => zoom && node.icon != null && (!string.IsNullOrWhiteSpace(documentation.summary) || !string.IsNullOrWhiteSpace(documentation.remarks));
 
-		public bool showType { get; protected set; }
+        public bool showType { get; protected set; }
 
-		public override bool hasFooter => documentation != null;
-		
-		public override float GetFooterHeight(FuzzyOptionNode node, float width)
-		{
-			if (ZoomIcon(node))
-			{
-				width -= Styles.zoomSize + Styles.zoomSpacing;
-			}
+        public override bool hasFooter => documentation != null;
 
-			var height = 0f;
+        public override float GetFooterHeight(FuzzyOptionNode node, float width)
+        {
+            if (ZoomIcon(node))
+            {
+                width -= Styles.zoomSize + Styles.zoomSpacing;
+            }
 
-			width -= 2;
+            var height = 0f;
 
-			if (documentation.summary != null)
-			{
-				height += GetSummaryHeight(width);
-			}
+            width -= 2;
 
-			foreach (var parameter in documentation.parameters)
-			{
-				height += GetParameterHeight(parameter, width);
-			}
+            if (documentation.summary != null)
+            {
+                height += GetSummaryHeight(width);
+            }
 
-			if (documentation.returns != null)
-			{
-				height += GetReturnsHeight(width);
-			}
+            foreach (var parameter in documentation.parameters)
+            {
+                height += GetParameterHeight(parameter, width);
+            }
 
-			if (documentation.remarks != null)
-			{
-				height += GetRemarksHeight(width);
-			}
-			
-			if (ZoomIcon(node))
-			{
-				return Mathf.Max(Styles.zoomSize + 2 * Styles.zoomSpacing, height);
-			}
+            if (documentation.returns != null)
+            {
+                height += GetReturnsHeight(width);
+            }
 
-			return height;
-		}
+            if (documentation.remarks != null)
+            {
+                height += GetRemarksHeight(width);
+            }
 
-		public override void OnFooterGUI(FuzzyOptionNode node, Rect position)
-		{
-			if (ZoomIcon(node))
-			{
-				var zoomPosition = new Rect
-				(
-					position.x + Styles.zoomSpacing,
-					position.y + Styles.zoomSpacing,
-					Styles.zoomSize,
-					Styles.zoomSize
-				);
+            if (ZoomIcon(node))
+            {
+                return Mathf.Max(Styles.zoomSize + 2 * Styles.zoomSpacing, height);
+            }
 
-				position.x += Styles.zoomSize + Styles.zoomSpacing;
-				position.width -= Styles.zoomSize + Styles.zoomSpacing;
+            return height;
+        }
 
-				GUI.DrawTexture(zoomPosition, Icon()[IconSize.Medium]);
-			}
+        public override void OnFooterGUI(FuzzyOptionNode node, Rect position)
+        {
+            if (ZoomIcon(node))
+            {
+                var zoomPosition = new Rect
+                (
+                    position.x + Styles.zoomSpacing,
+                    position.y + Styles.zoomSpacing,
+                    Styles.zoomSize,
+                    Styles.zoomSize
+                );
 
-			var y = position.y;
+                position.x += Styles.zoomSize + Styles.zoomSpacing;
+                position.width -= Styles.zoomSize + Styles.zoomSpacing;
 
-			if (documentation.summary != null)
-			{
-				var summaryPosition = new Rect
-				(
-					position.x,
-					y,
-					position.width,
-					GetSummaryHeight(position.width)
-				);
+                GUI.DrawTexture(zoomPosition, Icon()[IconSize.Medium]);
+            }
 
-				OnSummaryGUI(summaryPosition);
+            var y = position.y;
 
-				y = summaryPosition.yMax;
-			}
+            if (documentation.summary != null)
+            {
+                var summaryPosition = new Rect
+                (
+                    position.x,
+                    y,
+                    position.width,
+                    GetSummaryHeight(position.width)
+                );
 
-			if (documentation.parameters.Any())
-			{
-				var parameterPosition = new Rect
-				(
-					position.x,
-					y,
-					position.width,
-					0
-				);
+                OnSummaryGUI(summaryPosition);
 
-				foreach (var parameter in documentation.parameters)
-				{
-					parameterPosition.height = GetParameterHeight(parameter, position.width);
+                y = summaryPosition.yMax;
+            }
 
-					OnParameterGUI(parameterPosition, parameter);
+            if (documentation.parameters.Any())
+            {
+                var parameterPosition = new Rect
+                (
+                    position.x,
+                    y,
+                    position.width,
+                    0
+                );
 
-					parameterPosition.y += parameterPosition.height;
+                foreach (var parameter in documentation.parameters)
+                {
+                    parameterPosition.height = GetParameterHeight(parameter, position.width);
 
-					y = parameterPosition.y;
-				}
-			}
+                    OnParameterGUI(parameterPosition, parameter);
 
-			if (documentation.returns != null)
-			{
-				var returnsPosition = new Rect
-				(
-					position.x,
-					y,
-					position.width,
-					GetReturnsHeight(position.width)
-				);
+                    parameterPosition.y += parameterPosition.height;
 
-				OnReturnsGUI(returnsPosition);
+                    y = parameterPosition.y;
+                }
+            }
 
-				y = returnsPosition.yMax;
-			}
+            if (documentation.returns != null)
+            {
+                var returnsPosition = new Rect
+                (
+                    position.x,
+                    y,
+                    position.width,
+                    GetReturnsHeight(position.width)
+                );
 
-			if (documentation.remarks != null)
-			{
-				var remarksPosition = new Rect
-				(
-					position.x,
-					y,
-					position.width,
-					GetRemarksHeight(position.width)
-				);
+                OnReturnsGUI(returnsPosition);
 
-				OnRemarksGUI(remarksPosition);
+                y = returnsPosition.yMax;
+            }
 
-				y = remarksPosition.yMax;
-			}
-		}
+            if (documentation.remarks != null)
+            {
+                var remarksPosition = new Rect
+                (
+                    position.x,
+                    y,
+                    position.width,
+                    GetRemarksHeight(position.width)
+                );
 
-		private float GetSummaryHeight(float width)
-		{
-			return Styles.summary.CalcHeight(new GUIContent(documentation.summary), width);
-		}
+                OnRemarksGUI(remarksPosition);
 
-		private void OnSummaryGUI(Rect summaryPosition)
-		{
-			EditorGUI.LabelField(summaryPosition, documentation.summary, Styles.summary);
-		}
+                y = remarksPosition.yMax;
+            }
+        }
 
-		private float GetParameterReturnsHeight(GUIContent label, float width)
-		{
-			width -= IconSize.Small + Styles.iconSpacing;
+        private float GetSummaryHeight(float width)
+        {
+            return Styles.summary.CalcHeight(new GUIContent(documentation.summary), width);
+        }
 
-			return Styles.parameterSummary.CalcHeight(label, width);
-		}
+        private void OnSummaryGUI(Rect summaryPosition)
+        {
+            EditorGUI.LabelField(summaryPosition, documentation.summary, Styles.summary);
+        }
 
-		private void OnParameterReturnsGUI(GUIContent label, Rect position)
-		{
-			var x = position.x + Styles.parameterSummary.padding.left;
-			var width = position.width;
+        private float GetParameterReturnsHeight(GUIContent label, float width)
+        {
+            width -= IconSize.Small + Styles.iconSpacing;
 
-			var icon = label.image;
+            return Styles.parameterSummary.CalcHeight(label, width);
+        }
 
-			if (icon != null)
-			{
-				var iconPosition = new Rect
-				(
-					x,
-					position.y - 1,
-					IconSize.Small,
-					IconSize.Small
-				);
+        private void OnParameterReturnsGUI(GUIContent label, Rect position)
+        {
+            var x = position.x + Styles.parameterSummary.padding.left;
+            var width = position.width;
 
-				x += iconPosition.width + Styles.iconSpacing;
-				width -= iconPosition.width + Styles.iconSpacing;
+            var icon = label.image;
 
-				GUI.DrawTexture(iconPosition, icon);
-			}
+            if (icon != null)
+            {
+                var iconPosition = new Rect
+                (
+                    x,
+                    position.y - 1,
+                    IconSize.Small,
+                    IconSize.Small
+                );
 
-			var labelPosition = new Rect
-			(
-				x,
-				position.y,
-				width,
-				position.height
-			);
+                x += iconPosition.width + Styles.iconSpacing;
+                width -= iconPosition.width + Styles.iconSpacing;
 
-			GUI.Label(labelPosition, label, Styles.parameterSummary);
-		}
+                GUI.DrawTexture(iconPosition, icon);
+            }
 
-		private float GetParameterHeight(string parameter, float width)
-		{
-			return GetParameterReturnsHeight(GetParameterLabel(parameter), width);
-		}
+            var labelPosition = new Rect
+            (
+                x,
+                position.y,
+                width,
+                position.height
+            );
 
-		private GUIContent GetParameterLabel(string parameter)
-		{
-			var label = new GUIContent();
+            GUI.Label(labelPosition, label, Styles.parameterSummary);
+        }
 
-			label.text = $"<b>{documentation.GetParameterName(parameter)}: </b>{documentation.GetParameterSummary(parameter)}";
-			
-			var type = documentation.GetParameterType(parameter);
+        private float GetParameterHeight(string parameter, float width)
+        {
+            return GetParameterReturnsHeight(GetParameterLabel(parameter), width);
+        }
 
-			if (showType && type != null)
-			{
-				label.text += $" ({type})";
-			}
+        private GUIContent GetParameterLabel(string parameter)
+        {
+            var label = new GUIContent();
 
-			label.image = documentation.GetParameterIcon(parameter)?[IconSize.Small];
+            label.text = $"<b>{documentation.GetParameterName(parameter)}: </b>{documentation.GetParameterSummary(parameter)}";
 
-			return label;
-		}
+            var type = documentation.GetParameterType(parameter);
 
-		private GUIContent GetReturnsLabel()
-		{
-			var label = new GUIContent();
+            if (showType && type != null)
+            {
+                label.text += $" ({type})";
+            }
 
-			label.text = $"<b>Returns: </b>{documentation.returns}";
-			
-			if (showType && documentation.returnType != null)
-			{
-				label.text += $" ({documentation.returnType})";
-			}
+            label.image = documentation.GetParameterIcon(parameter)?[IconSize.Small];
 
-			label.image = documentation.returnIcon?[IconSize.Small];
+            return label;
+        }
 
-			return label;
-		}
+        private GUIContent GetReturnsLabel()
+        {
+            var label = new GUIContent();
 
-		private void OnParameterGUI(Rect parameterPosition, string parameter)
-		{
-			OnParameterReturnsGUI(GetParameterLabel(parameter), parameterPosition);
-		}
+            label.text = $"<b>Returns: </b>{documentation.returns}";
 
-		private float GetReturnsHeight(float width)
-		{
-			return GetParameterReturnsHeight(GetReturnsLabel(), width);
-		}
+            if (showType && documentation.returnType != null)
+            {
+                label.text += $" ({documentation.returnType})";
+            }
 
-		private void OnReturnsGUI(Rect returnsPosition)
-		{
-			OnParameterReturnsGUI(GetReturnsLabel(), returnsPosition);
-		}
+            label.image = documentation.returnIcon?[IconSize.Small];
 
-		private float GetRemarksHeight(float width)
-		{
-			return Styles.remarks.CalcHeight(new GUIContent(documentation.remarks), width);
-		}
+            return label;
+        }
 
-		private void OnRemarksGUI(Rect remarksPosition)
-		{
-			GUI.Label(remarksPosition, documentation.remarks, Styles.remarks);
-		}
+        private void OnParameterGUI(Rect parameterPosition, string parameter)
+        {
+            OnParameterReturnsGUI(GetParameterLabel(parameter), parameterPosition);
+        }
 
-		protected DocumentedFuzzyOption(FuzzyOptionMode mode) : base(mode) { }
+        private float GetReturnsHeight(float width)
+        {
+            return GetParameterReturnsHeight(GetReturnsLabel(), width);
+        }
 
-		public static class Styles
-		{
-			static Styles()
-			{
-				summary = new GUIStyle(EditorStyles.label);
-				summary.padding = new RectOffset(7, 7, 7, 7);
-				summary.wordWrap = true;
-				summary.richText = true;
+        private void OnReturnsGUI(Rect returnsPosition)
+        {
+            OnParameterReturnsGUI(GetReturnsLabel(), returnsPosition);
+        }
 
-				parameterSummary = new GUIStyle(EditorStyles.label);
-				parameterSummary.padding = new RectOffset(7, 7, 0, 7);
-				parameterSummary.wordWrap = true;
-				parameterSummary.richText = true;
+        private float GetRemarksHeight(float width)
+        {
+            return Styles.remarks.CalcHeight(new GUIContent(documentation.remarks), width);
+        }
 
-				remarks = new GUIStyle(EditorStyles.label);
-				remarks.padding = new RectOffset(7, 7, 7, 7);
-				remarks.wordWrap = true;
-				remarks.richText = true;
-				remarks.fontSize = 10;
-				remarks.normal.textColor = ColorPalette.unityForegroundDim;
-				//remarks.fontStyle = FontStyle.Italic;
-			}
+        private void OnRemarksGUI(Rect remarksPosition)
+        {
+            GUI.Label(remarksPosition, documentation.remarks, Styles.remarks);
+        }
 
-			public static readonly GUIStyle summary;
-			public static readonly GUIStyle parameterSummary;
-			public static readonly GUIStyle remarks;
-			public static readonly float iconSpacing = 0;
-			public static readonly float zoomSize = 32;
-			public static readonly float zoomSpacing = 8;
-		}
-	}
+        protected DocumentedFuzzyOption(FuzzyOptionMode mode) : base(mode) { }
+
+        public static class Styles
+        {
+            static Styles()
+            {
+                summary = new GUIStyle(EditorStyles.label);
+                summary.padding = new RectOffset(7, 7, 7, 7);
+                summary.wordWrap = true;
+                summary.richText = true;
+
+                parameterSummary = new GUIStyle(EditorStyles.label);
+                parameterSummary.padding = new RectOffset(7, 7, 0, 7);
+                parameterSummary.wordWrap = true;
+                parameterSummary.richText = true;
+
+                remarks = new GUIStyle(EditorStyles.label);
+                remarks.padding = new RectOffset(7, 7, 7, 7);
+                remarks.wordWrap = true;
+                remarks.richText = true;
+                remarks.fontSize = 10;
+                remarks.normal.textColor = ColorPalette.unityForegroundDim;
+                //remarks.fontStyle = FontStyle.Italic;
+            }
+
+            public static readonly GUIStyle summary;
+            public static readonly GUIStyle parameterSummary;
+            public static readonly GUIStyle remarks;
+            public static readonly float iconSpacing = 0;
+            public static readonly float zoomSize = 32;
+            public static readonly float zoomSpacing = 8;
+        }
+    }
 }

@@ -1,5 +1,5 @@
-using System;
 using PlaceholderSoftware.WetStuff.Debugging;
+using System;
 using UnityEngine;
 
 namespace PlaceholderSoftware.WetStuff

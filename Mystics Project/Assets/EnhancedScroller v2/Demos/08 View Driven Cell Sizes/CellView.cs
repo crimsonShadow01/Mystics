@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using EnhancedUI.EnhancedScroller;
+using UnityEngine;
 using UnityEngine.UI;
-using EnhancedUI.EnhancedScroller;
 
 namespace EnhancedScrollerDemos.ViewDrivenCellSizes
 {
@@ -29,7 +29,7 @@ namespace EnhancedScrollerDemos.ViewDrivenCellSizes
             if (calculateLayout)
             {
                 // force update the canvas so that it can calculate the size needed for the text immediately
-                Canvas.ForceUpdateCanvases();         
+                Canvas.ForceUpdateCanvases();
 
                 // set the data's cell size and add in some padding so the the text isn't up against the border of the cell
                 data.cellSize = textRectTransform.rect.height + textBuffer.top + textBuffer.bottom;

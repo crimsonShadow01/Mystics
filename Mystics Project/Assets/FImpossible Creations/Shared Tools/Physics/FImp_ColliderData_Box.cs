@@ -177,7 +177,7 @@ namespace FIMSpace
                 bool inside = false;
                 Vector3 rayDirection;
 
-                if ( interPlane.sqrMagnitude == 0f ) // sphere is inside the box
+                if (interPlane.sqrMagnitude == 0f) // sphere is inside the box
                 {
                     interPlane = -GetTargetPlaneNormal(box, segmentPosition, right, up, forward, scales);
                     inside = true;

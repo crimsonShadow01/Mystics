@@ -22,9 +22,7 @@ using Databox.OdinSerializer;
 
 namespace Databox.OdinSerializer
 {
-    using Utilities;
     using System;
-    using System.Collections.Generic;
     using System.Runtime.Serialization;
 
     internal class ISerializableFormatterLocator : IFormatterLocator

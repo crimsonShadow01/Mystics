@@ -1,8 +1,8 @@
 ﻿namespace Ludiq.PeekCore.CodeDom
 {
-	public enum CodePragmaWarningSetting
-	{
-		Disable,
-		Restore
-	}
+    public enum CodePragmaWarningSetting
+    {
+        Disable,
+        Restore
+    }
 }

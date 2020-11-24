@@ -92,7 +92,7 @@ namespace FIMSpace.FTail
         public int Axis2D = 0;
 
         [Tooltip("[Experimental: Works only with Slithery Blend set to >= 1] Making each segment go to target pose in front of parent segment creating new animation effect")]
-        [Range(-1f ,1f)]
+        [Range(-1f, 1f)]
         public float Tangle = 0f;
 
         public Transform BaseTransform { get { if (_baseTransform) return _baseTransform; else if (_TransformsGhostChain != null) if (_TransformsGhostChain.Count > 0) _baseTransform = _TransformsGhostChain[0]; if (_baseTransform != null) return _baseTransform; return transform; } }

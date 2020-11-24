@@ -49,7 +49,7 @@ namespace FIMSpace.FTail
 
 
             if (Tangle < 0)
-                _tc_tangle = Mathf.LerpUnclamped(1f, 1.5f, Tangle+1f);
+                _tc_tangle = Mathf.LerpUnclamped(1f, 1.5f, Tangle + 1f);
             else
                 _tc_tangle = Mathf.LerpUnclamped(1f, -4f, Tangle);
         }

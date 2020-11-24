@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -10,7 +9,7 @@ namespace TerrainComposer2
             TC_GlobalSettings g = TC_Settings.instance.global;
 
             TC_LayerGroupResult groupResult = layerGroup.groupResult;
-            
+
             float x1 = pos.x - 78;
             if (groupResult.foldout < 2) x1 += nodeFoldout ? 126 : 135;
             x1 -= TD.texCardBody.width / 2;
@@ -39,10 +38,10 @@ namespace TerrainComposer2
                 {
                     if (mouseClick == 0) layerGroup.nodeFoldout = true;
                 }
-                
+
                 pos = posOld;
             }
-            
+
             TD.DrawBracket(ref pos, nodeFoldout, true, g.colLayerGroup * activeMulti, ref groupResult.foldout, true, true);
             if (groupResult.foldout == 2)
             {

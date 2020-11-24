@@ -918,7 +918,7 @@ namespace Databox.OdinSerializer.Utilities
                 case Operator.LeftShift:
                     methodName = "op_LeftShift";
                     break;
-                    
+
                 case Operator.BitwiseAnd:
                     methodName = "op_BitwiseAnd";
                     break;
@@ -1039,7 +1039,7 @@ namespace Databox.OdinSerializer.Utilities
                 default:
                     throw new NotImplementedException();
             }
-            
+
             return type.GetAllMembers<MethodInfo>(Flags.StaticAnyVisibility).Where(x => x.Name == methodName).ToArray();
         }
 

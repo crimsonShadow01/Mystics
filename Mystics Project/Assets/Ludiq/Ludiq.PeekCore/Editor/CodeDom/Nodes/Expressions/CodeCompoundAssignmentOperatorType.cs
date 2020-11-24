@@ -1,7 +1,7 @@
 ﻿namespace Ludiq.PeekCore.CodeDom
 {
-	public enum CodeCompoundAssignmentOperatorType
-	{
+    public enum CodeCompoundAssignmentOperatorType
+    {
         Add,
         Subtract,
         Multiply,
@@ -9,8 +9,8 @@
         Modulo,
         BitwiseOr,
         BitwiseAnd,
-		BitwiseXor,
-		BitwiseShiftLeft,
-		BitwiseShiftRight,
-	}
+        BitwiseXor,
+        BitwiseShiftLeft,
+        BitwiseShiftRight,
+    }
 }

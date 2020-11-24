@@ -1,59 +1,57 @@
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public interface ITool
-	{
-		string label { get; }
+    public interface ITool
+    {
+        string label { get; }
 
-		string tooltip { get; }
+        string tooltip { get; }
 
-		Texture2D icon { get; }
+        Texture2D icon { get; }
 
-		Texture2D preview { get; }
+        Texture2D preview { get; }
 
-		Vector2 iconSize { get; }
+        Vector2 iconSize { get; }
 
-		Texture2D overlay { get; }
+        Texture2D overlay { get; }
 
-		GUIStyle treeViewStyle { get; }
+        GUIStyle treeViewStyle { get; }
 
-		GUIStyle SceneViewStyle(bool closeLeft, bool closeRight);
+        GUIStyle SceneViewStyle(bool closeLeft, bool closeRight);
 
-		bool isActive { get; }
+        bool isActive { get; }
 
-		bool isDimmed { get; }
+        bool isDimmed { get; }
 
-		bool showText { get; }
-		
-		bool isTransient { get; }
+        bool showText { get; }
 
-		bool isShortcuttable { get; }
+        bool isTransient { get; }
 
-		bool IsVisible(ToolbarControl toolbarControl);
+        bool isShortcuttable { get; }
 
-		void Open(ToolControl control);
+        bool IsVisible(ToolbarControl toolbarControl);
 
-		void OpenContextual(ToolControl control);
+        void Open(ToolControl control);
 
-		void Close(ToolControl control);
+        void OpenContextual(ToolControl control);
 
-		void OnMove(ToolControl control);
-		
-		void OnGUI(ToolControl control);
+        void Close(ToolControl control);
 
-		bool OnDragEntered(ToolControl control);
-		
-		void OnDragExited(ToolControl control);
+        void OnMove(ToolControl control);
 
-		bool OnDropEntered(ToolControl control);
+        void OnGUI(ToolControl control);
 
-		void OnDropUpdated(ToolControl control);
+        bool OnDragEntered(ToolControl control);
 
-		void OnDropExited(ToolControl control);
-	}
+        void OnDragExited(ToolControl control);
+
+        bool OnDropEntered(ToolControl control);
+
+        void OnDropUpdated(ToolControl control);
+
+        void OnDropExited(ToolControl control);
+    }
 }

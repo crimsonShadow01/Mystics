@@ -5,116 +5,116 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class IndexAccessor : Accessor
-	{
-		public enum Mode
-		{
-			List,
-			Enumerable
-		}
+    public sealed class IndexAccessor : Accessor
+    {
+        public enum Mode
+        {
+            List,
+            Enumerable
+        }
 
-		public IndexAccessor(int index, Accessor parent) : base(index, parent)
-		{
-			this.index = index;
+        public IndexAccessor(int index, Accessor parent) : base(index, parent)
+        {
+            this.index = index;
 
-			Reflect(true);
-		}
-		
-		protected override string OdinPath(string parentPath)
-		{
-			if (string.IsNullOrEmpty(parentPath))
-			{
-				return null;
-			}
-			else
-			{
-				return parentPath + "[" + index + "]";
-			}
-		}
+            Reflect(true);
+        }
 
-		public int index { get; private set; }
+        protected override string OdinPath(string parentPath)
+        {
+            if (string.IsNullOrEmpty(parentPath))
+            {
+                return null;
+            }
+            else
+            {
+                return parentPath + "[" + index + "]";
+            }
+        }
 
-		public Mode mode { get; private set; }
+        public int index { get; private set; }
 
-		protected override object rawValue
-		{
-			get
-			{
-				switch (mode)
-				{
-					case Mode.List:
-						return ((IList)parent.value)[index];
-					case Mode.Enumerable:
-						return ((IEnumerable)parent.value).Cast<object>().ElementAt(index); // ouch?
-					default:
-						throw new UnexpectedEnumValueException<Mode>(mode);
-				}
-			}
-			set
-			{
-				switch (mode)
-				{
-					case Mode.List:
-						((IList)parent.value)[index] = value;
-						break;
-					case Mode.Enumerable:
-						throw new NotSupportedException("Cannot assign the value of an enumerated item.");
-					default:
-						throw new UnexpectedEnumValueException<Mode>(mode);
-				}
-			}
-		}
+        public Mode mode { get; private set; }
 
-		protected override void OnParentValueTypeChange(Type previousType)
-		{
-			Reflect(false);
-		}
+        protected override object rawValue
+        {
+            get
+            {
+                switch (mode)
+                {
+                    case Mode.List:
+                        return ((IList)parent.value)[index];
+                    case Mode.Enumerable:
+                        return ((IEnumerable)parent.value).Cast<object>().ElementAt(index); // ouch?
+                    default:
+                        throw new UnexpectedEnumValueException<Mode>(mode);
+                }
+            }
+            set
+            {
+                switch (mode)
+                {
+                    case Mode.List:
+                        ((IList)parent.value)[index] = value;
+                        break;
+                    case Mode.Enumerable:
+                        throw new NotSupportedException("Cannot assign the value of an enumerated item.");
+                    default:
+                        throw new UnexpectedEnumValueException<Mode>(mode);
+                }
+            }
+        }
 
-		private void Reflect(bool throwOnFail)
-		{
-			if (typeof(IList).IsAssignableFrom(parent.valueType))
-			{
-				definedType = TypeUtility.GetListElementType(parent.valueType, true);
+        protected override void OnParentValueTypeChange(Type previousType)
+        {
+            Reflect(false);
+        }
 
-				if (index < 0 || index >= ((IList)parent.value).Count)
-				{
-					if (throwOnFail)
-					{
-						throw new ArgumentOutOfRangeException("index");
-					}
-					else
-					{
-						Unlink();
-						return;
-					}
-				}
+        private void Reflect(bool throwOnFail)
+        {
+            if (typeof(IList).IsAssignableFrom(parent.valueType))
+            {
+                definedType = TypeUtility.GetListElementType(parent.valueType, true);
 
-				mode = Mode.List;
-			}
-			else if (typeof(IEnumerable).IsAssignableFrom(parent.valueType))
-			{
-				definedType = TypeUtility.GetEnumerableElementType(parent.valueType, true);
-				mode = Mode.Enumerable;
-			}
-			else
-			{
-				if (throwOnFail)
-				{
-					throw new InvalidOperationException("Parent of reflected index is not a list nor an enumerable:\n" + this);
-				}
-				else
-				{
-					Unlink();
-					return;
-				}
-			}
+                if (index < 0 || index >= ((IList)parent.value).Count)
+                {
+                    if (throwOnFail)
+                    {
+                        throw new ArgumentOutOfRangeException("index");
+                    }
+                    else
+                    {
+                        Unlink();
+                        return;
+                    }
+                }
 
-			label = new GUIContent(parent.label);
-		}
+                mode = Mode.List;
+            }
+            else if (typeof(IEnumerable).IsAssignableFrom(parent.valueType))
+            {
+                definedType = TypeUtility.GetEnumerableElementType(parent.valueType, true);
+                mode = Mode.Enumerable;
+            }
+            else
+            {
+                if (throwOnFail)
+                {
+                    throw new InvalidOperationException("Parent of reflected index is not a list nor an enumerable:\n" + this);
+                }
+                else
+                {
+                    Unlink();
+                    return;
+                }
+            }
 
-		public override Attribute[] GetCustomAttributes(bool inherit = true)
-		{
-			return parent.GetCustomAttributes(inherit);
-		}
-	}
+            label = new GUIContent(parent.label);
+        }
+
+        public override Attribute[] GetCustomAttributes(bool inherit = true)
+        {
+            return parent.GetCustomAttributes(inherit);
+        }
+    }
 }

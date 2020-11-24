@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -158,7 +158,7 @@ namespace PixelCrushers.DialogueSystem
         public abstract void StartTyping(string text, int fromIndex = 0);
 
         public abstract void StopTyping();
-        
+
         public static string StripRPGMakerCodes(string s) // Moved to UITools, but kept for compatibility with third party code.
         {
             return UITools.StripRPGMakerCodes(s);

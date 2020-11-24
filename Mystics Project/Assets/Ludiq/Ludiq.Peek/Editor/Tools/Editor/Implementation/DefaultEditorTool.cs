@@ -5,11 +5,10 @@ using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public sealed class DefaultEditorTool<T> : EditorTool<T> where T : UnityObject
-	{
-		public DefaultEditorTool(T[] targets) : base(targets) { }
-	}
+    public sealed class DefaultEditorTool<T> : EditorTool<T> where T : UnityObject
+    {
+        public DefaultEditorTool(T[] targets) : base(targets) { }
+    }
 }

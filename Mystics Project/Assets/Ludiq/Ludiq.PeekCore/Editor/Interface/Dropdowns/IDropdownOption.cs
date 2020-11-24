@@ -1,7 +1,7 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public interface IDropdownOption
-	{
-		object value { get; }
-	}
+    public interface IDropdownOption
+    {
+        object value { get; }
+    }
 }

@@ -162,7 +162,7 @@ namespace PlaceholderSoftware.WetStuff
                 main.startSpeed = 0;
                 main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.15f);
                 main.startSize3D = false;
-                main.startRotation3D=false;
+                main.startRotation3D = false;
                 main.startRotation = 0;
                 main.startColor = Color.white;
                 main.gravityModifier = 0.9f;
@@ -223,7 +223,8 @@ namespace PlaceholderSoftware.WetStuff
                 //Start them 100% transparent for a very short duration so that it's not obvious when they spawn inside something
                 var colorOverLifetime = particles.colorOverLifetime;
                 colorOverLifetime.enabled = true;
-                colorOverLifetime.color = new ParticleSystem.MinMaxGradient(new Gradient {
+                colorOverLifetime.color = new ParticleSystem.MinMaxGradient(new Gradient
+                {
                     mode = GradientMode.Blend,
                     alphaKeys = new GradientAlphaKey[] { new GradientAlphaKey(0, 0), new GradientAlphaKey(0.2f, 0.1f) },
                     colorKeys = new GradientColorKey[] { new GradientColorKey(new Color(0.7f, 0.7f, 0.75f), 0) }
@@ -246,7 +247,7 @@ namespace PlaceholderSoftware.WetStuff
                 sizeBySpeed.xMultiplier = 1;
                 sizeBySpeed.yMultiplier = 1;
                 sizeBySpeed.zMultiplier = 1;
-                
+
                 var rotationOverLifeTime = particles.rotationOverLifetime;
                 rotationOverLifeTime.enabled = false;
 

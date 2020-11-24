@@ -49,7 +49,7 @@ namespace PixelCrushers.DialogueSystem.SequencerCommands
                         PersistentDataManager.LevelWillBeUnloaded();
                         SaveSystem.LoadScene(string.IsNullOrEmpty(spawnpoint) ? levelName : levelName + "@" + spawnpoint);
                     }
-                    
+
                 }
                 else
                 {

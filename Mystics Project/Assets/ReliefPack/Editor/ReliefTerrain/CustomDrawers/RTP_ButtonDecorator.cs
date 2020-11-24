@@ -1,14 +1,15 @@
-﻿using UnityEditor;
-using UnityEngine;
-using System.Collections;
-using System;
+﻿using System;
 using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 
-public class RTP_ButtonDecorator : MaterialPropertyDrawer {
+public class RTP_ButtonDecorator : MaterialPropertyDrawer
+{
     private string buttonLabel;
     private string functionName;
 
-    public RTP_ButtonDecorator(string buttonLabel, string functionName):base() {
+    public RTP_ButtonDecorator(string buttonLabel, string functionName) : base()
+    {
         this.buttonLabel = buttonLabel;
         this.functionName = functionName;
     }

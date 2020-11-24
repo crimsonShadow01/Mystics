@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public class EqualityHandler : BinaryOperatorHandler
-	{
-		public EqualityHandler() : base(OperatorCategory.Comparison, BinaryOperator.Equality, "Equality", "Equal", "==", "=", "op_Equality")
-		{
+    public class EqualityHandler : BinaryOperatorHandler
+    {
+        public EqualityHandler() : base(OperatorCategory.Comparison, BinaryOperator.Equality, "Equality", "Equal", "==", "=", "op_Equality")
+        {
             Handle<bool, bool>((a, b) => a == b, typeof(bool));
 
             Handle<byte, byte>((a, b) => a == b, typeof(bool));
@@ -140,28 +140,28 @@ namespace Ludiq.PeekCore
             Handle<double, float>((a, b) => a == b, typeof(bool));
             //Handle<double, decimal>((a, b) => a == b, typeof(bool));
             Handle<double, double>((a, b) => a == b, typeof(bool));
-		}
+        }
 
-		public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine whether they are equal.";
+        public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine whether they are equal.";
 
-		protected override object BothNullHandling()
-		{
-			return true;
-		}
+        protected override object BothNullHandling()
+        {
+            return true;
+        }
 
-		protected override object SingleNullHandling()
-		{
-			return false;
-		}
+        protected override object SingleNullHandling()
+        {
+            return false;
+        }
 
-		protected override object CustomHandling(object leftOperand, object rightOperand)
-		{
-			return Equals(leftOperand, rightOperand);
-		}
+        protected override object CustomHandling(object leftOperand, object rightOperand)
+        {
+            return Equals(leftOperand, rightOperand);
+        }
 
-		protected override Type GetCustomHandlingType(Type leftType, Type rightType)
-		{
-			return typeof(bool);
-		}
-	}
+        protected override Type GetCustomHandlingType(Type leftType, Type rightType)
+        {
+            return typeof(bool);
+        }
+    }
 }

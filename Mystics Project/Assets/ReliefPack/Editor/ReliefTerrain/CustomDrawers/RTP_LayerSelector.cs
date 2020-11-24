@@ -1,10 +1,8 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using System.Collections;
-using System;
-using System.Reflection;
 
-public class RTP_LayerSelector : MaterialPropertyDrawer {
+public class RTP_LayerSelector : MaterialPropertyDrawer
+{
     int numLayers;
     string[] thumbPropNames;
     MaterialProperty[] thumbs;
@@ -37,10 +35,11 @@ public class RTP_LayerSelector : MaterialPropertyDrawer {
         thumbPropNames[3] = prop4;
     }
 
-    override public void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor) {
+    override public void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+    {
         //Debug.Log("OnGUI: " + label + " RTP_MaterialProp");
 
-        for(int i=0; i< numLayers; i++)
+        for (int i = 0; i < numLayers; i++)
         {
             thumbs[i] = MaterialEditor.GetMaterialProperty(editor.targets, thumbPropNames[i]);
         }
@@ -49,7 +48,8 @@ public class RTP_LayerSelector : MaterialPropertyDrawer {
         {
             RTP_CustomShaderGUI customEditor = editor as RTP_CustomShaderGUI;
 
-            if (customEditor.showFlag) {
+            if (customEditor.showFlag)
+            {
 
                 EditorGUI.BeginDisabledGroup(customEditor.inactiveFlag);
 
@@ -120,12 +120,13 @@ public class RTP_LayerSelector : MaterialPropertyDrawer {
                 EditorGUILayout.EndVertical();
 
                 EditorGUI.EndDisabledGroup();
-		    }
+            }
         }
 
     }
 
-    override public float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor) {
+    override public float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)
+    {
         //Debug.Log("GetHeight: " + label+ " RTP_MaterialProp" );
 
         if (editor is RTP_CustomShaderGUI)

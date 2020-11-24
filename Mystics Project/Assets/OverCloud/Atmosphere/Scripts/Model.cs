@@ -1,8 +1,7 @@
+using OC;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
-using OC;
 
 namespace BrunetonsImprovedAtmosphere
 {
@@ -19,8 +18,8 @@ namespace BrunetonsImprovedAtmosphere
         private const int kLambdaMin = 360;
         private const int kLambdaMax = 830;
 
-		public float planetScale = 1f;
-		public float heightScale = 1f;
+        public float planetScale = 1f;
+        public float heightScale = 1f;
 
         /// <summary>
         /// The wavelength values, in nanometers, and sorted in increasing order, for
@@ -212,7 +211,7 @@ namespace BrunetonsImprovedAtmosphere
             mat.SetTexture("scattering_texture", ScatteringTexture);
             mat.SetTexture("irradiance_texture", IrradianceTexture);
 
-            if(CombineScatteringTextures)
+            if (CombineScatteringTextures)
                 mat.SetTexture("single_mie_scattering_texture", Texture2D.blackTexture);
             else
                 mat.SetTexture("single_mie_scattering_texture", OptionalSingleMieScatteringTexture);
@@ -253,10 +252,10 @@ namespace BrunetonsImprovedAtmosphere
             mat.SetVector("mie_scattering", mieScattering);
         }
 
-		/// <summary>
+        /// <summary>
         /// Bind to any pixel shader for rendering.
         /// </summary>
-        public void BindGlobally ()
+        public void BindGlobally()
         {
 
             // if (UseLuminance == LUMINANCE.NONE)
@@ -273,7 +272,7 @@ namespace BrunetonsImprovedAtmosphere
             Shader.SetGlobalTexture("scattering_texture", ScatteringTexture);
             Shader.SetGlobalTexture("irradiance_texture", IrradianceTexture);
 
-            if(CombineScatteringTextures)
+            if (CombineScatteringTextures)
                 Shader.SetGlobalTexture("single_mie_scattering_texture", Texture2D.blackTexture);
             else
                 Shader.SetGlobalTexture("single_mie_scattering_texture", OptionalSingleMieScatteringTexture);
@@ -290,14 +289,14 @@ namespace BrunetonsImprovedAtmosphere
             Shader.SetGlobalInt("IRRADIANCE_TEXTURE_WIDTH", CONSTANTS.IRRADIANCE_WIDTH);
             Shader.SetGlobalInt("IRRADIANCE_TEXTURE_HEIGHT", CONSTANTS.IRRADIANCE_HEIGHT);
 
-			BottomRadius = AtmosphereModel.EARTH_RADIUS * planetScale;
-			TopRadius = BottomRadius + AtmosphereModel.EARTH_ATMOSPHERE_HEIGHT * heightScale;
+            BottomRadius = AtmosphereModel.EARTH_RADIUS * planetScale;
+            TopRadius = BottomRadius + AtmosphereModel.EARTH_ATMOSPHERE_HEIGHT * heightScale;
 
             Shader.SetGlobalFloat("sun_angular_radius", (float)SunAngularRadius);
             Shader.SetGlobalFloat("bottom_radius", (float)(BottomRadius / LengthUnitInMeters));
-			Shader.SetGlobalFloat("_OC_EarthRadius", (float)(BottomRadius / LengthUnitInMeters));
-			Shader.SetGlobalFloat("_OC_PlanetScale", planetScale);
-			Shader.SetGlobalFloat("_OC_AtmHeightInv", 1f / (AtmosphereModel.EARTH_ATMOSPHERE_HEIGHT * heightScale));
+            Shader.SetGlobalFloat("_OC_EarthRadius", (float)(BottomRadius / LengthUnitInMeters));
+            Shader.SetGlobalFloat("_OC_PlanetScale", planetScale);
+            Shader.SetGlobalFloat("_OC_AtmHeightInv", 1f / (AtmosphereModel.EARTH_ATMOSPHERE_HEIGHT * heightScale));
             Shader.SetGlobalFloat("top_radius", (float)(TopRadius / LengthUnitInMeters));
             Shader.SetGlobalFloat("mie_phase_function_g", (float)MiePhaseFunctionG);
             Shader.SetGlobalFloat("mu_s_min", (float)Math.Cos(MaxSunZenithAngle));
@@ -390,11 +389,11 @@ namespace BrunetonsImprovedAtmosphere
 
             // The actual precomputations depend on whether we want to store precomputed
             // irradiance or illuminance values.
-            if (NumPrecomputedWavelengths <= 3) 
+            if (NumPrecomputedWavelengths <= 3)
             {
                 Precompute(compute, buffer, null, null, false, num_scattering_orders);
-            } 
-            else 
+            }
+            else
             {
                 int num_iterations = (NumPrecomputedWavelengths + 2) / 3;
                 double dlambda = (kLambdaMax - kLambdaMin) / (3.0 * num_iterations);
@@ -443,7 +442,7 @@ namespace BrunetonsImprovedAtmosphere
             IrradianceTexture = buffer.IrradianceArray[READ];
             buffer.IrradianceArray[READ] = null;
 
-            if(CombineScatteringTextures)
+            if (CombineScatteringTextures)
             {
                 OptionalSingleMieScatteringTexture = null;
             }
@@ -458,7 +457,7 @@ namespace BrunetonsImprovedAtmosphere
 
         }
 
-        private double Coeff(double lambda, int component) 
+        private double Coeff(double lambda, int component)
         {
             // Note that we don't include MAX_LUMINOUS_EFFICACY here, to avoid
             // artefacts due to too large values when using half precision on GPU.
@@ -468,8 +467,8 @@ namespace BrunetonsImprovedAtmosphere
             double x = CieColorMatchingFunctionTableValue(lambda, 1);
             double y = CieColorMatchingFunctionTableValue(lambda, 2);
             double z = CieColorMatchingFunctionTableValue(lambda, 3);
-            double sRGB = CONSTANTS.XYZ_TO_SRGB[component * 3 + 0] * x + 
-                          CONSTANTS.XYZ_TO_SRGB[component * 3 + 1] * y + 
+            double sRGB = CONSTANTS.XYZ_TO_SRGB[component * 3 + 0] * x +
+                          CONSTANTS.XYZ_TO_SRGB[component * 3 + 1] * y +
                           CONSTANTS.XYZ_TO_SRGB[component * 3 + 2] * z;
 
             return sRGB;
@@ -480,10 +479,10 @@ namespace BrunetonsImprovedAtmosphere
         /// </summary>
         private void BindToCompute(ComputeShader compute, double[] lambdas, double[] luminance_from_radiance)
         {
-            if(lambdas == null)
+            if (lambdas == null)
                 lambdas = new double[] { kLambdaR, kLambdaG, kLambdaB };
 
-            if(luminance_from_radiance == null)
+            if (luminance_from_radiance == null)
                 luminance_from_radiance = new double[] { 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 };
 
             compute.SetInt("TRANSMITTANCE_TEXTURE_WIDTH", CONSTANTS.TRANSMITTANCE_WIDTH);
@@ -625,7 +624,7 @@ namespace BrunetonsImprovedAtmosphere
         /// Evaluation of 8 Clear Sky Models</a> for their definitions):
         /// The returned constants are in lumen.nm / watt.
         /// </summary>
-        private static void ComputeSpectralRadianceToLuminanceFactors(IList<double> wavelengths, IList<double> solar_irradiance, double lambda_power, out double k_r, out double k_g, out double k_b) 
+        private static void ComputeSpectralRadianceToLuminanceFactors(IList<double> wavelengths, IList<double> solar_irradiance, double lambda_power, out double k_r, out double k_g, out double k_b)
         {
             k_r = 0.0;
             k_g = 0.0;
@@ -635,7 +634,7 @@ namespace BrunetonsImprovedAtmosphere
             double solar_b = Interpolate(wavelengths, solar_irradiance, kLambdaB);
             int dlambda = 1;
 
-            for (int lambda = kLambdaMin; lambda < kLambdaMax; lambda += dlambda) 
+            for (int lambda = kLambdaMin; lambda < kLambdaMax; lambda += dlambda)
             {
                 double x_bar = CieColorMatchingFunctionTableValue(lambda, 1);
                 double y_bar = CieColorMatchingFunctionTableValue(lambda, 2);
@@ -709,7 +708,7 @@ namespace BrunetonsImprovedAtmosphere
             int compute_scattering_density = compute.FindKernel("ComputeScatteringDensity");
             int compute_indirect_irradiance = compute.FindKernel("ComputeIndirectIrradiance");
             int compute_multiple_scattering = compute.FindKernel("ComputeMultipleScattering");
- 
+
             // Compute the transmittance, and store it in transmittance_texture
             compute.SetTexture(compute_transmittance, "transmittanceWrite", buffer.TransmittanceArray[WRITE]);
             compute.SetVector("blend", new Vector4(0, 0, 0, 0));
@@ -741,7 +740,7 @@ namespace BrunetonsImprovedAtmosphere
             compute.SetTexture(compute_single_scattering, "transmittanceRead", buffer.TransmittanceArray[READ]);
             compute.SetVector("blend", new Vector4(0, 0, BLEND, BLEND));
 
-            for (int layer = 0; layer < CONSTANTS.SCATTERING_DEPTH; ++layer) 
+            for (int layer = 0; layer < CONSTANTS.SCATTERING_DEPTH; ++layer)
             {
                 compute.SetInt("layer", layer);
                 compute.Dispatch(compute_single_scattering, CONSTANTS.SCATTERING_WIDTH / NUM_THREADS, CONSTANTS.SCATTERING_HEIGHT / NUM_THREADS, 1);
@@ -750,7 +749,7 @@ namespace BrunetonsImprovedAtmosphere
             Swap(buffer.OptionalSingleMieScatteringArray);
 
             // Compute the 2nd, 3rd and 4th order of scattering, in sequence.
-            for (int scattering_order = 2; scattering_order <= num_scattering_orders; ++scattering_order) 
+            for (int scattering_order = 2; scattering_order <= num_scattering_orders; ++scattering_order)
             {
                 // Compute the scattering density, and store it in
                 // delta_scattering_density_texture.
@@ -763,7 +762,7 @@ namespace BrunetonsImprovedAtmosphere
                 compute.SetInt("scatteringOrder", scattering_order);
                 compute.SetVector("blend", new Vector4(0, 0, 0, 0));
 
-                for (int layer = 0; layer < CONSTANTS.SCATTERING_DEPTH; ++layer) 
+                for (int layer = 0; layer < CONSTANTS.SCATTERING_DEPTH; ++layer)
                 {
                     compute.SetInt("layer", layer);
                     compute.Dispatch(compute_scattering_density, CONSTANTS.SCATTERING_WIDTH / NUM_THREADS, CONSTANTS.SCATTERING_HEIGHT / NUM_THREADS, 1);
@@ -793,7 +792,7 @@ namespace BrunetonsImprovedAtmosphere
                 compute.SetTexture(compute_multiple_scattering, "deltaScatteringDensityRead", buffer.DeltaScatteringDensityTexture);
                 compute.SetVector("blend", new Vector4(0, 1, 0, 0));
 
-                for (int layer = 0; layer < CONSTANTS.SCATTERING_DEPTH; ++layer) 
+                for (int layer = 0; layer < CONSTANTS.SCATTERING_DEPTH; ++layer)
                 {
                     compute.SetInt("layer", layer);
                     compute.Dispatch(compute_multiple_scattering, CONSTANTS.SCATTERING_WIDTH / NUM_THREADS, CONSTANTS.SCATTERING_HEIGHT / NUM_THREADS, 1);

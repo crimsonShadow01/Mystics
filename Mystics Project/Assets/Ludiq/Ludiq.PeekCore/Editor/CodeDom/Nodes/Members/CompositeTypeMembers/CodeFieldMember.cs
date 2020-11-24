@@ -9,42 +9,42 @@ namespace Ludiq.PeekCore.CodeDom
     public sealed class CodeFieldMember : CodeCompositeTypeMember
     {
         public CodeFieldMember(CodeMemberModifiers modifiers, CodeTypeReference type, string name)
-			: base(modifiers)
+            : base(modifiers)
         {
             Type = type;
             Name = name;
         }
 
         public CodeFieldMember(CodeMemberModifiers modifiers, CodeTypeReference type, string name, CodeExpression initializer)
-			: base(modifiers)
+            : base(modifiers)
         {
             Type = type;
             Name = name;
-			Initializer = initializer;
+            Initializer = initializer;
         }
 
         public CodeTypeReference Type { get; }
         public string Name { get; }
         public CodeExpression Initializer { get; }
 
-		public override MemberCategory Category => MemberCategory.Field;
+        public override MemberCategory Category => MemberCategory.Field;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach(var child in base.Children) yield return child;
-				if (Type != null) yield return Type;
-				if (Initializer != null) yield return Initializer;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Type != null) yield return Type;
+                if (Initializer != null) yield return Initializer;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator, CodeCompositeTypeDeclaration enclosingType)
-		{
-			Modifiers.Generate(generator);
+        protected override void GenerateInner(CodeGenerator generator, CodeCompositeTypeDeclaration enclosingType)
+        {
+            Modifiers.Generate(generator);
             Type.Generate(generator);
-			generator.Write(TokenType.Space, ' ');
-			generator.OutputIdentifier(TokenType.Identifier, Name);
+            generator.Write(TokenType.Space, ' ');
+            generator.OutputIdentifier(TokenType.Identifier, Name);
 
             if (Initializer != null)
             {
@@ -55,6 +55,6 @@ namespace Ludiq.PeekCore.CodeDom
             }
 
             generator.WriteLine(TokenType.Punctuation, ';');
-		}
-	}
+        }
+    }
 }

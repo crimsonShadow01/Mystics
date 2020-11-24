@@ -7,7 +7,6 @@ namespace Ludiq.OdinSerializer.Utilities.Editor
     using System.IO;
     using System;
     using System.Collections.Generic;
-    using Ludiq.OdinSerializer.Utilities;
     using System.Reflection;
 #if UNITY_2018_1_OR_NEWER
     using UnityEditor.Build.Reporting;
@@ -34,12 +33,12 @@ namespace Ludiq.OdinSerializer.Utilities.Editor
 
             odinSerializerDir = odinSerializerDir.Substring(unityDataPath.Length).TrimStart('/');
 
-            EditorAssemblyPath    = odinSerializerDir + "/EditorOnly/Ludiq.OdinSerializer.dll";
-            AOTAssemblyPath       = odinSerializerDir + "/AOT/Ludiq.OdinSerializer.dll";
-            JITAssemblyPath       = odinSerializerDir + "/JIT/Ludiq.OdinSerializer.dll";
+            EditorAssemblyPath = odinSerializerDir + "/EditorOnly/Ludiq.OdinSerializer.dll";
+            AOTAssemblyPath = odinSerializerDir + "/AOT/Ludiq.OdinSerializer.dll";
+            JITAssemblyPath = odinSerializerDir + "/JIT/Ludiq.OdinSerializer.dll";
             GenerateAssembliesDir = odinSerializerDir + "/Generated";
 
-            if  (!File.Exists(EditorAssemblyPath))  throw new FileNotFoundException("Make sure all release configurations specified in the Visual Studio project are built.", EditorAssemblyPath);
+            if (!File.Exists(EditorAssemblyPath)) throw new FileNotFoundException("Make sure all release configurations specified in the Visual Studio project are built.", EditorAssemblyPath);
             else if (!File.Exists(AOTAssemblyPath)) throw new FileNotFoundException("Make sure all release configurations specified in the Visual Studio project are built.", AOTAssemblyPath);
             else if (!File.Exists(JITAssemblyPath)) throw new FileNotFoundException("Make sure all release configurations specified in the Visual Studio project are built.", JITAssemblyPath);
         }
@@ -86,7 +85,7 @@ namespace Ludiq.OdinSerializer.Utilities.Editor
                 AssetDatabase.Refresh();
             }
         }
-        
+
         public static void OnPostprocessBuild()
         {
             // Delete Generated AOT support dll after build so it doesn't pollute the project.
@@ -108,10 +107,10 @@ namespace Ludiq.OdinSerializer.Utilities.Editor
         public int callbackOrder { get { return -1000; } }
 
 #if UNITY_2018_1_OR_NEWER
-	    public void OnPreprocessBuild(BuildReport report)
-	    {
+        public void OnPreprocessBuild(BuildReport report)
+        {
             OdinBuildAutomation.OnPreprocessBuild();
-	    }
+        }
 #else
         public void OnPreprocessBuild(BuildTarget target, string path)
         {
@@ -129,10 +128,10 @@ namespace Ludiq.OdinSerializer.Utilities.Editor
         public int callbackOrder { get { return -1000; } }
 
 #if UNITY_2018_1_OR_NEWER
-	    public void OnPostprocessBuild(BuildReport report)
-	    {
+        public void OnPostprocessBuild(BuildReport report)
+        {
             OdinBuildAutomation.OnPostprocessBuild();
-	    }
+        }
 #else
         public void OnPostprocessBuild(BuildTarget target, string path)
         {

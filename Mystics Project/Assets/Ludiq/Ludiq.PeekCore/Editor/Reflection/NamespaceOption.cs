@@ -4,15 +4,15 @@
 
 namespace Ludiq.PeekCore
 {
-	public class NamespaceOption : FuzzyOption<Namespace>
-	{
-		public NamespaceOption(Namespace @namespace, FuzzyOptionMode mode) : base(mode)
-		{
-			value = @namespace;
-			label = @namespace.DisplayName(false);
-			getIcon = @namespace.Icon;
-		}
+    public class NamespaceOption : FuzzyOption<Namespace>
+    {
+        public NamespaceOption(Namespace @namespace, FuzzyOptionMode mode) : base(mode)
+        {
+            value = @namespace;
+            label = @namespace.DisplayName(false);
+            getIcon = @namespace.Icon;
+        }
 
-		public override string haystack => value.DisplayName();
-	}
+        public override string haystack => value.DisplayName();
+    }
 }

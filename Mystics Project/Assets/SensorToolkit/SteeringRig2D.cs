@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace SensorToolkit
 {
@@ -164,7 +163,7 @@ namespace SensorToolkit
 
         void Awake()
         {
-            if (IgnoreList == null) 
+            if (IgnoreList == null)
             {
                 IgnoreList = new List<GameObject>();
             }
@@ -205,7 +204,7 @@ namespace SensorToolkit
         void FaceDirectionKinematic(Vector2 direction)
         {
             var deltaAngle = signedAngleXY(RB.transform.up, direction);
-            var maxDelta = (TurnSpeed * Time.deltaTime) * Mathf.Min(1f, Mathf.Abs(deltaAngle)/20f);
+            var maxDelta = (TurnSpeed * Time.deltaTime) * Mathf.Min(1f, Mathf.Abs(deltaAngle) / 20f);
             deltaAngle = Mathf.Clamp(deltaAngle, -maxDelta, maxDelta);
             RB.transform.rotation = Quaternion.Euler(0f, 0f, RB.transform.rotation.eulerAngles.z - deltaAngle);
         }
@@ -286,7 +285,7 @@ namespace SensorToolkit
                 s.IgnoreList = IgnoreList;
                 s.Pulse();
                 if (!s.IsObstructed) continue;
-                var obsRatio = Mathf.Pow(1f - (s.ObstructionRayHit.distance / s.Length), 1f/AvoidanceSensitivity); // 0 when unobstructed, 1 when touching
+                var obsRatio = Mathf.Pow(1f - (s.ObstructionRayHit.distance / s.Length), 1f / AvoidanceSensitivity); // 0 when unobstructed, 1 when touching
                 rf += obsRatio * s.ObstructionRayHit.normal;
             }
             var rfMag = rf.magnitude;

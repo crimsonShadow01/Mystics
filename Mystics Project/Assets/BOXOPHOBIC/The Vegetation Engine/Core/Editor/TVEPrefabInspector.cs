@@ -1,7 +1,7 @@
 ﻿//Cristian Pop - https://boxophobic.com/
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace TheVegetationEngine
 {
@@ -34,7 +34,7 @@ namespace TheVegetationEngine
             {
                 TVEPrefabSettings window = EditorWindow.GetWindow<TVEPrefabSettings>(false, "Prefab Settings", true);
                 window.minSize = new Vector2(389, 200);
-                window.Show();         
+                window.Show();
             }
 
             GUILayout.EndHorizontal();

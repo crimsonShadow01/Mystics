@@ -1,28 +1,32 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using System.Collections;
 
 
-public class RTP_BlockInfoDrawer : MaterialPropertyDrawer {
-	Color backgroundColor;
-	bool foldoutFlag;
+public class RTP_BlockInfoDrawer : MaterialPropertyDrawer
+{
+    Color backgroundColor;
+    bool foldoutFlag;
     bool parsed = false;
     string parsedLabel;
 
-    public RTP_BlockInfoDrawer():base() {
-		backgroundColor = Color.white;
-		foldoutFlag = false;
-	}
-	public RTP_BlockInfoDrawer(float R, float G, float B, float A):base() {
-		backgroundColor = new Color(R, G, B, A);
-		foldoutFlag = false;
-	}
-	public RTP_BlockInfoDrawer(float R, float G, float B, float A, float foldout):base() {
-		backgroundColor = new Color(R, G, B, A);
-		foldoutFlag = foldout==1;
-	}
+    public RTP_BlockInfoDrawer() : base()
+    {
+        backgroundColor = Color.white;
+        foldoutFlag = false;
+    }
+    public RTP_BlockInfoDrawer(float R, float G, float B, float A) : base()
+    {
+        backgroundColor = new Color(R, G, B, A);
+        foldoutFlag = false;
+    }
+    public RTP_BlockInfoDrawer(float R, float G, float B, float A, float foldout) : base()
+    {
+        backgroundColor = new Color(R, G, B, A);
+        foldoutFlag = foldout == 1;
+    }
 
-	override public void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor) {
+    override public void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)
+    {
         if (editor is RTP_CustomShaderGUI)
         {
             RTP_CustomShaderGUI customEditor = editor as RTP_CustomShaderGUI;

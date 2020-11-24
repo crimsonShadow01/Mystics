@@ -126,8 +126,8 @@ namespace Databox.OdinSerializer.Utilities
             }
 
             // Release the lock
-            THREAD_LOCK_TOKEN = 0; 
-            
+            THREAD_LOCK_TOKEN = 0;
+
             if (result == null)
             {
                 result = new Cache<T>();

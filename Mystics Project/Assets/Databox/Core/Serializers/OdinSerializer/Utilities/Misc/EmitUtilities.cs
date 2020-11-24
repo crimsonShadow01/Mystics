@@ -1731,7 +1731,7 @@ namespace Databox.OdinSerializer.Utilities
             {
                 throw new ArgumentException("Given method must have only one parameter.");
             }
-            
+
             methodInfo = methodInfo.DeAliasMethod();
 
 #if !CAN_EMIT

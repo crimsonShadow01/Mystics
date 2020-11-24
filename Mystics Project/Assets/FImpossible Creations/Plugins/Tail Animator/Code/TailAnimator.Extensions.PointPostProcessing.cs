@@ -46,7 +46,7 @@ namespace FIMSpace.FTail
         void PostProcessing_ReferenceUpdate()
         {
             TailSegment child = _pp_reference[_tc_startI];
-            
+
             #region Prepare base positions calculation for tail segments to use in coords calculations and as reference
 
 
@@ -80,7 +80,7 @@ namespace FIMSpace.FTail
 
             #endregion
 
-            
+
             child = _pp_reference[_tc_startII];
             while (child != _pp_ref_lastChild)
             {

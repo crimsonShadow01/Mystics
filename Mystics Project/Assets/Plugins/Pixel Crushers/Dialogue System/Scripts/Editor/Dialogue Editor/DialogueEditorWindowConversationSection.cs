@@ -1,8 +1,8 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem.DialogueEditor
 {
@@ -128,7 +128,8 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
             {
                 DrawConversationSectionNodeStyle();
             }
-            else {
+            else
+            {
                 DrawConversationSectionOutlineStyle();
             }
         }
@@ -159,7 +160,8 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
                     menu.AddItem(new GUIContent("Copy Conversation"), false, CopyConversationCallback, null);
                     menu.AddItem(new GUIContent("Split Pipes Into Entries"), false, SplitPipesIntoEntries, null);
                 }
-                else {
+                else
+                {
                     menu.AddDisabledItem(new GUIContent("Copy Conversation"));
                     menu.AddDisabledItem(new GUIContent("Split Pipes Into Entries"));
                 }
@@ -411,7 +413,8 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
                     if (startEntry != null) startEntry.ActorID = newParticipantID;
                     actorID = newParticipantID;
                 }
-                else {
+                else
+                {
                     if (startEntry != null) startEntry.ConversantID = newParticipantID;
                     conversantID = newParticipantID;
                 }
@@ -634,7 +637,7 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
         }
 
         private void ReorderIDsThisConversationNow()
-        { 
+        {
             var currentConv = currentConversation;
             ReorderIDsInConversation(currentConversation);
             ResetConversationSection();
@@ -704,7 +707,7 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
                 }
 
                 // Sort entries:
-                conversation.dialogueEntries.Sort((x, y) =>x.id.CompareTo(y.id));
+                conversation.dialogueEntries.Sort((x, y) => x.id.CompareTo(y.id));
 
             }
             finally

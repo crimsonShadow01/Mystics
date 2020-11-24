@@ -33,7 +33,7 @@ namespace Ludiq.PeekCore.TinyJson
             {
                 stringBuilder.Append('"');
                 string str = (string)item;
-                for (int i = 0; i<str.Length; ++i)
+                for (int i = 0; i < str.Length; ++i)
                     if (str[i] < ' ' || str[i] == '"' || str[i] == '\\')
                     {
                         stringBuilder.Append('\\');
@@ -136,7 +136,7 @@ namespace Ludiq.PeekCore.TinyJson
                     }
                 }
                 PropertyInfo[] propertyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-                for (int i = 0; i<propertyInfo.Length; i++)
+                for (int i = 0; i < propertyInfo.Length; i++)
                 {
                     if (!propertyInfo[i].CanRead || propertyInfo[i].IsDefined(typeof(IgnoreDataMemberAttribute), true))
                         continue;

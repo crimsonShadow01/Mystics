@@ -1,10 +1,10 @@
 ﻿// Copyright 2018-2020 tripolygon Inc. All Rights Reserved.
 
-using UnityEngine;
-using UnityEditor;
-using UnityEngine.SceneManagement;
 using tripolygon.UModeler;
+using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace TPUModelerEditor
 {

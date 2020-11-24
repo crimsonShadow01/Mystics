@@ -10,11 +10,11 @@
     public enum InputKind { Terrain = 0, Noise = 1, Shape = 2, File = 3, Current = 4, Portal = 5 };
 
     public enum InputTerrainHeight { Collision = 5 };
-    public enum InputTerrain { Height, Angle, Normal, Convexity, Splatmap, Collision};
-    public enum InputNoise { Perlin, Billow, Ridged, Cell, IQ, Swiss, Jordan, Random};
+    public enum InputTerrain { Height, Angle, Normal, Convexity, Splatmap, Collision };
+    public enum InputNoise { Perlin, Billow, Ridged, Cell, IQ, Swiss, Jordan, Random };
     public enum InputShape { Circle, Gradient, Rectangle, Constant };
     public enum InputFile { Image, RawImage };
-    public enum InputCurrent { Blur = 0, Expand = 1, Shrink = 2, EdgeDetect = 4, Distortion = 3};
+    public enum InputCurrent { Blur = 0, Expand = 1, Shrink = 2, EdgeDetect = 4, Distortion = 3 };
     public enum InputPortal { Portal };
 
     public enum NoiseMode { TextureLookup = 0, Normal = 1, Simplex = 2, Value = 3 };
@@ -25,7 +25,7 @@
     public enum MethodItem { Overlay = 2, Max = 7, Min = 8 }
     public enum NodeGroupType { Select, Mask };
     public enum CollisionMode { Height, Mask };
-    public enum CollisionDirection { Up, Down};
+    public enum CollisionDirection { Up, Down };
     public enum ConvexityMode { Convex, Concave };
 
     public enum BlurMode { Normal, Outward, Inward };
@@ -33,7 +33,7 @@
     // itemGroup Mix Slider
     public enum MixModeEnum { Group, Single }
     public enum ColorSelectMode { Color, ColorRange };
-    
+
     // GUI Text 
     public enum HorTextAlign { Left, Right, Center }
     public enum VerTextAlign { Top, Center, Bottom }
@@ -46,5 +46,5 @@
     public enum WrapMode { continuous, Clamp };
     public enum ImageWrapMode { Mirror, Repeat, Clamp };
 
-    
+
 }

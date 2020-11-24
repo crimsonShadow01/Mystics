@@ -2,26 +2,26 @@
 
 namespace Ludiq.PeekCore
 {
-	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-	public sealed class InspectorTextAreaAttribute : Attribute
-	{
-		private float? _minLines;
-		private float? _maxLines;
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+    public sealed class InspectorTextAreaAttribute : Attribute
+    {
+        private float? _minLines;
+        private float? _maxLines;
 
-		public float minLines
-		{
-			get => _minLines.GetValueOrDefault();
-			set => _minLines = value;
-		}
+        public float minLines
+        {
+            get => _minLines.GetValueOrDefault();
+            set => _minLines = value;
+        }
 
-		public bool hasMinLines => _minLines.HasValue;
+        public bool hasMinLines => _minLines.HasValue;
 
-		public float maxLines
-		{
-			get => _maxLines.GetValueOrDefault();
-			set => _maxLines = value;
-		}
+        public float maxLines
+        {
+            get => _maxLines.GetValueOrDefault();
+            set => _maxLines = value;
+        }
 
-		public bool hasMaxLines => _maxLines.HasValue;
-	}
+        public bool hasMaxLines => _maxLines.HasValue;
+    }
 }

@@ -1,9 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using EnhancedUI.EnhancedScroller;
-using EnhancedUI;
-using System;
+﻿using System;
 using System.Collections;
+using UnityEngine;
 
 namespace EnhancedUI.EnhancedScroller
 {

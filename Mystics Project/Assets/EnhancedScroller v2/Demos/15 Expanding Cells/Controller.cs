@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using EnhancedUI;
+﻿using EnhancedUI;
 using EnhancedUI.EnhancedScroller;
+using UnityEngine;
 
 namespace EnhancedScrollerDemos.ExpandingCells
 {

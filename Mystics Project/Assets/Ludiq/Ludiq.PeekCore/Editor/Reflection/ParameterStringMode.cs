@@ -1,8 +1,8 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public enum ParameterStringMode
-	{
-		Types,
-		Names
-	}
+    public enum ParameterStringMode
+    {
+        Types,
+        Names
+    }
 }

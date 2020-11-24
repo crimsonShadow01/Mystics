@@ -8,38 +8,38 @@ namespace Ludiq.PeekCore.CodeDom
 {
     public sealed class CodeDefaultValueExpression : CodeExpression
     {
-	    public CodeDefaultValueExpression() { }
+        public CodeDefaultValueExpression() { }
 
-	    public CodeDefaultValueExpression(CodeTypeReference type)
+        public CodeDefaultValueExpression(CodeTypeReference type)
         {
-			Ensure.That(nameof(type)).IsNotNull(type);
+            Ensure.That(nameof(type)).IsNotNull(type);
 
             Type = type;
         }
 
         public CodeTypeReference Type { get; }
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (Type != null) yield return Type;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Type != null) yield return Type;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
-			generator.Write(TokenType.Keyword, "default");
+        protected override void GenerateInner(CodeGenerator generator)
+        {
+            generator.Write(TokenType.Keyword, "default");
 
-			if (Type != null)
-			{
-				generator.Write(TokenType.Punctuation, '(');
-				Type.Generate(generator);
-				generator.Write(TokenType.Punctuation, ')');
-			}
-		}
-	}
+            if (Type != null)
+            {
+                generator.Write(TokenType.Punctuation, '(');
+                Type.Generate(generator);
+                generator.Write(TokenType.Punctuation, ')');
+            }
+        }
+    }
 }

@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 
 namespace TerrainComposer2
@@ -18,7 +17,7 @@ namespace TerrainComposer2
         public Transform endT;
         public Vector2 scaleMinMaxMulti = Vector2.one;
         public float scaleMulti = 1;
-        
+
         public float mix;
 
         public float scale = 1;
@@ -39,25 +38,25 @@ namespace TerrainComposer2
             }
 
             base.Awake();
-            
+
             t.hideFlags = HideFlags.NotEditable | HideFlags.HideInInspector;
         }
 
         public override void OnEnable()
         {
             base.OnEnable();
-            t.hideFlags = HideFlags.NotEditable | HideFlags.HideInInspector; 
+            t.hideFlags = HideFlags.NotEditable | HideFlags.HideInInspector;
         }
 
         public override void OnDestroy()
         {
             if (preview.tex != null)
             {
-                #if UNITY_EDITOR
-                    DestroyImmediate(preview.tex);
-                #else
+#if UNITY_EDITOR
+                DestroyImmediate(preview.tex);
+#else
                     Destroy(preview.tex);
-                #endif
+#endif
             }
             base.OnDestroy();
         }
@@ -67,7 +66,7 @@ namespace TerrainComposer2
             base.CloneSetup();
             if (TC_Settings.instance == null) return;
             TC_Settings.instance.HasMasterTerrain(); // TODO make solution for this
-            
+
             preview.tex = null;
             GetItems(true, true, false);
         }
@@ -136,10 +135,10 @@ namespace TerrainComposer2
 
         void CalcPreview(Texture2D[] texArray)
         {
-            preview.Init(128); 
+            preview.Init(128);
 
             float resolution = preview.tex.width;
-            
+
             // TC_Reporter.BenchmarkStart();
 
             Color[] splatColors = TC_Settings.instance.global.previewColors;
@@ -213,7 +212,7 @@ namespace TerrainComposer2
             if (resetTextures) DisposeTextures();
 
             itemList.Clear();
-            
+
             totalActive = 0;
 
             int listIndex = 0;
@@ -272,8 +271,8 @@ namespace TerrainComposer2
                     else if (outputId == TC.objectOutput)
                     {
                         if (selectItem.spawnObject == null) selectItem.spawnObject = new TC_SelectItem.SpawnObject();
-                        if (selectItem.spawnObject.go == null 
-                            || (selectItem.spawnObject.parentMode == TC_SelectItem.SpawnObject.ParentMode.Existing && selectItem.spawnObject.parentT == null) 
+                        if (selectItem.spawnObject.go == null
+                            || (selectItem.spawnObject.parentMode == TC_SelectItem.SpawnObject.ParentMode.Existing && selectItem.spawnObject.parentT == null)
                             || (selectItem.spawnObject.parentMode == TC_SelectItem.SpawnObject.ParentMode.Create && selectItem.spawnObject.parentName == ""))
                         {
                             selectItem.active = false;
@@ -309,7 +308,7 @@ namespace TerrainComposer2
                             selectItem.selectIndex = listIndex;
                         }
                     }
-                    
+
                     selectItem.SetPreviewItemTexture();
                     if (selectItem.outputId != TC.colorOutput) selectItem.SetPreviewColor();
 
@@ -318,7 +317,8 @@ namespace TerrainComposer2
                 }
             }
 
-            if (refreshRangeItem != null || refreshRanges) {
+            if (refreshRangeItem != null || refreshRanges)
+            {
                 refreshRanges = false;
                 RefreshRanges();
                 refreshRangeItem = null;
@@ -338,7 +338,7 @@ namespace TerrainComposer2
             else if (outputId == TC.colorOutput) CreateColorMixBuffer();
             else CreateItemMixBuffer();
         }
-        
+
         public void CreateItemMixBuffer()
         {
             // Debug.Log("Create Item Mix buffer");
@@ -347,7 +347,7 @@ namespace TerrainComposer2
             else if (indices.Length != itemList.Count) indices = new ItemSettings[totalActive];
 
             int index = 0;
-            
+
             for (int i = 0; i < itemList.Count; i++)
             {
                 TC_SelectItem item = itemList[i];
@@ -367,7 +367,7 @@ namespace TerrainComposer2
 
             float blend = (mix + 0.001f) / totalActive;
             float range = 1 / blend;
-            
+
             int index = 0;
 
             for (int i = 0; i < itemList.Count; i++)
@@ -392,7 +392,7 @@ namespace TerrainComposer2
 
             float blend = (mix + 0.001f) / totalActive;
             float range = 1 / blend;
-            
+
             int index = 0;
 
             for (int i = 0; i < itemList.Count; ++i)
@@ -416,7 +416,7 @@ namespace TerrainComposer2
                         custom0 = Vector4.zero;
                         custom1 = Vector4.zero;
                     }
-                    
+
                     splatMixBuffer[index++] = new SplatCustom(new Vector4(selectItem.range.x - blend, selectItem.range.y, range, selectItem.splatCustom ? -1 : selectItem.selectIndex), custom0, custom1, custom0, custom1);
                 }
             }
@@ -425,7 +425,7 @@ namespace TerrainComposer2
         public float EvaluateItem(TC_SelectItem selectItem, float time)
         {
             float r1, r2, r3;
-            
+
             float blend = (mix + 0.001f) / totalActive;
 
             r2 = selectItem.range.x;
@@ -435,7 +435,7 @@ namespace TerrainComposer2
             r3 -= blend / 2;
 
             r1 = r2 - blend;
-            
+
             float range = 1 / blend;
 
             // Debug.Log(r1 + ", " + r2 + ", " + r3);
@@ -449,14 +449,14 @@ namespace TerrainComposer2
         {
             if (itemList.Count == 0) { untouched = true; return; }
             if (changedSelectItem == null) changedSelectItem = itemList[0];
-            
+
             TC_SelectItem selectItem;
 
             int index = changedSelectItem.active ? changedSelectItem.listIndex : 0;
 
             float x = itemList[index].range.x;
             float y = itemList[index].range.y;
-            
+
             if (!resetInActive) untouched = false;
 
             for (int i = index + 1; i < itemList.Count; ++i)
@@ -508,7 +508,7 @@ namespace TerrainComposer2
                     }
                 }
             }
-            
+
             CalcPreview();
         }
 
@@ -564,7 +564,7 @@ namespace TerrainComposer2
                 }
             }
 
-            SetRanges(itemList[0], true); 
+            SetRanges(itemList[0], true);
         }
 
         public void CenterRange(TC_SelectItem changedSelectItem)
@@ -573,7 +573,7 @@ namespace TerrainComposer2
 
             float average = 1.0f / totalActive;
             float x = 0;
-            
+
             int index = 0;
 
             for (int i = 0; i < itemList.Count; i++)
@@ -608,7 +608,7 @@ namespace TerrainComposer2
             for (int i = 0; i < itemList.Count; i++) itemList[i].SetFirstLoad(active);
         }
     }
-    
+
     //[Serializable]
     //public class SelectGroupItem
     //{
@@ -625,7 +625,7 @@ namespace TerrainComposer2
     //        this.item = select;
     //    }
     //}
-    
+
     [Serializable]
     public struct SplatCustom
     {

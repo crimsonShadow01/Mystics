@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using System.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -101,7 +100,7 @@ public class ReliefTerrainGlobalSettingsHolder
 
     public float RTP_AOsharpness;
     public float RTP_AOamp;
-    public float _occlusionStrength=1;
+    public float _occlusionStrength = 1;
 
     public float SHADOW_STEPS;
     public float WAVELENGTH_SHADOWS;
@@ -295,12 +294,12 @@ public class ReliefTerrainGlobalSettingsHolder
     //public float _snow_IBL_SpecStrength;
 
     public float _snow_metallic;
-    public float _snow_Frost=0;
-    public float _snow_MicroTiling=1;
-    public float _snow_BumpMicro=0.2f;
-    public Color _SnowGlitterColor=new Color(1,1,1,0.1f);
-    public float _snow_occlusionStrength=0.5f;
-    public int _snow_TranslucencyDeferredLightIndex=0;
+    public float _snow_Frost = 0;
+    public float _snow_MicroTiling = 1;
+    public float _snow_BumpMicro = 0.2f;
+    public Color _SnowGlitterColor = new Color(1, 1, 1, 0.1f);
+    public float _snow_occlusionStrength = 0.5f;
+    public int _snow_TranslucencyDeferredLightIndex = 0;
 
     // glitter
     public Color _GlitterColor;
@@ -680,7 +679,7 @@ public class ReliefTerrainGlobalSettingsHolder
 
         use_mat = mat;
 
-        if (mat!= null)
+        if (mat != null)
         {
             mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
         }
@@ -1075,7 +1074,7 @@ public class ReliefTerrainGlobalSettingsHolder
         SetShaderParam("TERRAIN_WetRefraction0123", getVector(TERRAIN_WetRefraction, 0, 3));
         SetShaderParam("TERRAIN_Flow0123", getVector(TERRAIN_Flow, 0, 3));
         SetShaderParam("TERRAIN_WetFlow0123", getVector(TERRAIN_WetFlow, 0, 3));
-        SetShaderParam("TERRAIN_WaterMetallic0123", getVector(TERRAIN_WaterMetallic, 0,3));
+        SetShaderParam("TERRAIN_WaterMetallic0123", getVector(TERRAIN_WaterMetallic, 0, 3));
         SetShaderParam("TERRAIN_WetGloss0123", getVector(TERRAIN_WetGloss, 0, 3));
         SetShaderParam("TERRAIN_WaterColorR0123", getColorVector(TERRAIN_WaterColor, 0, 3, 0));
         SetShaderParam("TERRAIN_WaterColorG0123", getColorVector(TERRAIN_WaterColor, 0, 3, 1));

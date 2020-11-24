@@ -22,8 +22,6 @@ using Databox.OdinSerializer;
 
 namespace Databox.OdinSerializer
 {
-    using System;
-
     /// <summary>
     /// Formatter for all <see cref="System.Nullable{T}"/> types.
     /// </summary>

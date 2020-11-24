@@ -25,11 +25,11 @@ namespace Databox.OdinSerializer
     /// </summary>
     public abstract class TwoWaySerializationBinder
     {
-		/// <summary>
-		/// Provides a default, catch-all <see cref="TwoWaySerializationBinder"/> implementation. This binder only includes assembly names, without versions and tokens, in order to increase compatibility.
-		/// </summary>
-		public static readonly TwoWaySerializationBinder Default = new DefaultSerializationBinder();
-	
+        /// <summary>
+        /// Provides a default, catch-all <see cref="TwoWaySerializationBinder"/> implementation. This binder only includes assembly names, without versions and tokens, in order to increase compatibility.
+        /// </summary>
+        public static readonly TwoWaySerializationBinder Default = new DefaultSerializationBinder();
+
         /// <summary>
         /// Bind a type to a name.
         /// </summary>

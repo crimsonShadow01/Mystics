@@ -7,46 +7,46 @@ using UnityEngine;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public class PolyShortcutInspector : Inspector
-	{
-		public PolyShortcutInspector(Accessor accessor) : base(accessor) { }
+    public class PolyShortcutInspector : Inspector
+    {
+        public PolyShortcutInspector(Accessor accessor) : base(accessor) { }
 
-		private Accessor keyboardShortcutAccessor => accessor[nameof(PolyShortcut.keyboardShortcut)];
+        private Accessor keyboardShortcutAccessor => accessor[nameof(PolyShortcut.keyboardShortcut)];
 
-		private Accessor mouseShortcutAccessor => accessor[nameof(PolyShortcut.mouseShortcut)];
-		
-		private Inspector keyboardShortcutInspector => ChildInspector(keyboardShortcutAccessor);
+        private Accessor mouseShortcutAccessor => accessor[nameof(PolyShortcut.mouseShortcut)];
 
-		private Inspector mouseShortcutInspector => ChildInspector(mouseShortcutAccessor);
-		
-		protected override float GetControlHeight(float width)
-		{
-			return EditorGUIUtility.singleLineHeight * 2 + EditorGUIUtility.standardVerticalSpacing;
-		}
+        private Inspector keyboardShortcutInspector => ChildInspector(keyboardShortcutAccessor);
 
-		protected override void OnControlGUI(Rect position)
-		{
-			var keyboardPosition = new Rect
-			(
-				position.x,
-				position.y,
-				position.width,
-				EditorGUIUtility.singleLineHeight
-			);
+        private Inspector mouseShortcutInspector => ChildInspector(mouseShortcutAccessor);
 
-			var mousePosition = new Rect
-			(
-				position.x,
-				keyboardPosition.yMax + EditorGUIUtility.standardVerticalSpacing,
-				position.width,
-				EditorGUIUtility.singleLineHeight
-			);
+        protected override float GetControlHeight(float width)
+        {
+            return EditorGUIUtility.singleLineHeight * 2 + EditorGUIUtility.standardVerticalSpacing;
+        }
 
-			keyboardShortcutInspector.DrawControl(keyboardPosition);
-			mouseShortcutInspector.DrawControl(mousePosition);
-		}
-	}
+        protected override void OnControlGUI(Rect position)
+        {
+            var keyboardPosition = new Rect
+            (
+                position.x,
+                position.y,
+                position.width,
+                EditorGUIUtility.singleLineHeight
+            );
+
+            var mousePosition = new Rect
+            (
+                position.x,
+                keyboardPosition.yMax + EditorGUIUtility.standardVerticalSpacing,
+                position.width,
+                EditorGUIUtility.singleLineHeight
+            );
+
+            keyboardShortcutInspector.DrawControl(keyboardPosition);
+            mouseShortcutInspector.DrawControl(mousePosition);
+        }
+    }
 }

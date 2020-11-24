@@ -1,7 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -11,7 +9,7 @@ namespace TerrainComposer2
         public List<TC_ItemBehaviour> itemList = new List<TC_ItemBehaviour>();
 
         public float seed = 0;
-        
+
         // Compute height, trees and objects
         public ComputeBuffer ComputeSingle(float seedParent, bool first = false)
         {
@@ -32,15 +30,15 @@ namespace TerrainComposer2
             int even = 0;
 
             float seedTotal = seed + seedParent;
-            
+
             for (int i = 0; i < itemList.Count; i++)
             {
                 TC_Layer layer = itemList[i] as TC_Layer;
-                
+
                 if (layer != null)
                 {
                     if (!layer.active) { TC_Reporter.Log("Inactive layer " + i); continue; }
-                    
+
                     if (totalBuffer == null)
                     {
                         if (outputId == TC.heightOutput) layer.ComputeHeight(ref totalBuffer, ref layerMaskBuffer, seedTotal, i == firstActive);
@@ -49,7 +47,7 @@ namespace TerrainComposer2
                             layer.ComputeItem(ref totalBuffer, ref layerMaskBuffer, seedTotal, i == firstActive);
                             if (totalBuffer != null) rtLeftPreview = layer.rtDisplay;
                         }
-                        
+
                         compute.DisposeBuffer(ref layerMaskBuffer);
                     }
                     else
@@ -101,10 +99,10 @@ namespace TerrainComposer2
             }
 
             SetPreviewTextureAfter();
-            
+
             if (outputId != TC.heightOutput) TC_Compute.DisposeRenderTextures(ref rtsPreview);
             compute.DisposeBuffer(ref layerMaskBuffer);
-            
+
             if (totalBuffer == null) TC_Reporter.Log("Layer buffer null");
             return totalBuffer;
         }
@@ -125,9 +123,9 @@ namespace TerrainComposer2
             bool lastCompute = false;
 
             int even = 0;
-            
+
             rtsPreview = new RenderTexture[2];
-            
+
             SetPreviewTextureBefore();
 
             float seedTotal = seed + seedParent;
@@ -144,7 +142,7 @@ namespace TerrainComposer2
                     if (!firstCompute)
                     {
                         firstCompute = layer.ComputeMulti(ref renderTextures, ref layerMaskBuffer, seedTotal, i == firstActive);
-                        
+
                         if (firstCompute)
                         {
                             rtLeftPreview = layer.rtDisplay;
@@ -162,15 +160,15 @@ namespace TerrainComposer2
                             TC_Reporter.Log("Run layer method multi");
                             rtRightPreview = (layer.method == Method.Lerp) ? layer.selectNodeGroup.rtColorPreview : layer.rtDisplay;
                             // Debug.Log(rtRight.name+ " "+ (layer.maskNodeGroup.activeTotal == 0 || layer.method == Method.Lerp));
-                            
+
                             if (outputId == TC.colorOutput) compute.RunComputeColorMethod(layer, layer.method, ref renderTextures[0], ref rtsLayer[0], layerMaskBuffer, rtPreview, ref rtsPreview[even++ % 2], ref rtLeftPreview, rtRightPreview);
                             else compute.RunComputeMultiMethod(layer, layer.method, i == lastActive && doNormalize, ref renderTextures, ref rtsLayer, layerMaskBuffer, rtPreview, ref rtsPreview[even++ % 2], ref rtLeftPreview, rtRightPreview);
-                            
+
                             compute.DisposeBuffer(ref layerMaskBuffer);
                         }
                     }
                 }
-                else 
+                else
                 {
                     layerGroup = itemList[i] as TC_LayerGroup;
                     if (layerGroup == null) continue;
@@ -197,7 +195,7 @@ namespace TerrainComposer2
 
                             if (outputId == TC.colorOutput) compute.RunComputeColorMethod(layerGroup, layerGroup.method, ref renderTextures[0], ref rtsLayer[0], layerMaskBuffer, rtPreview, ref rtsPreview[even++ % 2], ref rtLeftPreview, rtRightPreview);
                             else compute.RunComputeMultiMethod(layerGroup, layerGroup.method, i == lastActive && doNormalize, ref renderTextures, ref rtsLayer, layerMaskBuffer, rtPreview, ref rtsPreview[even++ % 2], ref rtLeftPreview, rtRightPreview);
-                            
+
                             compute.DisposeBuffer(ref layerMaskBuffer);
                         }
                     }
@@ -205,15 +203,15 @@ namespace TerrainComposer2
             }
 
             SetPreviewTextureAfter();
-            
+
             if (layerMaskBuffer != null) { compute.DisposeBuffer(ref layerMaskBuffer); TC_Reporter.Log("Dispose layerMaskBuffer"); }
-            
+
             TC_Compute.DisposeRenderTextures(ref rtsPreview);
             TC_Compute.DisposeRenderTextures(ref rtsLayer);
 
             return firstCompute;
         }
-        
+
         public void SetPreviewTextureBefore()
         {
 
@@ -226,7 +224,7 @@ namespace TerrainComposer2
                 TC_Compute.DisposeRenderTexture(ref rtPreview);
             }
             else if (totalActive != 1)
-            { 
+            {
                 TC_Compute.InitPreviewRenderTexture(ref rtPreview, "rtGroupResult");
                 rtDisplay = rtPreview;
             }
@@ -245,7 +243,7 @@ namespace TerrainComposer2
         public void LinkClone(TC_LayerGroupResult resultLayerGroupS)
         {
             preview = resultLayerGroupS.preview;
-         
+
             for (int i = 0; i < itemList.Count; i++)
             {
                 TC_Layer layer = itemList[i] as TC_Layer;
@@ -310,7 +308,7 @@ namespace TerrainComposer2
 
             for (int i = 0; i < itemList.Count; i++) itemList[i].UpdateTransforms();
         }
-        
+
         public override void ChangeYPosition(float y)
         {
             for (int i = 0; i < itemList.Count; i++) itemList[i].ChangeYPosition(y);
@@ -330,7 +328,7 @@ namespace TerrainComposer2
             for (int i = 0; i < itemList.Count; i++)
             {
                 returnValue = itemList[i].ContainsCollisionNode();
-                
+
                 if (returnValue) return true;
             }
 
@@ -342,7 +340,7 @@ namespace TerrainComposer2
             for (int i = 0; i < itemList.Count; i++)
             {
                 TC_Layer layer = itemList[i] as TC_Layer;
-                if (layer != null) layer.ResetObjects(); 
+                if (layer != null) layer.ResetObjects();
                 else
                 {
                     TC_LayerGroup layerGroup = itemList[i] as TC_LayerGroup;
@@ -360,7 +358,7 @@ namespace TerrainComposer2
             itemList.Clear();
 
             firstActive = lastActive = -1;
-            totalActive = 0; 
+            totalActive = 0;
 
             bool newBounds = true;
             int listIndex = 0;
@@ -421,7 +419,7 @@ namespace TerrainComposer2
             TC_Reporter.Log(TC.outputNames[outputId] + " Level " + level + " activeTotal " + totalActive);
 
             if (!active) totalActive = 0;
-            else if (totalActive == 0) active = false; 
+            else if (totalActive == 0) active = false;
         }
 
         public int ExecuteCommand(string[] arg)
@@ -434,7 +432,7 @@ namespace TerrainComposer2
             {
 
             }
-            
+
             if (arg[0] != "ResultGroup")
             {
                 if (arg.Length <= 1) return -1;

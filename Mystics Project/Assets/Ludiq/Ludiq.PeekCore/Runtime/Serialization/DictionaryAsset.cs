@@ -4,94 +4,94 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class DictionaryAsset : LudiqAsset, IDictionary<string, object>
-	{
-		public object this[string key]
-		{
-			get => dictionary[key];
-			set => dictionary[key] = value;
-		}
+    public sealed class DictionaryAsset : LudiqAsset, IDictionary<string, object>
+    {
+        public object this[string key]
+        {
+            get => dictionary[key];
+            set => dictionary[key] = value;
+        }
 
-		[Serialize]
-		public Dictionary<string, object> dictionary { get; private set; } = new Dictionary<string, object>();
+        [Serialize]
+        public Dictionary<string, object> dictionary { get; private set; } = new Dictionary<string, object>();
 
-		public int Count => dictionary.Count;
+        public int Count => dictionary.Count;
 
-		public ICollection<string> Keys => dictionary.Keys;
+        public ICollection<string> Keys => dictionary.Keys;
 
-		public ICollection<object> Values => dictionary.Values;
+        public ICollection<object> Values => dictionary.Values;
 
-		bool ICollection<KeyValuePair<string, object>>.IsReadOnly => ((ICollection<KeyValuePair<string, object>>)dictionary).IsReadOnly;
+        bool ICollection<KeyValuePair<string, object>>.IsReadOnly => ((ICollection<KeyValuePair<string, object>>)dictionary).IsReadOnly;
 
-		protected override void OnAfterDeserialize()
-		{
-			base.OnAfterDeserialize();
+        protected override void OnAfterDeserialize()
+        {
+            base.OnAfterDeserialize();
 
-			if (dictionary == null)
-			{
-				dictionary = new Dictionary<string, object>();
-			}
-		}
+            if (dictionary == null)
+            {
+                dictionary = new Dictionary<string, object>();
+            }
+        }
 
-		public void Clear()
-		{
-			dictionary.Clear();
-		}
+        public void Clear()
+        {
+            dictionary.Clear();
+        }
 
-		public bool ContainsKey(string key)
-		{
-			return dictionary.ContainsKey(key);
-		}
+        public bool ContainsKey(string key)
+        {
+            return dictionary.ContainsKey(key);
+        }
 
-		public void Add(string key, object value)
-		{
-			dictionary.Add(key, value);
-		}
+        public void Add(string key, object value)
+        {
+            dictionary.Add(key, value);
+        }
 
-		public bool Remove(string key)
-		{
-			return dictionary.Remove(key);
-		}
+        public bool Remove(string key)
+        {
+            return dictionary.Remove(key);
+        }
 
-		public bool TryGetValue(string key, out object value)
-		{
-			return dictionary.TryGetValue(key, out value);
-		}
+        public bool TryGetValue(string key, out object value)
+        {
+            return dictionary.TryGetValue(key, out value);
+        }
 
-		public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-		{
-			return dictionary.GetEnumerator();
-		}
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            return dictionary.GetEnumerator();
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return ((IEnumerable)dictionary).GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)dictionary).GetEnumerator();
+        }
 
-		void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
-		{
-			((ICollection<KeyValuePair<string, object>>)dictionary).Add(item);
-		}
+        void ICollection<KeyValuePair<string, object>>.Add(KeyValuePair<string, object> item)
+        {
+            ((ICollection<KeyValuePair<string, object>>)dictionary).Add(item);
+        }
 
-		bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
-		{
-			return ((ICollection<KeyValuePair<string, object>>)dictionary).Contains(item);
-		}
+        bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
+        {
+            return ((ICollection<KeyValuePair<string, object>>)dictionary).Contains(item);
+        }
 
-		void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
-		{
-			((ICollection<KeyValuePair<string, object>>)dictionary).CopyTo(array, arrayIndex);
-		}
+        void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+        {
+            ((ICollection<KeyValuePair<string, object>>)dictionary).CopyTo(array, arrayIndex);
+        }
 
-		bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
-		{
-			return ((ICollection<KeyValuePair<string, object>>)dictionary).Remove(item);
-		}
+        bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item)
+        {
+            return ((ICollection<KeyValuePair<string, object>>)dictionary).Remove(item);
+        }
 
-		[ContextMenu("Show Data...")]
-		public override void ShowData()
-		{
-			base.ShowData();
-		}
-	}
+        [ContextMenu("Show Data...")]
+        public override void ShowData()
+        {
+            base.ShowData();
+        }
+    }
 }

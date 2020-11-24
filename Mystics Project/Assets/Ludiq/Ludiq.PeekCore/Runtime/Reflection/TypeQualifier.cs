@@ -1,9 +1,9 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public enum TypeQualifier
-	{
-		Name,
-		Namespace,
-		GlobalNamespace
-	}
+    public enum TypeQualifier
+    {
+        Name,
+        Namespace,
+        GlobalNamespace
+    }
 }

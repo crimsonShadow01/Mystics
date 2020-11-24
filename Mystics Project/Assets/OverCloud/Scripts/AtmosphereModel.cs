@@ -1,22 +1,22 @@
+using BrunetonsImprovedAtmosphere;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using BrunetonsImprovedAtmosphere;
 
 namespace OC
 {
-	/// <summary>
-	/// Class responsible for initializing and communicating with the Brunetons atmosphere implementation
-	/// </summary>
+    /// <summary>
+    /// Class responsible for initializing and communicating with the Brunetons atmosphere implementation
+    /// </summary>
     public class AtmosphereModel
     {
-		public const float EARTH_RADIUS = 6360000.0f;
-		public const float EARTH_ATMOSPHERE_HEIGHT = 60000.0f;
+        public const float EARTH_RADIUS = 6360000.0f;
+        public const float EARTH_ATMOSPHERE_HEIGHT = 60000.0f;
 
-		public float planetScale = 1f;
-		public float heightScale = 1f;
+        public float planetScale = 1f;
+        public float heightScale = 1f;
 
-		public bool initialized { get { return m_Initialized; } }
+        public bool initialized { get { return m_Initialized; } }
         static readonly float kSunAngularRadius = 0.00935f / 2.0f;
         static readonly float kBottomRadius = 6360000.0f;
         static readonly float kLengthUnitInMeters = 1.0f;
@@ -41,16 +41,16 @@ namespace OC
 
         private Model m_model;
 
-		private bool m_Initialized = false;
+        private bool m_Initialized = false;
 
-		/// <summary>
-		/// The "real" initialization work, which is specific to our atmosphere model,
-		/// is done in the following method. It starts with the creation of an atmosphere
-		/// Model instance, with parameters corresponding to the Earth atmosphere:
-		/// </summary>
-		public void Initialize (OverCloud.Atmosphere.Precomputation settings) 
+        /// <summary>
+        /// The "real" initialization work, which is specific to our atmosphere model,
+        /// is done in the following method. It starts with the creation of an atmosphere
+        /// Model instance, with parameters corresponding to the Earth atmosphere:
+        /// </summary>
+        public void Initialize(OverCloud.Atmosphere.Precomputation settings)
         {
-             // Values from "Reference Solar Spectral Irradiance: ASTM G-173", ETR column
+            // Values from "Reference Solar Spectral Irradiance: ASTM G-173", ETR column
             // (see http://rredc.nrel.gov/solar/spectra/am1.5/ASTMG173/ASTMG173.html),
             // summed and averaged in each bin (e.g. the value for 360nm is the average
             // of the ASTM G-173 values for all wavelengths between 360 and 370nm).
@@ -91,17 +91,17 @@ namespace OC
             double kMaxOzoneNumberDensity = 300.0 * kDobsonUnit / 15000.0;
             // Wavelength independent solar irradiance "spectrum" (not physically
             // realistic, but was used in the original implementation).
-            double kConstantSolarIrradiance		= 1.5;
-            double kTopRadius					= 6420000.0;
-            double kRayleigh					= 1.24062e-6;
-            double kRayleighScaleHeight			= 8000.0;
-            double kMieScaleHeight				= 1200.0;
-            double kMieAngstromAlpha			= 0.0;
-            double kMieAngstromBeta				= 5.328e-3;
-            double kMieSingleScatteringAlbedo	= 0.9;
-			//double kMiePhaseFunctionG			= 0.8;
-			double kGroundAlbedo				= 0.1;
-            double max_sun_zenith_angle			= (UseHalfPrecision ? 102.0 : 120.0) / 180.0 * Mathf.PI;
+            double kConstantSolarIrradiance = 1.5;
+            double kTopRadius = 6420000.0;
+            double kRayleigh = 1.24062e-6;
+            double kRayleighScaleHeight = 8000.0;
+            double kMieScaleHeight = 1200.0;
+            double kMieAngstromAlpha = 0.0;
+            double kMieAngstromBeta = 5.328e-3;
+            double kMieSingleScatteringAlbedo = 0.9;
+            //double kMiePhaseFunctionG			= 0.8;
+            double kGroundAlbedo = 0.1;
+            double max_sun_zenith_angle = (UseHalfPrecision ? 102.0 : 120.0) / 180.0 * Mathf.PI;
 
             DensityProfileLayer rayleigh_layer = new DensityProfileLayer("rayleigh", 0.0, 1.0, -1.0 / kRayleighScaleHeight, 0.0, 0.0);
             DensityProfileLayer mie_layer = new DensityProfileLayer("mie", 0.0, 1.0, -1.0 / kMieScaleHeight, 0.0, 0.0);
@@ -111,22 +111,22 @@ namespace OC
             // profile from http://www.kln.ac.lk/science/Chemistry/Teaching_Resources/
             // Documents/Introduction%20to%20atmospheric%20chemistry.pdf (page 10).
             List<DensityProfileLayer> ozone_density = new List<DensityProfileLayer>();
-            ozone_density.Add(new DensityProfileLayer("absorption0", 25000.0,	0.0, 0.0,  1.0 / 15000.0,	-2.0 / 3.0));
-            ozone_density.Add(new DensityProfileLayer("absorption1", 0.0,		0.0, 0.0, -1.0 / 15000.0,	8.0 / 3.0));
+            ozone_density.Add(new DensityProfileLayer("absorption0", 25000.0, 0.0, 0.0, 1.0 / 15000.0, -2.0 / 3.0));
+            ozone_density.Add(new DensityProfileLayer("absorption1", 0.0, 0.0, 0.0, -1.0 / 15000.0, 8.0 / 3.0));
 
-            List<double> wavelengths			= new List<double>();
-            List<double> solar_irradiance		= new List<double>();
-            List<double> rayleigh_scattering	= new List<double>();
-            List<double> mie_scattering			= new List<double>();
-            List<double> mie_extinction			= new List<double>();
-            List<double> absorption_extinction	= new List<double>();
-            List<double> ground_albedo			= new List<double>();
+            List<double> wavelengths = new List<double>();
+            List<double> solar_irradiance = new List<double>();
+            List<double> rayleigh_scattering = new List<double>();
+            List<double> mie_scattering = new List<double>();
+            List<double> mie_extinction = new List<double>();
+            List<double> absorption_extinction = new List<double>();
+            List<double> ground_albedo = new List<double>();
 
             for (int l = kLambdaMin; l <= kLambdaMax; l += 10)
             {
-                double lambda	= l * 1e-3;  // micro-meters
-				// The precomputed mie scattering suffers from precision issues and has been substituted for a realtime variant
-                double mie		= kMieAngstromBeta / kMieScaleHeight * Math.Pow(lambda, -kMieAngstromAlpha) * settings.mie * 0.00001f;
+                double lambda = l * 1e-3;  // micro-meters
+                                           // The precomputed mie scattering suffers from precision issues and has been substituted for a realtime variant
+                double mie = kMieAngstromBeta / kMieScaleHeight * Math.Pow(lambda, -kMieAngstromAlpha) * settings.mie * 0.00001f;
 
                 wavelengths.Add(l);
 
@@ -144,53 +144,53 @@ namespace OC
 
             m_model = new Model();
 
-			m_model.planetScale					= planetScale;
-			m_model.heightScale					= heightScale;
-            m_model.HalfPrecision				= UseHalfPrecision;
-            m_model.CombineScatteringTextures	= UseCombinedTextures;
-            m_model.UseLuminance				= UseLuminance;
-            m_model.Wavelengths					= wavelengths;
-            m_model.SolarIrradiance				= solar_irradiance;
-            m_model.SunAngularRadius			= kSunAngularRadius;
-            m_model.BottomRadius				= kBottomRadius;
-            m_model.TopRadius					= kTopRadius;
-            m_model.RayleighDensity				= rayleigh_layer;
-            m_model.RayleighScattering			= rayleigh_scattering;
-            m_model.MieDensity					= mie_layer;
-            m_model.MieScattering				= mie_scattering;
-            m_model.MieExtinction				= mie_extinction;
-            m_model.MiePhaseFunctionG			= settings.phase;
-            m_model.AbsorptionDensity			= ozone_density;
-            m_model.AbsorptionExtinction		= absorption_extinction;
-            m_model.GroundAlbedo				= ground_albedo;
-            m_model.MaxSunZenithAngle			= max_sun_zenith_angle;
-            m_model.LengthUnitInMeters			= kLengthUnitInMeters;
+            m_model.planetScale = planetScale;
+            m_model.heightScale = heightScale;
+            m_model.HalfPrecision = UseHalfPrecision;
+            m_model.CombineScatteringTextures = UseCombinedTextures;
+            m_model.UseLuminance = UseLuminance;
+            m_model.Wavelengths = wavelengths;
+            m_model.SolarIrradiance = solar_irradiance;
+            m_model.SunAngularRadius = kSunAngularRadius;
+            m_model.BottomRadius = kBottomRadius;
+            m_model.TopRadius = kTopRadius;
+            m_model.RayleighDensity = rayleigh_layer;
+            m_model.RayleighScattering = rayleigh_scattering;
+            m_model.MieDensity = mie_layer;
+            m_model.MieScattering = mie_scattering;
+            m_model.MieExtinction = mie_extinction;
+            m_model.MiePhaseFunctionG = settings.phase;
+            m_model.AbsorptionDensity = ozone_density;
+            m_model.AbsorptionExtinction = absorption_extinction;
+            m_model.GroundAlbedo = ground_albedo;
+            m_model.MaxSunZenithAngle = max_sun_zenith_angle;
+            m_model.LengthUnitInMeters = kLengthUnitInMeters;
 
             int numScatteringOrders = 4;
             m_model.Init(m_compute, numScatteringOrders);
 
             m_model.BindGlobally();
 
-			UpdateShaderVariables();
+            UpdateShaderVariables();
         }
 
-		public void Bind ()
-		{
-			m_model.BindGlobally();
+        public void Bind()
+        {
+            m_model.BindGlobally();
 
-			UpdateShaderVariables();
-		}
+            UpdateShaderVariables();
+        }
 
-		public void Release ()
-		{
-			if (m_model != null)
+        public void Release()
+        {
+            if (m_model != null)
                 m_model.Release();
-		}
+        }
 
-		public void UpdateShaderVariables ()
-		{
+        public void UpdateShaderVariables()
+        {
             //Shader.SetGlobalVector("_ScattEarthCenter", new Vector3(0.0f, -kBottomRadius / kLengthUnitInMeters, 0.0f));
-            Shader.SetGlobalVector("_ScattEarthCenter", new Vector3(0.0f, -(EARTH_RADIUS*planetScale) / kLengthUnitInMeters, 0.0f));
-		}
+            Shader.SetGlobalVector("_ScattEarthCenter", new Vector3(0.0f, -(EARTH_RADIUS * planetScale) / kLengthUnitInMeters, 0.0f));
+        }
     }
 }

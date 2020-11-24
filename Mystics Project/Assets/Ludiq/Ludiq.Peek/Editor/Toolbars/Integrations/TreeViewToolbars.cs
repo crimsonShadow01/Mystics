@@ -6,140 +6,140 @@ using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public static class TreeViewToolbars
-	{
-		private static Event e => Event.current;
+    public static class TreeViewToolbars
+    {
+        private static Event e => Event.current;
 
-		public static void Draw(bool drawIcon, ToolbarControlProvider toolbarControlProvider, UnityObject target, UnityObject[] targets, bool isSelected, string label, Rect contentPosition, Rect rowPosition, bool hasFocus)
-		{
-			var isHovered = rowPosition.Contains(Event.current.mousePosition);
+        public static void Draw(bool drawIcon, ToolbarControlProvider toolbarControlProvider, UnityObject target, UnityObject[] targets, bool isSelected, string label, Rect contentPosition, Rect rowPosition, bool hasFocus)
+        {
+            var isHovered = rowPosition.Contains(Event.current.mousePosition);
 
-			try
-			{
-				// TODO: We can hook into AssetsTreeViewGUI.postAssetIconDrawCallback
-				// to draw under the VCS integration icons
+            try
+            {
+                // TODO: We can hook into AssetsTreeViewGUI.postAssetIconDrawCallback
+                // to draw under the VCS integration icons
 
-				var leftPadding = 0;
+                var leftPadding = 0;
 
-				if (toolbarControlProvider.window == ToolbarWindow.Project)
-				{
-					if (UnityEditor.VersionControl.Provider.enabled)
-					{
-						leftPadding = 9;
-					}
-					else
-					{
-						leftPadding = 2;
-					}
-				}
+                if (toolbarControlProvider.window == ToolbarWindow.Project)
+                {
+                    if (UnityEditor.VersionControl.Provider.enabled)
+                    {
+                        leftPadding = 9;
+                    }
+                    else
+                    {
+                        leftPadding = 2;
+                    }
+                }
 
-				var iconPosition = new Rect
-				(
-					contentPosition.x + leftPadding,
-					contentPosition.y,
-					IconSize.Small,
-					IconSize.Small
-				);
-			
-				if (drawIcon)
-				{
-					if (PeekPlugin.Configuration.enablePreviewIcons && PreviewUtility.TryGetPreview(target, out var preview) && preview != null)
-					{
-						GUI.DrawTexture(iconPosition, preview);
+                var iconPosition = new Rect
+                (
+                    contentPosition.x + leftPadding,
+                    contentPosition.y,
+                    IconSize.Small,
+                    IconSize.Small
+                );
 
-						if (target is GameObject gameObject && PrefabUtility.IsAddedGameObjectOverride(gameObject))
-						{
-							GUI.DrawTexture(iconPosition, PeekPlugin.Icons.prefabOverlayAdded?[(int)iconPosition.width]);
-						}
-					}
-				}
+                if (drawIcon)
+                {
+                    if (PeekPlugin.Configuration.enablePreviewIcons && PreviewUtility.TryGetPreview(target, out var preview) && preview != null)
+                    {
+                        GUI.DrawTexture(iconPosition, preview);
 
-				if (isHovered || isSelected)
-				{
-					var toolbar = ObjectToolbarProvider.GetToolbar(targets);
+                        if (target is GameObject gameObject && PrefabUtility.IsAddedGameObjectOverride(gameObject))
+                        {
+                            GUI.DrawTexture(iconPosition, PeekPlugin.Icons.prefabOverlayAdded?[(int)iconPosition.width]);
+                        }
+                    }
+                }
 
-					if (!toolbar.isValid)
-					{
-						return;
-					}
+                if (isHovered || isSelected)
+                {
+                    var toolbar = ObjectToolbarProvider.GetToolbar(targets);
 
-					toolbar.Update();
-					var toolbarControl = toolbarControlProvider.GetControl(toolbar, target);
+                    if (!toolbar.isValid)
+                    {
+                        return;
+                    }
 
-					toolbarControl.DrawMainToolInTreeView(iconPosition, contentPosition);
+                    toolbar.Update();
+                    var toolbarControl = toolbarControlProvider.GetControl(toolbar, target);
 
-					var nameWidth = EditorStyles.label.CalcSize(LudiqGUIUtility.TempContent(label)).x;
+                    toolbarControl.DrawMainToolInTreeView(iconPosition, contentPosition);
 
-					var maxStripWidth = contentPosition.width - nameWidth - IconSize.Small;
-					var desiredStripWidth = toolbarControl.GetTreeViewWidth();
-					var stripWidth = Mathf.Min(desiredStripWidth, maxStripWidth);
+                    var nameWidth = EditorStyles.label.CalcSize(LudiqGUIUtility.TempContent(label)).x;
 
-					float stripX;
+                    var maxStripWidth = contentPosition.width - nameWidth - IconSize.Small;
+                    var desiredStripWidth = toolbarControl.GetTreeViewWidth();
+                    var stripWidth = Mathf.Min(desiredStripWidth, maxStripWidth);
 
-					switch (PeekPlugin.Configuration.treeViewToolbarAlignment)
-					{
-						case TreeViewToolbarAlignment.Left:
-							stripX = iconPosition.xMax + nameWidth;
-							break;
+                    float stripX;
 
-						case TreeViewToolbarAlignment.Right:
-							stripX = contentPosition.xMax - stripWidth;
-							break;
+                    switch (PeekPlugin.Configuration.treeViewToolbarAlignment)
+                    {
+                        case TreeViewToolbarAlignment.Left:
+                            stripX = iconPosition.xMax + nameWidth;
+                            break;
 
-						default: throw PeekPlugin.Configuration.treeViewToolbarAlignment.Unexpected();
-					}
+                        case TreeViewToolbarAlignment.Right:
+                            stripX = contentPosition.xMax - stripWidth;
+                            break;
 
-					var stripPosition = new Rect
-					(
-						stripX,
-						contentPosition.y,
-						stripWidth,
-						contentPosition.height
-					);
+                        default: throw PeekPlugin.Configuration.treeViewToolbarAlignment.Unexpected();
+                    }
 
-					toolbarControl.guiPosition = stripPosition;
-					toolbarControl.DrawInTreeView(contentPosition, isSelected && hasFocus);
-				}
-			}
-			catch (Exception ex)
-			{
-				Debug.LogException(ex);
-			}
-		}
+                    var stripPosition = new Rect
+                    (
+                        stripX,
+                        contentPosition.y,
+                        stripWidth,
+                        contentPosition.height
+                    );
 
-		public static void OnItemGUI(ToolbarControlProvider toolbarControlProvider, UnityObject target, Rect contentPosition, Rect rowPosition, bool hasFocus)
-		{
-			if (target == null)
-			{
-				return;
-			}
+                    toolbarControl.guiPosition = stripPosition;
+                    toolbarControl.DrawInTreeView(contentPosition, isSelected && hasFocus);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+        }
 
-			var isSelected = Selection.objects.Contains(target);
+        public static void OnItemGUI(ToolbarControlProvider toolbarControlProvider, UnityObject target, Rect contentPosition, Rect rowPosition, bool hasFocus)
+        {
+            if (target == null)
+            {
+                return;
+            }
 
-			UnityObject[] targets;
+            var isSelected = Selection.objects.Contains(target);
 
-			if (isSelected)
-			{
-				targets = Selection.objects;
+            UnityObject[] targets;
 
-				if (PeekPlugin.Configuration.enableQuickDeselect &&
-				    e.type == EventType.KeyDown && 
-					e.keyCode == KeyCode.Escape && 
-				    e.modifiers == EventModifiers.None)
-				{
-					Selection.activeObject = null;
-					e.Use();
-				}
-			}
-			else
-			{
-				targets = new[] {target};
-			}
+            if (isSelected)
+            {
+                targets = Selection.objects;
 
-			Draw(true, toolbarControlProvider, target, targets, isSelected, target.name, contentPosition, rowPosition, hasFocus);
-		}
-	}
+                if (PeekPlugin.Configuration.enableQuickDeselect &&
+                    e.type == EventType.KeyDown &&
+                    e.keyCode == KeyCode.Escape &&
+                    e.modifiers == EventModifiers.None)
+                {
+                    Selection.activeObject = null;
+                    e.Use();
+                }
+            }
+            else
+            {
+                targets = new[] { target };
+            }
+
+            Draw(true, toolbarControlProvider, target, targets, isSelected, target.name, contentPosition, rowPosition, hasFocus);
+        }
+    }
 }

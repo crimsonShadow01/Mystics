@@ -2,10 +2,10 @@
 
 namespace Ludiq.PeekCore
 {
-	public interface INotifyChanged
-	{
-		event Action changedInternally;
+    public interface INotifyChanged
+    {
+        event Action changedInternally;
 
-		event Action changedExternally;
-	}
+        event Action changedExternally;
+    }
 }

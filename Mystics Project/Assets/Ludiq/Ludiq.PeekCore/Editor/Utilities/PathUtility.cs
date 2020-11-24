@@ -2,223 +2,222 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public static class PathUtility
-	{
-		public static string TryPathsForFile(string fileName, IEnumerable<string> directories)
-		{
-			return directories.Select(directory => Path.Combine(directory, fileName)).FirstOrDefault(File.Exists);
-		}
+    public static class PathUtility
+    {
+        public static string TryPathsForFile(string fileName, IEnumerable<string> directories)
+        {
+            return directories.Select(directory => Path.Combine(directory, fileName)).FirstOrDefault(File.Exists);
+        }
 
-		public static string TryPathsForFile(string fileName, params string[] directories)
-		{
-			return TryPathsForFile(fileName, (IEnumerable<string>)directories);
-		}
+        public static string TryPathsForFile(string fileName, params string[] directories)
+        {
+            return TryPathsForFile(fileName, (IEnumerable<string>)directories);
+        }
 
-		public static string GetRelativePath(string path, string directory)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
-			Ensure.That(nameof(directory)).IsNotNull(directory);
+        public static string GetRelativePath(string path, string directory)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
+            Ensure.That(nameof(directory)).IsNotNull(directory);
 
-			if (!directory.EndsWith(Path.DirectorySeparatorChar))
-			{
-				directory += Path.DirectorySeparatorChar;
-			}
+            if (!directory.EndsWith(Path.DirectorySeparatorChar))
+            {
+                directory += Path.DirectorySeparatorChar;
+            }
 
-			try
-			{
-				// Optimization: Try a simple substring if possible
+            try
+            {
+                // Optimization: Try a simple substring if possible
 
-				path = path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-				directory = directory.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                path = path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                directory = directory.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
-				if (path.StartsWith(directory, StringComparison.Ordinal))
-				{
-					return path.Substring(directory.Length);
-				}
+                if (path.StartsWith(directory, StringComparison.Ordinal))
+                {
+                    return path.Substring(directory.Length);
+                }
 
-				// Otherwise, use the URI library
+                // Otherwise, use the URI library
 
-				var pathUri = new Uri(path);
-				var folderUri = new Uri(directory);
+                var pathUri = new Uri(path);
+                var folderUri = new Uri(directory);
 
-				return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString()
-					.Replace('/', Path.DirectorySeparatorChar));
-			}
-			catch (UriFormatException ufex)
-			{
-				throw new UriFormatException($"Failed to get relative path.\nPath: {path}\nDirectory:{directory}\n{ufex}");
-			}
-		}
+                return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString()
+                    .Replace('/', Path.DirectorySeparatorChar));
+            }
+            catch (UriFormatException ufex)
+            {
+                throw new UriFormatException($"Failed to get relative path.\nPath: {path}\nDirectory:{directory}\n{ufex}");
+            }
+        }
 
-		public static string FromEditorResources(string path)
-		{
-			return GetRelativePath(path, Paths.editorDefaultResources);
-		}
+        public static string FromEditorResources(string path)
+        {
+            return GetRelativePath(path, Paths.editorDefaultResources);
+        }
 
-		public static string FromAssets(string path)
-		{
-			return GetRelativePath(path, Paths.assets);
-		}
+        public static string FromAssets(string path)
+        {
+            return GetRelativePath(path, Paths.assets);
+        }
 
-		public static string FromProject(string path)
-		{
-			return GetRelativePath(path, Paths.project);
-		}
+        public static string FromProject(string path)
+        {
+            return GetRelativePath(path, Paths.project);
+        }
 
-		public static void CreateParentDirectoryIfNeeded(string path)
-		{
-			CreateDirectoryIfNeeded(Directory.GetParent(path).FullName);
-		}
+        public static void CreateParentDirectoryIfNeeded(string path)
+        {
+            CreateDirectoryIfNeeded(Directory.GetParent(path).FullName);
+        }
 
-		public static void CreateDirectoryIfNeeded(string path)
-		{
-			if (!Directory.Exists(path))
-			{
-				Directory.CreateDirectory(path);
-			}
-		}
+        public static void CreateDirectoryIfNeeded(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
 
-		public static void DeleteDirectoryIfExists(string path)
-		{
-			if (Directory.Exists(path))
-			{
-				Directory.Delete(path, true);
-			}
-			
-			var metaFilePath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileName(path) + ".meta");
+        public static void DeleteDirectoryIfExists(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
 
-			if (File.Exists(metaFilePath))
-			{
-				File.Delete(metaFilePath);
-			}
-		}
+            var metaFilePath = Path.Combine(Path.GetDirectoryName(path), Path.GetFileName(path) + ".meta");
 
-		public static string MakeSafeFilename(string filename, char replace)
-		{
-			foreach (var c in Path.GetInvalidFileNameChars())
-			{
-				filename = filename.Replace(c, replace);
-			}
+            if (File.Exists(metaFilePath))
+            {
+                File.Delete(metaFilePath);
+            }
+        }
 
-			return filename;
-		}
+        public static string MakeSafeFilename(string filename, char replace)
+        {
+            foreach (var c in Path.GetInvalidFileNameChars())
+            {
+                filename = filename.Replace(c, replace);
+            }
 
-		public static string GetRootPath(string rootFileName, string defaultRootFolderPath, bool autoCreate)
-		{
-			// Quick & dirty optimization: looking in all directories is expensive,
-			// so if the user left the plugin in the default directory that we ship
-			// (directly under Plugins), we'll use this path directly.
+            return filename;
+        }
 
-			string rootFilePath;
+        public static string GetRootPath(string rootFileName, string defaultRootFolderPath, bool autoCreate)
+        {
+            // Quick & dirty optimization: looking in all directories is expensive,
+            // so if the user left the plugin in the default directory that we ship
+            // (directly under Plugins), we'll use this path directly.
 
-			var defaultRootFilePath = Path.Combine(defaultRootFolderPath, rootFileName);
+            string rootFilePath;
 
-			if (File.Exists(defaultRootFilePath))
-			{
-				rootFilePath = defaultRootFilePath;
-			}
-			else
-			{
-				var rootFiles = Directory.GetFiles(Paths.assets, rootFileName, SearchOption.AllDirectories);
+            var defaultRootFilePath = Path.Combine(defaultRootFolderPath, rootFileName);
 
-				if (rootFiles.Length > 1)
-				{
-					throw new IOException($"More than one root files found ('{rootFileName}'). Cannot determine root path.\n{rootFiles.ToLineSeparatedString()}");
-				}
-				else if (rootFiles.Length == 0)
-				{
-					if (autoCreate)
-					{
-						try
-						{
-							CreateParentDirectoryIfNeeded(defaultRootFilePath);
-							File.WriteAllBytes(defaultRootFilePath, Empty<byte>.array);
-							rootFilePath = defaultRootFilePath;
-						}
-						catch (Exception ex)
-						{
-							throw new FileNotFoundException($"No root file found ('{rootFileName}') and could not create it:\n" + ex);
-						}
-					}
-					else
-					{
-						throw new FileNotFoundException($"No root file found ('{rootFileName}'). Cannot determine root path.");
-					}
-				}
-				else // if (rootFiles.Length == 1)
-				{
-					rootFilePath = rootFiles[0];
-				}
-			}
+            if (File.Exists(defaultRootFilePath))
+            {
+                rootFilePath = defaultRootFilePath;
+            }
+            else
+            {
+                var rootFiles = Directory.GetFiles(Paths.assets, rootFileName, SearchOption.AllDirectories);
 
-			return Directory.GetParent(rootFilePath).FullName;
-		}
+                if (rootFiles.Length > 1)
+                {
+                    throw new IOException($"More than one root files found ('{rootFileName}'). Cannot determine root path.\n{rootFiles.ToLineSeparatedString()}");
+                }
+                else if (rootFiles.Length == 0)
+                {
+                    if (autoCreate)
+                    {
+                        try
+                        {
+                            CreateParentDirectoryIfNeeded(defaultRootFilePath);
+                            File.WriteAllBytes(defaultRootFilePath, Empty<byte>.array);
+                            rootFilePath = defaultRootFilePath;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new FileNotFoundException($"No root file found ('{rootFileName}') and could not create it:\n" + ex);
+                        }
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException($"No root file found ('{rootFileName}'). Cannot determine root path.");
+                    }
+                }
+                else // if (rootFiles.Length == 1)
+                {
+                    rootFilePath = rootFiles[0];
+                }
+            }
 
-		public static string NaiveNormalize(string path)
-		{
-			if (path == null)
-			{
-				return null;
-			}
+            return Directory.GetParent(rootFilePath).FullName;
+        }
 
-			return path
-				.Replace(Path.DirectorySeparatorChar, NaiveSeparatorChar)
-				.Replace(Path.AltDirectorySeparatorChar, NaiveSeparatorChar)
-				.TrimEnd(NaiveSeparatorChar);
-		}
+        public static string NaiveNormalize(string path)
+        {
+            if (path == null)
+            {
+                return null;
+            }
 
-		public static bool NaiveCompare(string a, string b)
-		{
-			return a == b || NaiveNormalize(a).ToUpperInvariant() == NaiveNormalize(b).ToUpperInvariant();
-		}
+            return path
+                .Replace(Path.DirectorySeparatorChar, NaiveSeparatorChar)
+                .Replace(Path.AltDirectorySeparatorChar, NaiveSeparatorChar)
+                .TrimEnd(NaiveSeparatorChar);
+        }
 
-		public static string NaiveParent(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
+        public static bool NaiveCompare(string a, string b)
+        {
+            return a == b || NaiveNormalize(a).ToUpperInvariant() == NaiveNormalize(b).ToUpperInvariant();
+        }
 
-			path = NaiveNormalize(path);
+        public static string NaiveParent(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-			if (!path.Contains(NaiveSeparatorChar))
-			{
-				return string.Empty;
-			}
+            path = NaiveNormalize(path);
 
-			return path.PartBeforeLast(NaiveSeparatorChar);
-		}
+            if (!path.Contains(NaiveSeparatorChar))
+            {
+                return string.Empty;
+            }
 
-		public static bool NaiveContains(string parentPath, string childPath, bool recursive = false)
-		{
-			Ensure.That(nameof(parentPath)).IsNotNull(parentPath);
-			Ensure.That(nameof(childPath)).IsNotNull(childPath);
+            return path.PartBeforeLast(NaiveSeparatorChar);
+        }
 
-			parentPath = NaiveNormalize(parentPath);
-			childPath = NaiveNormalize(childPath);
-			var childParentPath = NaiveParent(childPath);
+        public static bool NaiveContains(string parentPath, string childPath, bool recursive = false)
+        {
+            Ensure.That(nameof(parentPath)).IsNotNull(parentPath);
+            Ensure.That(nameof(childPath)).IsNotNull(childPath);
 
-			if (parentPath == childParentPath)
-			{
-				return true;
-			}
+            parentPath = NaiveNormalize(parentPath);
+            childPath = NaiveNormalize(childPath);
+            var childParentPath = NaiveParent(childPath);
 
-			if (recursive && childParentPath.StartsWith(parentPath + NaiveSeparatorChar))
-			{
-				return true;
-			}
-			
-			return false;
-		}
+            if (parentPath == childParentPath)
+            {
+                return true;
+            }
 
-		public const char NaiveSeparatorChar = '/';
+            if (recursive && childParentPath.StartsWith(parentPath + NaiveSeparatorChar))
+            {
+                return true;
+            }
 
-		public static bool IsInFirstPassFolder(string path)
-		{
-			path = path.Replace('\\', '/');
+            return false;
+        }
 
-			return path.Contains("/Plugins/") || path.Contains("/Standard Assets/") || path.Contains("/Pro Standard Assets/");
-		}
-	}
+        public const char NaiveSeparatorChar = '/';
+
+        public static bool IsInFirstPassFolder(string path)
+        {
+            path = path.Replace('\\', '/');
+
+            return path.Contains("/Plugins/") || path.Contains("/Standard Assets/") || path.Contains("/Pro Standard Assets/");
+        }
+    }
 }

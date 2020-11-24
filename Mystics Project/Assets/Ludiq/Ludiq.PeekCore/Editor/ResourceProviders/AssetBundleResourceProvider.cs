@@ -5,215 +5,215 @@ using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.PeekCore
 {
-	public sealed class AssetBundleResourceProvider : IResourceProvider
-	{
-		public const char DirectorySeparatorChar = '/';
+    public sealed class AssetBundleResourceProvider : IResourceProvider
+    {
+        public const char DirectorySeparatorChar = '/';
 
-		public AssetBundle assetBundle { get; }
+        public AssetBundle assetBundle { get; }
 
-		public AssetBundleResourceProvider(AssetBundle assetBundle)
-		{
-			this.assetBundle = assetBundle;
+        public AssetBundleResourceProvider(AssetBundle assetBundle)
+        {
+            this.assetBundle = assetBundle;
 
-			Analyze();
-		}
-
-
-
-		#region Filesystem
-
-		public IEnumerable<string> GetAllFiles()
-		{
-			return assetBundle.GetAllAssetNames();
-		}
-
-		public IEnumerable<string> GetFiles(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
-
-			path = NormalizePath(path);
-
-			var directory = GetDirectory(path, true);
-
-			foreach (var file in directory.files)
-			{
-				yield return $"{directory.path}{DirectorySeparatorChar}{file}";
-			}
-		}
-
-		public IEnumerable<string> GetDirectories(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
-
-			path = NormalizePath(path);
-
-			var directory = GetDirectory(path, true);
-
-			foreach (var subDirectory in directory.subDirectories)
-			{
-				yield return subDirectory.Value.path;
-			}
-		}
-
-		public bool FileExists(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
-
-			var directoryPath = NormalizePath(Path.GetDirectoryName(path));
-			var fileName = NormalizePath(Path.GetFileName(path));
-
-			var directory = GetDirectory(directoryPath, false);
-
-			return directory != null && directory.files.Contains(fileName);
-		}
-
-		public bool DirectoryExists(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
-
-			path = NormalizePath(path);
-
-			return GetDirectory(path, false) != null;
-		}
-
-		public string NormalizePath(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
-
-			return path.ToLower()
-			           .Replace(Path.DirectorySeparatorChar, DirectorySeparatorChar)
-			           .Replace(Path.AltDirectorySeparatorChar, DirectorySeparatorChar);
-		}
-
-		public string DebugPath(string path)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
-
-			path = NormalizePath(path);
-
-			return $"{assetBundle.name}::{path}";
-		}
-
-		#endregion
+            Analyze();
+        }
 
 
 
-		#region Loading
+        #region Filesystem
 
-		public T LoadAsset<T>(string path) where T : UnityObject
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
+        public IEnumerable<string> GetAllFiles()
+        {
+            return assetBundle.GetAllAssetNames();
+        }
 
-			path = NormalizePath(path);
+        public IEnumerable<string> GetFiles(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-			return assetBundle.LoadAsset<T>(path);
-		}
+            path = NormalizePath(path);
 
-		public Texture2D LoadTexture(string path, CreateTextureOptions options)
-		{
-			return LoadAsset<Texture2D>(path);
-		}
+            var directory = GetDirectory(path, true);
 
-		#endregion
+            foreach (var file in directory.files)
+            {
+                yield return $"{directory.path}{DirectorySeparatorChar}{file}";
+            }
+        }
+
+        public IEnumerable<string> GetDirectories(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
+
+            path = NormalizePath(path);
+
+            var directory = GetDirectory(path, true);
+
+            foreach (var subDirectory in directory.subDirectories)
+            {
+                yield return subDirectory.Value.path;
+            }
+        }
+
+        public bool FileExists(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
+
+            var directoryPath = NormalizePath(Path.GetDirectoryName(path));
+            var fileName = NormalizePath(Path.GetFileName(path));
+
+            var directory = GetDirectory(directoryPath, false);
+
+            return directory != null && directory.files.Contains(fileName);
+        }
+
+        public bool DirectoryExists(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
+
+            path = NormalizePath(path);
+
+            return GetDirectory(path, false) != null;
+        }
+
+        public string NormalizePath(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
+
+            return path.ToLower()
+                       .Replace(Path.DirectorySeparatorChar, DirectorySeparatorChar)
+                       .Replace(Path.AltDirectorySeparatorChar, DirectorySeparatorChar);
+        }
+
+        public string DebugPath(string path)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
+
+            path = NormalizePath(path);
+
+            return $"{assetBundle.name}::{path}";
+        }
+
+        #endregion
 
 
 
-		#region Internals
+        #region Loading
 
-		private void Analyze()
-		{
-			foreach (var path in assetBundle.GetAllAssetNames())
-			{
-				var directory = root;
+        public T LoadAsset<T>(string path) where T : UnityObject
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-				var parts = path.Split(DirectorySeparatorChar);
+            path = NormalizePath(path);
 
-				for (var i = 0; i < parts.Length; i++)
-				{
-					var isFile = i == parts.Length - 1;
-					var isDirectory = !isFile;
-					var part = parts[i];
+            return assetBundle.LoadAsset<T>(path);
+        }
 
-					if (isDirectory)
-					{
-						Directory subDirectory;
+        public Texture2D LoadTexture(string path, CreateTextureOptions options)
+        {
+            return LoadAsset<Texture2D>(path);
+        }
 
-						if (!directory.subDirectories.TryGetValue(part, out subDirectory))
-						{
-							subDirectory = new Directory(directory, part);
-							directory.subDirectories.Add(part, subDirectory);
-						}
+        #endregion
 
-						directory = subDirectory;
-					}
-					else if (isFile)
-					{
-						directory.files.Add(part);
-					}
-				}
-			}
-		}
 
-		private readonly Directory root = new Directory(null, null);
 
-		private Directory GetDirectory(string path, bool throwOnFail)
-		{
-			Ensure.That(nameof(path)).IsNotNull(path);
+        #region Internals
 
-			path = NormalizePath(path);
+        private void Analyze()
+        {
+            foreach (var path in assetBundle.GetAllAssetNames())
+            {
+                var directory = root;
 
-			var parts = path.Split(DirectorySeparatorChar);
+                var parts = path.Split(DirectorySeparatorChar);
 
-			var directory = root;
+                for (var i = 0; i < parts.Length; i++)
+                {
+                    var isFile = i == parts.Length - 1;
+                    var isDirectory = !isFile;
+                    var part = parts[i];
 
-			foreach (var part in parts)
-			{
-				Directory subDirectory;
+                    if (isDirectory)
+                    {
+                        Directory subDirectory;
 
-				if (!directory.subDirectories.TryGetValue(part, out subDirectory))
-				{
-					if (throwOnFail)
-					{
-						throw new FileNotFoundException("Asset bundle directory not found.", DebugPath(path));
-					}
+                        if (!directory.subDirectories.TryGetValue(part, out subDirectory))
+                        {
+                            subDirectory = new Directory(directory, part);
+                            directory.subDirectories.Add(part, subDirectory);
+                        }
 
-					return null;
-				}
+                        directory = subDirectory;
+                    }
+                    else if (isFile)
+                    {
+                        directory.files.Add(part);
+                    }
+                }
+            }
+        }
 
-				directory = subDirectory;
-			}
+        private readonly Directory root = new Directory(null, null);
 
-			return directory;
-		}
+        private Directory GetDirectory(string path, bool throwOnFail)
+        {
+            Ensure.That(nameof(path)).IsNotNull(path);
 
-		private class Directory
-		{
-			public Directory parent { get; }
+            path = NormalizePath(path);
 
-			public string name { get; }
+            var parts = path.Split(DirectorySeparatorChar);
 
-			public string path { get; }
+            var directory = root;
 
-			public readonly Dictionary<string, Directory> subDirectories = new Dictionary<string, Directory>();
+            foreach (var part in parts)
+            {
+                Directory subDirectory;
 
-			public readonly List<string> files = new List<string>();
+                if (!directory.subDirectories.TryGetValue(part, out subDirectory))
+                {
+                    if (throwOnFail)
+                    {
+                        throw new FileNotFoundException("Asset bundle directory not found.", DebugPath(path));
+                    }
 
-			public Directory(Directory parent, string name)
-			{
-				this.parent = parent;
-				this.name = name;
+                    return null;
+                }
 
-				if (string.IsNullOrEmpty(parent?.path))
-				{
-					path = name;
-				}
-				else
-				{
-					path = $"{parent.path}{DirectorySeparatorChar}{name}";
-				}
-			}
-		}
+                directory = subDirectory;
+            }
 
-		#endregion
-	}
+            return directory;
+        }
+
+        private class Directory
+        {
+            public Directory parent { get; }
+
+            public string name { get; }
+
+            public string path { get; }
+
+            public readonly Dictionary<string, Directory> subDirectories = new Dictionary<string, Directory>();
+
+            public readonly List<string> files = new List<string>();
+
+            public Directory(Directory parent, string name)
+            {
+                this.parent = parent;
+                this.name = name;
+
+                if (string.IsNullOrEmpty(parent?.path))
+                {
+                    path = name;
+                }
+                else
+                {
+                    path = $"{parent.path}{DirectorySeparatorChar}{name}";
+                }
+            }
+        }
+
+        #endregion
+    }
 }

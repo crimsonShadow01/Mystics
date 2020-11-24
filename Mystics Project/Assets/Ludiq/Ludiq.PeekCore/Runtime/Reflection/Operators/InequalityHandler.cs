@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public class InequalityHandler : BinaryOperatorHandler
-	{
-		public InequalityHandler() : base(OperatorCategory.Comparison, BinaryOperator.Inequality, "Inequality", "Not Equal", "!=", "\u2260", "op_Inequality")
-		{
+    public class InequalityHandler : BinaryOperatorHandler
+    {
+        public InequalityHandler() : base(OperatorCategory.Comparison, BinaryOperator.Inequality, "Inequality", "Not Equal", "!=", "\u2260", "op_Inequality")
+        {
             Handle<bool, bool>((a, b) => a != b, typeof(bool));
 
             Handle<byte, byte>((a, b) => a != b, typeof(bool));
@@ -140,28 +140,28 @@ namespace Ludiq.PeekCore
             Handle<double, float>((a, b) => a != b, typeof(bool));
             //Handle<double, decimal>((a, b) => a != b, typeof(bool));
             Handle<double, double>((a, b) => a != b, typeof(bool));
-		}
+        }
 
-		public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine whether they are not equal.";
+        public override string GetDescriptionFormat(Type leftType, Type rightType) => "Compares {0} to determine whether they are not equal.";
 
-		protected override object BothNullHandling()
-		{
-			return false;
-		}
+        protected override object BothNullHandling()
+        {
+            return false;
+        }
 
-		protected override object SingleNullHandling()
-		{
-			return false;
-		}
+        protected override object SingleNullHandling()
+        {
+            return false;
+        }
 
-		public override object Operate(object leftOperand, object rightOperand)
-		{
-			return !Equals(leftOperand, rightOperand);
-		}
+        public override object Operate(object leftOperand, object rightOperand)
+        {
+            return !Equals(leftOperand, rightOperand);
+        }
 
-		protected override Type GetCustomHandlingType(Type leftType, Type rightType)
-		{
-			return typeof(bool);
-		}
-	}
+        protected override Type GetCustomHandlingType(Type leftType, Type rightType)
+        {
+            return typeof(bool);
+        }
+    }
 }

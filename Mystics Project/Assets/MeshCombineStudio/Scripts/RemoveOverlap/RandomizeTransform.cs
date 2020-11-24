@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MeshCombineStudio
 {
@@ -14,7 +12,7 @@ namespace MeshCombineStudio
             transform.localScale *= Random.Range(scaleRange.x, scaleRange.y);
             transform.rotation = Random.rotation;
 
-            enabled = false;    
+            enabled = false;
         }
     }
 }

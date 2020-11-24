@@ -1,7 +1,7 @@
 ﻿// Cristian Pop - https://boxophobic.com/
 
-using UnityEngine;
 using Boxophobic.StyledGUI;
+using UnityEngine;
 
 namespace TheVegetationEngine
 {
@@ -18,7 +18,7 @@ namespace TheVegetationEngine
         public ToggleMode windMode = ToggleMode.On;
 
         [Space(10)]
-        [StyledRangeOptions(0,1, "Wind Power", new string[] { "Calm", "Windy", "Strong" })]
+        [StyledRangeOptions(0, 1, "Wind Power", new string[] { "Calm", "Windy", "Strong" })]
         public float windPower = 0.5f;
 
         [Space(10)]
@@ -96,7 +96,7 @@ namespace TheVegetationEngine
             }
 
             Shader.SetGlobalTexture("TVE_NoiseTex", noiseTexture);
-            Shader.SetGlobalVector("TVE_NoiseSpeed_Vegetation", new Vector2 (noiseSpeed * noiseDirectionX * 0.1f, noiseSpeed * noiseDirectionZ * 0.1f));
+            Shader.SetGlobalVector("TVE_NoiseSpeed_Vegetation", new Vector2(noiseSpeed * noiseDirectionX * 0.1f, noiseSpeed * noiseDirectionZ * 0.1f));
             Shader.SetGlobalVector("TVE_NoiseSpeed_Grass", new Vector2(noiseSpeed * 2 * noiseDirectionX * 0.1f, noiseSpeed * 2 * noiseDirectionZ * 0.1f));
             Shader.SetGlobalFloat("TVE_NoiseSize_Vegetation", 1.0f / noiseSize);
             Shader.SetGlobalFloat("TVE_NoiseSize_Grass", 1.0f / (noiseSize / 2));

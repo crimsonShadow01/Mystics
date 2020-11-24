@@ -1,96 +1,96 @@
 ﻿using Ludiq.PeekCore;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
 using UEditor = UnityEditor.Editor;
+using UnityObject = UnityEngine.Object;
 
 [assembly: RegisterFuzzyOption(typeof(UnityObject), typeof(UnityObjectOption))]
 
 namespace Ludiq.PeekCore
 {
-	public class UnityObjectOption : FuzzyOption<UnityObject>
-	{
-		private string typeLabel;
-		private EditorTexture typeIcon;
-		private bool? isSceneBound;
+    public class UnityObjectOption : FuzzyOption<UnityObject>
+    {
+        private string typeLabel;
+        private EditorTexture typeIcon;
+        private bool? isSceneBound;
 
-		private static UnityObject editorTarget;
-		private static UEditor editor;
-		
-		public UnityObjectOption(string label, string typeLabel, EditorTexture typeIcon, UnityObject uo, bool? isSceneBound, FuzzyOptionMode mode) : base(mode)
-		{
-			this.label = label;
-			this.typeLabel = typeLabel;
-			this.typeIcon = typeIcon;
-			this.isSceneBound = isSceneBound;
+        private static UnityObject editorTarget;
+        private static UEditor editor;
 
-			value = uo;
+        public UnityObjectOption(string label, string typeLabel, EditorTexture typeIcon, UnityObject uo, bool? isSceneBound, FuzzyOptionMode mode) : base(mode)
+        {
+            this.label = label;
+            this.typeLabel = typeLabel;
+            this.typeIcon = typeIcon;
+            this.isSceneBound = isSceneBound;
 
-			if (!ReferenceEquals(uo, null))
-			{
-				getIcon = uo.Icon;
-			}
-			else
-			{
-				icon = typeIcon;
-			}
-		}
+            value = uo;
 
-		public override bool hasFooter => value != null && value.GetComponentInChildren<Renderer>() != null;
+            if (!ReferenceEquals(uo, null))
+            {
+                getIcon = uo.Icon;
+            }
+            else
+            {
+                icon = typeIcon;
+            }
+        }
 
-		public override float GetFooterHeight(FuzzyOptionNode node, float width)
-		{
-			return 128;
-		}
+        public override bool hasFooter => value != null && value.GetComponentInChildren<Renderer>() != null;
 
-		public override void OnFooterGUI(FuzzyOptionNode node, Rect position)
-		{
-			if (editorTarget != value)
-			{
-				editorTarget = value;
-				UEditor.CreateCachedEditor(editorTarget, null, ref editor);
-			}
+        public override float GetFooterHeight(FuzzyOptionNode node, float width)
+        {
+            return 128;
+        }
 
-			if (editor != null)
-			{
-				editor.DrawPreview(position);
-			}
-		}
+        public override void OnFooterGUI(FuzzyOptionNode node, Rect position)
+        {
+            if (editorTarget != value)
+            {
+                editorTarget = value;
+                UEditor.CreateCachedEditor(editorTarget, null, ref editor);
+            }
 
-		public override string SearchResultLabel(string query)
-		{
-			var label = base.SearchResultLabel(query);
+            if (editor != null)
+            {
+                editor.DrawPreview(position);
+            }
+        }
 
-			string sourceDescriptor = null;
+        public override string SearchResultLabel(string query)
+        {
+            var label = base.SearchResultLabel(query);
 
-			if (isSceneBound.HasValue)
-			{
-				if (isSceneBound == true)
-				{
-					sourceDescriptor = "Scene";
-				}
-				else
-				{
-					if (value is Component)
-					{
-						sourceDescriptor = "Prefab";
-					}
-					else if (value is GameObject)
-					{
-						sourceDescriptor = "Prefab";
-					}
-					else
-					{
-						sourceDescriptor = "Asset";
-					}
-				}
-			}
+            string sourceDescriptor = null;
 
-			if (sourceDescriptor != null)
-			{
-				label += $" <color=#{ColorPalette.unityForegroundDim.ToHexString()}>({sourceDescriptor})</color>";
-			}
+            if (isSceneBound.HasValue)
+            {
+                if (isSceneBound == true)
+                {
+                    sourceDescriptor = "Scene";
+                }
+                else
+                {
+                    if (value is Component)
+                    {
+                        sourceDescriptor = "Prefab";
+                    }
+                    else if (value is GameObject)
+                    {
+                        sourceDescriptor = "Prefab";
+                    }
+                    else
+                    {
+                        sourceDescriptor = "Asset";
+                    }
+                }
+            }
 
-			return label;
-		}
-	}
+            if (sourceDescriptor != null)
+            {
+                label += $" <color=#{ColorPalette.unityForegroundDim.ToHexString()}>({sourceDescriptor})</color>";
+            }
+
+            return label;
+        }
+    }
 }

@@ -5,79 +5,79 @@ using UnityEditor;
 
 namespace Ludiq.PeekCore
 {
-	public static class DefineUtility
-	{
-		private static IEnumerable<BuildTargetGroup> buildTargetGroups
-		{
-			get
-			{
-				return Enum.GetValues(typeof(BuildTargetGroup)).Cast<BuildTargetGroup>().Where
-				(group =>
-					 group != BuildTargetGroup.Unknown &&
-					 !typeof(BuildTargetGroup).GetField(group.ToString()).HasAttribute<ObsoleteAttribute>()
-				);
-			}
-		}
+    public static class DefineUtility
+    {
+        private static IEnumerable<BuildTargetGroup> buildTargetGroups
+        {
+            get
+            {
+                return Enum.GetValues(typeof(BuildTargetGroup)).Cast<BuildTargetGroup>().Where
+                (group =>
+                     group != BuildTargetGroup.Unknown &&
+                     !typeof(BuildTargetGroup).GetField(group.ToString()).HasAttribute<ObsoleteAttribute>()
+                );
+            }
+        }
 
-		public static bool ToggleDefine(string define, bool enable)
-		{
-			if (enable)
-			{
-				return AddDefine(define);
-			}
-			else
-			{
-				return RemoveDefine(define);
-			}
-		}
+        public static bool ToggleDefine(string define, bool enable)
+        {
+            if (enable)
+            {
+                return AddDefine(define);
+            }
+            else
+            {
+                return RemoveDefine(define);
+            }
+        }
 
-		public static bool AddDefine(string define)
-		{
-			var added = false;
+        public static bool AddDefine(string define)
+        {
+            var added = false;
 
-			foreach (var group in buildTargetGroups)
-			{
-				var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group).Split(';').Select(d => d.Trim()).ToList();
+            foreach (var group in buildTargetGroups)
+            {
+                var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group).Split(';').Select(d => d.Trim()).ToList();
 
-				if (!defines.Contains(define))
-				{
-					defines.Add(define);
-					PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Join(";", defines.ToArray()));
-					added = true;
-				}
-			}
+                if (!defines.Contains(define))
+                {
+                    defines.Add(define);
+                    PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Join(";", defines.ToArray()));
+                    added = true;
+                }
+            }
 
-			return added;
-		}
+            return added;
+        }
 
-		public static bool RemoveDefine(string define)
-		{
-			var removed = false;
+        public static bool RemoveDefine(string define)
+        {
+            var removed = false;
 
-			foreach (var group in buildTargetGroups)
-			{
-				var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group).Split(';').Select(d => d.Trim()).ToList();
+            foreach (var group in buildTargetGroups)
+            {
+                var defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(group).Split(';').Select(d => d.Trim()).ToList();
 
-				if (defines.Contains(define))
-				{
-					defines.Remove(define);
-					PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Join(";", defines.ToArray()));
-					removed = true;
-				}
-			}
+                if (defines.Contains(define))
+                {
+                    defines.Remove(define);
+                    PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Join(";", defines.ToArray()));
+                    removed = true;
+                }
+            }
 
-			return removed;
-		}
+            return removed;
+        }
 
 #if LUDIQ_DEVELOPER
 		[MenuItem("Tools/Peek/Ludiq/Developer/Delete All Script Defines", priority = LudiqProduct.InternalToolsMenuPriority + 404)]
 #endif
-		public static void ClearAllDefines()
-		{
-			foreach (var group in buildTargetGroups)
-			{
-				PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Empty);
-			}
-		}
-	}
+        public static void ClearAllDefines()
+        {
+            foreach (var group in buildTargetGroups)
+            {
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(group, string.Empty);
+            }
+        }
+    }
 }

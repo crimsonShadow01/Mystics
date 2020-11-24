@@ -1,16 +1,14 @@
 ﻿using Ludiq.Peek;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
 
 [assembly: RegisterEditorTool(typeof(Material), typeof(MaterialEditorTool))]
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public sealed class MaterialEditorTool : EditorTool<Material>
-	{
-		public MaterialEditorTool(Material[] targets) : base(targets) { }
-	}
+    public sealed class MaterialEditorTool : EditorTool<Material>
+    {
+        public MaterialEditorTool(Material[] targets) : base(targets) { }
+    }
 }

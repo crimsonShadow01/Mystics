@@ -40,7 +40,8 @@ namespace PlaceholderSoftware.WetStuff.Windows
 
         protected virtual void CreateStyles()
         {
-            LabelFieldStyle = new GUIStyle(GUI.skin.label) {
+            LabelFieldStyle = new GUIStyle(GUI.skin.label)
+            {
                 wordWrap = true,
                 normal = {
                     textColor = Color.white

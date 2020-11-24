@@ -27,7 +27,7 @@ using System.Runtime.CompilerServices;
 namespace UnityMeshSimplifier
 {
 
-    
+
     public class Triangle : IEquatable<Triangle>
     {
         #region Fields
@@ -168,7 +168,7 @@ namespace UnityMeshSimplifier
         }
 
         public override int GetHashCode()
-        {    
+        {
             return base.GetHashCode();
             //return index;
         }
@@ -196,5 +196,5 @@ namespace UnityMeshSimplifier
 
         #endregion
     }
-    
+
 }

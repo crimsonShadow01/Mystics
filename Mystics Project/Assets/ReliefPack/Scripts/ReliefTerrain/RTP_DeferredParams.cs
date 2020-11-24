@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering;
-using System.Collections;
 using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,10 +9,11 @@ using UnityEditor;
 [RequireComponent(typeof(Camera))]
 [DisallowMultipleComponent]
 [ExecuteInEditMode]
-public class RTP_DeferredParams : MonoBehaviour {
+public class RTP_DeferredParams : MonoBehaviour
+{
     private Camera mycam;
-	private CommandBuffer combufPreLight;
-	private CommandBuffer combufPostLight;
+    private CommandBuffer combufPreLight;
+    private CommandBuffer combufPostLight;
 
     public Material CopyPropsMat; // to make sure we have shader exported for build
 
@@ -92,14 +92,16 @@ public class RTP_DeferredParams : MonoBehaviour {
             isSceneCam = (SceneView.lastActiveSceneView && cam == SceneView.lastActiveSceneView.camera);
         }
 #endif
-        if (cam==mycam || isSceneCam)
+        if (cam == mycam || isSceneCam)
         {
             RefreshComBufs(cam, isSceneCam);
         }
     }
 
-	public void RefreshComBufs(Camera cam, bool isSceneCam) {
-		if (cam && combufPreLight!=null && combufPostLight!=null) {
+    public void RefreshComBufs(Camera cam, bool isSceneCam)
+    {
+        if (cam && combufPreLight != null && combufPostLight != null)
+        {
             CommandBuffer[] combufsPreLight = cam.GetCommandBuffers(CameraEvent.BeforeReflections);
             bool found = false;
             foreach (CommandBuffer cbuf in combufsPreLight)
@@ -122,12 +124,14 @@ public class RTP_DeferredParams : MonoBehaviour {
                     sceneCamsWithBuffer.Add(cam);
                 }
             }
-		}
-	}
+        }
+    }
 
-	public void Initialize() {
-		if (combufPreLight == null) {
-			int propsBufferID = Shader.PropertyToID("_UBERPropsBuffer");
+    public void Initialize()
+    {
+        if (combufPreLight == null)
+        {
+            int propsBufferID = Shader.PropertyToID("_UBERPropsBuffer");
 
             // prepare material
             if (CopyPropsMat == null)
@@ -142,14 +146,14 @@ public class RTP_DeferredParams : MonoBehaviour {
 
             // take a copy of emission buffer.a where UBER stores its props (translucency, self-shadowing, wetness)
             combufPreLight = new CommandBuffer();
-			combufPreLight.name="UBERPropsPrelight";
+            combufPreLight.name = "UBERPropsPrelight";
             combufPreLight.GetTemporaryRT(propsBufferID, -1, -1, 0, FilterMode.Point, RenderTextureFormat.RHalf);
             combufPreLight.Blit(BuiltinRenderTextureType.CameraTarget, propsBufferID, CopyPropsMat);
-            
-			// release temp buffer
-			combufPostLight = new CommandBuffer();
-			combufPostLight.name="UBERPropsPostlight";
-            combufPostLight.ReleaseTemporaryRT (propsBufferID);
-		}
+
+            // release temp buffer
+            combufPostLight = new CommandBuffer();
+            combufPostLight.name = "UBERPropsPostlight";
+            combufPostLight.ReleaseTemporaryRT(propsBufferID);
+        }
     }
 }

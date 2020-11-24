@@ -1,40 +1,40 @@
-﻿using UnityEngine;
+﻿using System;
 using UnityEditor;
-using System;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
-	public class Products
-	{
+    public class Products
+    {
         public Texture mcsIcon;
         public Texture mcsCavesIcon;
         public Texture deIcon;
         public Texture tcIcon;
         public Texture wcIcon;
-        
+
         public bool mcsInProject, mcsCavesInProject, deInProject, tcInProject, wcInProject;
-        
+
         float scrollBarX;
 
         public Products()
         {
-			mcsInProject = (GetType("MeshCombineStudio.MeshCombiner") != null);
-			mcsCavesInProject = (GetType("MeshCombineStudio.RemoveOverlappingTris") != null);
-			deInProject = (GetType("DebuggingEssentials.RuntimeInspector") != null);
-			tcInProject = (GetType("TerrainComposer2.TC_Generate") != null);
-			wcInProject = (GetType("WorldComposer.terrain_area_class") != null);
-		}
+            mcsInProject = (GetType("MeshCombineStudio.MeshCombiner") != null);
+            mcsCavesInProject = (GetType("MeshCombineStudio.RemoveOverlappingTris") != null);
+            deInProject = (GetType("DebuggingEssentials.RuntimeInspector") != null);
+            tcInProject = (GetType("TerrainComposer2.TC_Generate") != null);
+            wcInProject = (GetType("WorldComposer.terrain_area_class") != null);
+        }
 
-		public static Type GetType(string typeName)
-		{
-			Type type = Type.GetType(typeName + ", Assembly-CSharp");
-			if (type != null) return type;
+        public static Type GetType(string typeName)
+        {
+            Type type = Type.GetType(typeName + ", Assembly-CSharp");
+            if (type != null) return type;
 
-			type = Type.GetType(typeName + ", Assembly-CSharp-firstpass");
-			return type;
-		}
+            type = Type.GetType(typeName + ", Assembly-CSharp-firstpass");
+            return type;
+        }
 
-		public void Draw(MonoBehaviour monoBehaviour)
+        public void Draw(MonoBehaviour monoBehaviour)
         {
             if (mcsCavesIcon == null || deIcon == null)
             {
@@ -43,7 +43,7 @@ namespace TerrainComposer2
                 mcsCavesIcon = AssetDatabase.LoadAssetAtPath(path + "MCSCavesIcon.jpg", typeof(Texture)) as Texture;
                 deIcon = AssetDatabase.LoadAssetAtPath(path + "deIcon.jpg", typeof(Texture)) as Texture;
                 tcIcon = AssetDatabase.LoadAssetAtPath(path + "tcIcon.jpg", typeof(Texture)) as Texture;
-                wcIcon = AssetDatabase.LoadAssetAtPath(path + "wcIcon.jpg", typeof(Texture)) as Texture; 
+                wcIcon = AssetDatabase.LoadAssetAtPath(path + "wcIcon.jpg", typeof(Texture)) as Texture;
             }
 
             GUILayout.Space(3);

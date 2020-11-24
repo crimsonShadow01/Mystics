@@ -1,7 +1,7 @@
+using PlaceholderSoftware.WetStuff.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PlaceholderSoftware.WetStuff.Components;
 using UnityEditor;
 using UnityEngine;
 
@@ -51,14 +51,14 @@ namespace PlaceholderSoftware.WetStuff
                     {
                         EditorGUILayout.PropertyField(modeProperty);
 
-                        if ((DecalLayerChannel.DecalChannelMode) modeProperty.enumValueIndex == DecalLayerChannel.DecalChannelMode.Disabled)
+                        if ((DecalLayerChannel.DecalChannelMode)modeProperty.enumValueIndex == DecalLayerChannel.DecalChannelMode.Disabled)
                             return;
                     }
 
                     using (new EditorGUI.IndentLevelScope())
                     {
                         // Show advanced settings if we're explicitly in advanced mode (or we can't tell what the mode is)
-                        var mode = modeProperty != null ? (DecalLayerChannel.DecalChannelMode) modeProperty.enumValueIndex : DecalLayerChannel.DecalChannelMode.AdvancedRangeRemap;
+                        var mode = modeProperty != null ? (DecalLayerChannel.DecalChannelMode)modeProperty.enumValueIndex : DecalLayerChannel.DecalChannelMode.AdvancedRangeRemap;
 
                         var inThreshold = property.FindPropertyRelative(_inputThresholdProperty);
                         var inSoftness = property.FindPropertyRelative(_inputSoftnessProperty);
@@ -104,7 +104,7 @@ namespace PlaceholderSoftware.WetStuff
                         else
                         {
                             // Show a foldout section for the preview
-                            if (modeProperty == null || (DecalLayerChannel.DecalChannelMode) modeProperty.enumValueIndex != DecalLayerChannel.DecalChannelMode.Disabled)
+                            if (modeProperty == null || (DecalLayerChannel.DecalChannelMode)modeProperty.enumValueIndex != DecalLayerChannel.DecalChannelMode.Disabled)
                                 _showPreview = EditorGUILayout.Foldout(_showPreview, "Levels Visualizer");
                             else
                                 _showPreview = false;
@@ -126,7 +126,7 @@ namespace PlaceholderSoftware.WetStuff
 
                                 var iRange = DecalLayerChannel.EvaluateInputRange(mode, inThreshold.floatValue, inSoftness.floatValue);
                                 var oRange = DecalLayerChannel.EvaluateOutputRange(mode, outRange.vector2Value);
-                                DrawLayerPreview(area, _renderUtility, LayerPreview, (Texture2D) mask.objectReferenceValue, iRange, oRange, _weights);
+                                DrawLayerPreview(area, _renderUtility, LayerPreview, (Texture2D)mask.objectReferenceValue, iRange, oRange, _weights);
                             }
                         }
                     }
@@ -173,7 +173,7 @@ namespace PlaceholderSoftware.WetStuff
             internal CopyPasteData.Channel Copy([NotNull] SerializedProperty property)
             {
                 var modeProp = property.FindPropertyRelative(_channelModeProperty);
-                var mode = modeProp == null ? null : (DecalLayerChannel.DecalChannelMode?) modeProp.enumValueIndex;
+                var mode = modeProp == null ? null : (DecalLayerChannel.DecalChannelMode?)modeProp.enumValueIndex;
 
                 var zeroes = mode.HasValue && mode.Value == DecalLayerChannel.DecalChannelMode.Disabled;
 
@@ -189,7 +189,7 @@ namespace PlaceholderSoftware.WetStuff
             {
                 var modeProp = property.FindPropertyRelative(_channelModeProperty);
                 if (modeProp != null && data.Mode.HasValue)
-                    modeProp.enumValueIndex = (int) data.Mode.Value;
+                    modeProp.enumValueIndex = (int)data.Mode.Value;
 
                 property.FindPropertyRelative(_inputThresholdProperty).floatValue = data.InputThreshold;
                 property.FindPropertyRelative(_inputSoftnessProperty).floatValue = data.InputSoftness;
@@ -305,7 +305,7 @@ namespace PlaceholderSoftware.WetStuff
         {
             get
             {
-                return _layerMode == null  || !_layerMode.hasMultipleDifferentValues && (LayerMode)_layerMode.enumValueIndex == _visibleMode && _decalShape.intValue != (int)DecalShape.Mesh;
+                return _layerMode == null || !_layerMode.hasMultipleDifferentValues && (LayerMode)_layerMode.enumValueIndex == _visibleMode && _decalShape.intValue != (int)DecalShape.Mesh;
             }
         }
 
@@ -412,8 +412,8 @@ namespace PlaceholderSoftware.WetStuff
             var offsetProp = RelProp(Target, _layerMaskOffsetProperty);
 
             var data = new CopyPasteData(
-                scaleProp == null ? (Vector2?) null : scaleProp.vector2Value,
-                offsetProp == null ? (Vector2?) null : offsetProp.vector2Value,
+                scaleProp == null ? (Vector2?)null : scaleProp.vector2Value,
+                offsetProp == null ? (Vector2?)null : offsetProp.vector2Value,
                 _channel1.Copy(RelProp(Target, _channel1Property)),
                 _channel2.Copy(RelProp(Target, _channel2Property)),
                 _channel3.Copy(RelProp(Target, _channel3Property)),

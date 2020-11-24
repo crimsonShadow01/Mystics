@@ -16,7 +16,7 @@ public class TC_Reporter : MonoBehaviour
     {
         if (instance == null) instance = this;
     }
-    
+
     void OnEnable()
     {
         if (instance == null) instance = this;
@@ -26,7 +26,7 @@ public class TC_Reporter : MonoBehaviour
     {
         if (instance == this) instance = null;
     }
-    
+
     private void LateUpdate()
     {
         if (hasReported)
@@ -47,8 +47,8 @@ public class TC_Reporter : MonoBehaviour
     public static void Log(string text, int channelIndex = 0)
     {
         if (instance == null) return;
-        if (!instance.report) return; 
-        
+        if (!instance.report) return;
+
         if (instance.channels == null) instance.channels = new bool[5];
         if (instance.channels.Length != 5) instance.channels = new bool[5];
 
@@ -58,7 +58,7 @@ public class TC_Reporter : MonoBehaviour
             hasReported = true;
         }
     }
-    
+
     public static void BenchmarkStart(int channel = 0)
     {
         if (instance.timeStart == null) instance.timeStart = new float[5];
@@ -70,7 +70,7 @@ public class TC_Reporter : MonoBehaviour
     public static string BenchmarkStop(string text = "", bool logToConsole = true, int channel = 0)
     {
         float time = Time.realtimeSinceStartup - instance.timeStart[channel];
-        
+
         if (logToConsole)
         {
             text = text + " time " + time + " frame " + (1 / time);

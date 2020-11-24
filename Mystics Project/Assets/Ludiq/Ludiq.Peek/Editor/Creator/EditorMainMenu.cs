@@ -6,111 +6,111 @@ using UnityEngine;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-	public static class EditorMainMenu
-	{
-		public const char Separator = '/';
+    public static class EditorMainMenu
+    {
+        public const char Separator = '/';
 
-		public static bool useUnsupported { get; set; } = true;
+        public static bool useUnsupported { get; set; } = true;
 
-		public static IEnumerable<string> GetSubmenus(string path)
-		{
-			path = path.TrimEnd(Separator) + Separator;
+        public static IEnumerable<string> GetSubmenus(string path)
+        {
+            path = path.TrimEnd(Separator) + Separator;
 
-			if (useUnsupported)
-			{
-				return Unsupported.GetSubmenus(path);
-			}
-			else
-			{
-				return Parse().Where(item => item.StartsWith(path));
-			}
-		}
+            if (useUnsupported)
+            {
+                return Unsupported.GetSubmenus(path);
+            }
+            else
+            {
+                return Parse().Where(item => item.StartsWith(path));
+            }
+        }
 
-		public static IEnumerable<string> Parse()
-		{
-			var menuString = EditorGUIUtility.SerializeMainMenuToString();
-			Debug.Log(menuString);
-			using (var sr = new StringReader(menuString))
-			{
-				string line;
+        public static IEnumerable<string> Parse()
+        {
+            var menuString = EditorGUIUtility.SerializeMainMenuToString();
+            Debug.Log(menuString);
+            using (var sr = new StringReader(menuString))
+            {
+                string line;
 
-				var previousIndent = -1;
+                var previousIndent = -1;
 
-				string previousItem = null;
+                string previousItem = null;
 
-				while ((line = sr.ReadLine()) != null)
-				{
-					var spaceCount = 0;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    var spaceCount = 0;
 
-					foreach (var c in line)
-					{
-						if (c == ' ')
-						{
-							spaceCount++;
-						}
-						else
-						{
-							break;
-						}
-					}
+                    foreach (var c in line)
+                    {
+                        if (c == ' ')
+                        {
+                            spaceCount++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
 
-					var level = line.Trim();
+                    var level = line.Trim();
 
-					var indent = spaceCount / 4;
+                    var indent = spaceCount / 4;
 
-					string item;
+                    string item;
 
-					if (indent > previousIndent)
-					{
-						item = Combine(previousItem, level);
-					}
-					else if (indent < previousIndent)
-					{
-						var parent = GetParent(previousItem);
+                    if (indent > previousIndent)
+                    {
+                        item = Combine(previousItem, level);
+                    }
+                    else if (indent < previousIndent)
+                    {
+                        var parent = GetParent(previousItem);
 
-						for (var i = 0; i < previousIndent - indent; i++)
-						{
-							parent = GetParent(parent);
-						}
+                        for (var i = 0; i < previousIndent - indent; i++)
+                        {
+                            parent = GetParent(parent);
+                        }
 
-						item = Combine(parent, level);
-					}
-					else // if (indent == previousIndent)
-					{
-						item = Combine(GetParent(previousItem), level);
-					}
+                        item = Combine(parent, level);
+                    }
+                    else // if (indent == previousIndent)
+                    {
+                        item = Combine(GetParent(previousItem), level);
+                    }
 
-					yield return item;
+                    yield return item;
 
-					previousIndent = indent;
-					previousItem = item;
-				}
-			}
-		}
+                    previousIndent = indent;
+                    previousItem = item;
+                }
+            }
+        }
 
-		private static string Combine(string parent, string level)
-		{
-			if (parent == null)
-			{
-				return level;
-			}
-			else
-			{
-				return $"{parent}{Separator}{level}";
-			}
-		}
+        private static string Combine(string parent, string level)
+        {
+            if (parent == null)
+            {
+                return level;
+            }
+            else
+            {
+                return $"{parent}{Separator}{level}";
+            }
+        }
 
-		private static string GetParent(string item)
-		{
-			if (!item.Contains(Separator))
-			{
-				return null;
-			}
+        private static string GetParent(string item)
+        {
+            if (!item.Contains(Separator))
+            {
+                return null;
+            }
 
-			return item.PartBeforeLast(Separator);
-		}
-	}
+            return item.PartBeforeLast(Separator);
+        }
+    }
 }

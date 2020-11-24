@@ -1,14 +1,9 @@
-﻿using Ludiq.Peek;
-using Ludiq.PeekCore;
-using UnityObject = UnityEngine.Object;
-
-namespace Ludiq.Peek
+﻿namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public enum KeyboardShortcutAction
-	{
-		Press
-	}
+    public enum KeyboardShortcutAction
+    {
+        Press
+    }
 }

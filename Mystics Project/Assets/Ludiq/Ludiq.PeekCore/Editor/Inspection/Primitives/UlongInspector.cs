@@ -4,8 +4,8 @@
 
 namespace Ludiq.PeekCore
 {
-	public class UlongInspector : ContinuousNumberInspector<ulong>
-	{
-		public UlongInspector(Accessor accessor) : base(accessor) { }
-	}
+    public class UlongInspector : ContinuousNumberInspector<ulong>
+    {
+        public UlongInspector(Accessor accessor) : base(accessor) { }
+    }
 }

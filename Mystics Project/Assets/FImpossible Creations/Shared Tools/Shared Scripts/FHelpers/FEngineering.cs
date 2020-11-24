@@ -251,7 +251,7 @@ public static class FEngineering
 
     #region Physical Materials Stuff
 
-    public static PhysicMaterial PMSliding 
+    public static PhysicMaterial PMSliding
     {
         get
         {
@@ -268,7 +268,7 @@ public static class FEngineering
     }
 
     private static PhysicMaterial _slidingMat;
-    public static PhysicMaterial PMFrict 
+    public static PhysicMaterial PMFrict
     {
         get
         {
@@ -287,7 +287,7 @@ public static class FEngineering
     private static PhysicMaterial _frictMat;
 
 
-    public static PhysicsMaterial2D PMSliding2D 
+    public static PhysicsMaterial2D PMSliding2D
     {
         get
         {
@@ -303,8 +303,8 @@ public static class FEngineering
 
     private static PhysicsMaterial2D _slidingMat2D;
 
-    public static PhysicsMaterial2D PMFrict2D 
-    { 
+    public static PhysicsMaterial2D PMFrict2D
+    {
         get
         {
             if (_frictMat2D) return _frictMat2D;
@@ -314,7 +314,7 @@ public static class FEngineering
                 _frictMat2D.friction = 5f;
                 return _frictMat2D;
             }
-        } 
+        }
     }
 
     private static PhysicsMaterial2D _frictMat2D;

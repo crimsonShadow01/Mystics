@@ -31,7 +31,7 @@ namespace PlaceholderSoftware.WetStuff.Weather
         private float _emissionRateFromLength;
         private float _intensity;
         private ParticleSystem _particles;
-        
+
         public void Awake()
         {
             _particles = GetComponent<ParticleSystem>();

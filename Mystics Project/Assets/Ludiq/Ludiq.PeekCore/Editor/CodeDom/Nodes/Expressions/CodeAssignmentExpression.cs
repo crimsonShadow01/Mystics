@@ -8,12 +8,12 @@ namespace Ludiq.PeekCore.CodeDom
 {
     public sealed class CodeAssignmentExpression : CodeExpression
     {
-        public CodeAssignmentExpression() {}
+        public CodeAssignmentExpression() { }
 
         public CodeAssignmentExpression(CodeExpression left, CodeExpression right)
         {
-			Ensure.That(nameof(left)).IsNotNull(left);
-			Ensure.That(nameof(right)).IsNotNull(right);
+            Ensure.That(nameof(left)).IsNotNull(left);
+            Ensure.That(nameof(right)).IsNotNull(right);
 
             Left = left;
             Right = right;
@@ -22,25 +22,25 @@ namespace Ludiq.PeekCore.CodeDom
         public CodeExpression Left { get; }
         public CodeExpression Right { get; }
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Assignment;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Assignment;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (Left != null) yield return Left;
-				if (Right != null) yield return Right;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Left != null) yield return Left;
+                if (Right != null) yield return Right;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
+        protected override void GenerateInner(CodeGenerator generator)
+        {
             Left.Generate(generator);
             generator.Write(TokenType.Space, ' ');
             generator.Write(TokenType.Punctuation, '=');
             generator.Write(TokenType.Space, ' ');
             Right.Generate(generator);
-		}
-	}
+        }
+    }
 }

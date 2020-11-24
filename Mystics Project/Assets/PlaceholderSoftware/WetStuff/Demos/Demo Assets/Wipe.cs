@@ -33,7 +33,7 @@ namespace PlaceholderSoftware.WetStuff.Demos.Demo_Assets
         [Range(0, 1)]
         public float Progress = 0f;
 
-        private void Start ()
+        private void Start()
         {
             var shader = Shader.Find("Demo/ExcludeWetness");
             _material = new Material(shader);
@@ -46,7 +46,8 @@ namespace PlaceholderSoftware.WetStuff.Demos.Demo_Assets
 
         private static Mesh CreateFullscreenQuad()
         {
-            var mesh = new Mesh {
+            var mesh = new Mesh
+            {
                 vertices = new[] {
                     new Vector3(-1, -1, 0),
                     new Vector3(-1, 1, 0),

@@ -59,19 +59,24 @@ namespace PlaceholderSoftware.WetStuff
             if (_firstTimeSetupDone)
                 return;
 
-            _boxOutlineMaterial = new Material(Shader.Find("Hidden/PremultipliedColor")) {
+            _boxOutlineMaterial = new Material(Shader.Find("Hidden/PremultipliedColor"))
+            {
                 hideFlags = HideFlags.DontSave
             };
-            _highlightFillMaterial = new Material(Shader.Find("Hidden/PremultipliedColor")) {
+            _highlightFillMaterial = new Material(Shader.Find("Hidden/PremultipliedColor"))
+            {
                 hideFlags = HideFlags.DontSave
             };
-            _highlightOutlineMaterial = new Material(Shader.Find("Hidden/PremultipliedColor")) {
+            _highlightOutlineMaterial = new Material(Shader.Find("Hidden/PremultipliedColor"))
+            {
                 hideFlags = HideFlags.DontSave
             };
-            _inputHeightmapMaterial = new Material(Shader.Find("Hidden/LayerInputHeightmap")) {
+            _inputHeightmapMaterial = new Material(Shader.Find("Hidden/LayerInputHeightmap"))
+            {
                 hideFlags = HideFlags.DontSave
             };
-            _outputHeightmapMaterial = new Material(Shader.Find("Hidden/LayerOutputHeightmap")) {
+            _outputHeightmapMaterial = new Material(Shader.Find("Hidden/LayerOutputHeightmap"))
+            {
                 hideFlags = HideFlags.DontSave
             };
 
@@ -79,7 +84,8 @@ namespace PlaceholderSoftware.WetStuff
             _box = Primitives.CreateBox(1, 1, 1);
             _box.hideFlags = HideFlags.DontSave;
 
-            _range = new Mesh {
+            _range = new Mesh
+            {
                 subMeshCount = 2,
                 vertices = new Vector3[8],
                 hideFlags = HideFlags.DontSave
@@ -99,7 +105,7 @@ namespace PlaceholderSoftware.WetStuff
 
             CreateScaleConnector(_range, _inputTransform, _inputHighlightTransform, _outputTransform, _outputHighlightTransform);
 
-            var color = (Color) channels;
+            var color = (Color)channels;
             color.a = 1;
             _boxOutlineMaterial.color = new Color(0.3f, 0.3f, 0.4f);
 
@@ -127,15 +133,16 @@ namespace PlaceholderSoftware.WetStuff
             var vertices = new Vector3[resolution * resolution];
 
             for (var x = 0; x < resolution; x++)
-            for (var y = 0; y < resolution; y++)
+                for (var y = 0; y < resolution; y++)
+                {
+                    var index = y * resolution + x;
+                    var uv = new Vector2((float)x / (resolution - 1), (float)y / (resolution - 1));
+
+                    vertices[index] = new Vector3(uv.x - 0.5f, 0, uv.y - 0.5f);
+                }
+
+            var mesh = new Mesh
             {
-                var index = y * resolution + x;
-                var uv = new Vector2((float) x / (resolution - 1), (float) y / (resolution - 1));
-
-                vertices[index] = new Vector3(uv.x - 0.5f, 0, uv.y - 0.5f);
-            }
-
-            var mesh = new Mesh {
                 vertices = vertices,
                 hideFlags = HideFlags.DontSave
             };

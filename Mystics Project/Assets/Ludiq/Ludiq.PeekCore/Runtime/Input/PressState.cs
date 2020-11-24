@@ -1,9 +1,9 @@
 ﻿namespace Ludiq.PeekCore
 {
-	public enum PressState
-	{
-		Hold,
-		Down,
-		Up
-	}
+    public enum PressState
+    {
+        Hold,
+        Down,
+        Up
+    }
 }

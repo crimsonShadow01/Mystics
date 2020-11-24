@@ -1,7 +1,6 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 [ExecuteInEditMode]
 public class Voxelize : MonoBehaviour
@@ -18,13 +17,13 @@ public class Voxelize : MonoBehaviour
     public int voxelizeLayer;
     public float voxelResolution;
     public bool voxelize;
-    
+
 
     public void Update()
     {
         if (voxelize)
         {
-            voxelize = false; 
+            voxelize = false;
             VoxelizeMesh(transform, voxelResolution, voxelizeLayer);
         }
     }
@@ -114,7 +113,7 @@ public class Voxelize : MonoBehaviour
         ray.direction = Vector3.forward;
         ray2.direction = Vector3.back;
         Vector3 pos = bounds.min;
-        Vector3 pos2 = pos; 
+        Vector3 pos2 = pos;
         pos2.z = bounds.max.z;
 
         Debug.Log(PrintVector3(mr.bounds.size) + " new size " + PrintVector3(size) + " voxels " + voxels.ToString());

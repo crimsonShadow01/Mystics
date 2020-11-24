@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -49,7 +49,7 @@ namespace PixelCrushers.DialogueSystem
             EditorGUILayout.PropertyField(serializedObject.FindProperty("onFocus"), true);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("onUnfocus"), true);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("onBackButtonDown"), true);
-            
+
             serializedObject.ApplyModifiedProperties();
         }
 

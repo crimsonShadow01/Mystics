@@ -31,7 +31,7 @@ namespace Databox.OdinSerializer
         public static bool Initialized { get { return initialized; } }
 
         public static RuntimePlatform CurrentPlatform { get; private set; }
-        
+
         /// <summary>
         /// Initializes the Sirenix serialization system to be compatible with Unity.
         /// </summary>
@@ -49,7 +49,7 @@ namespace Databox.OdinSerializer
                             // If we try to load it during deserialization, Unity will throw exceptions, as a lot of
                             // the Unity API is disallowed during serialization and deserialization.
                             GlobalSerializationConfig.LoadInstanceIfAssetExists();
-                        
+
                             CurrentPlatform = Application.platform;
 
                             if (Application.isEditor) return;

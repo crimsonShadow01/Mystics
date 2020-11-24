@@ -1,23 +1,24 @@
-﻿using UnityEngine;
-using System.Collections;
-using TerrainComposer2;
+﻿using TerrainComposer2;
+using UnityEngine;
 
 
-public class RemoveTree : MonoBehaviour {
+public class RemoveTree : MonoBehaviour
+{
 
     public bool removeTree;
     public int index = 0;
 
     public GameObject prefab;
-	
-    
-	void Update () {
-	    if (removeTree)
+
+
+    void Update()
+    {
+        if (removeTree)
         {
             removeTree = false;
             RemoveTreeAtIndex(index);
-        } 
-	}
+        }
+    }
 
     void RemoveTreeAtIndex(int index)
     {
@@ -32,9 +33,9 @@ public class RemoveTree : MonoBehaviour {
         Vector3 pos = tree.position;
         pos.Scale(terrainData.size);
         pos -= new Vector3(1024, 0, 1024);
-        
+
         float rotation = tree.rotation * Mathf.Rad2Deg;
-        
+
         tree.heightScale = 0;
         tree.widthScale = 0;
 

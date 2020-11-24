@@ -57,7 +57,7 @@ namespace Databox.OdinSerializer
         private static readonly PropertyInfo disabledColor = typeof(T).GetProperty("disabledColor");
         private static readonly PropertyInfo colorMultiplier = typeof(T).GetProperty("colorMultiplier");
         private static readonly PropertyInfo fadeDuration = typeof(T).GetProperty("fadeDuration");
-        
+
         /// <summary>
         /// Reads into the specified value using the specified reader.
         /// </summary>

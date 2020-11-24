@@ -21,24 +21,24 @@ namespace Ludiq.PeekCore.CodeDom
         public CodeExpression IncrementExpression { get; }
         public List<CodeStatement> Statements { get; } = new List<CodeStatement>();
 
-		public override bool IsTerminator => false;
+        public override bool IsTerminator => false;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach(var child in base.Children) yield return child;
-				if (InitStatement != null) yield return InitStatement;
-				if (TestExpression != null) yield return TestExpression;
-				if (IncrementExpression != null) yield return IncrementExpression;
-				foreach(var child in Statements) yield return child;
-			}
-		}
-
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        public override IEnumerable<CodeElement> Children
         {
-			generator.WriteBlankLineBeforeEnteringBlock();
-			generator.EnterLocalScope();
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (InitStatement != null) yield return InitStatement;
+                if (TestExpression != null) yield return TestExpression;
+                if (IncrementExpression != null) yield return IncrementExpression;
+                foreach (var child in Statements) yield return child;
+            }
+        }
+
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.WriteBlankLineBeforeEnteringBlock();
+            generator.EnterLocalScope();
             generator.Write(TokenType.Keyword, "for");
             generator.Write(TokenType.Space, ' ');
             generator.Write(TokenType.Punctuation, '(');
@@ -50,22 +50,22 @@ namespace Ludiq.PeekCore.CodeDom
             generator.Write(TokenType.Space, ' ');
             IncrementExpression.Generate(generator);
             generator.Write(TokenType.Punctuation, ')');
-			if (Statements.Count > 0)
-			{
-				generator.WriteOpeningBrace();
-				generator.Indent++;
-				generator.EnterLocalScope();
-				Statements.ReserveLocals(generator, default(CodeStatementEmitOptions));
-				Statements.Generate(generator, default(CodeStatementEmitOptions));
-				generator.ExitLocalScope();
-				generator.Indent--;
-				generator.WriteClosingBrace();
-			}
-			else
-			{
-				generator.WriteEmptyBlock();
-			}
-			generator.ExitLocalScope();
+            if (Statements.Count > 0)
+            {
+                generator.WriteOpeningBrace();
+                generator.Indent++;
+                generator.EnterLocalScope();
+                Statements.ReserveLocals(generator, default(CodeStatementEmitOptions));
+                Statements.Generate(generator, default(CodeStatementEmitOptions));
+                generator.ExitLocalScope();
+                generator.Indent--;
+                generator.WriteClosingBrace();
+            }
+            else
+            {
+                generator.WriteEmptyBlock();
+            }
+            generator.ExitLocalScope();
         }
-	}
+    }
 }

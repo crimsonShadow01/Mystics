@@ -142,7 +142,7 @@ namespace UnityEditor.PostProcessing
         #region Constructors & destructors
         public CurveEditor()
             : this(Settings.defaultSettings)
-        {}
+        { }
 
         public CurveEditor(Settings settings)
         {
@@ -376,7 +376,7 @@ namespace UnityEditor.PostProcessing
                 // Draw
                 if (state.showNonEditableHandles)
                 {
-                    if (e.type == EventType.repaint)
+                    if (e.type == EventType.Repaint)
                     {
                         var selectedColor = (isCurrentlySelectedCurve && isCurrentlySelectedKeyframe)
                             ? settings.selectionColor
@@ -422,7 +422,7 @@ namespace UnityEditor.PostProcessing
                     }
 
                     // Keyframe selection & context menu
-                    if (e.type == EventType.mouseDown && rect.Contains(e.mousePosition))
+                    if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
                     {
                         if (hitRect.Contains(e.mousePosition))
                         {
@@ -453,7 +453,7 @@ namespace UnityEditor.PostProcessing
                     }
 
                     // Tangent selection & edit mode
-                    if (e.type == EventType.mouseDown && rect.Contains(e.mousePosition))
+                    if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
                     {
                         if (inTangentHitRect.Contains(e.mousePosition) && (k > 0 || state.loopInBounds))
                         {
@@ -499,7 +499,7 @@ namespace UnityEditor.PostProcessing
             var e = Event.current;
 
             // Selection
-            if (e.type == EventType.mouseDown)
+            if (e.type == EventType.MouseDown)
             {
                 GUI.FocusControl(null);
                 m_SelectedCurve = null;
@@ -582,7 +582,7 @@ namespace UnityEditor.PostProcessing
             }
 
             // Delete selected key(s)
-            if (e.type == EventType.keyDown && (e.keyCode == KeyCode.Delete || e.keyCode == KeyCode.Backspace))
+            if (e.type == EventType.KeyDown && (e.keyCode == KeyCode.Delete || e.keyCode == KeyCode.Backspace))
             {
                 if (m_SelectedKeyframeIndex != -1 && m_SelectedCurve != null)
                 {
@@ -785,7 +785,7 @@ namespace UnityEditor.PostProcessing
             segment[0] = CurveToCanvas(new Vector3(start.time, start.value));
             segment[3] = CurveToCanvas(new Vector3(end.time, end.value));
 
-            float middle  = start.time + ((end.time - start.time) * 0.333333f);
+            float middle = start.time + ((end.time - start.time) * 0.333333f);
             float middle2 = start.time + ((end.time - start.time) * 0.666666f);
 
             segment[1] = CurveToCanvas(new Vector3(middle, ProjectTangent(start.time, start.value, start.outTangent, middle)));

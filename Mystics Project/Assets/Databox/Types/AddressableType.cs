@@ -32,7 +32,7 @@
 
 //	Rect dropdownRect;
 //	float popupWidth;
-	
+
 //	public UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<GameObject> Load()
 //	{
 //		try
@@ -45,25 +45,25 @@
 //			return new UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<GameObject>();
 //		}
 //	}
-	
+
 
 //	public override void DrawEditor()
 //	{
-		
+
 //		#if UNITY_EDITOR
 //		using (new GUILayout.HorizontalScope("Box"))
 //		{
-		
+
 //			var allAssets = new List<AddressableAssetEntry>();
 
 //			try
 //			{
-				
-			
-				
+
+
+
 //				GUILayout.Label("",GUILayout.Width(1));
 //				dropdownRect = GUILayoutUtility.GetLastRect();
-			
+
 //				if (EditorGUILayout.DropdownButton(new GUIContent(assetPath), FocusType.Keyboard, GUILayout.ExpandWidth(true)))
 //				{	
 //					AddressableAssetSettingsDefaultObject.Settings.GetAllAssets(allAssets, false);
@@ -74,7 +74,7 @@
 //				{
 //					popupWidth = x.width;
 //				}			
-		
+
 //			}
 //			catch
 //			{
@@ -83,7 +83,7 @@
 //		}
 //		#endif
 //	}
-	
+
 
 //	#if UNITY_EDITOR
 //	public class PopupContent : PopupWindowContent
@@ -100,24 +100,24 @@
 //		public override void OnGUI(Rect rect)
 //		{	
 //			GUILayout.Label("Addressables", EditorStyles.boldLabel);
-			
+
 //			using (new GUILayout.HorizontalScope())
 //			{
 //				GUI.SetNextControlName ("FilterAddressables");
 //				searchString = GUILayout.TextField(searchString, "SearchTextField");
-						
+
 //				if (GUILayout.Button("", GUI.skin.FindStyle("SearchCancelButton")))
 //				{
 //					searchString = "";
 //				}
 //			}
-			
+
 //			if (GUILayout.Button("none"))
 //			{
 //				value.assetPath = "";
 //				editorWindow.Close();
 //			}
-			
+
 //			foreach(var entry in assets)
 //			{
 //				if (entry.address.ToLower().Contains(searchString.ToLower()) || string.IsNullOrEmpty(searchString))
@@ -135,7 +135,7 @@
 //					}
 //				}
 //			}
-			
+
 //		}
 
 //		public override void OnOpen()
@@ -148,7 +148,7 @@
 //		{
 //			//Debug.Log("Popup closed: " + this);
 //		}
-		
+
 //		public PopupContent(List<AddressableAssetEntry> _assets, AddressableType _value)
 //		{
 //			assets = new List<AddressableAssetEntry>(_assets);

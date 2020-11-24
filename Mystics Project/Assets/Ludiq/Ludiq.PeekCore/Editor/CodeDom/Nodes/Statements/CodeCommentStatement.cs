@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Ludiq.PeekCore.CodeDom
 {
-    public sealed  class CodeCommentStatement : CodeStatement
+    public sealed class CodeCommentStatement : CodeStatement
     {
         public CodeCommentStatement(CodeComment comment)
         {
@@ -15,22 +15,22 @@ namespace Ludiq.PeekCore.CodeDom
 
         public CodeComment Comment { get; set; }
 
-		public override bool IsTerminator => false;
+        public override bool IsTerminator => false;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach(var child in base.Children) yield return child;
-				if (Comment != null) yield return Comment;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Comment != null) yield return Comment;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			generator.WriteBlankLineIfJustExitedBlock();
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.WriteBlankLineIfJustExitedBlock();
             Comment.Generate(generator);
-			generator.WriteLine();
-		}
+            generator.WriteLine();
+        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -37,7 +37,7 @@ namespace PixelCrushers.DialogueSystem
         /// </summary>
         public static int GetAnimatorNameHash(AnimatorStateInfo animatorStateInfo)
         {
-			return animatorStateInfo.fullPathHash;
+            return animatorStateInfo.fullPathHash;
         }
 
         /// <summary>

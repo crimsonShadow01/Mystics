@@ -1,26 +1,26 @@
-﻿using UnityEditor;
+﻿using Ludiq.PeekCore;
+using UnityEditor;
 using UnityEngine;
-using Ludiq.PeekCore;
 
 [assembly: RegisterInspector(typeof(Namespace), typeof(NamespaceInspector))]
 
 namespace Ludiq.PeekCore
 {
-	public class NamespaceInspector : Inspector
-	{
-		public NamespaceInspector(Accessor accessor) : base(accessor) { }
-		
-		protected override void OnControlGUI(Rect position)
-		{
-			EditorGUI.BeginChangeCheck();
+    public class NamespaceInspector : Inspector
+    {
+        public NamespaceInspector(Accessor accessor) : base(accessor) { }
 
-			var newValue = (Namespace)EditorGUI.TextField(position, ((Namespace)accessor.value)?.FullName);
+        protected override void OnControlGUI(Rect position)
+        {
+            EditorGUI.BeginChangeCheck();
 
-			if (EditorGUI.EndChangeCheck())
-			{
-				accessor.RecordUndo();
-				accessor.value = newValue;
-			}
-		}
-	}
+            var newValue = (Namespace)EditorGUI.TextField(position, ((Namespace)accessor.value)?.FullName);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                accessor.RecordUndo();
+                accessor.value = newValue;
+            }
+        }
+    }
 }

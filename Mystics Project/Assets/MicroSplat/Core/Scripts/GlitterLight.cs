@@ -1,27 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace JBooth.MicroSplat
 {
-   [ExecuteInEditMode]
-   [RequireComponent(typeof(Light))]
-   public class GlitterLight : MonoBehaviour
-   {
-      Light lght = null;
+    [ExecuteInEditMode]
+    [RequireComponent(typeof(Light))]
+    public class GlitterLight : MonoBehaviour
+    {
+        Light lght = null;
 
 #if UNITY_EDITOR
-      void OnEnable()
-      {
-         UnityEditor.EditorApplication.update += Update;
-         lght = GetComponent<Light> ();
-      }
+        void OnEnable()
+        {
+            UnityEditor.EditorApplication.update += Update;
+            lght = GetComponent<Light>();
+        }
 
-      void OnDisable()
-      {
-         UnityEditor.EditorApplication.update -= Update;
-         lght = GetComponent<Light> ();
-      }
+        void OnDisable()
+        {
+            UnityEditor.EditorApplication.update -= Update;
+            lght = GetComponent<Light>();
+        }
 
 #else
       void OnEnable()
@@ -35,15 +33,15 @@ namespace JBooth.MicroSplat
       }
 #endif
 
-      void Update ()
-      {
-         Shader.SetGlobalVector("_gGlitterLightDir", -this.transform.forward);
-         Shader.SetGlobalVector("_gGlitterLightWorldPos", this.transform.position);
-         if (lght != null)
-         {
-            Shader.SetGlobalColor ("_gGlitterLightColor", lght.color);
-         }
-      }
-   }
+        void Update()
+        {
+            Shader.SetGlobalVector("_gGlitterLightDir", -this.transform.forward);
+            Shader.SetGlobalVector("_gGlitterLightWorldPos", this.transform.position);
+            if (lght != null)
+            {
+                Shader.SetGlobalColor("_gGlitterLightColor", lght.color);
+            }
+        }
+    }
 
 }

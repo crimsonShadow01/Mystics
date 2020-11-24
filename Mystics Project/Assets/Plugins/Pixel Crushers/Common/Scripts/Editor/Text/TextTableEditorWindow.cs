@@ -173,9 +173,9 @@ namespace PixelCrushers
         private void OnGUI()
         {
             if (Event.current.commandName == "ObjectSelectorClosed" || Event.current.commandName == "ObjectSelectorUpdated")
-            { 
+            {
                 if (m_isPickingOtherTextTable)
-                { 
+                {
                     m_isPickingOtherTextTable = false;
                     AskConfirmImportOtherTextTable(EditorGUIUtility.GetObjectPickerObject() as TextTable);
                 }

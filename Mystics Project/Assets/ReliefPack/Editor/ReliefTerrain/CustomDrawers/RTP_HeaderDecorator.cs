@@ -1,14 +1,13 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using System.Collections;
-using System;
-using System.Reflection;
 
-public class RTP_HeaderDecorator : MaterialPropertyDrawer {
+public class RTP_HeaderDecorator : MaterialPropertyDrawer
+{
     string headerLabel;
     bool active_layer_flag;
 
-	public RTP_HeaderDecorator(string headerLabel):base() {
+    public RTP_HeaderDecorator(string headerLabel) : base()
+    {
         this.headerLabel = RTP_MatPropStringParser.Parse(headerLabel);
         active_layer_flag = false;
     }
@@ -30,7 +29,7 @@ public class RTP_HeaderDecorator : MaterialPropertyDrawer {
             {
                 EditorGUI.BeginDisabledGroup(customEditor.inactiveFlag);
                 position.y += 2;
-                EditorGUI.LabelField(position, headerLabel + (active_layer_flag ? " " +(customEditor.active_layer+1) : ""), EditorStyles.boldLabel);
+                EditorGUI.LabelField(position, headerLabel + (active_layer_flag ? " " + (customEditor.active_layer + 1) : ""), EditorStyles.boldLabel);
                 EditorGUI.EndDisabledGroup();
             }
         }

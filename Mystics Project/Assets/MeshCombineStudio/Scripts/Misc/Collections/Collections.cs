@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
+using UnityEngine;
 
 
-namespace MeshCombineStudio {
+namespace MeshCombineStudio
+{
     public class ObjectHolder<T> : FastIndex
     {
         public T item;
@@ -83,5 +84,5 @@ namespace MeshCombineStudio {
         {
             if (List != null) List.Remove(this);
         }
-    } 
+    }
 }

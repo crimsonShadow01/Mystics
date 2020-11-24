@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MeshCombineStudio
 {
@@ -84,7 +82,7 @@ namespace MeshCombineStudio
         {
             var sector = new Sector3D<T>();
             sector.bounds = new Bounds(new Vector3(s.x * sectorSize.x, s.y * sectorSize.y, s.z * sectorSize.z) + (sectorGridOffset - halfTotalSize), sectorSize);
-            
+
             sectors[s.x, s.y, s.z] = sector;
             sectorList.Add(sector);
             return sector;

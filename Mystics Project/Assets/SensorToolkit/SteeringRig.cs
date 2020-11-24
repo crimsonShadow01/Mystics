@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace SensorToolkit
 {
@@ -179,7 +178,7 @@ namespace SensorToolkit
 
         void Awake()
         {
-            if (IgnoreList == null) 
+            if (IgnoreList == null)
             {
                 IgnoreList = new List<GameObject>();
             }
@@ -321,7 +320,7 @@ namespace SensorToolkit
                 s.IgnoreList = IgnoreList;
                 s.Pulse();
                 if (!s.IsObstructed) continue;
-                var obsRatio = Mathf.Pow(1f - (s.ObstructionRayHit.distance / s.Length), 1f/AvoidanceSensitivity); // 0 when unobstructed, 1 when touching
+                var obsRatio = Mathf.Pow(1f - (s.ObstructionRayHit.distance / s.Length), 1f / AvoidanceSensitivity); // 0 when unobstructed, 1 when touching
                 rf += obsRatio * s.ObstructionRayHit.normal;
             }
             var rfMag = rf.magnitude;

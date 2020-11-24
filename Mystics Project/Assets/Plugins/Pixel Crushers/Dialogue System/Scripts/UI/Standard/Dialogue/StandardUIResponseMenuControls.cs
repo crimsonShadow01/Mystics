@@ -162,7 +162,7 @@ namespace PixelCrushers.DialogueSystem
         }
 
         protected StandardUIMenuPanel GetPanelFromNumber(MenuPanelNumber menuPanelNumber, StandardUIMenuPanel customMenuPanel)
-        { 
+        {
             switch (menuPanelNumber)
             {
                 case MenuPanelNumber.Default:

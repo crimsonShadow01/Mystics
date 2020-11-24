@@ -4,32 +4,32 @@ using UnityEngine;
 
 namespace Ludiq.PeekCore
 {
-	public interface IFuzzyOptionTree
-	{
-		bool multithreaded { get; }
+    public interface IFuzzyOptionTree
+    {
+        bool multithreaded { get; }
 
-		GUIContent header { get; }
+        GUIContent header { get; }
 
-		bool searchable { get; }
+        bool searchable { get; }
 
-		ICollection<IFuzzyOption> favorites { get; }
+        ICollection<IFuzzyOption> favorites { get; }
 
-		ICollection<object> selected { get; }
+        ICollection<object> selected { get; }
 
-		void Prewarm();
+        void Prewarm();
 
-		void Rewarm();
+        void Rewarm();
 
-		bool prewarmed { get; set; }
+        bool prewarmed { get; set; }
 
-		IEnumerable<IFuzzyOption> Root();
-		IEnumerable<IFuzzyOption> Children(IFuzzyOption parent);
-		IEnumerable<IFuzzyOption> OrderedSearchResults(string query, IFuzzyOption parent, CancellationToken cancellation);
-		IEnumerable<ISearchResult<IFuzzyOption>> SearchResults(string query, IFuzzyOption parent, CancellationToken cancellation);
-		string SearchResultLabel(IFuzzyOption item, string query);
-		bool UseExplicitLabel(IFuzzyOption parent, IFuzzyOption item);
-		string ExplicitLabel(IFuzzyOption item);
-		bool CanFavorite(IFuzzyOption item);
-		void OnFavoritesChange();
-	}
+        IEnumerable<IFuzzyOption> Root();
+        IEnumerable<IFuzzyOption> Children(IFuzzyOption parent);
+        IEnumerable<IFuzzyOption> OrderedSearchResults(string query, IFuzzyOption parent, CancellationToken cancellation);
+        IEnumerable<ISearchResult<IFuzzyOption>> SearchResults(string query, IFuzzyOption parent, CancellationToken cancellation);
+        string SearchResultLabel(IFuzzyOption item, string query);
+        bool UseExplicitLabel(IFuzzyOption parent, IFuzzyOption item);
+        string ExplicitLabel(IFuzzyOption item);
+        bool CanFavorite(IFuzzyOption item);
+        void OnFavoritesChange();
+    }
 }

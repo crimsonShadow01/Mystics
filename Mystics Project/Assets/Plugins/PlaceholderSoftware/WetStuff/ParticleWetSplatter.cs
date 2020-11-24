@@ -1,6 +1,6 @@
+using PlaceholderSoftware.WetStuff.Extensions;
 using System;
 using System.Collections.Generic;
-using PlaceholderSoftware.WetStuff.Extensions;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -450,7 +450,7 @@ namespace PlaceholderSoftware.WetStuff
         private int _nonPlacedByChance;
         private ParticleSystem _particleSystem;
         private int _totalDecalCount;
-        
+
         // ReSharper disable FieldCanBeMadeReadOnly.Local (cannot be readonly: confuses unity serialization)
 
         [SerializeField] private CoreSettings _core = new CoreSettings();

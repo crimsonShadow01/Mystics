@@ -3,226 +3,226 @@ using System.Text.RegularExpressions;
 
 namespace Ludiq.PeekCore
 {
-	public struct SemanticVersion : IComparable<SemanticVersion>
-	{
-		[Serialize]
-		public readonly int major;
+    public struct SemanticVersion : IComparable<SemanticVersion>
+    {
+        [Serialize]
+        public readonly int major;
 
-		[Serialize]
-		public readonly int minor;
+        [Serialize]
+        public readonly int minor;
 
-		[Serialize]
-		public readonly int patch;
+        [Serialize]
+        public readonly int patch;
 
-		[Serialize]
-		public readonly string label;
+        [Serialize]
+        public readonly string label;
 
-		[Serialize]
-		public readonly int increment;
+        [Serialize]
+        public readonly int increment;
 
-		public SemanticVersion(int major, int minor, int patch, string label, int increment)
-		{
-			this.major = major;
-			this.minor = minor;
-			this.patch = patch;
-			this.label = label;
-			this.increment = increment;
-		}
+        public SemanticVersion(int major, int minor, int patch, string label, int increment)
+        {
+            this.major = major;
+            this.minor = minor;
+            this.patch = patch;
+            this.label = label;
+            this.increment = increment;
+        }
 
-		public SemanticLabel semanticLabel
-		{
-			get
-			{
-				if (StringUtility.IsNullOrWhiteSpace(label))
-				{
-					return SemanticLabel.None;
-				}
+        public SemanticLabel semanticLabel
+        {
+            get
+            {
+                if (StringUtility.IsNullOrWhiteSpace(label))
+                {
+                    return SemanticLabel.None;
+                }
 
-				switch (label.RemoveNonAlphanumeric().ToLower())
-				{
-					case "a":
-					case "alpha": 
-						return SemanticLabel.Alpha;
+                switch (label.RemoveNonAlphanumeric().ToLower())
+                {
+                    case "a":
+                    case "alpha":
+                        return SemanticLabel.Alpha;
 
-					case "b":
-					case "beta": 
-						return SemanticLabel.Beta;
+                    case "b":
+                    case "beta":
+                        return SemanticLabel.Beta;
 
-					case "rc":
-					case "releasecandidate": 
-						return SemanticLabel.ReleaseCandidate;
+                    case "rc":
+                    case "releasecandidate":
+                        return SemanticLabel.ReleaseCandidate;
 
-					case "f":
-					case "final":
-					case "hotfix":
-					case "fix": 
-						return SemanticLabel.Hotfix;
+                    case "f":
+                    case "final":
+                    case "hotfix":
+                    case "fix":
+                        return SemanticLabel.Hotfix;
 
-					default: 
-						return SemanticLabel.Unknown;
-				}
-			}
-		}
+                    default:
+                        return SemanticLabel.Unknown;
+                }
+            }
+        }
 
-		public override string ToString()
-		{
-			if (StringUtility.IsNullOrWhiteSpace(label))
-			{
-				return $"{major}.{minor}.{patch}";
-			}
-			else
-			{
-				return $"{major}.{minor}.{patch}{label}{increment}";
-			}
-		}
+        public override string ToString()
+        {
+            if (StringUtility.IsNullOrWhiteSpace(label))
+            {
+                return $"{major}.{minor}.{patch}";
+            }
+            else
+            {
+                return $"{major}.{minor}.{patch}{label}{increment}";
+            }
+        }
 
-		public static implicit operator SemanticVersion(string s)
-		{
-			return Parse(s);
-		}
+        public static implicit operator SemanticVersion(string s)
+        {
+            return Parse(s);
+        }
 
-		public static SemanticVersion Parse(string s)
-		{
-			SemanticVersion result;
+        public static SemanticVersion Parse(string s)
+        {
+            SemanticVersion result;
 
-			if (!TryParse(s, out result))
-			{
-				throw new ArgumentException("s");
-			}
+            if (!TryParse(s, out result))
+            {
+                throw new ArgumentException("s");
+            }
 
-			return result;
-		}
+            return result;
+        }
 
-		private static readonly Regex regex = new Regex(@"(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)(?:(?<label>[a-zA-Z\s-_\.]+)(?<increment>\d+))?", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        private static readonly Regex regex = new Regex(@"(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)(?:(?<label>[a-zA-Z\s-_\.]+)(?<increment>\d+))?", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
-		public static bool TryParse(string s, out SemanticVersion result)
-		{
-			result = default(SemanticVersion);
+        public static bool TryParse(string s, out SemanticVersion result)
+        {
+            result = default(SemanticVersion);
 
-			if (s == null)
-			{
-				throw new ArgumentNullException(nameof(s));
-			}
-			
-			var match = regex.Match(s);
+            if (s == null)
+            {
+                throw new ArgumentNullException(nameof(s));
+            }
 
-			if (!match.Success)
-			{
-				return false;
-			}
-			
-			int major, minor, patch, increment = 0;
-			string label = null;
+            var match = regex.Match(s);
 
-			major = int.Parse(match.Groups["major"].Value);
-			minor = int.Parse(match.Groups["minor"].Value);
-			patch = int.Parse(match.Groups["patch"].Value);
+            if (!match.Success)
+            {
+                return false;
+            }
 
-			if (match.Groups["label"].Success)
-			{
-				label = match.Groups["label"].Value;
-			}
+            int major, minor, patch, increment = 0;
+            string label = null;
 
-			if (match.Groups["increment"].Success)
-			{
-				increment = int.Parse(match.Groups["increment"].Value);
-			}
+            major = int.Parse(match.Groups["major"].Value);
+            minor = int.Parse(match.Groups["minor"].Value);
+            patch = int.Parse(match.Groups["patch"].Value);
 
-			result = new SemanticVersion(major, minor, patch, label, increment);
+            if (match.Groups["label"].Success)
+            {
+                label = match.Groups["label"].Value;
+            }
 
-			return true;
-		}
+            if (match.Groups["increment"].Success)
+            {
+                increment = int.Parse(match.Groups["increment"].Value);
+            }
 
-		public int CompareTo(SemanticVersion other)
-		{
-			var majorComparison = major.CompareTo(other.major);
+            result = new SemanticVersion(major, minor, patch, label, increment);
 
-			if (majorComparison != 0)
-			{
-				return majorComparison;
-			}
+            return true;
+        }
 
-			var minorComparison = minor.CompareTo(other.minor);
+        public int CompareTo(SemanticVersion other)
+        {
+            var majorComparison = major.CompareTo(other.major);
 
-			if (minorComparison != 0)
-			{
-				return minorComparison;
-			}
+            if (majorComparison != 0)
+            {
+                return majorComparison;
+            }
 
-			var patchComparison = patch.CompareTo(other.patch);
+            var minorComparison = minor.CompareTo(other.minor);
 
-			if (patchComparison != 0)
-			{
-				return patchComparison;
-			}
+            if (minorComparison != 0)
+            {
+                return minorComparison;
+            }
 
-			var labelComparison = semanticLabel.CompareTo(other.semanticLabel);
+            var patchComparison = patch.CompareTo(other.patch);
 
-			if (labelComparison != 0)
-			{
-				return labelComparison;
-			}
+            if (patchComparison != 0)
+            {
+                return patchComparison;
+            }
 
-			var incrementComparison = increment.CompareTo(other.increment);
+            var labelComparison = semanticLabel.CompareTo(other.semanticLabel);
 
-			if (incrementComparison != 0)
-			{
-				return incrementComparison;
-			}
+            if (labelComparison != 0)
+            {
+                return labelComparison;
+            }
 
-			return 0;
-		}
+            var incrementComparison = increment.CompareTo(other.increment);
 
-		public override bool Equals(object obj)
-		{
-			if (!(obj is SemanticVersion))
-			{
-				return false;
-			}
+            if (incrementComparison != 0)
+            {
+                return incrementComparison;
+            }
 
-			var other = (SemanticVersion)obj;
+            return 0;
+        }
 
-			return
-				other.major == major &&
-				other.minor == minor &&
-				other.patch == patch &&
-				other.semanticLabel == semanticLabel &&
-				other.increment == increment;
-		}
+        public override bool Equals(object obj)
+        {
+            if (!(obj is SemanticVersion))
+            {
+                return false;
+            }
 
-		public override int GetHashCode()
-		{
-			return HashUtility.GetHashCode(major, minor, patch);
-		}
+            var other = (SemanticVersion)obj;
 
-		public static bool operator ==(SemanticVersion a, SemanticVersion b)
-		{
-			return a.Equals(b);
-		}
+            return
+                other.major == major &&
+                other.minor == minor &&
+                other.patch == patch &&
+                other.semanticLabel == semanticLabel &&
+                other.increment == increment;
+        }
 
-		public static bool operator !=(SemanticVersion a, SemanticVersion b)
-		{
-			return !(a == b);
-		}
+        public override int GetHashCode()
+        {
+            return HashUtility.GetHashCode(major, minor, patch);
+        }
 
-		public static bool operator <(SemanticVersion a, SemanticVersion b)
-		{
-			return a.CompareTo(b) < 0;
-		}
+        public static bool operator ==(SemanticVersion a, SemanticVersion b)
+        {
+            return a.Equals(b);
+        }
 
-		public static bool operator >(SemanticVersion a, SemanticVersion b)
-		{
-			return a.CompareTo(b) > 0;
-		}
+        public static bool operator !=(SemanticVersion a, SemanticVersion b)
+        {
+            return !(a == b);
+        }
 
-		public static bool operator <=(SemanticVersion a, SemanticVersion b)
-		{
-			return a.CompareTo(b) <= 0;
-		}
+        public static bool operator <(SemanticVersion a, SemanticVersion b)
+        {
+            return a.CompareTo(b) < 0;
+        }
 
-		public static bool operator >=(SemanticVersion a, SemanticVersion b)
-		{
-			return a.CompareTo(b) >= 0;
-		}
-	}
+        public static bool operator >(SemanticVersion a, SemanticVersion b)
+        {
+            return a.CompareTo(b) > 0;
+        }
+
+        public static bool operator <=(SemanticVersion a, SemanticVersion b)
+        {
+            return a.CompareTo(b) <= 0;
+        }
+
+        public static bool operator >=(SemanticVersion a, SemanticVersion b)
+        {
+            return a.CompareTo(b) >= 0;
+        }
+    }
 }

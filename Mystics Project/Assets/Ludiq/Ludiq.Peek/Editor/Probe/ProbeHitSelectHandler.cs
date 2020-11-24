@@ -1,9 +1,6 @@
-﻿using UnityObject = UnityEngine.Object;
-
-namespace Ludiq.Peek
+﻿namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public delegate void ProbeHitSelectHandler(bool add);
+    public delegate void ProbeHitSelectHandler(bool add);
 }

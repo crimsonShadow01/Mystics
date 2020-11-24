@@ -2,16 +2,16 @@
 
 namespace Ludiq.PeekCore
 {
-	public sealed class FieldsCloner : ReflectedCloner
-	{
-		protected override bool IncludeField(FieldInfo field)
-		{
-			return true;
-		}
+    public sealed class FieldsCloner : ReflectedCloner
+    {
+        protected override bool IncludeField(FieldInfo field)
+        {
+            return true;
+        }
 
-		protected override bool IncludeProperty(PropertyInfo property)
-		{
-			return false;
-		}
-	}
+        protected override bool IncludeProperty(PropertyInfo property)
+        {
+            return false;
+        }
+    }
 }

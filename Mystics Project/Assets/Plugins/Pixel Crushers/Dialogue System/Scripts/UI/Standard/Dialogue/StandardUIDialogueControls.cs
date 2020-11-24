@@ -1,7 +1,7 @@
 // Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
 using System;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem
 {
@@ -99,10 +99,10 @@ namespace PixelCrushers.DialogueSystem
         {
             HideSubtitlePanelsImmediate();
             HideMenuPanelsImmediate();
-            if (mainPanel != null && !dontDeactivateMainPanel) 
-            { 
-                mainPanel.gameObject.SetActive(false); 
-                mainPanel.panelState = UIPanel.PanelState.Closed; 
+            if (mainPanel != null && !dontDeactivateMainPanel)
+            {
+                mainPanel.gameObject.SetActive(false);
+                mainPanel.panelState = UIPanel.PanelState.Closed;
             }
         }
 

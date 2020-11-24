@@ -1,164 +1,163 @@
+using Ludiq.PeekCore.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Ludiq.PeekCore.CodeDom;
 using UnityEngine;
 using UnityEngine.Scripting;
-using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.PeekCore
 {
-	public static class AotPreBuilder
-	{
-		// Automatically generates the link.xml file to prevent stripping.
-		// Currently only used for plugin assemblies, because blanket preserving 
-		// all setting assemblies sometimes causes the IL2CPP process to fail. 
-		// For settings assemblies, the AOT stubs are good enough to fool
-		// the static code analysis without needing this full coverage.
-		// https://docs.unity3d.com/Manual/iphone-playerSizeOptimization.html
-		// However, for FullSerializer, we need to preserve our custom assemblies.
-		// This is mostly because IL2CPP will attempt to transform non-public
-		// property setters used in deserialization into read-only accessors
-		// that return false on PropertyInfo.CanWrite, but only in stripped builds.
-		// Therefore, in stripped builds, FS will skip properties that should be
-		// deserialized without any error (and that took hours of debugging to figure out).
-		public static void GenerateLinker(string path)
-		{
-			var linker = new XDocument();
+    public static class AotPreBuilder
+    {
+        // Automatically generates the link.xml file to prevent stripping.
+        // Currently only used for plugin assemblies, because blanket preserving 
+        // all setting assemblies sometimes causes the IL2CPP process to fail. 
+        // For settings assemblies, the AOT stubs are good enough to fool
+        // the static code analysis without needing this full coverage.
+        // https://docs.unity3d.com/Manual/iphone-playerSizeOptimization.html
+        // However, for FullSerializer, we need to preserve our custom assemblies.
+        // This is mostly because IL2CPP will attempt to transform non-public
+        // property setters used in deserialization into read-only accessors
+        // that return false on PropertyInfo.CanWrite, but only in stripped builds.
+        // Therefore, in stripped builds, FS will skip properties that should be
+        // deserialized without any error (and that took hours of debugging to figure out).
+        public static void GenerateLinker(string path)
+        {
+            var linker = new XDocument();
 
-			var linkerNode = new XElement("linker");
+            var linkerNode = new XElement("linker");
 
-			foreach (var pluginAssembly in PluginContainer.plugins
-														  .SelectMany(plugin => plugin.GetType()
-																					  .GetAttributes<PluginRuntimeAssemblyAttribute>()
-																					  .Select(a => a.assemblyName))
-														  .Distinct())
-			{
-				var assemblyNode = new XElement("assembly");
-				var fullnameAttribute = new XAttribute("fullname", pluginAssembly);
-				var preserveAttribute = new XAttribute("preserve", "all");
-				assemblyNode.Add(fullnameAttribute);
-				assemblyNode.Add(preserveAttribute);
-				linkerNode.Add(assemblyNode);
-			}
+            foreach (var pluginAssembly in PluginContainer.plugins
+                                                          .SelectMany(plugin => plugin.GetType()
+                                                                                      .GetAttributes<PluginRuntimeAssemblyAttribute>()
+                                                                                      .Select(a => a.assemblyName))
+                                                          .Distinct())
+            {
+                var assemblyNode = new XElement("assembly");
+                var fullnameAttribute = new XAttribute("fullname", pluginAssembly);
+                var preserveAttribute = new XAttribute("preserve", "all");
+                assemblyNode.Add(fullnameAttribute);
+                assemblyNode.Add(preserveAttribute);
+                linkerNode.Add(assemblyNode);
+            }
 
-			linker.Add(linkerNode);
+            linker.Add(linkerNode);
 
-			PathUtility.CreateDirectoryIfNeeded(LudiqCore.Paths.transientGenerated);
-			
-			VersionControlUtility.Unlock(path);
+            PathUtility.CreateDirectoryIfNeeded(LudiqCore.Paths.transientGenerated);
 
-			if (File.Exists(path))
-			{
-				File.Delete(path);
-			}
+            VersionControlUtility.Unlock(path);
 
-			// Using ToString instead of Save to omit the <?xml> declaration,
-			// which doesn't appear in the Unity documentation page for the linker.
-			File.WriteAllText(path, linker.ToString());
-		}
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
 
-		public static IEnumerable<object> FindAllProjectStubs()
-		{
-			// Plugins
-			
-			foreach (var pluginStub in FindAllPluginStubs())
-			{
-				yield return pluginStub;
-			}
+            // Using ToString instead of Save to omit the <?xml> declaration,
+            // which doesn't appear in the Unity documentation page for the linker.
+            File.WriteAllText(path, linker.ToString());
+        }
 
-			// Assets
-			
-			foreach (var assetStub in FindAllAssetStubs())
-			{
-				yield return assetStub;
-			}
-		}
+        public static IEnumerable<object> FindAllProjectStubs()
+        {
+            // Plugins
 
-		private static IEnumerable<object> FindAllPluginStubs()
-		{
-			return PluginContainer.plugins.SelectMany(p => p.aotStubs);
-		}
+            foreach (var pluginStub in FindAllPluginStubs())
+            {
+                yield return pluginStub;
+            }
 
-		private static IEnumerable<object> FindAllAssetStubs()
-		{
-			return UnityAPI.Await(() => LinqUtility.Concat<object>
-			(
-				AssetUtility.FindAllAssetsOfType<IAotStubbable>()
-				            .SelectMany(aot => aot.aotStubs),
+            // Assets
 
-				AssetUtility.FindAllAssetsOfType<GameObject>()
-				            .SelectMany(go => go.GetComponents<IAotStubbable>()
-				            .SelectMany(component => component.aotStubs))
-			).ToArray());
-		}
+            foreach (var assetStub in FindAllAssetStubs())
+            {
+                yield return assetStub;
+            }
+        }
 
-		public static IEnumerable<object> FindAllSceneStubs()
-		{
-			return UnityObjectUtility.FindObjectsOfTypeInAllScenes<IAotStubbable>()
-									 .SelectMany(aot => aot.aotStubs);
-		}
+        private static IEnumerable<object> FindAllPluginStubs()
+        {
+            return PluginContainer.plugins.SelectMany(p => p.aotStubs);
+        }
 
-		public static void GenerateStubScript(string scriptPath, IEnumerable<object> stubs)
-		{
-			Ensure.That(nameof(stubs)).IsNotNull(stubs);
+        private static IEnumerable<object> FindAllAssetStubs()
+        {
+            return UnityAPI.Await(() => LinqUtility.Concat<object>
+            (
+                AssetUtility.FindAllAssetsOfType<IAotStubbable>()
+                            .SelectMany(aot => aot.aotStubs),
 
-			var stubWriters = stubs.Select(s => AotStubWriterProvider.instance.GetDecorator(s)).ToHashSet();
+                AssetUtility.FindAllAssetsOfType<GameObject>()
+                            .SelectMany(go => go.GetComponents<IAotStubbable>()
+                            .SelectMany(component => component.aotStubs))
+            ).ToArray());
+        }
 
-			var unit = new CodeCompileUnit();
-			unit.StartDirectives.Add(new CodePragmaWarningDirective(CodePragmaWarningSetting.Disable, new[] { 219 })); // Disable unused variable warning
+        public static IEnumerable<object> FindAllSceneStubs()
+        {
+            return UnityObjectUtility.FindObjectsOfTypeInAllScenes<IAotStubbable>()
+                                     .SelectMany(aot => aot.aotStubs);
+        }
 
-			var @namespace = new CodeNamespace("Ludiq.Generated.Aot");
+        public static void GenerateStubScript(string scriptPath, IEnumerable<object> stubs)
+        {
+            Ensure.That(nameof(stubs)).IsNotNull(stubs);
 
-			unit.Namespaces.Add(@namespace);
+            var stubWriters = stubs.Select(s => AotStubWriterProvider.instance.GetDecorator(s)).ToHashSet();
 
-			var @class = new CodeClassTypeDeclaration(CodeMemberModifiers.Public, "AotStubs");
+            var unit = new CodeCompileUnit();
+            unit.StartDirectives.Add(new CodePragmaWarningDirective(CodePragmaWarningSetting.Disable, new[] { 219 })); // Disable unused variable warning
 
-			@class.CustomAttributes.Add(new CodeAttributeDeclaration(Code.TypeRef(typeof(PreserveAttribute))));
+            var @namespace = new CodeNamespace("Ludiq.Generated.Aot");
 
-			@namespace.Types.Add(@class);
+            unit.Namespaces.Add(@namespace);
 
-			var usedMethodNames = new HashSet<string>();
+            var @class = new CodeClassTypeDeclaration(CodeMemberModifiers.Public, "AotStubs");
 
-			foreach (var stubWriter in stubWriters.OrderBy(sw => sw.stubMethodComment))
-			{
-				if (stubWriter.skip)
-				{
-					continue;
-				}
+            @class.CustomAttributes.Add(new CodeAttributeDeclaration(Code.TypeRef(typeof(PreserveAttribute))));
 
-				var methodName = stubWriter.stubMethodName;
+            @namespace.Types.Add(@class);
 
-				var i = 0;
+            var usedMethodNames = new HashSet<string>();
 
-				while (usedMethodNames.Contains(methodName))
-				{
-					methodName = stubWriter.stubMethodName + "_" + i++;
-				}
+            foreach (var stubWriter in stubWriters.OrderBy(sw => sw.stubMethodComment))
+            {
+                if (stubWriter.skip)
+                {
+                    continue;
+                }
 
-				usedMethodNames.Add(methodName);
+                var methodName = stubWriter.stubMethodName;
 
-				var method = new CodeMethodMember(CodeMemberModifiers.Public | CodeMemberModifiers.Static, Code.TypeRef(typeof(void)), methodName, Enumerable.Empty<CodeParameterDeclaration>(), stubWriter.GetStubStatements().ToArray());
-				method.CustomAttributes.Add(new CodeAttributeDeclaration(Code.TypeRef(typeof(PreserveAttribute), true)));
-				method.Comments.Add(new CodeComment(stubWriter.stubMethodComment));
+                var i = 0;
 
-				@class.Members.Add(method);
-			}
+                while (usedMethodNames.Contains(methodName))
+                {
+                    methodName = stubWriter.stubMethodName + "_" + i++;
+                }
 
-			PathUtility.CreateDirectoryIfNeeded(LudiqCore.Paths.transientGenerated);
-			
-			VersionControlUtility.Unlock(scriptPath);
+                usedMethodNames.Add(methodName);
 
-			if (File.Exists(scriptPath))
-			{
-				File.Delete(scriptPath);
-			}
+                var method = new CodeMethodMember(CodeMemberModifiers.Public | CodeMemberModifiers.Static, Code.TypeRef(typeof(void)), methodName, Enumerable.Empty<CodeParameterDeclaration>(), stubWriter.GetStubStatements().ToArray());
+                method.CustomAttributes.Add(new CodeAttributeDeclaration(Code.TypeRef(typeof(PreserveAttribute), true)));
+                method.Comments.Add(new CodeComment(stubWriter.stubMethodComment));
 
-			using (var scriptWriter = new StreamWriter(scriptPath))
-			{
-				CodeGenerator.GenerateCodeFromCompileUnit(unit, new TextCodeWriter(scriptWriter), new CodeGeneratorOptions(indentString: "\t"));
-			}
-		}
-	}
+                @class.Members.Add(method);
+            }
+
+            PathUtility.CreateDirectoryIfNeeded(LudiqCore.Paths.transientGenerated);
+
+            VersionControlUtility.Unlock(scriptPath);
+
+            if (File.Exists(scriptPath))
+            {
+                File.Delete(scriptPath);
+            }
+
+            using (var scriptWriter = new StreamWriter(scriptPath))
+            {
+                CodeGenerator.GenerateCodeFromCompileUnit(unit, new TextCodeWriter(scriptWriter), new CodeGeneratorOptions(indentString: "\t"));
+            }
+        }
+    }
 }

@@ -18,16 +18,16 @@ namespace VisualDesignCafe.Rendering.Nature
             RenderPipelineManager.beginFrameRendering += OnBeginFrameRendering;
         }
 
-        private static void OnBeginFrameRendering( ScriptableRenderContext context, Camera[] cameras )
+        private static void OnBeginFrameRendering(ScriptableRenderContext context, Camera[] cameras)
         {
             try
             {
-                foreach( var renderer in NatureRenderer.Renderers )
-                    foreach( var camera in cameras )
-                        if( renderer.isActiveAndEnabled )
-                            renderer.Render( camera );
+                foreach (var renderer in NatureRenderer.Renderers)
+                    foreach (var camera in cameras)
+                        if (renderer.isActiveAndEnabled)
+                            renderer.Render(camera);
             }
-            catch( System.InvalidOperationException )
+            catch (System.InvalidOperationException)
             {
                 // Exception gets throws when forcing a restart of Nature Renderer
                 // when a setting changed in the editor. This happens because

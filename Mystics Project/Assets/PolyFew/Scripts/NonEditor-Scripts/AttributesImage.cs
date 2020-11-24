@@ -1,9 +1,9 @@
 #if UNITY_EDITOR
 
 
-using UnityEngine;
-using UnityEditor.Experimental.AssetImporters;
 using System.IO;
+using UnityEditor.Experimental.AssetImporters;
+using UnityEngine;
 
 namespace BrainFailProductions.PolyFew
 {

@@ -38,7 +38,7 @@ namespace PlaceholderSoftware.WetStuff.Rendering
         {
             if (!(obj is MaterialPermutation)) return false;
 
-            return Equals((MaterialPermutation) obj);
+            return Equals((MaterialPermutation)obj);
         }
 
         public bool Equals(MaterialPermutation other)

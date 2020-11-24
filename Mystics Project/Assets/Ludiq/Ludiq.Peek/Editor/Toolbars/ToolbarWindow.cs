@@ -1,18 +1,17 @@
 ﻿namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public enum ToolbarWindow
-	{
-		Other,
+    public enum ToolbarWindow
+    {
+        Other,
 
-		Hierarchy,
+        Hierarchy,
 
-		Project,
+        Project,
 
-		Scene,
+        Scene,
 
-		HierarchyPopup
-	}
+        HierarchyPopup
+    }
 }

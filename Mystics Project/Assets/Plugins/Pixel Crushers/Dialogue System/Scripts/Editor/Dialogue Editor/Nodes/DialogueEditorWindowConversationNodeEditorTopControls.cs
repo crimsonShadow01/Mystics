@@ -1,6 +1,6 @@
-using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem.DialogueEditor
 {
@@ -236,7 +236,7 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
 
         private void ToggleAddNewNodesToRight()
         {
-           addNewNodesToRight = !addNewNodesToRight;
+            addNewNodesToRight = !addNewNodesToRight;
         }
 
         private void ToggleAutoArrangeOnCreate()

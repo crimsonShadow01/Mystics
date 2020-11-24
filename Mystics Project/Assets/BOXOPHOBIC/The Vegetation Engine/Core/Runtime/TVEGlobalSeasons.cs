@@ -1,7 +1,7 @@
 ﻿// Cristian Pop - https://boxophobic.com/
 
-using UnityEngine;
 using Boxophobic.StyledGUI;
+using UnityEngine;
 
 namespace TheVegetationEngine
 {
@@ -15,7 +15,7 @@ namespace TheVegetationEngine
         [StyledMessage("Info", "Use the Seasons slider to control the element properties when the element is set to Seasons mode.", 0, 10)]
         public bool styledMessage = true;
 
-        [StyledRangeOptions(0, 4, "Season", new string[] { "Winter", "Spring", "Summer", "Autumn", "Winter"})]
+        [StyledRangeOptions(0, 4, "Season", new string[] { "Winter", "Spring", "Summer", "Autumn", "Winter" })]
         public float season = 2f;
 
         [StyledSpace(10)]

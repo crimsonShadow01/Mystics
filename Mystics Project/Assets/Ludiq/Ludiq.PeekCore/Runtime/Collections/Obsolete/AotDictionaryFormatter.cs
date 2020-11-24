@@ -1,5 +1,5 @@
-﻿using Ludiq.PeekCore;
-using Ludiq.OdinSerializer;
+﻿using Ludiq.OdinSerializer;
+using Ludiq.PeekCore;
 
 #pragma warning disable 618
 
@@ -7,49 +7,49 @@ using Ludiq.OdinSerializer;
 
 namespace Ludiq.PeekCore
 {
-	// Odin doesn't seem to like OrderedDictionary at all, so we're handling it manually.
+    // Odin doesn't seem to like OrderedDictionary at all, so we're handling it manually.
 
-	public sealed class AotDictionaryFormatter : MinimalBaseFormatter<AotDictionary>
-	{
-		private static readonly Serializer<object> ObjectSerializer = Serializer.Get<object>();
+    public sealed class AotDictionaryFormatter : MinimalBaseFormatter<AotDictionary>
+    {
+        private static readonly Serializer<object> ObjectSerializer = Serializer.Get<object>();
 
-		protected override AotDictionary GetUninitializedObject()
-		{
-			return new AotDictionary();
-		}
+        protected override AotDictionary GetUninitializedObject()
+        {
+            return new AotDictionary();
+        }
 
-		protected override void Read(ref AotDictionary dictionary, IDataReader reader)
-		{
-			reader.EnterArray(out var length);
+        protected override void Read(ref AotDictionary dictionary, IDataReader reader)
+        {
+            reader.EnterArray(out var length);
 
-			for (int i = 0; i < length; i++)
-			{
-				var key = ObjectSerializer.ReadValue(reader);
-				var value = ObjectSerializer.ReadValue(reader);
+            for (int i = 0; i < length; i++)
+            {
+                var key = ObjectSerializer.ReadValue(reader);
+                var value = ObjectSerializer.ReadValue(reader);
 
-				dictionary.Add(key, value);
-			}
+                dictionary.Add(key, value);
+            }
 
-			reader.ExitArray();
-		}
+            reader.ExitArray();
+        }
 
-		protected override void Write(ref AotDictionary dictionary, IDataWriter writer)
-		{
-			writer.BeginArrayNode(dictionary.Count);
+        protected override void Write(ref AotDictionary dictionary, IDataWriter writer)
+        {
+            writer.BeginArrayNode(dictionary.Count);
 
-			var keys = new object[dictionary.Keys.Count];
-			dictionary.Keys.CopyTo(keys, 0);
+            var keys = new object[dictionary.Keys.Count];
+            dictionary.Keys.CopyTo(keys, 0);
 
-			for (int i = 0; i < dictionary.Count; i++)
-			{
-				var key = keys[i];
-				var value = dictionary[i];
-				
-				ObjectSerializer.WriteValue(key, writer);
-				ObjectSerializer.WriteValue(value, writer);
-			}
+            for (int i = 0; i < dictionary.Count; i++)
+            {
+                var key = keys[i];
+                var value = dictionary[i];
 
-			writer.EndArrayNode();
-		}
-	}
+                ObjectSerializer.WriteValue(key, writer);
+                ObjectSerializer.WriteValue(value, writer);
+            }
+
+            writer.EndArrayNode();
+        }
+    }
 }

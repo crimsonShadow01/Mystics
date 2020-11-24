@@ -67,7 +67,7 @@ namespace PlaceholderSoftware.WetStuff.Debugging
         [NotNull]
         public static Log Create(LogCategory category, string name)
         {
-            return Create((int) category, name);
+            return Create((int)category, name);
         }
 
         [NotNull]
@@ -78,7 +78,7 @@ namespace PlaceholderSoftware.WetStuff.Debugging
 
         public static void SetLogLevel(LogCategory category, LogLevel level)
         {
-            SetLogLevel((int) category, level);
+            SetLogLevel((int)category, level);
         }
 
         public static void SetLogLevel(int category, LogLevel level)
@@ -88,7 +88,7 @@ namespace PlaceholderSoftware.WetStuff.Debugging
 
         public static LogLevel GetLogLevel(LogCategory category)
         {
-            return GetLogLevel((int) category);
+            return GetLogLevel((int)category);
         }
 
         public static LogLevel GetLogLevel(int category)
@@ -209,7 +209,7 @@ namespace PlaceholderSoftware.WetStuff.Debugging
         {
             _category = category;
 
-            _basicFormat = "[" + LoggingConstants.AssetName + ":" + (LogCategory) category + "] ({0:HH:mm:ss.fff}) " + name + ": {1}";
+            _basicFormat = "[" + LoggingConstants.AssetName + ":" + (LogCategory)category + "] ({0:HH:mm:ss.fff}) " + name + ": {1}";
             _debugFormat = "DEBUG " + _basicFormat;
             _traceFormat = "TRACE " + _basicFormat;
         }

@@ -22,7 +22,7 @@ namespace Doozy.Installer
         {
             bool flag = false;
             int num = 0;
-            foreach (BuildTargetGroup buildTargetGroup in (BuildTargetGroup[]) Enum.GetValues(typeof(BuildTargetGroup)))
+            foreach (BuildTargetGroup buildTargetGroup in (BuildTargetGroup[])Enum.GetValues(typeof(BuildTargetGroup)))
                 if (IsValidBuildTargetGroup(buildTargetGroup))
                 {
                     string defineSymbolsForGroup = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
@@ -42,7 +42,7 @@ namespace Doozy.Installer
         {
             bool flag = false;
             int num = 0;
-            foreach (BuildTargetGroup buildTargetGroup in (BuildTargetGroup[]) Enum.GetValues(typeof(BuildTargetGroup)))
+            foreach (BuildTargetGroup buildTargetGroup in (BuildTargetGroup[])Enum.GetValues(typeof(BuildTargetGroup)))
                 if (IsValidBuildTargetGroup(buildTargetGroup))
                 {
                     string[] array = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup).Split(';');
@@ -74,7 +74,7 @@ namespace Doozy.Installer
         /// <param name="buildTargetGroup"><see cref="T:UnityEditor.BuildTargetGroup" />to use. Leave NULL to check in all of them.</param>
         public static bool HasGlobalDefine(string id, BuildTargetGroup? buildTargetGroup = null)
         {
-            BuildTargetGroup[] buildTargetGroupArray = buildTargetGroup.HasValue ? new[] {buildTargetGroup.Value} : (BuildTargetGroup[]) Enum.GetValues(typeof(BuildTargetGroup));
+            BuildTargetGroup[] buildTargetGroupArray = buildTargetGroup.HasValue ? new[] { buildTargetGroup.Value } : (BuildTargetGroup[])Enum.GetValues(typeof(BuildTargetGroup));
             return buildTargetGroupArray.Where(IsValidBuildTargetGroup).Any(buildTargetGroup1 => Array.IndexOf(PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup1).Split(';'), id) != -1);
         }
 
@@ -85,11 +85,11 @@ namespace Doozy.Installer
             if (unityEditorModuleManagerType == null) return true;
             MethodInfo method1 = unityEditorModuleManagerType.GetMethod("GetTargetStringFromBuildTargetGroup", BindingFlags.Static | BindingFlags.NonPublic);
             MethodInfo method2 = typeof(PlayerSettings).GetMethod("GetPlatformName", BindingFlags.Static | BindingFlags.NonPublic);
-            var parameters = new object[] {group};
+            var parameters = new object[] { group };
             if (method1 == null) return true;
-            string str1 = (string) method1.Invoke(null, parameters);
+            string str1 = (string)method1.Invoke(null, parameters);
             if (method2 == null) return true;
-            string str2 = (string) method2.Invoke(null, new object[] {group});
+            string str2 = (string)method2.Invoke(null, new object[] { group });
             if (string.IsNullOrEmpty(str1)) return !string.IsNullOrEmpty(str2);
             return true;
         }

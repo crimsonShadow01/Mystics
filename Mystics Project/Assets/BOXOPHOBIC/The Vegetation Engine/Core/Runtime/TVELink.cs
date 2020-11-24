@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Reflection;
 using System;
-using Boxophobic;
 using Boxophobic.StyledGUI;
 #if UNITY_EDITOR
 using UnityEditor;

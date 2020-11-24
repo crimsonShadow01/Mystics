@@ -198,7 +198,7 @@ namespace PlaceholderSoftware.WetStuff.Timeline
             if (attrs == null || attrs.Length == 0)
                 throw new UnityException(string.Format("Must put a `{0}` on {1}", typeof(TAttr).Name, obj.GetType().Name));
 
-            return (TAttr) attrs.Single();
+            return (TAttr)attrs.Single();
         }
 #endif
     }

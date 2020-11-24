@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
 using PlaceholderSoftware.WetStuff.Debugging;
 using PlaceholderSoftware.WetStuff.Rendering;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR;
@@ -261,7 +261,7 @@ namespace PlaceholderSoftware.WetStuff
 
         public WetDecalRenderer([NotNull] Camera camera)
         {
-            Log.AssertAndThrowPossibleBug((bool) camera, "178CD4B2-1FD8-4BF2-B14D-EC9CA50436CA", "camera is null");
+            Log.AssertAndThrowPossibleBug((bool)camera, "178CD4B2-1FD8-4BF2-B14D-EC9CA50436CA", "camera is null");
 
             _camera = camera;
             _system = new WetDecalSystem();
@@ -337,7 +337,7 @@ namespace PlaceholderSoftware.WetStuff
                     1
                 );
             }
-            
+
             cmd.SetRenderTarget(MaskId, BuiltinRenderTextureType.CameraTarget);
             cmd.ClearRenderTarget(false, true, new Color(0, 0, 0, 0));
 

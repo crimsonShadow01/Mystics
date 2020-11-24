@@ -6,17 +6,17 @@ namespace Ludiq.PeekCore.CodeDom
 {
     public sealed class CodeYieldBreakStatement : CodeStatement
     {
-        public CodeYieldBreakStatement() {}
+        public CodeYieldBreakStatement() { }
 
-		public override bool IsTerminator => true;
+        public override bool IsTerminator => true;
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			generator.WriteBlankLineIfJustExitedBlock();
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.WriteBlankLineIfJustExitedBlock();
             generator.Write(TokenType.Keyword, "yield");
             generator.Write(TokenType.Space, ' ');
             generator.Write(TokenType.Keyword, "break");
-			generator.WriteStatementEnd(emitOptions);
-		}
+            generator.WriteStatementEnd(emitOptions);
+        }
     }
 }

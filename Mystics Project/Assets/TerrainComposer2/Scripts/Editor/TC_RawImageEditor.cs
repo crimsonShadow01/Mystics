@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -47,19 +46,19 @@ namespace TerrainComposer2
             EditorGUILayout.EndVertical();
 
             GUILayout.Space(10);
-            
+
             TD.DrawLabelWidthUnderline("Details", 14);
-            
+
             EditorGUILayout.BeginVertical("Box");
-            
+
             EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel("Resolution");
-                EditorGUILayout.LabelField(rawImage.resolution.ToString());
+            EditorGUILayout.PrefixLabel("Resolution");
+            EditorGUILayout.LabelField(rawImage.resolution.ToString());
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PrefixLabel("Node References");
-                EditorGUILayout.LabelField(rawImage.referenceCount.ToString());
+            EditorGUILayout.PrefixLabel("Node References");
+            EditorGUILayout.LabelField(rawImage.referenceCount.ToString());
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.EndVertical();

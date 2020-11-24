@@ -2,16 +2,16 @@
 
 namespace Ludiq.PeekCore
 {
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
-	public sealed class TypeIconAttribute : Attribute
-	{
-		public TypeIconAttribute(Type type)
-		{
-			Ensure.That(nameof(type)).IsNotNull(type);
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
+    public sealed class TypeIconAttribute : Attribute
+    {
+        public TypeIconAttribute(Type type)
+        {
+            Ensure.That(nameof(type)).IsNotNull(type);
 
-			this.type = type;
-		}
+            this.type = type;
+        }
 
-		public Type type { get; }
-	}
+        public Type type { get; }
+    }
 }

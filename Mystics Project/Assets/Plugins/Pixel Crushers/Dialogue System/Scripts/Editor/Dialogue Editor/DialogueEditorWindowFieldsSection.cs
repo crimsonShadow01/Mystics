@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Pixel Crushers. All rights reserved.
 
-using UnityEngine;
-using UnityEditor;
 using System;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 namespace PixelCrushers.DialogueSystem.DialogueEditor
 {
@@ -64,7 +64,8 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
                     DrawFieldManipulationButtons(i, fields.Count, fields[i].title, ref fieldToRemove, ref fieldToMoveUp, ref fieldToMoveDown);
                     DrawTextAreaSecondPart(fields[i]);
                 }
-                else {
+                else
+                {
                     DrawField(fields[i]);
                     if (isTemplate) DrawPrimaryFieldToggle(fields[i].title, primaryFieldTitles);
                     DrawFieldManipulationButtons(i, fields.Count, fields[i].title, ref fieldToRemove, ref fieldToMoveUp, ref fieldToMoveDown);
@@ -280,12 +281,14 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
                 {
                     newIndex = EditorGUILayout.Popup(index, assetList.names);
                 }
-                else {
+                else
+                {
                     newIndex = EditorGUILayout.Popup(assetLabel, index, assetList.names);
                 }
                 return (newIndex != index) ? assetList.GetID(newIndex) : value;
             }
-            else {
+            else
+            {
                 EditorGUILayout.LabelField("(no database)");
                 return value;
             }
@@ -374,7 +377,8 @@ namespace PixelCrushers.DialogueSystem.DialogueEditor
                 EditorGUILayout.LabelField(new GUIContent(label, tooltip));
                 field.value = EditorGUILayout.TextArea(field.value);
             }
-            else {
+            else
+            {
                 field.value = EditorGUILayout.TextField(new GUIContent(label, tooltip), field.value);
             }
             if (alreadyDrawn != null) alreadyDrawn.Add(field);

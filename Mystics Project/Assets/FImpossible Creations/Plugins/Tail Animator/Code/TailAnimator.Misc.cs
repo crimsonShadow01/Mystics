@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace FIMSpace.FTail
 {
@@ -105,7 +104,7 @@ namespace FIMSpace.FTail
             }
 
             if (IncludeParent) if (TailSegments.Count > 0) if (!TailSegments[0].transform.parent) IncludeParent = false;
-            
+
             if (TailSegments.Count < 1)
             {
                 updateTailAnimator = false;

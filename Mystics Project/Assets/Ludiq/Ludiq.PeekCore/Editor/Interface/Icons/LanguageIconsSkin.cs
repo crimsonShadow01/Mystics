@@ -1,8 +1,8 @@
 namespace Ludiq.PeekCore
 {
-	public enum LanguageIconsSkin
-	{
-		VisualStudioColor,
-		VisualStudioMonochrome
-	}
+    public enum LanguageIconsSkin
+    {
+        VisualStudioColor,
+        VisualStudioMonochrome
+    }
 }

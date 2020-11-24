@@ -2,9 +2,9 @@
 
 namespace Ludiq.PeekCore
 {
-	public interface INotifyCollectionChanged
-	{
-		event Action itemChanged;
-		event Action collectionChanged;
-	}
+    public interface INotifyCollectionChanged
+    {
+        event Action itemChanged;
+        event Action collectionChanged;
+    }
 }

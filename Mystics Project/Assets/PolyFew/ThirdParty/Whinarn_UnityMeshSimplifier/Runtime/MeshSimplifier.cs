@@ -49,7 +49,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -259,7 +258,7 @@ namespace UnityMeshSimplifier
             get { return useSortedEdgeMethod; }
             set { useSortedEdgeMethod = value; }
         }
-        
+
         /// <summary>
         /// Gets or sets if verbose information should be printed to the console.
         /// Default value: false
@@ -952,7 +951,7 @@ namespace UnityMeshSimplifier
                     vertices[i0].q += vertices[i1].q;
 
 
-                    if(isPreservationActive)
+                    if (isPreservationActive)
                     {
                         if (spheresToSubtract != null)
                         {
@@ -961,7 +960,7 @@ namespace UnityMeshSimplifier
                                 if (sphere != null) { sphere.currentEnclosedTrianglesCount--; }
                             }
                         }
-                        
+
                         spheresToSubtract = null;
                     }
 
@@ -1844,7 +1843,7 @@ namespace UnityMeshSimplifier
                         degeneratedTriangles++;
                         continue;
                     }
-                    
+
                     int va = t[0];
                     for (int j = 0; j < TriangleEdgeCount; j++)
                     {
@@ -2017,7 +2016,7 @@ namespace UnityMeshSimplifier
                 {
                     bool ifContinue = false;
 
-                    foreach(var triangle in trisTouchingDeletedVertexOnly)
+                    foreach (var triangle in trisTouchingDeletedVertexOnly)
                     {
                         if (TriangleLiesInSphere(triangle)) { ifContinue = true; }
                     }
@@ -2304,7 +2303,7 @@ namespace UnityMeshSimplifier
             int trisToDelete = (int)(triangleCount * (1.0f - quality));
 
             //DebugMeshPerf.Data.Reset();
-            
+
             UpdateMesh(0);
             InitEdges(out deletedTris);
             RemoveEdgePass(trisToDelete, ref deletedTris);
@@ -2481,7 +2480,7 @@ namespace UnityMeshSimplifier
                         Vertex vert2 = vertices[triangle.v1];
                         Vertex vert3 = vertices[triangle.v2];
 
-                        
+
                         foreach (var sphere in toleranceSpheres)
                         {
                             int count = 0;
@@ -2506,7 +2505,7 @@ namespace UnityMeshSimplifier
                         }
                     }
                 }
-                
+
                 triangleIndexStart += subMeshTriangleCount;
             }
 
@@ -3429,7 +3428,7 @@ namespace UnityMeshSimplifier
 
             else
             {
-                
+
                 Vector3 vertexPosWorld = new Vector3((float)vertex.p.x, (float)vertex.p.y, (float)vertex.p.z);
                 vertexPosWorld = sphere.localToWorldMatrix.MultiplyPoint3x4(vertexPosWorld);
 

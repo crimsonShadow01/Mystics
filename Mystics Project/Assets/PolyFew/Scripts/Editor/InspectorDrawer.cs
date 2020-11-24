@@ -3,25 +3,25 @@
 //////////////////////////////////////////////////////
 
 
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using System;
-using System.Linq;
-using UnityEditor.Callbacks;
-using static BrainFailProductions.PolyFew.UtilityServices;
-using UnityEditor.SceneManagement;
-using static BrainFailProductions.PolyFew.MaterialCombiner.CombiningInformation;
+using System.Collections.Generic;
 using System.IO;
-using Resolution = BrainFailProductions.PolyFew.MaterialCombiner.CombiningInformation.Resolution;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.Callbacks;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using static BrainFailProductions.PolyFew.MaterialCombiner.CombiningInformation;
+using static BrainFailProductions.PolyFew.UtilityServices;
 using CompressionType = BrainFailProductions.PolyFew.MaterialCombiner.CombiningInformation.CompressionType;
+using Resolution = BrainFailProductions.PolyFew.MaterialCombiner.CombiningInformation.Resolution;
 
 namespace BrainFailProductions.PolyFew
 {
-    
+
     [CanEditMultipleObjects]
     [CustomEditor(typeof(PolyFewHost))]
-    public class InspectorDrawer: Editor
+    public class InspectorDrawer : Editor
     {
 
         private static bool PreserveBorders { get { return dataContainer.preserveBorders; } set { dataContainer.preserveBorders = value; } }
@@ -94,10 +94,10 @@ namespace BrainFailProductions.PolyFew
 
         void OnEnable()
         {
-            
+
             //Debug.Log("OnEnable called on InspectorDrawer for POLYFEW");
             if (Selection.gameObjects != null && Selection.gameObjects.Length > 1)
-            {                
+            {
                 isFeasibleTargetForPolyFew = false;
 
                 foreach (GameObject selected in Selection.gameObjects)
@@ -179,7 +179,7 @@ namespace BrainFailProductions.PolyFew
                 containerObject.AddComponent<DataContainer>();
             }
 
-            else if(containerObject.GetComponent<DataContainer>() == null)
+            else if (containerObject.GetComponent<DataContainer>() == null)
             {
                 containerObject.AddComponent<DataContainer>();
             }
@@ -204,11 +204,11 @@ namespace BrainFailProductions.PolyFew
             }
 
 
-            if(dataContainer.textureArraysSettings == null)
+            if (dataContainer.textureArraysSettings == null)
             {
                 ResetTextureArrays();
             }
-            
+
 
             #region Restoring persistent data 
 
@@ -222,11 +222,11 @@ namespace BrainFailProductions.PolyFew
 
             LastDrawer = this;
 
-            
+
             SelectionChanged();
 
-  
-            if(isFeasibleTargetForPolyFew)
+
+            if (isFeasibleTargetForPolyFew)
             {
                 objPositionPrevFrame = Selection.activeTransform.position;
                 objScalePrevFrame = Selection.activeTransform.lossyScale;
@@ -257,7 +257,7 @@ namespace BrainFailProductions.PolyFew
 
             bool sameTarget = PrevSelection && Selection.activeTransform && Selection.activeTransform.GetHashCode().Equals(PrevSelection.GetHashCode());
 
-            if(!sameTarget)
+            if (!sameTarget)
             {
                 DestroyPolyFewHost();
             }
@@ -280,7 +280,7 @@ namespace BrainFailProductions.PolyFew
                     }
                 }
 
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                 }
@@ -332,7 +332,7 @@ namespace BrainFailProductions.PolyFew
                         else if (Tools.current == Tool.Scale)
                         {
 
-                            Vector3 originalPos = toleranceSphere.worldPosition; 
+                            Vector3 originalPos = toleranceSphere.worldPosition;
                             Vector3 objCurrentScale = Selection.activeTransform.lossyScale;
                             Vector3 change = objCurrentScale - objScalePrevFrame;
                             float oldDiameter = toleranceSphere.diameter;
@@ -367,11 +367,11 @@ namespace BrainFailProductions.PolyFew
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            
+
             if (Selection.activeGameObject == null) { return; }
 
-            if(!Selection.activeGameObject.activeSelf) { return; }
-            
+            if (!Selection.activeGameObject.activeSelf) { return; }
+
             if (isFeasibleTargetForPolyFew)
             {
                 toolMainFoldout = EditorGUILayout.Foldout(toolMainFoldout, "");
@@ -481,7 +481,7 @@ namespace BrainFailProductions.PolyFew
                             || dataContainer.objectsHistory[kee].undoOperations == null
                             || dataContainer.objectsHistory[kee].undoOperations.Count == 0;
 
-                    
+
                     EditorGUI.BeginDisabledGroup(flag1);
                     bool hasLods = false;
 
@@ -664,7 +664,7 @@ namespace BrainFailProductions.PolyFew
                                                 {
                                                     UtilityServices.RestoreMeshesFromPairs(unsavedReducedMeshesPairs.Item2);
                                                 }
-                                                
+
                                             }
 
                                             break;
@@ -695,7 +695,7 @@ namespace BrainFailProductions.PolyFew
 
 
                                 fullySucceeded = areMeshesSaved;
-                                
+
                                 // After successfully saving the original meshes copy the modified properties from the modded meshes to the original meshes in the dataContainer list and add the meshes to the objects
                                 if (areMeshesSaved)
                                 {
@@ -738,7 +738,7 @@ namespace BrainFailProductions.PolyFew
                                                     DataContainer.MeshRendererPair mRenderPair = new DataContainer.MeshRendererPair(true, prevMeshCopy);
                                                     originalMeshesClones.Add(gameObject, mRenderPair);
                                                     //Debug.Log("Created mesh copy for undo  Triangles count  " + mRenderPair.mesh.triangles.Length / 3 + "  modded tris length  " + moddedMesh.triangles.Length / 3 + "  moddedMesh.HashCode  " + moddedMesh.GetHashCode() + "  created undo mesh hashcode   " + mRenderPair.mesh.GetHashCode());
-                                                    
+
                                                     mRendererPair.mesh = moddedMesh;
                                                 }
                                                 else
@@ -765,7 +765,7 @@ namespace BrainFailProductions.PolyFew
                                                     }
 
                                                     //mRendererPair.mesh.MakeSimilarToOtherMesh(moddedMesh);
-                                                    
+
                                                 }
 
                                                 filter.sharedMesh = mRendererPair.mesh;
@@ -931,7 +931,7 @@ namespace BrainFailProductions.PolyFew
                                                         reducedMeshPair.Add(gameObject, mPair);
                                                         UtilityServices.RestoreMeshesFromPairs(reducedMeshPair);
                                                     }
-                                              
+
                                                 }
 
                                                 break;
@@ -981,7 +981,7 @@ namespace BrainFailProductions.PolyFew
                                                     DataContainer.MeshRendererPair mRenderPair = new DataContainer.MeshRendererPair(true, prevMeshCopy);
                                                     originalMeshClone.Add(gameObject, mRenderPair);
                                                     //Debug.Log("Created mesh copy for undo  Triangles count  " + mRenderPair.mesh.triangles.Length / 3 + "  modded tris length  " + moddedMesh.triangles.Length / 3 + "  moddedMesh.HashCode  " + moddedMesh.GetHashCode() + "  created undo mesh hashcode   " + mRenderPair.mesh.GetHashCode());
-                                                    
+
                                                     mRendererPair.mesh = moddedMesh;
                                                 }
                                                 else
@@ -1163,7 +1163,7 @@ namespace BrainFailProductions.PolyFew
                     content.text = "Preserve UV Seams";
                     content.tooltip = "Preserve the mesh areas where the UV seams are made.These are the areas where different UV islands are formed (usually the shallow polygon conjested areas).";
 
-                    if(!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018")) { width = 124; }
+                    if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018")) { width = 124; }
                     else { width = 120; }
 
                     EditorGUILayout.LabelField(content, style, GUILayout.Width(width));
@@ -1224,7 +1224,7 @@ namespace BrainFailProductions.PolyFew
 
                     EditorGUILayout.BeginHorizontal();
 
-                    
+
                     content.text = "Regard Curvature";
                     content.tooltip = "Check this option to take into account the discrete curvature of mesh surface during simplification. Taking surface curvature into account can result in very good quality mesh simplification, but it can slow the simplification process significantly.";
 
@@ -1467,7 +1467,7 @@ namespace BrainFailProductions.PolyFew
                             {
                                 lodLevel.sphereIntensities.RemoveAt(a);
 
-                                if(lodLevel.sphereIntensities.Count == 0) { lodLevel.intensityFoldout = false; }
+                                if (lodLevel.sphereIntensities.Count == 0) { lodLevel.intensityFoldout = false; }
                             }
 
                             a--;
@@ -1511,7 +1511,7 @@ namespace BrainFailProductions.PolyFew
                         content.text = "Sphere Size";
                         content.tooltip = "The diameter of this tolerance sphere.";
 
-                        
+
                         if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
                         {
                             GUILayout.Space(1);
@@ -1598,9 +1598,9 @@ namespace BrainFailProductions.PolyFew
                         }
 
                         #region Preservation Strength Slider
-                        
+
                         GUILayout.BeginHorizontal();
-                        
+
                         content = new GUIContent();
                         style = GUI.skin.label;
                         style.richText = true;
@@ -1619,7 +1619,7 @@ namespace BrainFailProductions.PolyFew
                         float oldValue = toleranceSphere.preservationStrength;
                         toleranceSphere.preservationStrength = Mathf.Abs(GUILayout.HorizontalSlider(toleranceSphere.preservationStrength, 0, 100, GUILayout.Width(width), GUILayout.ExpandWidth(true)));
                         style = GUI.skin.textField;
-                        
+
                         if (!Mathf.Approximately(oldValue, toleranceSphere.preservationStrength) && !applyForOptionsChange)
                         {
                             RunOnThreads = CheckOnThreads();
@@ -1633,7 +1633,7 @@ namespace BrainFailProductions.PolyFew
                         oldValue = toleranceSphere.preservationStrength;
                         toleranceSphere.preservationStrength = Mathf.Abs(EditorGUILayout.DelayedFloatField(content, toleranceSphere.preservationStrength, style, GUILayout.Width(10), GUILayout.ExpandWidth(true)));
 
-                        
+
                         if ((int)toleranceSphere.preservationStrength > 100)
                         {
                             toleranceSphere.preservationStrength = GetFirstNDigits((int)toleranceSphere.preservationStrength, 2);
@@ -1654,7 +1654,7 @@ namespace BrainFailProductions.PolyFew
                         {
                             width = 20;
                         }
-                        
+
                         style = GUI.skin.label;
                         content.text = "<b><size=13>%</size></b>";
                         EditorGUILayout.LabelField(content, style, GUILayout.Width(width));
@@ -1702,7 +1702,7 @@ namespace BrainFailProductions.PolyFew
                     content.text = "Reduction Strength";
                     content.tooltip = "The intensity of the reduction process. This is the amount in percentage to reduce the model by.";
 
-                    
+
                     if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
                     {
                         GUILayout.Space(2);
@@ -1857,7 +1857,7 @@ namespace BrainFailProductions.PolyFew
                     content.text = "";
 
                     oldStrength = ReductionStrength;
-                    
+
                     ReductionStrength = Mathf.Abs(EditorGUILayout.DelayedFloatField(content, ReductionStrength, style, GUILayout.Width(10), GUILayout.ExpandWidth(true)));
 
                     if ((int)ReductionStrength > 100)
@@ -2018,7 +2018,7 @@ namespace BrainFailProductions.PolyFew
 
                             string toOpen = String.IsNullOrWhiteSpace(AutoLODSavePath) ? "Assets/" : AutoLODSavePath;
 
-                            if(!String.IsNullOrWhiteSpace(toOpen))
+                            if (!String.IsNullOrWhiteSpace(toOpen))
                             {
                                 if (toOpen.EndsWith("/")) { toOpen.Remove(toOpen.Length - 1, 1); }
 
@@ -2074,7 +2074,7 @@ namespace BrainFailProductions.PolyFew
                             //if (dataContainer.currentLodLevelSettings.Count < UtilityServices.MAX_LOD_COUNT)
                             //{
                             List<float> strengths = new List<float>();
-                            foreach(var sphere in dataContainer.toleranceSpheres) { strengths.Add(100f); }
+                            foreach (var sphere in dataContainer.toleranceSpheres) { strengths.Add(100f); }
 
                             dataContainer.currentLodLevelSettings.Add(new DataContainer.LODLevelSettings(0, 0, false, false, false, true, false, 7, 100, false, false, false, strengths));
                             //}
@@ -2175,7 +2175,7 @@ namespace BrainFailProductions.PolyFew
 
                                 bool isSuccess = UtilityServices.GenerateLODS(Selection.activeGameObject, dataContainer.toleranceSpheres, dataContainer.currentLodLevelSettings, UtilityServices.AutoLODSavePath, null, true, generateUV2);
                                 EditorUtility.ClearProgressBar();
-                                
+
                                 if (isSuccess)
                                 {
                                     EditorSceneManager.MarkSceneDirty(Selection.activeGameObject.scene);
@@ -2541,7 +2541,7 @@ namespace BrainFailProductions.PolyFew
 
                                 lodLevel.regardCurvature = EditorGUILayout.Toggle(lodLevel.regardCurvature, GUILayout.Width(15));
 
-                                
+
                                 GUILayout.Space(11);
 
                                 content.text = "Recalculate Normals";
@@ -2698,7 +2698,7 @@ namespace BrainFailProductions.PolyFew
                             #endregion Regard Tolerance Sphere And Combine Meshes
 
 
-                            if(lodLevel.regardTolerance)
+                            if (lodLevel.regardTolerance)
                             {
 
                                 #region Tolerance Spheres Intensities
@@ -2835,778 +2835,778 @@ namespace BrainFailProductions.PolyFew
 
             }
 
-           
+
             else if (Selection.gameObjects != null && Selection.gameObjects.Length > 1)
             {
-           
+
 
                 #region AUTO LOD
 
 
-                    EditorGUILayout.BeginVertical("GroupBox");
+                EditorGUILayout.BeginVertical("GroupBox");
 
 
-                    #region TITLE HEADER
+                #region TITLE HEADER
 
-                    GUILayout.Space(4);
+                GUILayout.Space(4);
+
+                EditorGUILayout.BeginHorizontal();
+
+                content = new GUIContent();
+                content.text = "<size=13><b><color=#A52A2AFF>AUTOMATIC LOD</color></b></size>";
+                content.tooltip = "Expand this section to see options for automatic LOD generation.";
+
+                style = EditorStyles.foldout;
+                style.richText = true;  // #FF6347ff  //A52A2AFF
+                prevPadding = new RectOffset(style.padding.left, style.padding.right, style.padding.top, style.padding.bottom);
+                style.padding = new RectOffset(20, 0, -1, 0);
+
+                GUILayout.Space(19);
+                FoldAutoLODMultiple = !EditorGUILayout.Foldout(!FoldAutoLODMultiple, content, true, style);
+
+                style.padding = prevPadding;
+
+                style = new GUIStyle();
+                style.richText = true;
+
+                EditorGUILayout.EndHorizontal();
+
+
+                #endregion TITLE HEADER
+
+
+                if (!FoldAutoLODMultiple)
+                {
+                    UtilityServices.DrawHorizontalLine(Color.black, 1, 8);
+                    GUILayout.Space(6);
+
+                    #region Section Header
+
+
+                    GUILayout.Space(6);
 
                     EditorGUILayout.BeginHorizontal();
 
-                    content = new GUIContent();
-                    content.text = "<size=13><b><color=#A52A2AFF>AUTOMATIC LOD</color></b></size>";
-                    content.tooltip = "Expand this section to see options for automatic LOD generation.";
 
-                    style = EditorStyles.foldout;
-                    style.richText = true;  // #FF6347ff  //A52A2AFF
-                    prevPadding = new RectOffset(style.padding.left, style.padding.right, style.padding.top, style.padding.bottom);
-                    style.padding = new RectOffset(20, 0, -1, 0);
+                    #region Change Save Path
 
-                    GUILayout.Space(19);
-                    FoldAutoLODMultiple = !EditorGUILayout.Foldout(!FoldAutoLODMultiple, content, true, style);
 
-                    style.padding = prevPadding;
-
-                    style = new GUIStyle();
+                    style = GUI.skin.button;
                     style.richText = true;
 
-                    EditorGUILayout.EndHorizontal();
 
+                    content = new GUIContent();
+                    content.text = "<b><size=11><color=#006699>Change Save Path</color></size></b>";
+                    content.tooltip = "Change the path where the generated LODs mesh assets will be saved. If you don't select a path the default path will be used. Please note that the chosen path will be used for saving LOD mesh assets in the future, unless changed.";
 
-                    #endregion TITLE HEADER
-
-
-                    if (!FoldAutoLODMultiple)
+                    if (GUILayout.Button(content, style, GUILayout.Width(134), GUILayout.Height(20), GUILayout.ExpandWidth(false)))
                     {
-                        UtilityServices.DrawHorizontalLine(Color.black, 1, 8);
-                        GUILayout.Space(6);
 
-                        #region Section Header
+                        string toOpen = String.IsNullOrWhiteSpace(AutoLODSavePath) ? "Assets/" : AutoLODSavePath;
 
-
-                        GUILayout.Space(6);
-
-                        EditorGUILayout.BeginHorizontal();
-
-
-                        #region Change Save Path
-
-
-                        style = GUI.skin.button;
-                        style.richText = true;
-
-
-                        content = new GUIContent();
-                        content.text = "<b><size=11><color=#006699>Change Save Path</color></size></b>";
-                        content.tooltip = "Change the path where the generated LODs mesh assets will be saved. If you don't select a path the default path will be used. Please note that the chosen path will be used for saving LOD mesh assets in the future, unless changed.";
-
-                        if (GUILayout.Button(content, style, GUILayout.Width(134), GUILayout.Height(20), GUILayout.ExpandWidth(false)))
+                        if (!String.IsNullOrWhiteSpace(toOpen))
                         {
+                            if (toOpen.EndsWith("/")) { toOpen.Remove(toOpen.Length - 1, 1); }
 
-                            string toOpen = String.IsNullOrWhiteSpace(AutoLODSavePath) ? "Assets/" : AutoLODSavePath;
-
-                            if (!String.IsNullOrWhiteSpace(toOpen))
+                            if (!AssetDatabase.IsValidFolder(toOpen))
                             {
-                                if (toOpen.EndsWith("/")) { toOpen.Remove(toOpen.Length - 1, 1); }
-
-                                if (!AssetDatabase.IsValidFolder(toOpen))
-                                {
-                                    toOpen = "Assets/";
-                                }
+                                toOpen = "Assets/";
                             }
-
-
-                            string path = EditorUtility.OpenFolderPanel("Choose LOD Assets Save path", toOpen, "");
-
-
-                            //Validate the save path. It might be outside the assets folder   
-
-                            // User pressed the cancel button
-                            if (string.IsNullOrWhiteSpace(path)) { }
-
-                            else if (!UtilityServices.IsPathInAssetsDir(path))
-                            {
-                                EditorUtility.DisplayDialog("Invalid Path", "The path you chose is not valid.Please choose a path that points to a directory that exists in the project's Assets folder.", "Ok");
-                            }
-
-                            else
-                            {
-                                path = UtilityServices.GetValidFolderPath(path);
-
-                                if (!string.IsNullOrWhiteSpace(path))
-                                {
-                                    UtilityServices.AutoLODSavePath = UtilityServices.SetAndReturnStringPref("autoLODSavePath", path);
-                                }
-                            }
-
-                        }
-
-                        EditorGUI.EndDisabledGroup();
-
-                        #endregion Change Save Path
-
-
-                        GUILayout.Space(40);
-
-                        #region Add LOD Level
-
-                        content = new GUIContent();
-
-                        //GUILayout.FlexibleSpace();
-                        content.tooltip = "Add an LOD level.";
-
-                        content.text = "<b>Add</b>";
-
-                        if (GUILayout.Button(content, style, GUILayout.Width(20), GUILayout.MaxHeight(24), GUILayout.ExpandWidth(true)))
-                        {
-
-                            if (dataContainer.currentLodLevelSettings == null)
-                            {
-                                dataContainer.currentLodLevelSettings = new List<DataContainer.LODLevelSettings>();
-                            }
-
-
-                            List<float> strengths = new List<float>();
-                            foreach (var sphere in dataContainer.toleranceSpheres) { strengths.Add(100f); }
-
-
-                            dataContainer.currentLodLevelSettings.Add(new DataContainer.LODLevelSettings(0, 0, false, false, false, true, false, 7, 100, false, false, false, strengths));
-                        }
-                        
-
-                        #endregion Add LOD Level
-
-                        GUILayout.Space(2);
-
-                        #region Generate LODs
-
-
-                        style = GUI.skin.button;
-                        style.richText = true;
-
-                        originalColor = new Color(GUI.backgroundColor.r, GUI.backgroundColor.g, GUI.backgroundColor.b);
-                        //# ffc14d   60%
-                        //# F0FFFF   73%
-                        //# F5F5DC   75%
-                        GUI.backgroundColor = UtilityServices.HexToColor("#F5F5DC");
-
-                        content = new GUIContent();
-                        content.text = "<size=11> <b><color=#000000>Generate LODS</color></b> </size>";
-                        content.tooltip = "Generate LODs for the selected GameObjects with the common settings specified. Please note that you must save the scene after successful generation of LODs and apply changes to any prefabs manually. Any errors will be silently ignored.";
-
-                        didPressButton = GUILayout.Button(content, style, GUILayout.Width(120), GUILayout.Height(24), GUILayout.ExpandWidth(true));
-
-                        GUI.backgroundColor = originalColor;
-
-
-                        if (didPressButton)
-                        {
-
-                            bool anySuccess = false;
-
-
-                            int option = EditorUtility.DisplayDialogComplex("Generate Secondary UV Set For LightMapping",
-                                        "Should we generate uv2 with default settings for each mesh, and fill them in?. Note that generating uv2 can cause the LOD generation process to get slow.",
-                                        "No",
-                                        "Yes",
-                                        "Cancel");
-
-                            bool generateUV2 = false;
-
-                            switch (option)
-                            {
-                                case 0:
-                                    generateUV2 = false;
-                                    break;
-
-                                case 1:
-                                    generateUV2 = true;
-                                    break;
-
-                                case 2:
-                                    generateUV2 = false;
-                                    break;
-
-                                default:
-                                    generateUV2 = false;
-                                    break;
-                            }
-
-                            // Delete LOD levels that have 0 screen relative height and 0 reduction strength(Excluding the 1st one)
-
-                            List<DataContainer.LODLevelSettings> levelsToDelete = new List<DataContainer.LODLevelSettings>();
-
-                            if (dataContainer.currentLodLevelSettings.Count > 1)
-                            {
-
-                                for (int a = 1; a < dataContainer.currentLodLevelSettings.Count; a++)
-                                {
-                                    var lodLevel = dataContainer.currentLodLevelSettings[a];
-
-                                    if (Mathf.Approximately(lodLevel.transitionHeight, 0))
-                                    {
-                                        levelsToDelete.Add(lodLevel);
-                                    }
-
-                                    if (Mathf.Approximately(lodLevel.reductionStrength, 0))
-                                    {
-                                        levelsToDelete.Add(lodLevel);
-                                    }
-                                }
-                            }
-
-                            foreach (var toDelete in levelsToDelete)
-                            {
-                                dataContainer.currentLodLevelSettings.Remove(toDelete);
-                            }
-
-
-                            foreach (GameObject selected in Selection.gameObjects)
-                            {
-
-                                dataContainer.objectMeshPairs = UtilityServices.GetObjectMeshPairs(selected, true, true);
-                                ReductionPending = false;
-                                ReductionStrength = 0;
-
-                                try
-                                {
-                                    string error = "";
-
-                                    bool isSuccess = UtilityServices.GenerateLODS(selected, dataContainer.toleranceSpheres, dataContainer.currentLodLevelSettings, UtilityServices.AutoLODSavePath, (string err) =>
-                                    {
-                                        error = err;
-
-                                    }, false, generateUV2);
-
-                                    EditorUtility.ClearProgressBar();
-
-                                    if (isSuccess)
-                                    {
-                                        anySuccess = true;
-                                    }
-
-                                    else
-                                    {
-                                        Debug.LogWarning($"Failed to generate LODs for GameObject \"{selected.name}\". {error}");
-                                    }
-
-                                }
-
-                                catch (Exception error)
-                                {
-                                    EditorUtility.ClearProgressBar();
-                                    Debug.LogWarning($"Failed to generate LODs for GameObject \"{selected.name}\". The LODs for this object might be partially generated. {error.ToString()}");
-                                }
-
-                            }
-
-                            if (anySuccess)
-                            {
-                                EditorSceneManager.MarkSceneDirty(Selection.activeGameObject.scene);
-                                EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-                            }
-
-
-                            GUIUtility.ExitGUI();
-
                         }
 
 
-                        #endregion Generate LODs
+                        string path = EditorUtility.OpenFolderPanel("Choose LOD Assets Save path", toOpen, "");
 
 
-                        EditorGUILayout.EndHorizontal();
+                        //Validate the save path. It might be outside the assets folder   
 
-                        GUILayout.Space(2);
+                        // User pressed the cancel button
+                        if (string.IsNullOrWhiteSpace(path)) { }
 
-                        EditorGUILayout.BeginHorizontal();
-
-
-                        if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
+                        else if (!UtilityServices.IsPathInAssetsDir(path))
                         {
-                            GUILayout.Space(177);
+                            EditorUtility.DisplayDialog("Invalid Path", "The path you chose is not valid.Please choose a path that points to a directory that exists in the project's Assets folder.", "Ok");
                         }
 
                         else
                         {
-                            GUILayout.Space(178);
+                            path = UtilityServices.GetValidFolderPath(path);
+
+                            if (!string.IsNullOrWhiteSpace(path))
+                            {
+                                UtilityServices.AutoLODSavePath = UtilityServices.SetAndReturnStringPref("autoLODSavePath", path);
+                            }
+                        }
+
+                    }
+
+                    EditorGUI.EndDisabledGroup();
+
+                    #endregion Change Save Path
+
+
+                    GUILayout.Space(40);
+
+                    #region Add LOD Level
+
+                    content = new GUIContent();
+
+                    //GUILayout.FlexibleSpace();
+                    content.tooltip = "Add an LOD level.";
+
+                    content.text = "<b>Add</b>";
+
+                    if (GUILayout.Button(content, style, GUILayout.Width(20), GUILayout.MaxHeight(24), GUILayout.ExpandWidth(true)))
+                    {
+
+                        if (dataContainer.currentLodLevelSettings == null)
+                        {
+                            dataContainer.currentLodLevelSettings = new List<DataContainer.LODLevelSettings>();
                         }
 
 
-                        //GUILayout.Space(221);
+                        List<float> strengths = new List<float>();
+                        foreach (var sphere in dataContainer.toleranceSpheres) { strengths.Add(100f); }
 
+
+                        dataContainer.currentLodLevelSettings.Add(new DataContainer.LODLevelSettings(0, 0, false, false, false, true, false, 7, 100, false, false, false, strengths));
+                    }
+
+
+                    #endregion Add LOD Level
+
+                    GUILayout.Space(2);
+
+                    #region Generate LODs
+
+
+                    style = GUI.skin.button;
+                    style.richText = true;
+
+                    originalColor = new Color(GUI.backgroundColor.r, GUI.backgroundColor.g, GUI.backgroundColor.b);
+                    //# ffc14d   60%
+                    //# F0FFFF   73%
+                    //# F5F5DC   75%
+                    GUI.backgroundColor = UtilityServices.HexToColor("#F5F5DC");
+
+                    content = new GUIContent();
+                    content.text = "<size=11> <b><color=#000000>Generate LODS</color></b> </size>";
+                    content.tooltip = "Generate LODs for the selected GameObjects with the common settings specified. Please note that you must save the scene after successful generation of LODs and apply changes to any prefabs manually. Any errors will be silently ignored.";
+
+                    didPressButton = GUILayout.Button(content, style, GUILayout.Width(120), GUILayout.Height(24), GUILayout.ExpandWidth(true));
+
+                    GUI.backgroundColor = originalColor;
+
+
+                    if (didPressButton)
+                    {
+
+                        bool anySuccess = false;
+
+
+                        int option = EditorUtility.DisplayDialogComplex("Generate Secondary UV Set For LightMapping",
+                                    "Should we generate uv2 with default settings for each mesh, and fill them in?. Note that generating uv2 can cause the LOD generation process to get slow.",
+                                    "No",
+                                    "Yes",
+                                    "Cancel");
+
+                        bool generateUV2 = false;
+
+                        switch (option)
+                        {
+                            case 0:
+                                generateUV2 = false;
+                                break;
+
+                            case 1:
+                                generateUV2 = true;
+                                break;
+
+                            case 2:
+                                generateUV2 = false;
+                                break;
+
+                            default:
+                                generateUV2 = false;
+                                break;
+                        }
+
+                        // Delete LOD levels that have 0 screen relative height and 0 reduction strength(Excluding the 1st one)
+
+                        List<DataContainer.LODLevelSettings> levelsToDelete = new List<DataContainer.LODLevelSettings>();
+
+                        if (dataContainer.currentLodLevelSettings.Count > 1)
+                        {
+
+                            for (int a = 1; a < dataContainer.currentLodLevelSettings.Count; a++)
+                            {
+                                var lodLevel = dataContainer.currentLodLevelSettings[a];
+
+                                if (Mathf.Approximately(lodLevel.transitionHeight, 0))
+                                {
+                                    levelsToDelete.Add(lodLevel);
+                                }
+
+                                if (Mathf.Approximately(lodLevel.reductionStrength, 0))
+                                {
+                                    levelsToDelete.Add(lodLevel);
+                                }
+                            }
+                        }
+
+                        foreach (var toDelete in levelsToDelete)
+                        {
+                            dataContainer.currentLodLevelSettings.Remove(toDelete);
+                        }
+
+
+                        foreach (GameObject selected in Selection.gameObjects)
+                        {
+
+                            dataContainer.objectMeshPairs = UtilityServices.GetObjectMeshPairs(selected, true, true);
+                            ReductionPending = false;
+                            ReductionStrength = 0;
+
+                            try
+                            {
+                                string error = "";
+
+                                bool isSuccess = UtilityServices.GenerateLODS(selected, dataContainer.toleranceSpheres, dataContainer.currentLodLevelSettings, UtilityServices.AutoLODSavePath, (string err) =>
+                                {
+                                    error = err;
+
+                                }, false, generateUV2);
+
+                                EditorUtility.ClearProgressBar();
+
+                                if (isSuccess)
+                                {
+                                    anySuccess = true;
+                                }
+
+                                else
+                                {
+                                    Debug.LogWarning($"Failed to generate LODs for GameObject \"{selected.name}\". {error}");
+                                }
+
+                            }
+
+                            catch (Exception error)
+                            {
+                                EditorUtility.ClearProgressBar();
+                                Debug.LogWarning($"Failed to generate LODs for GameObject \"{selected.name}\". The LODs for this object might be partially generated. {error.ToString()}");
+                            }
+
+                        }
+
+                        if (anySuccess)
+                        {
+                            EditorSceneManager.MarkSceneDirty(Selection.activeGameObject.scene);
+                            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+                        }
+
+
+                        GUIUtility.ExitGUI();
+
+                    }
+
+
+                    #endregion Generate LODs
+
+
+                    EditorGUILayout.EndHorizontal();
+
+                    GUILayout.Space(2);
+
+                    EditorGUILayout.BeginHorizontal();
+
+
+                    if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
+                    {
+                        GUILayout.Space(177);
+                    }
+
+                    else
+                    {
+                        GUILayout.Space(178);
+                    }
+
+
+                    //GUILayout.Space(221);
+
+                    style = GUI.skin.button;
+                    style.richText = true;
+
+                    originalColor = new Color(GUI.backgroundColor.r, GUI.backgroundColor.g, GUI.backgroundColor.b);
+
+                    content = new GUIContent();
+                    content.text = "<size=11><color=#006699><b>Destroy LODs</b></color></size>";
+                    content.tooltip = $"Destroy the generated LODs for all the selected objects. This will also delete the \".mesh\" files in the folder \"{UtilityServices.LOD_ASSETS_DEFAULT_SAVE_PATH}\" that were created for these objects during the LOD generation process. Please note that you will have to delete the empty folders manually.";
+
+
+                    didPressButton = GUILayout.Button(content, style, GUILayout.Height(17), GUILayout.ExpandWidth(true));
+
+
+                    GUI.backgroundColor = originalColor;
+                    bool didAnySucceed = false;
+
+                    if (didPressButton)
+                    {
+
+                        foreach (GameObject selected in Selection.gameObjects)
+                        {
+                            if (UtilityServices.HasLODs(selected))
+                            {
+                                try
+                                {
+                                    didAnySucceed = UtilityServices.DestroyLODs(selected);
+
+                                    if (!didAnySucceed)
+                                    {
+                                        Debug.LogWarning($"Failed to delete LODs on GameObject \"{selected.name}\"");
+                                    }
+                                }
+
+                                catch (Exception ex)
+                                {
+                                    Debug.LogWarning($"Failed to delete LODs on GameObject \"{selected.name}\". {ex.ToString()}");
+                                }
+
+                            }
+                        }
+
+                        if (didAnySucceed)
+                        {
+                            EditorSceneManager.MarkSceneDirty(Selection.activeGameObject.scene);
+                            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+                        }
+
+                        GUIUtility.ExitGUI();
+                    }
+
+
+                    EditorGUILayout.EndHorizontal();
+
+
+
+                    #endregion Section Header
+
+
+                    GUILayout.Space(4);
+
+
+                    #region Draw LOD Level
+
+
+                    for (int a = 0; a < dataContainer.currentLodLevelSettings.Count; a++)
+                    {
+
+                        var lodLevel = dataContainer.currentLodLevelSettings[a];
+
+                        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+                        EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+
+                        content = new GUIContent();  //FF6347ff  //006699
+                        content.text = String.Format("<b><color=#3e2723>Level {0}</color></b>", a + 1);
+
+                        if (a == 0)
+                        {
+                            content.text = String.Format("<b><color=#3e2723>Level {0} (Base)</color></b>", a + 1);
+                        }
+
+                        style = GUI.skin.label;
+                        style.richText = true;
+
+                        GUILayout.Label(content, style);
+
+                        var previousBackgroundColor = GUI.backgroundColor;
+                        GUI.backgroundColor = new Color(Color.gray.r, Color.gray.g, Color.gray.b, 0.8f);
+                        GUIContent deleteLevelButtonContent = new GUIContent("<b><color=#FFFFFFD2>X</color></b>", "Delete this LOD level.");
                         style = GUI.skin.button;
                         style.richText = true;
 
-                        originalColor = new Color(GUI.backgroundColor.r, GUI.backgroundColor.g, GUI.backgroundColor.b);
+                        if (GUILayout.Button(deleteLevelButtonContent, GUILayout.Width(20)))
+                        {
+                            if (dataContainer.currentLodLevelSettings.Count > 1)
+                            {
+                                dataContainer.currentLodLevelSettings.RemoveAt(a);
+                                a--;
+                            }
+                        }
+
+                        GUI.backgroundColor = previousBackgroundColor;
+
+                        EditorGUILayout.EndHorizontal();
+
+
+                        GUILayout.Space(6);
+
+
+                        #region Reduction Strength Slider
+
+                        GUILayout.BeginHorizontal();
 
                         content = new GUIContent();
-                        content.text = "<size=11><color=#006699><b>Destroy LODs</b></color></size>";
-                        content.tooltip = $"Destroy the generated LODs for all the selected objects. This will also delete the \".mesh\" files in the folder \"{UtilityServices.LOD_ASSETS_DEFAULT_SAVE_PATH}\" that were created for these objects during the LOD generation process. Please note that you will have to delete the empty folders manually.";
+                        style = GUI.skin.label;
+                        style.richText = true;
+                        prevPadding = new RectOffset(style.padding.left, style.padding.right, style.padding.top, style.padding.bottom);
+
+                        content.text = "Reduction Strength";
+                        content.tooltip = "The intensity of the reduction process. This is the amount in percentage to simplify the selected GameObjects by in this LOD level. The lower this value the higher will be the quality of this LOD level. For the base level or level 1 you should keep this to 0.";
 
 
-                        didPressButton = GUILayout.Button(content, style, GUILayout.Height(17), GUILayout.ExpandWidth(true));
+                        GUILayout.Space(16);
+
+                        EditorGUILayout.LabelField(content, style, GUILayout.Width(115));
 
 
-                        GUI.backgroundColor = originalColor;
-                        bool didAnySucceed = false;
+                        lodLevel.reductionStrength = Mathf.Abs(GUILayout.HorizontalSlider(lodLevel.reductionStrength, 0, 100, GUILayout.Width(130), GUILayout.ExpandWidth(true)));
+                        style = GUI.skin.textField;
 
-                        if (didPressButton)
+                        GUILayout.Space(5);
+
+                        content.text = "";
+
+                        lodLevel.reductionStrength = Mathf.Abs(EditorGUILayout.FloatField(content, lodLevel.reductionStrength, style, GUILayout.Width(10), GUILayout.ExpandWidth(true)));
+
+
+                        if ((int)lodLevel.reductionStrength > 100)
                         {
-
-                            foreach (GameObject selected in Selection.gameObjects)
-                            {
-                                if (UtilityServices.HasLODs(selected))
-                                {
-                                    try
-                                    {
-                                        didAnySucceed = UtilityServices.DestroyLODs(selected);
-
-                                        if (!didAnySucceed)
-                                        {
-                                            Debug.LogWarning($"Failed to delete LODs on GameObject \"{selected.name}\"");
-                                        }
-                                    }
-
-                                    catch (Exception ex)
-                                    {
-                                        Debug.LogWarning($"Failed to delete LODs on GameObject \"{selected.name}\". {ex.ToString()}");
-                                    }
-
-                                }
-                            }
-
-                            if (didAnySucceed)
-                            {
-                                EditorSceneManager.MarkSceneDirty(Selection.activeGameObject.scene);
-                                EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
-                            }
-
-                            GUIUtility.ExitGUI();
+                            lodLevel.reductionStrength = GetFirstNDigits((int)lodLevel.reductionStrength, 2);
                         }
+
+                        style = GUI.skin.label;
+                        content.text = "<b><size=13>%</size></b>";
+                        EditorGUILayout.LabelField(content, style, GUILayout.Width(20));
+
+
+
+                        GUILayout.EndHorizontal();
+
+                        #endregion   Reduction Strength Slider
+
+
+                        #region Screen relative transition height
+
+
+                        GUILayout.BeginHorizontal();
+
+                        content = new GUIContent();
+                        style = GUI.skin.label;
+                        style.richText = true;
+                        prevPadding = new RectOffset(style.padding.left, style.padding.right, style.padding.top, style.padding.bottom);
+
+                        content.text = "Transition Height";
+                        content.tooltip = "The screen relative height controls how far the viewing camera must be from an object before a transition to the next LOD level is made.";
+
+
+                        GUILayout.Space(16);
+
+                        EditorGUILayout.LabelField(content, style, GUILayout.Width(115));
+
+                        float oldHeight = lodLevel.transitionHeight;
+                        lodLevel.transitionHeight = Mathf.Abs(GUILayout.HorizontalSlider(lodLevel.transitionHeight, 0, 1, GUILayout.Width(130), GUILayout.ExpandWidth(true)));
+                        style = GUI.skin.textField;
+
+                        GUILayout.Space(5);
+
+                        content.text = "";
+
+                        lodLevel.transitionHeight = Mathf.Abs(EditorGUILayout.FloatField(content, lodLevel.transitionHeight, style, GUILayout.Width(10), GUILayout.ExpandWidth(true)));
+                        lodLevel.transitionHeight = Mathf.Clamp01(lodLevel.transitionHeight);
+
+                        if (!Mathf.Approximately(oldHeight, lodLevel.transitionHeight) && a != 0)
+                        {
+                            float lastLevelHeight = dataContainer.currentLodLevelSettings[a - 1].transitionHeight;
+                            float currentLevelHeight = lodLevel.transitionHeight;
+
+                            if ((lastLevelHeight - currentLevelHeight) <= 0.05f)
+                            {
+                                //Debug.Log($"Last level height  {lastLevelHeight}  currentLevelHeight = {currentLevelHeight}  Mathf.Abs(lastLevelHeight - currentLevelHeight)   " +(Mathf.Abs(lastLevelHeight - currentLevelHeight) + "  a is  " + a));
+                                lodLevel.transitionHeight = lastLevelHeight - 0.05f;
+                                lodLevel.transitionHeight = Mathf.Clamp01(lodLevel.transitionHeight);
+                            }
+                        }
+
+
+                        if (!Mathf.Approximately(oldHeight, lodLevel.transitionHeight) && a != (dataContainer.currentLodLevelSettings.Count - 1))
+                        {
+                            float nextLevelHeight = dataContainer.currentLodLevelSettings[a + 1].transitionHeight;
+                            float currentLevelHeight = lodLevel.transitionHeight;
+
+                            if ((currentLevelHeight - nextLevelHeight) <= 0.05f)
+                            {
+                                //Debug.Log($"Next level height  {nextLevelHeight}  currentLevelHeight = {currentLevelHeight}  Mathf.Abs(lastLevelHeight - currentLevelHeight)   " +(Mathf.Abs(lastLevelHeight - currentLevelHeight) + "  a is  " + a));
+                                lodLevel.transitionHeight = nextLevelHeight + 0.05f;
+                                lodLevel.transitionHeight = Mathf.Clamp01(lodLevel.transitionHeight);
+                            }
+                        }
+
+
+
+                        GUILayout.Space(24);
+
+
+                        GUILayout.EndHorizontal();
+
+
+                        #endregion   Screen relative transition height
+
+
+
+                        GUILayout.Space(2);
+
+                        EditorGUILayout.BeginHorizontal();
+
+
+                        GUILayout.Space(16);
+                        content = new GUIContent();
+                        content.text = "Reduction Options";
+                        content.tooltip = "Expand this section to see options for mesh simplification for this LOD level.";
+
+
+                        if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
+                        {
+                            GUILayout.Space(1);
+                            lodLevel.simplificationOptionsFoldout = EditorGUILayout.Foldout(lodLevel.simplificationOptionsFoldout, content, true);
+                        }
+
+                        else
+                        {
+                            lodLevel.simplificationOptionsFoldout = EditorGUILayout.Foldout(lodLevel.simplificationOptionsFoldout, content, true);
+                        }
+
+
+
+                        #region Combine Meshes
+
+
+                        if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
+                        {
+                            GUILayout.Space(66);
+                        }
+
+                        else
+                        {
+                            GUILayout.Space(40);
+                        }
+
+                        EditorGUILayout.BeginHorizontal();
+
+
+                        style = GUI.skin.label;
+                        content.text = "Combine Meshes";
+                        content.tooltip = "[Deprecated] Combine all renderers and meshes under this level into one, where possible. Please note that this option is present just in case if someone has any special use case where they need to generate LODs with some levels having combined meshes and some having uncombined meshes. You can now use BatchFew to combine meshes exclusively.";
+
+                        // Added it to Batch few
+                        EditorGUILayout.LabelField(content, style, GUILayout.Width(109));
+
+                        lodLevel.combineMeshes = EditorGUILayout.Toggle(lodLevel.combineMeshes, GUILayout.Width(28), GUILayout.ExpandWidth(false));
+
+
+                        EditorGUILayout.EndHorizontal();
+
+                        #endregion Combine Meshes
 
 
                         EditorGUILayout.EndHorizontal();
 
 
 
-                        #endregion Section Header
+                        if (lodLevel.simplificationOptionsFoldout)
+                        {
+                            EditorGUILayout.BeginHorizontal();
+                            GUILayout.Space(6);
+                            UtilityServices.DrawHorizontalLine(Color.black, 1, 8, 14);
+                            EditorGUILayout.EndHorizontal();
+                        }
 
 
-                        GUILayout.Space(4);
+                        #region Reduction extra options
 
 
-                        #region Draw LOD Level
+                        EditorGUILayout.BeginHorizontal();
+
+                        GUILayout.Space(16);
 
 
-                        for (int a = 0; a < dataContainer.currentLodLevelSettings.Count; a++)
+                        if (lodLevel.simplificationOptionsFoldout)
                         {
 
-                            var lodLevel = dataContainer.currentLodLevelSettings[a];
-
-                            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-
-                            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-
-                            content = new GUIContent();  //FF6347ff  //006699
-                            content.text = String.Format("<b><color=#3e2723>Level {0}</color></b>", a + 1);
-
-                            if (a == 0)
-                            {
-                                content.text = String.Format("<b><color=#3e2723>Level {0} (Base)</color></b>", a + 1);
-                            }
-
                             style = GUI.skin.label;
-                            style.richText = true;
 
-                            GUILayout.Label(content, style);
+                            content.text = "Preserve UV Foldover";
+                            content.tooltip = "Check this option to preserve UV foldover for this LOD level.";
 
-                            var previousBackgroundColor = GUI.backgroundColor;
-                            GUI.backgroundColor = new Color(Color.gray.r, Color.gray.g, Color.gray.b, 0.8f);
-                            GUIContent deleteLevelButtonContent = new GUIContent("<b><color=#FFFFFFD2>X</color></b>", "Delete this LOD level.");
-                            style = GUI.skin.button;
-                            style.richText = true;
+                            EditorGUILayout.LabelField(content, style, GUILayout.Width(135));
+                            lodLevel.preserveUVFoldover = EditorGUILayout.Toggle(lodLevel.preserveUVFoldover, GUILayout.Width(18), GUILayout.ExpandWidth(false));
 
-                            if (GUILayout.Button(deleteLevelButtonContent, GUILayout.Width(20)))
-                            {
-                                if (dataContainer.currentLodLevelSettings.Count > 1)
-                                {
-                                    dataContainer.currentLodLevelSettings.RemoveAt(a);
-                                    a--;
-                                }
-                            }
+                            GUILayout.Space(8);
 
-                            GUI.backgroundColor = previousBackgroundColor;
+                            content.text = "Preserve UV Seams";
+                            content.tooltip = "Preserve the mesh areas where the UV seams are made.These are the areas where different UV islands are formed (usually the shallow polygon conjested areas).";
+
+                            EditorGUILayout.LabelField(content, style, GUILayout.Width(135));
+                            lodLevel.preserveUVSeams = EditorGUILayout.Toggle(lodLevel.preserveUVSeams, GUILayout.Width(20), GUILayout.ExpandWidth(false));
+
 
                             EditorGUILayout.EndHorizontal();
 
 
-                            GUILayout.Space(6);
-
-
-                            #region Reduction Strength Slider
-
-                            GUILayout.BeginHorizontal();
-
-                            content = new GUIContent();
-                            style = GUI.skin.label;
-                            style.richText = true;
-                            prevPadding = new RectOffset(style.padding.left, style.padding.right, style.padding.top, style.padding.bottom);
-
-                            content.text = "Reduction Strength";
-                            content.tooltip = "The intensity of the reduction process. This is the amount in percentage to simplify the selected GameObjects by in this LOD level. The lower this value the higher will be the quality of this LOD level. For the base level or level 1 you should keep this to 0.";
-
-
-                            GUILayout.Space(16);
-
-                            EditorGUILayout.LabelField(content, style, GUILayout.Width(115));
-
-
-                            lodLevel.reductionStrength = Mathf.Abs(GUILayout.HorizontalSlider(lodLevel.reductionStrength, 0, 100, GUILayout.Width(130), GUILayout.ExpandWidth(true)));
-                            style = GUI.skin.textField;
-
-                            GUILayout.Space(5);
-
-                            content.text = "";
-
-                            lodLevel.reductionStrength = Mathf.Abs(EditorGUILayout.FloatField(content, lodLevel.reductionStrength, style, GUILayout.Width(10), GUILayout.ExpandWidth(true)));
-
-
-                            if ((int)lodLevel.reductionStrength > 100)
-                            {
-                                lodLevel.reductionStrength = GetFirstNDigits((int)lodLevel.reductionStrength, 2);
-                            }
-
-                            style = GUI.skin.label;
-                            content.text = "<b><size=13>%</size></b>";
-                            EditorGUILayout.LabelField(content, style, GUILayout.Width(20));
-
-
-
-                            GUILayout.EndHorizontal();
-
-                            #endregion   Reduction Strength Slider
-
-
-                            #region Screen relative transition height
-
-
-                            GUILayout.BeginHorizontal();
-
-                            content = new GUIContent();
-                            style = GUI.skin.label;
-                            style.richText = true;
-                            prevPadding = new RectOffset(style.padding.left, style.padding.right, style.padding.top, style.padding.bottom);
-
-                            content.text = "Transition Height";
-                            content.tooltip = "The screen relative height controls how far the viewing camera must be from an object before a transition to the next LOD level is made.";
-
-
-                            GUILayout.Space(16);
-
-                            EditorGUILayout.LabelField(content, style, GUILayout.Width(115));
-
-                            float oldHeight = lodLevel.transitionHeight;
-                            lodLevel.transitionHeight = Mathf.Abs(GUILayout.HorizontalSlider(lodLevel.transitionHeight, 0, 1, GUILayout.Width(130), GUILayout.ExpandWidth(true)));
-                            style = GUI.skin.textField;
-
-                            GUILayout.Space(5);
-
-                            content.text = "";
-
-                            lodLevel.transitionHeight = Mathf.Abs(EditorGUILayout.FloatField(content, lodLevel.transitionHeight, style, GUILayout.Width(10), GUILayout.ExpandWidth(true)));
-                            lodLevel.transitionHeight = Mathf.Clamp01(lodLevel.transitionHeight);
-
-                            if (!Mathf.Approximately(oldHeight, lodLevel.transitionHeight) && a != 0)
-                            {
-                                float lastLevelHeight = dataContainer.currentLodLevelSettings[a - 1].transitionHeight;
-                                float currentLevelHeight = lodLevel.transitionHeight;
-
-                                if ((lastLevelHeight - currentLevelHeight) <= 0.05f)
-                                {
-                                    //Debug.Log($"Last level height  {lastLevelHeight}  currentLevelHeight = {currentLevelHeight}  Mathf.Abs(lastLevelHeight - currentLevelHeight)   " +(Mathf.Abs(lastLevelHeight - currentLevelHeight) + "  a is  " + a));
-                                    lodLevel.transitionHeight = lastLevelHeight - 0.05f;
-                                    lodLevel.transitionHeight = Mathf.Clamp01(lodLevel.transitionHeight);
-                                }
-                            }
-
-
-                            if (!Mathf.Approximately(oldHeight, lodLevel.transitionHeight) && a != (dataContainer.currentLodLevelSettings.Count - 1))
-                            {
-                                float nextLevelHeight = dataContainer.currentLodLevelSettings[a + 1].transitionHeight;
-                                float currentLevelHeight = lodLevel.transitionHeight;
-
-                                if ((currentLevelHeight - nextLevelHeight) <= 0.05f)
-                                {
-                                    //Debug.Log($"Next level height  {nextLevelHeight}  currentLevelHeight = {currentLevelHeight}  Mathf.Abs(lastLevelHeight - currentLevelHeight)   " +(Mathf.Abs(lastLevelHeight - currentLevelHeight) + "  a is  " + a));
-                                    lodLevel.transitionHeight = nextLevelHeight + 0.05f;
-                                    lodLevel.transitionHeight = Mathf.Clamp01(lodLevel.transitionHeight);
-                                }
-                            }
-
-
-
-                            GUILayout.Space(24);
-
-
-                            GUILayout.EndHorizontal();
-
-
-                            #endregion   Screen relative transition height
-
-
-
-                            GUILayout.Space(2);
 
                             EditorGUILayout.BeginHorizontal();
 
 
                             GUILayout.Space(16);
-                            content = new GUIContent();
-                            content.text = "Reduction Options";
-                            content.tooltip = "Expand this section to see options for mesh simplification for this LOD level.";
+
+                            content.text = "Preserve Borders";
+                            content.tooltip = "Check this option to preserve border edges for this LOD level. Border edges are the edges that are unconnected and open. Preserving border edges might lead to lesser polygon reduction but can be helpful where you see serious mesh and texture distortions.";
+
+
+                            EditorGUILayout.LabelField(content, style, GUILayout.Width(114));
+                            GUILayout.Space(21);
+
+
+                            lodLevel.preserveBorders = EditorGUILayout.Toggle(lodLevel.preserveBorders, GUILayout.Width(15), GUILayout.ExpandWidth(false));
+
+                            GUILayout.Space(11);
+
+                            //content.text = "Smart Linking";
+                            //content.tooltip = "Smart linking links vertices that are very close to each other. This helps in the mesh simplification process where holes or other serious issues could arise. Disabling this (where not needed) can cause a minor performance gain.";
+                            content.text = "Use Edge Sort";
+                            content.tooltip = "Using edge sort can result in very good quality mesh simplification in some cases but can be a little slow to run.";
+
+
+                            EditorGUILayout.LabelField(content, style, GUILayout.Width(114));
+                            GUILayout.Space(21);
+
+
+                            lodLevel.useEdgeSort = EditorGUILayout.Toggle(lodLevel.useEdgeSort, GUILayout.Width(10), GUILayout.ExpandWidth(false));
+
+
+                            EditorGUILayout.EndHorizontal();
+
+
+
+                            EditorGUILayout.BeginHorizontal();
+
+
+                            content.text = "Regard Curvature";
+                            content.tooltip = "Check this option to take into account the discrete curvature of mesh surface during simplification. Taking surface curvature into account can result in very good quality mesh simplification, but it can slow the simplification process significantly.";
+
+                            GUILayout.Space(16);
+                            EditorGUILayout.LabelField(content, style, GUILayout.Width(135));
+
+                            lodLevel.regardCurvature = EditorGUILayout.Toggle(lodLevel.regardCurvature, GUILayout.Width(50));
+
+
+                            EditorGUILayout.EndHorizontal();
+
+
+                            GUILayout.BeginHorizontal();
+
+
+
+                            if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
+                            {
+                                GUILayout.Space(17);
+                            }
+                            else
+                            {
+                                GUILayout.Space(16);
+                            }
+
+                            content.text = "Aggressiveness";
+                            content.tooltip = "The agressiveness of the reduction algorithm to use for this LOD level. Higher number equals higher quality, but more expensive to run. Lowest value is 7.";
+
+
+                            if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
+                            {
+                                EditorGUILayout.LabelField(content, GUILayout.Width(134));
+                            }
+
+                            else
+                            {
+                                EditorGUILayout.LabelField(content, GUILayout.Width(134));
+                                GUILayout.Space(2);
+                            }
+
+
+
+                            content.text = "";
+
+                            lodLevel.aggressiveness = Mathf.Abs(EditorGUILayout.FloatField(content, lodLevel.aggressiveness, GUILayout.Width(168), GUILayout.ExpandWidth(true)));
+
+                            if (lodLevel.aggressiveness < 7) { lodLevel.aggressiveness = 7; }
+
+
+                            GUILayout.EndHorizontal();
+
+
+
+                            GUILayout.BeginHorizontal();
+
+
+
+                            GUILayout.Space(16);
+
+                            content.text = "Max Iterations";
+                            content.tooltip = "The maximum passes the reduction algorithm does for this LOD level. Higher number is more expensive but can bring you closer to your target quality. 100 is the lowest allowed value.";
 
 
                             if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
                             {
                                 GUILayout.Space(1);
-                                lodLevel.simplificationOptionsFoldout = EditorGUILayout.Foldout(lodLevel.simplificationOptionsFoldout, content, true);
+                                EditorGUILayout.LabelField(content, GUILayout.Width(134));
                             }
 
                             else
                             {
-                                lodLevel.simplificationOptionsFoldout = EditorGUILayout.Foldout(lodLevel.simplificationOptionsFoldout, content, true);
+                                EditorGUILayout.LabelField(content, GUILayout.Width(136));
                             }
 
 
 
-                            #region Combine Meshes
+                            content.text = "";
 
 
                             if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
                             {
-                                GUILayout.Space(66);
+                                lodLevel.maxIterations = Mathf.Abs(EditorGUILayout.IntField(content, lodLevel.maxIterations, GUILayout.Width(168), GUILayout.ExpandWidth(true)));
                             }
 
                             else
                             {
-                                GUILayout.Space(40);
-                            }
-
-                            EditorGUILayout.BeginHorizontal();
-
-
-                            style = GUI.skin.label;
-                            content.text = "Combine Meshes";
-                            content.tooltip = "[Deprecated] Combine all renderers and meshes under this level into one, where possible. Please note that this option is present just in case if someone has any special use case where they need to generate LODs with some levels having combined meshes and some having uncombined meshes. You can now use BatchFew to combine meshes exclusively.";
-
-                            // Added it to Batch few
-                            EditorGUILayout.LabelField(content, style, GUILayout.Width(109));
-
-                            lodLevel.combineMeshes = EditorGUILayout.Toggle(lodLevel.combineMeshes, GUILayout.Width(28), GUILayout.ExpandWidth(false));
-
-
-                            EditorGUILayout.EndHorizontal();
-
-                            #endregion Combine Meshes
-
-
-                            EditorGUILayout.EndHorizontal();
-
-
-
-                            if (lodLevel.simplificationOptionsFoldout)
-                            {
-                                EditorGUILayout.BeginHorizontal();
-                                GUILayout.Space(6);
-                                UtilityServices.DrawHorizontalLine(Color.black, 1, 8, 14);
-                                EditorGUILayout.EndHorizontal();
+                                lodLevel.maxIterations = Mathf.Abs(EditorGUILayout.IntField(content, lodLevel.maxIterations, GUILayout.Width(168), GUILayout.ExpandWidth(true)));
                             }
 
 
-                            #region Reduction extra options
-
-
-                            EditorGUILayout.BeginHorizontal();
-
-                            GUILayout.Space(16);
-
-
-                            if (lodLevel.simplificationOptionsFoldout)
-                            {
-
-                                style = GUI.skin.label;
-
-                                content.text = "Preserve UV Foldover";
-                                content.tooltip = "Check this option to preserve UV foldover for this LOD level.";
-
-                                EditorGUILayout.LabelField(content, style, GUILayout.Width(135));
-                                lodLevel.preserveUVFoldover = EditorGUILayout.Toggle(lodLevel.preserveUVFoldover, GUILayout.Width(18), GUILayout.ExpandWidth(false));
-
-                                GUILayout.Space(8);
-
-                                content.text = "Preserve UV Seams";
-                                content.tooltip = "Preserve the mesh areas where the UV seams are made.These are the areas where different UV islands are formed (usually the shallow polygon conjested areas).";
-
-                                EditorGUILayout.LabelField(content, style, GUILayout.Width(135));
-                                lodLevel.preserveUVSeams = EditorGUILayout.Toggle(lodLevel.preserveUVSeams, GUILayout.Width(20), GUILayout.ExpandWidth(false));
-
-
-                                EditorGUILayout.EndHorizontal();
-
-
-
-                                EditorGUILayout.BeginHorizontal();
-
-
-                                GUILayout.Space(16);
-
-                                content.text = "Preserve Borders";
-                                content.tooltip = "Check this option to preserve border edges for this LOD level. Border edges are the edges that are unconnected and open. Preserving border edges might lead to lesser polygon reduction but can be helpful where you see serious mesh and texture distortions.";
-
-
-                                EditorGUILayout.LabelField(content, style, GUILayout.Width(114));
-                                GUILayout.Space(21);
-
-
-                                lodLevel.preserveBorders = EditorGUILayout.Toggle(lodLevel.preserveBorders, GUILayout.Width(15), GUILayout.ExpandWidth(false));
-
-                                GUILayout.Space(11);
-
-                                //content.text = "Smart Linking";
-                                //content.tooltip = "Smart linking links vertices that are very close to each other. This helps in the mesh simplification process where holes or other serious issues could arise. Disabling this (where not needed) can cause a minor performance gain.";
-                                content.text = "Use Edge Sort";
-                                content.tooltip = "Using edge sort can result in very good quality mesh simplification in some cases but can be a little slow to run.";
-
-
-                                EditorGUILayout.LabelField(content, style, GUILayout.Width(114));
-                                GUILayout.Space(21);
-
-
-                                lodLevel.useEdgeSort = EditorGUILayout.Toggle(lodLevel.useEdgeSort, GUILayout.Width(10), GUILayout.ExpandWidth(false));
-
-
-                                EditorGUILayout.EndHorizontal();
-
-
-
-                                EditorGUILayout.BeginHorizontal();
-
-
-                                content.text = "Regard Curvature";
-                                content.tooltip = "Check this option to take into account the discrete curvature of mesh surface during simplification. Taking surface curvature into account can result in very good quality mesh simplification, but it can slow the simplification process significantly.";
-
-                                GUILayout.Space(16);
-                                EditorGUILayout.LabelField(content, style, GUILayout.Width(135));
-
-                                lodLevel.regardCurvature = EditorGUILayout.Toggle(lodLevel.regardCurvature, GUILayout.Width(50));
-
-
-                                EditorGUILayout.EndHorizontal();
-
-
-                                GUILayout.BeginHorizontal();
-
-
-
-                                if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
-                                {
-                                    GUILayout.Space(17);
-                                }
-                                else
-                                {
-                                    GUILayout.Space(16);
-                                }
-
-                                content.text = "Aggressiveness";
-                                content.tooltip = "The agressiveness of the reduction algorithm to use for this LOD level. Higher number equals higher quality, but more expensive to run. Lowest value is 7.";
-
-
-                                if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
-                                {
-                                    EditorGUILayout.LabelField(content, GUILayout.Width(134));
-                                }
-
-                                else
-                                {
-                                    EditorGUILayout.LabelField(content, GUILayout.Width(134));
-                                    GUILayout.Space(2);
-                                }
-
-
-
-                                content.text = "";
-
-                                lodLevel.aggressiveness = Mathf.Abs(EditorGUILayout.FloatField(content, lodLevel.aggressiveness, GUILayout.Width(168), GUILayout.ExpandWidth(true)));
-
-                                if (lodLevel.aggressiveness < 7) { lodLevel.aggressiveness = 7; }
-
-
-                                GUILayout.EndHorizontal();
-
-
-
-                                GUILayout.BeginHorizontal();
-
-
-
-                                GUILayout.Space(16);
-
-                                content.text = "Max Iterations";
-                                content.tooltip = "The maximum passes the reduction algorithm does for this LOD level. Higher number is more expensive but can bring you closer to your target quality. 100 is the lowest allowed value.";
-
-
-                                if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
-                                {
-                                    GUILayout.Space(1);
-                                    EditorGUILayout.LabelField(content, GUILayout.Width(134));
-                                }
-
-                                else
-                                {
-                                    EditorGUILayout.LabelField(content, GUILayout.Width(136));
-                                }
-
-
-
-                                content.text = "";
-
-
-                                if (!UnityVersion.Contains("2017") && !UnityVersion.Contains("2018"))
-                                {
-                                    lodLevel.maxIterations = Mathf.Abs(EditorGUILayout.IntField(content, lodLevel.maxIterations, GUILayout.Width(168), GUILayout.ExpandWidth(true)));
-                                }
-
-                                else
-                                {
-                                    lodLevel.maxIterations = Mathf.Abs(EditorGUILayout.IntField(content, lodLevel.maxIterations, GUILayout.Width(168), GUILayout.ExpandWidth(true)));
-                                }
-
-
-                                if (lodLevel.maxIterations < 100) { lodLevel.maxIterations = 100; }
-
-                            }
-
-
-                            #endregion Reduction extra options
-
-
-                            EditorGUILayout.EndHorizontal();
-
-
-                            EditorGUILayout.EndVertical();
+                            if (lodLevel.maxIterations < 100) { lodLevel.maxIterations = 100; }
 
                         }
 
 
+                        #endregion Reduction extra options
 
-                        #endregion Draw LOD Level
 
+                        EditorGUILayout.EndHorizontal();
+
+
+                        EditorGUILayout.EndVertical();
 
                     }
 
 
-                    #endregion AUTO LOD
-                
+
+                    #endregion Draw LOD Level
+
+
+                }
+
+
+                #endregion AUTO LOD
+
 
                 #region BATCH FEW
 
@@ -3619,7 +3619,7 @@ namespace BrainFailProductions.PolyFew
             }
 
 
-            else if(!isFeasibleTargetForPolyFew && !areMultiObjectsSelected)
+            else if (!isFeasibleTargetForPolyFew && !areMultiObjectsSelected)
             {
 
                 EditorGUILayout.BeginVertical("GroupBox");
@@ -3798,7 +3798,7 @@ namespace BrainFailProductions.PolyFew
                             EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
                         }
                     }
-                    
+
                     catch (Exception ex)
                     {
                         string error = $"Failed to combine materials due to unknown reasons. Please check console for any clues.";
@@ -3854,10 +3854,10 @@ namespace BrainFailProductions.PolyFew
                 style.padding = oldPadding;
 
 
-#endregion Consider Children
+                #endregion Consider Children
 
 
-#region COMBINE MESHES
+                #region COMBINE MESHES
 
 
                 bool canCombineMeshes = false;
@@ -3975,12 +3975,12 @@ namespace BrainFailProductions.PolyFew
 
                         try
                         {
-                           UtilityServices.CombineMeshes(duplicated, toDuplicate.name, BatchFewSavePath, (errorTitle, error) => 
-                           {
-                               didSucceed = false;
-                               EditorUtility.DisplayDialog(errorTitle, error, "Ok");
+                            UtilityServices.CombineMeshes(duplicated, toDuplicate.name, BatchFewSavePath, (errorTitle, error) =>
+                            {
+                                didSucceed = false;
+                                EditorUtility.DisplayDialog(errorTitle, error, "Ok");
 
-                           }, combineTarget, generateUV2);
+                            }, combineTarget, generateUV2);
                         }
 
                         catch (Exception ex)
@@ -4080,18 +4080,18 @@ namespace BrainFailProductions.PolyFew
                 }
 
                 EditorGUI.EndDisabledGroup();
-#endregion COMBINE MESHES
+                #endregion COMBINE MESHES
 
                 EditorGUILayout.EndHorizontal();
 
 
-#endregion Section Header
+                #endregion Section Header
 
 
                 GUILayout.Space(10);
 
 
-#region DRAW TEXTURE ARRAY SETTINGS
+                #region DRAW TEXTURE ARRAY SETTINGS
 
 
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -4151,7 +4151,7 @@ namespace BrainFailProductions.PolyFew
 
                 var selectedTextureArraySettings = GetTexArrSettingsFromName(dataContainer.textureMapsChoices[dataContainer.choiceTextureMap]);
 
-#region TEXTURES RESOLUTION
+                #region TEXTURES RESOLUTION
                 GUILayout.BeginHorizontal();
 
 
@@ -4186,10 +4186,10 @@ namespace BrainFailProductions.PolyFew
                 EditorGUILayout.LabelField("", style, GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                 GUILayout.EndHorizontal();
-#endregion TEXTURES RESOLUTION
+                #endregion TEXTURES RESOLUTION
 
 
-#region FILTERING MODE
+                #region FILTERING MODE
                 GUILayout.BeginHorizontal();
 
                 content.text = "Filtering Mode";
@@ -4214,10 +4214,10 @@ namespace BrainFailProductions.PolyFew
                 EditorGUILayout.LabelField("", style, GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                 GUILayout.EndHorizontal();
-#endregion FILTERING MODE
+                #endregion FILTERING MODE
 
 
-#region ANISOTROPIC FILTERING
+                #region ANISOTROPIC FILTERING
                 GUILayout.Space(-2);
 
                 GUILayout.BeginHorizontal();
@@ -4246,10 +4246,10 @@ namespace BrainFailProductions.PolyFew
                 EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                 GUILayout.EndHorizontal();
-#endregion ANISOTROPIC FILTERING
+                #endregion ANISOTROPIC FILTERING
 
 
-#region COMPRESSION QUALITY
+                #region COMPRESSION QUALITY
                 GUILayout.Space(1);
 
                 GUILayout.BeginHorizontal();
@@ -4278,10 +4278,10 @@ namespace BrainFailProductions.PolyFew
                 EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                 GUILayout.EndHorizontal();
-#endregion COMPRESSION QUALITY
+                #endregion COMPRESSION QUALITY
 
 
-#region COMPRESSION TYPE
+                #region COMPRESSION TYPE
 
                 GUILayout.BeginHorizontal();
 
@@ -4302,10 +4302,10 @@ namespace BrainFailProductions.PolyFew
                 EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                 GUILayout.EndHorizontal();
-#endregion COMPRESSION TYPE
+                #endregion COMPRESSION TYPE
 
 
-#region DIFFUSE COLOR SPACE
+                #region DIFFUSE COLOR SPACE
 
                 GUILayout.BeginHorizontal();
 
@@ -4322,7 +4322,7 @@ namespace BrainFailProductions.PolyFew
                 EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                 GUILayout.EndHorizontal();
-#endregion DIFFUSE COLOR SPACE
+                #endregion DIFFUSE COLOR SPACE
 
 
                 GUILayout.Space(6);
@@ -4333,12 +4333,12 @@ namespace BrainFailProductions.PolyFew
 
 
 
-#endregion RAW TEXTURE ARRAY SETTINGS
+                #endregion RAW TEXTURE ARRAY SETTINGS
 
 
 
 
-#region DRAW MATERIALS PROPERTIES
+                #region DRAW MATERIALS PROPERTIES
 
 
                 if (Selection.gameObjects != null && Selection.gameObjects.Length == 1)
@@ -4357,7 +4357,7 @@ namespace BrainFailProductions.PolyFew
                         {
                             a++;
 
-#region INITIALIZATION AND PRECHECKS
+                            #region INITIALIZATION AND PRECHECKS
 
                             bool isFeasible = false;
                             Texture2D attrImg = null;
@@ -4399,8 +4399,8 @@ namespace BrainFailProductions.PolyFew
 
                                 }
                             }
-                            
-#endregion INITIALIZATION AND PRECHECKS
+
+                            #endregion INITIALIZATION AND PRECHECKS
 
 
                             // Only the first time
@@ -4410,7 +4410,7 @@ namespace BrainFailProductions.PolyFew
 
                                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-#region SECTION HEADER
+                                #region SECTION HEADER
 
                                 UtilityServices.DrawHorizontalLine(Color.black, 1, 2, 7, 4);
 
@@ -4429,7 +4429,7 @@ namespace BrainFailProductions.PolyFew
 
                                 UtilityServices.DrawHorizontalLine(Color.black, 1, 1, 7, 4);
 
-#endregion SECTION HEADER
+                                #endregion SECTION HEADER
                             }
 
                             int matIndex = -1;
@@ -4451,7 +4451,7 @@ namespace BrainFailProductions.PolyFew
                                 originalMatProps.matIndex = tempMatProps.matIndex = matIndex;
 
 
-#region MATERIAL NAME AND APPLY CHANGES
+                                #region MATERIAL NAME AND APPLY CHANGES
                                 EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
 
                                 GUILayout.Space(12);
@@ -4557,7 +4557,7 @@ namespace BrainFailProductions.PolyFew
                                 }
 
                                 EditorGUILayout.EndHorizontal();
-#endregion MATERIAL NAME AND APPLY CHANGES
+                                #endregion MATERIAL NAME AND APPLY CHANGES
 
                                 GUILayout.Space(6);
 
@@ -4565,7 +4565,7 @@ namespace BrainFailProductions.PolyFew
                                 {
                                     EditorGUI.BeginChangeCheck();
 
-#region ALBEDO TINT COLOR
+                                    #region ALBEDO TINT COLOR
                                     GUILayout.BeginHorizontal();
 
                                     content = new GUIContent();
@@ -4584,10 +4584,10 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion ALBEDO TINT COLOR
+                                    #endregion ALBEDO TINT COLOR
 
 
-#region METALLIC INTENSITY
+                                    #region METALLIC INTENSITY
 
                                     GUILayout.BeginHorizontal();
 
@@ -4614,9 +4614,9 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion METALLIC INTENSITY
+                                    #endregion METALLIC INTENSITY
 
-#region SMOOTHNESS INTENSITY
+                                    #region SMOOTHNESS INTENSITY
 
                                     GUILayout.BeginHorizontal();
 
@@ -4644,9 +4644,9 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion SMOOTHNESS INTENSITY
+                                    #endregion SMOOTHNESS INTENSITY
 
-#region NORMAL INTENSITY
+                                    #region NORMAL INTENSITY
 
                                     GUILayout.BeginHorizontal();
 
@@ -4674,9 +4674,9 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion NORMAL INTENSITY
+                                    #endregion NORMAL INTENSITY
 
-#region HEIGHT INTENSITY
+                                    #region HEIGHT INTENSITY
 
                                     GUILayout.BeginHorizontal();
 
@@ -4704,9 +4704,9 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion HEIGHT INTENSITY
+                                    #endregion HEIGHT INTENSITY
 
-#region OCCLUSION INTENSITY
+                                    #region OCCLUSION INTENSITY
 
                                     GUILayout.BeginHorizontal();
 
@@ -4734,9 +4734,9 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion OCCLUSION INTENSITY
+                                    #endregion OCCLUSION INTENSITY
 
-#region DETAIL NORMAL INTENSITY
+                                    #region DETAIL NORMAL INTENSITY
 
                                     GUILayout.BeginHorizontal();
 
@@ -4764,9 +4764,9 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion DETAIL NORMAL INTENSITY
+                                    #endregion DETAIL NORMAL INTENSITY
 
-#region GLOSS INTENSITY
+                                    #region GLOSS INTENSITY
 
                                     GUILayout.BeginHorizontal();
 
@@ -4794,9 +4794,9 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion GLOSS INTENSITY
+                                    #endregion GLOSS INTENSITY
 
-#region ALPHA CUTOFF
+                                    #region ALPHA CUTOFF
 
                                     GUILayout.BeginHorizontal();
 
@@ -4824,9 +4824,9 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion ALPHA CUTOFF
+                                    #endregion ALPHA CUTOFF
 
-#region SPECULAR COLOR
+                                    #region SPECULAR COLOR
                                     GUILayout.BeginHorizontal();
 
                                     style = GUI.skin.label;
@@ -4841,9 +4841,9 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion SPECULAR COLOR
+                                    #endregion SPECULAR COLOR
 
-#region EMISSION COLOR
+                                    #region EMISSION COLOR
                                     GUILayout.BeginHorizontal();
 
                                     style = GUI.skin.label;
@@ -4858,10 +4858,10 @@ namespace BrainFailProductions.PolyFew
                                     EditorGUILayout.LabelField("", GUILayout.Width(0)); // Blank label to stop UI field from bleeding ro getting too close to the edge
 
                                     GUILayout.EndHorizontal();
-#endregion EMISSION COLOR
+                                    #endregion EMISSION COLOR
 
 
-#region UV TILE OFFSET
+                                    #region UV TILE OFFSET
 
                                     GUILayout.BeginHorizontal();
 
@@ -4883,9 +4883,9 @@ namespace BrainFailProductions.PolyFew
 
                                     GUILayout.EndHorizontal();
 
-#endregion UV TILE OFFSET
+                                    #endregion UV TILE OFFSET
 
-#region DETAIL UV TILE OFFSET
+                                    #region DETAIL UV TILE OFFSET
 
                                     GUILayout.BeginHorizontal();
 
@@ -4907,7 +4907,7 @@ namespace BrainFailProductions.PolyFew
 
                                     GUILayout.EndHorizontal();
 
-#endregion DETAIL UV TILE OFFSET
+                                    #endregion DETAIL UV TILE OFFSET
 
 
                                     if (EditorGUI.EndChangeCheck())
@@ -4936,10 +4936,10 @@ namespace BrainFailProductions.PolyFew
                         }
 
                         if (wasFeasible) { EditorGUILayout.EndVertical(); }
-                        
+
                         dataContainer.reInitializeTempMatProps = false;
                     }
-                    
+
                 }
 
                 #endregion DRAW MATERIALS PROPERTIES
@@ -5577,7 +5577,7 @@ namespace BrainFailProductions.PolyFew
                     ReductionPending = false;
                     ReductionStrength = 0;
 
-                    if(dataContainer.currentLodLevelSettings == null || dataContainer.currentLodLevelSettings.Count == 0)
+                    if (dataContainer.currentLodLevelSettings == null || dataContainer.currentLodLevelSettings.Count == 0)
                     {
                         dataContainer.currentLodLevelSettings = new List<DataContainer.LODLevelSettings>();
 
@@ -5601,7 +5601,7 @@ namespace BrainFailProductions.PolyFew
                     {
                         ObjectMaterialLinks links = PrevSelection.GetComponent<ObjectMaterialLinks>();
 
-                        if(links != null && links.linkedAttrImg != null)
+                        if (links != null && links.linkedAttrImg != null)
                         {
                             foreach (var origMaterialProps in dataContainer.materialsToRestore)
                             {
@@ -5625,7 +5625,7 @@ namespace BrainFailProductions.PolyFew
 
             if (Selection.gameObjects != null && Selection.gameObjects.Length > 1)
             {
-                if(lastMultiSelectedObjects == null)
+                if (lastMultiSelectedObjects == null)
                 {
                     lastMultiSelectedObjects = new List<GameObject>();
 
@@ -5663,7 +5663,7 @@ namespace BrainFailProductions.PolyFew
 
         public class FileModificationWarning : UnityEditor.AssetModificationProcessor
         {
-            
+
             static string[] OnWillSaveAssets(string[] paths)
             {
                 //if (Selection.activeGameObject == null || dataContainer == null) { return paths; }
@@ -5724,7 +5724,7 @@ namespace BrainFailProductions.PolyFew
             else if (name.ToLower().Equals("normal")) { return dataContainer.textureArraysSettings.normalArraySettings; }
             else if (name.ToLower().Equals("height")) { return dataContainer.textureArraysSettings.heightArraySettings; }
             else if (name.ToLower().Equals("occlusion")) { return dataContainer.textureArraysSettings.occlusionArraySettings; }
-            else if (name.ToLower().Equals("emission")) {  return dataContainer.textureArraysSettings.emissiveArraySettings; }
+            else if (name.ToLower().Equals("emission")) { return dataContainer.textureArraysSettings.emissiveArraySettings; }
             else if (name.ToLower().Equals("detail mask")) { return dataContainer.textureArraysSettings.detailMaskArraySettings; }
             else if (name.ToLower().Equals("detail albedo")) { return dataContainer.textureArraysSettings.detailAlbedoArraySettings; }
             else if (name.ToLower().Equals("detail normal")) { return dataContainer.textureArraysSettings.detailNormalArraySettings; }

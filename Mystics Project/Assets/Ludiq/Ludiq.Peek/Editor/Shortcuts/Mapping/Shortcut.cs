@@ -1,53 +1,49 @@
 ﻿using System;
-using Ludiq.Peek;
-using Ludiq.PeekCore;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	[Serializable]
-	public abstract class Shortcut
-	{
-		[SerializeField]
-		private bool _enabled = true;
+    [Serializable]
+    public abstract class Shortcut
+    {
+        [SerializeField]
+        private bool _enabled = true;
 
-		protected Shortcut()
-		{
+        protected Shortcut()
+        {
 
-		}
-		
-		public virtual bool enabled
-		{
-			get => _enabled;
-			set => _enabled = value;
-		}
+        }
 
-		public abstract bool Check(Event e);
+        public virtual bool enabled
+        {
+            get => _enabled;
+            set => _enabled = value;
+        }
 
-		public abstract bool Preview(Event e);
+        public abstract bool Check(Event e);
 
-		public bool Check()
-		{
-			return Check(Event.current);
-		}
+        public abstract bool Preview(Event e);
 
-		public bool Preview()
-		{
-			return Preview(Event.current);
-		}
+        public bool Check()
+        {
+            return Check(Event.current);
+        }
 
-		public static bool CompareModifiers(ShortcutModifiers s, EventModifiers e)
-		{
-			// Ignore unsupported modifiers
-			e &= ~EventModifiers.CapsLock;
-			e &= ~EventModifiers.FunctionKey;
-			e &= ~EventModifiers.Numeric;
+        public bool Preview()
+        {
+            return Preview(Event.current);
+        }
 
-			return s.ToEventModifiers() == e;
-		}
-	}
+        public static bool CompareModifiers(ShortcutModifiers s, EventModifiers e)
+        {
+            // Ignore unsupported modifiers
+            e &= ~EventModifiers.CapsLock;
+            e &= ~EventModifiers.FunctionKey;
+            e &= ~EventModifiers.Numeric;
+
+            return s.ToEventModifiers() == e;
+        }
+    }
 }

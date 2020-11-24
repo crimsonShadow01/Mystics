@@ -2,10 +2,10 @@
 
 namespace Ludiq.PeekCore
 {
-	public sealed class DivisionHandler : BinaryOperatorHandler
-	{
-		public DivisionHandler() : base(OperatorCategory.Math, BinaryOperator.Division, "Division", "Divide", "/", "\u00F7", "op_Division")
-		{
+    public sealed class DivisionHandler : BinaryOperatorHandler
+    {
+        public DivisionHandler() : base(OperatorCategory.Math, BinaryOperator.Division, "Division", "Divide", "/", "\u00F7", "op_Division")
+        {
             Handle<byte, byte>((a, b) => a / b, typeof(byte));
             Handle<byte, sbyte>((a, b) => a / b, typeof(int));
             Handle<byte, short>((a, b) => a / b, typeof(int));
@@ -137,8 +137,8 @@ namespace Ludiq.PeekCore
             Handle<double, float>((a, b) => a / b, typeof(double));
             //Handle<double, decimal>((a, b) => a / b, typeof(decimal));
             Handle<double, double>((a, b) => a / b, typeof(double));
-		}
+        }
 
-		public override string GetDescriptionFormat(Type leftType, Type rightType) => "Returns the quotient of {0}.";
-	}
+        public override string GetDescriptionFormat(Type leftType, Type rightType) => "Returns the quotient of {0}.";
+    }
 }

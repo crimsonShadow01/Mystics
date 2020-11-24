@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
-using System.IO;
+using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -35,7 +33,7 @@ namespace TerrainComposer2
         public bool hasMasterTerrain;
         public PresetMode presetMode;
         public float seed = 0;
-        
+
         public string lastPath = "";
 
         public bool preview;
@@ -62,7 +60,7 @@ namespace TerrainComposer2
         public bool autoNormalmapRTP = true, autoColormapRTP = true;
 
         public TC_GlobalSettings global;
-        
+
         public string exportPath;
 
         void Awake()
@@ -98,11 +96,11 @@ namespace TerrainComposer2
             {
                 if (rawFiles[i] != null)
                 {
-                    #if UNITY_EDITOR
-                        DestroyImmediate(rawFiles[i].gameObject);
-                    #else
+#if UNITY_EDITOR
+                    DestroyImmediate(rawFiles[i].gameObject);
+#else
                         Destroy(rawFiles[i].gameObject);
-                    #endif
+#endif
                 }
             }
         }
@@ -120,7 +118,7 @@ namespace TerrainComposer2
                         masterTerrain = area2D.currentTerrainArea.terrains[0].terrain;
                     }
                 }
-                
+
                 if (masterTerrain == null)
                 {
                     hasMasterTerrain = false;
@@ -136,7 +134,7 @@ namespace TerrainComposer2
             for (int i = 0; i < rawFiles.Count; i++)
             {
                 if (rawFiles[i] == null) { rawFiles.RemoveAt(i); i--; continue; }
-                
+
                 if (rawFiles[i].path == fullPath)
                 {
                     ++rawFiles[i].referenceCount;
@@ -176,7 +174,7 @@ namespace TerrainComposer2
             imageList.Add(image);
             return image;
         }
-        
+
         public void CreateDustbin()
         {
             GameObject go = new GameObject("Dustbin");

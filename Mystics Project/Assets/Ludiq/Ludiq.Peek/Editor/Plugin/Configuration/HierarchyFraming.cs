@@ -1,14 +1,13 @@
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
+    // ReSharper disable once RedundantUsingDirective
 
-	public enum HierarchyFramingOption
-	{
-		Never,
+    public enum HierarchyFramingOption
+    {
+        Never,
 
-		WhenOutOfView,
+        WhenOutOfView,
 
-		Always,
-	}
+        Always,
+    }
 }

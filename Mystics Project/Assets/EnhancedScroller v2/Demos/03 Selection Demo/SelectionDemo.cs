@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+﻿using EnhancedUI;
 using EnhancedUI.EnhancedScroller;
-using EnhancedUI;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace EnhancedScrollerDemos.SelectionDemo
 {
@@ -31,7 +30,7 @@ namespace EnhancedScrollerDemos.SelectionDemo
         /// The cell view prefab for the vertical scroller
         /// </summary>
         public EnhancedScrollerCellView vCellViewPrefab;
-        
+
         /// <summary>
         /// The cell view prefab for the horizontal scroller
         /// </summary>

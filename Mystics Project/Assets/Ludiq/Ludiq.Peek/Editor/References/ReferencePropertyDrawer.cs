@@ -1,120 +1,119 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
 namespace Ludiq.Peek
 {
-	// ReSharper disable once RedundantUsingDirective
-	using PeekCore;
-	
-	[CustomPropertyDrawer(typeof(UnityObject), true)]
-	public class ReferencePropertyDrawer : PropertyDrawer
-	{
-		private static Event e => Event.current;
+    // ReSharper disable once RedundantUsingDirective
+    using PeekCore;
 
-		public static EditorWindow lastPopup;
+    [CustomPropertyDrawer(typeof(UnityObject), true)]
+    public class ReferencePropertyDrawer : PropertyDrawer
+    {
+        private static Event e => Event.current;
 
-		private static void DefaultField(SerializedProperty property, GUIContent label, Rect fieldPosition)
-		{
-			try
-			{
-				UnityEditorDynamic.EditorGUI.DefaultPropertyField(fieldPosition, property, label);
-			}
-			catch (TargetInvocationException tex)
-			{
-				if (tex.InnerException is ExitGUIException exitGuiEx)
-				{
-					throw exitGuiEx;
-				}
-				else
-				{
-					throw;
-				}
-			}
-		}
+        public static EditorWindow lastPopup;
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			if (!PluginContainer.initialized)
-			{
-				base.OnGUI(position, property, label);
-				return;
-			}
+        private static void DefaultField(SerializedProperty property, GUIContent label, Rect fieldPosition)
+        {
+            try
+            {
+                UnityEditorDynamic.EditorGUI.DefaultPropertyField(fieldPosition, property, label);
+            }
+            catch (TargetInvocationException tex)
+            {
+                if (tex.InnerException is ExitGUIException exitGuiEx)
+                {
+                    throw exitGuiEx;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
 
-			if (PeekPlugin.Configuration.enableReferenceInspector && !property.hasMultipleDifferentValues && property.objectReferenceValue != null)
-			{
-				Rect buttonPosition, fieldPosition;
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if (!PluginContainer.initialized)
+            {
+                base.OnGUI(position, property, label);
+                return;
+            }
 
-				if (label != GUIContent.none)
-				{
-					buttonPosition = new Rect
-					(
-						position.x + EditorGUIUtility.labelWidth - IconSize.Small - 1,
-						position.y,
-						IconSize.Small,
-						IconSize.Small
-					);
+            if (PeekPlugin.Configuration.enableReferenceInspector && !property.hasMultipleDifferentValues && property.objectReferenceValue != null)
+            {
+                Rect buttonPosition, fieldPosition;
 
-					fieldPosition = position;
-				}
-				else
-				{
-					buttonPosition = new Rect
-					(
-						position.xMax - IconSize.Small,
-						position.y + 1,
-						IconSize.Small,
-						IconSize.Small
-					);
+                if (label != GUIContent.none)
+                {
+                    buttonPosition = new Rect
+                    (
+                        position.x + EditorGUIUtility.labelWidth - IconSize.Small - 1,
+                        position.y,
+                        IconSize.Small,
+                        IconSize.Small
+                    );
 
-					fieldPosition = new Rect
-					(
-						position.x,
-						position.y,
-						position.width - buttonPosition.width - 2,
-						position.height
-					);
-				}
+                    fieldPosition = position;
+                }
+                else
+                {
+                    buttonPosition = new Rect
+                    (
+                        position.xMax - IconSize.Small,
+                        position.y + 1,
+                        IconSize.Small,
+                        IconSize.Small
+                    );
 
-				DefaultField(property, label, fieldPosition);
+                    fieldPosition = new Rect
+                    (
+                        position.x,
+                        position.y,
+                        position.width - buttonPosition.width - 2,
+                        position.height
+                    );
+                }
 
-				var isActive = PopupWatcher.IsOpenOrJustClosed(lastPopup);
-				
-				var activatedButton = LudiqGUI.DropdownToggle(buttonPosition, isActive, LudiqGUIUtility.TempContent(PeekPlugin.Icons.propertyDrawer?[IconSize.Small]), GUIStyle.none);
-				
-				if (activatedButton && !isActive)
-				{
-					PopupWatcher.Release(lastPopup);
-					lastPopup = null;
+                DefaultField(property, label, fieldPosition);
 
-					var targets = new[] {property.objectReferenceValue};
-					var activatorGuiPosition = buttonPosition;
-					var activatorScreenPosition = LudiqGUIUtility.GUIToScreenRect(activatorGuiPosition);
+                var isActive = PopupWatcher.IsOpenOrJustClosed(lastPopup);
 
-					if (e.IsContextMouseButton())
-					{
-						if (property.objectReferenceValue is GameObject go)
-						{
-							GameObjectContextMenu.Open(new[] {go}, activatorScreenPosition);
-						}
-						else
-						{
-							UnityObjectContextMenu.Open(targets, activatorGuiPosition);
-						}
-					}
-					else
-					{
-						lastPopup = EditorPopup.Open(targets, activatorScreenPosition);
-						PopupWatcher.Watch(lastPopup);
-					}
-				}
-			}
-			else
-			{
-				DefaultField(property, label, position);
-			}
-		}
-	}
+                var activatedButton = LudiqGUI.DropdownToggle(buttonPosition, isActive, LudiqGUIUtility.TempContent(PeekPlugin.Icons.propertyDrawer?[IconSize.Small]), GUIStyle.none);
+
+                if (activatedButton && !isActive)
+                {
+                    PopupWatcher.Release(lastPopup);
+                    lastPopup = null;
+
+                    var targets = new[] { property.objectReferenceValue };
+                    var activatorGuiPosition = buttonPosition;
+                    var activatorScreenPosition = LudiqGUIUtility.GUIToScreenRect(activatorGuiPosition);
+
+                    if (e.IsContextMouseButton())
+                    {
+                        if (property.objectReferenceValue is GameObject go)
+                        {
+                            GameObjectContextMenu.Open(new[] { go }, activatorScreenPosition);
+                        }
+                        else
+                        {
+                            UnityObjectContextMenu.Open(targets, activatorGuiPosition);
+                        }
+                    }
+                    else
+                    {
+                        lastPopup = EditorPopup.Open(targets, activatorScreenPosition);
+                        PopupWatcher.Watch(lastPopup);
+                    }
+                }
+            }
+            else
+            {
+                DefaultField(property, label, position);
+            }
+        }
+    }
 }

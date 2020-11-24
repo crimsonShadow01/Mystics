@@ -10,7 +10,7 @@ namespace Ludiq.PeekCore.CodeDom
     {
         public CodeArgumentDirectionExpression(CodeParameterDirection direction, CodeExpression expression)
         {
-			Ensure.That(nameof(expression)).IsNotNull(expression);
+            Ensure.That(nameof(expression)).IsNotNull(expression);
 
             Direction = direction;
             Expression = expression;
@@ -19,21 +19,21 @@ namespace Ludiq.PeekCore.CodeDom
         public CodeParameterDirection Direction { get; }
         public CodeExpression Expression { get; }
 
-		public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
+        public override PrecedenceGroup Precedence => PrecedenceGroup.Primary;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (Expression != null) yield return Expression;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (Expression != null) yield return Expression;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator)
-		{
+        protected override void GenerateInner(CodeGenerator generator)
+        {
             Direction.Generate(generator);
             Expression.Generate(generator);
-		}
-	}
+        }
+    }
 }

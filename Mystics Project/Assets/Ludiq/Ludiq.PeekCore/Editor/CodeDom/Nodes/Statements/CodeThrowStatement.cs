@@ -15,27 +15,27 @@ namespace Ludiq.PeekCore.CodeDom
 
         public CodeExpression ToThrow { get; }
 
-		public override bool IsTerminator => true;
+        public override bool IsTerminator => true;
 
-		public override IEnumerable<CodeElement> Children
-		{
-			get
-			{
-				foreach (var child in base.Children) yield return child;
-				if (ToThrow != null) yield return ToThrow;
-			}
-		}
+        public override IEnumerable<CodeElement> Children
+        {
+            get
+            {
+                foreach (var child in base.Children) yield return child;
+                if (ToThrow != null) yield return ToThrow;
+            }
+        }
 
-		protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
-		{
-			generator.WriteBlankLineIfJustExitedBlock();
+        protected override void GenerateInner(CodeGenerator generator, CodeStatementEmitOptions emitOptions)
+        {
+            generator.WriteBlankLineIfJustExitedBlock();
             generator.Write(TokenType.Keyword, "throw");
             if (ToThrow != null)
             {
                 generator.Write(TokenType.Space, ' ');
                 ToThrow.Generate(generator);
             }
-			generator.WriteStatementEnd(emitOptions);
-		}
+            generator.WriteStatementEnd(emitOptions);
+        }
     }
 }

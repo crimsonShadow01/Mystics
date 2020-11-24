@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -12,23 +10,23 @@ namespace TerrainComposer2
 
             TD.DrawTextureScaled(pos.x, pos.y, TD.texShelfStart, Color.white, false, StretchMode.None, StretchMode.Screen);
             TD.DrawTextureScaled(pos.x + TD.texShelfStart.width, pos.y, TD.texShelfBackGround2, Color.white, false, StretchMode.Right, StretchMode.Screen);
-            
+
             float scrollY = 0;
 
             for (int i = 0; i < 6; i++) DrawLayerGroup(terrainLayer, i, ref pos, ref scrollY);
 
         }
-        
+
         static public void DrawLayerGroup(TC_TerrainLayer terrainLayer, int index, ref Vector2 pos, ref float scrollY)
         {
             TC_GlobalSettings g = TC_Settings.instance.global;
             Event eventCurrent = Event.current;
 
             TC_LayerGroup layerGroup = terrainLayer.layerGroups[index];
-            if (layerGroup == null) return; 
+            if (layerGroup == null) return;
 
             Vector2 posOld = pos;
-            
+
             float t = 0;
             TC_LayerGroupGUI.Draw(layerGroup, false, ref pos, 1, false, false, ref t);
 
