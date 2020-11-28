@@ -8,14 +8,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TerrainGeometryBlend
-  m_Shader: {fileID: 4800000, guid: 12ba9bc3a1a2f6f4c97a4361871cb4e0, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
+  m_Shader: {fileID: 4800000, guid: eb607f5e8fc16e140b732f33d26c8c31, type: 3}
+  m_ShaderKeywords: _TERRAIN_INSTANCED_PERPIXEL_NORMAL
+  m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -47,31 +48,72 @@ Material:
         m_Texture: {fileID: 2800000, guid: c0a29ec2f3403b547bef4f5939136788, type: 3}
         m_Scale: {x: 12, y: 12}
         m_Offset: {x: 0, y: 0}
+    - _TerrainHolesTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - POM2PM_FACTOR: 1
+    - _AddPrecomputedVelocity: 0
     - _BlendMultiply: 1.625
     - _BlendSharpness: 3.2884614
+    - _CullMode: 2
     - _DIST_STEPS: 20
     - _DetailDistanceScale: 10
     - _DetailScale: 4
     - _DetailScaleX: 1
     - _DetailScaleY: 1
+    - _EnableHeightBlend: 0
+    - _EnableInstancedPerPixelNormal: 1
     - _ExtrudeHeight: 0.02
+    - _GlossMax: 1
+    - _GlossMin: 0
+    - _HeightTransition: 0
     - _LightmapShading: 0.9230769
+    - _Metalness: 0
+    - _ReceivesSSR: 1
     - _Rot: 0
     - _SHADOW_SMOOTH_STEPS: 6
     - _SHADOW_STEPS: 20
     - _SelfShadowStrength: 0.6923077
     - _ShadowSmoothing: 2.0753846
     - _Shininess: 7.8732486
+    - _SpecularOcclusionMode: 1
+    - _StencilRef: 0
+    - _StencilRefDepth: 8
+    - _StencilRefGBuffer: 10
+    - _StencilWriteMask: 6
+    - _StencilWriteMaskDepth: 8
+    - _StencilWriteMaskGBuffer: 14
+    - _SupportDecals: 1
+    - _TransparentZWrite: 0
     - _ViewDirFade: 0.32500002
     - _WAVELENGTH: 2
     - _WAVELENGTH_SHADOWS: 2
+    - _ZTestDepthEqualForOpaque: 3
+    - _ZTestGBuffer: 4
+    - _ZWrite: 1
     - _distance_start: 5
     - _distance_transition: 54.615383
     - _snow_mult: 0.96153843
+    - rtp_snow_mult: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DetailColor: {r: 1, g: 1, b: 1, a: 0.33333334}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReliefTransform: {r: 12, g: 12, b: 0, a: 0}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 0}
+  m_BuildTextureStacks: []
+--- !u!114 &8317870738343429232
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 2
