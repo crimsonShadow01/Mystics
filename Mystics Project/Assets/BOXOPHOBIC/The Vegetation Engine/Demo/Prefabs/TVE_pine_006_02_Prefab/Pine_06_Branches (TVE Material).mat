@@ -371,6 +371,8 @@ Material:
     - _AlphaCutoffEnable: 1
     - _AlphaCutoffPostpass: 1
     - _AlphaCutoffPrepass: 1
+    - _AlphaDstBlend: 0
+    - _AlphaSrcBlend: 1
     - _Anisotropy: 0
     - _Asperity: 0.25
     - _BackfaceSmoothnessScale: 1
@@ -560,6 +562,7 @@ Material:
     - _Parallax: 0.02
     - _PivotsMessage: 0
     - _PreRefractionPass: 0
+    - _ReceivesSSR: 1
     - _RefractionMode: 0
     - _RefractionModel: 0
     - _RefractionSSRayModel: 0
@@ -570,8 +573,10 @@ Material:
     - _RenderMode: 0
     - _RenderNormals: 0
     - _RenderPriority: 0
+    - _RenderQueueType: 1
     - _RenderZWrite: 1
     - _RenderingCat: 0
+    - _RequireSplitLighting: 0
     - _SSRefractionProjectionModel: 0
     - _SSSAndTransmissionType: 2
     - _SettingsCategory: 0
@@ -588,12 +593,19 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _StencilRef: 130
+    - _StencilRefDepth: 8
+    - _StencilRefDistortionVec: 4
+    - _StencilRefGBuffer: 10
     - _StencilRefMV: 128
     - _StencilWriteMask: 135
+    - _StencilWriteMaskDepth: 8
+    - _StencilWriteMaskDistortionVec: 4
+    - _StencilWriteMaskGBuffer: 14
     - _StencilWriteMaskMV: 128
     - _Stiffness: 1
     - _SubsurfaceAngleValue: 4
     - _SubsurfaceCat: 0
+    - _SubsurfaceDiffusion: 3.5648174
     - _SubsurfaceLightValue: 1
     - _SubsurfaceMask: 1
     - _SubsurfaceMaskValue: 1
@@ -617,9 +629,11 @@ Material:
     - _TransmissionSelfOcclusion: 0
     - _TransmissionThicknessScale: 1
     - _TransparentBackfaceEnable: 0
+    - _TransparentCullMode: 0
     - _TransparentDepthPostpassEnable: 0
     - _TransparentDepthPrepassEnable: 0
     - _TransparentSortPriority: 0
+    - _TransparentZWrite: 1
     - _Tree12Width: 10
     - _TreeAO: 1
     - _TreeAO2: 2.4
@@ -634,6 +648,7 @@ Material:
     - _UVEmissive: 0
     - _UVSec: 0
     - _UseObjectSpaceBaseNormalMap: 0
+    - _UseShadowThreshold: 0
     - _UseTransmission: 1
     - _UseTreeOcclusion: 0
     - _UseWind: 0
@@ -668,6 +683,7 @@ Material:
     - _ZTestGBuffer: 3
     - _ZTestMode: 8
     - _ZTestModeDistortion: 8
+    - _ZTestTransparent: 4
     - _ZWrite: 1
     - __dirty: 1
     - _material_batching: 0
@@ -708,7 +724,7 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _SubsurfaceColor: {r: 0.23529461, g: 0.27450982, b: 0, a: 1}
-    - _SubsurfaceDiffusion_asset: {r: 0, g: 0, b: 0, a: 0}
+    - _SubsurfaceDiffusion_asset: {r: 2.2888926e+38, g: 1.2389358e-26, b: 7.69327e-37, a: 0.00018220427}
     - _ThicknessRemap: {r: 0.000000007450581, g: 1, b: 0, a: 0}
     - _TransmittanceColor: {r: 1, g: 1, b: 1, a: 1}
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
@@ -716,3 +732,4 @@ Material:
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
     - _VertexOcclusionColor: {r: 0, g: 0, b: 0, a: 0}
     - _render_normals_options: {r: -1, g: -1, b: -1, a: 0}
+  m_BuildTextureStacks: []
