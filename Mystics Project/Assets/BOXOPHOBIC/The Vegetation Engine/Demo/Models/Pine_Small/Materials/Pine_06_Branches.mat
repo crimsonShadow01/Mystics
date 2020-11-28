@@ -8,17 +8,16 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Pine_06_Branches
-  m_Shader: {fileID: 4800000, guid: d085bd08ca5fe5a4792e19b6523918c1, type: 3}
+  m_Shader: {fileID: 4800000, guid: d8cb8c2baa0fb7745867ed944924829c, type: 3}
   m_ShaderKeywords: TVE_DETAIL_MAPS_STANDARD TVE_DETAIL_MODE_OFF TVE_DETAIL_TYPE_VERTEX_BLUE
     TVE_VERTEX_DATA_OBJECT _ALPHATEST_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap:
     DisableBatching: true
     NatureRendererInstancing: true
-    RenderType: Opaque
   disabledShaderPasses:
   - DistortionVectors
   - TransparentBackfaceDebugDisplay

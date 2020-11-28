@@ -100,10 +100,17 @@ Material:
     m_Floats:
     - _AdvancedCat: 0
     - _AdvancedCategory: 0
+    - _AlphaCutoff: 0.5
+    - _AlphaCutoffEnable: 0
+    - _AlphaDstBlend: 0
+    - _AlphaSrcBlend: 1
     - _Banner: 0
     - _BatchingMessage: 0
+    - _BlendMode: 0
     - _BumpScale: 2
     - _ColorsTexture: 0
+    - _CullMode: 0
+    - _CullModeForward: 0
     - _Cutoff: 0.5
     - _DebugCategory: 0
     - _DebugMode: 300
@@ -121,7 +128,10 @@ Material:
     - _DetailShadingCat: 0
     - _DetailSpace: 0
     - _DetailTypeMode: 0
+    - _DoubleSidedEnable: 1
+    - _DoubleSidedNormalMode: 2
     - _DstBlend: 0
+    - _EnableFogOnTransparent: 1
     - _ExtrasTexture: 1
     - _Float0: 10.51
     - _Float5: 15.3
@@ -187,6 +197,7 @@ Material:
     - _OverlayVariation: 0
     - _Parallax: 0.02
     - _PivotsMessage: 0
+    - _ReceivesSSR: 1
     - _RenderBlend: 0
     - _RenderClip: 0
     - _RenderCull: 0
@@ -194,8 +205,10 @@ Material:
     - _RenderMode: 0
     - _RenderNormals: 0
     - _RenderPriority: 0
+    - _RenderQueueType: 1
     - _RenderZWrite: 1
     - _RenderingCat: 0
+    - _RequireSplitLighting: 0
     - _SecondMetallicValue: 0
     - _SecondNormalValue: 0
     - _SecondOcclusionValue: 1
@@ -203,15 +216,34 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _StencilRef: 0
+    - _StencilRefDepth: 8
+    - _StencilRefDistortionVec: 4
+    - _StencilRefGBuffer: 10
+    - _StencilRefMV: 40
+    - _StencilWriteMask: 6
+    - _StencilWriteMaskDepth: 8
+    - _StencilWriteMaskDistortionVec: 4
+    - _StencilWriteMaskGBuffer: 14
+    - _StencilWriteMaskMV: 40
     - _SubsurfaceMaxValue: 0
     - _SubsurfaceMinValue: 0
     - _SubsurfaceMode: 0
+    - _SurfaceType: 0
+    - _TransparentBackfaceEnable: 0
+    - _TransparentCullMode: 0
+    - _TransparentSortPriority: 0
+    - _TransparentZWrite: 1
     - _UVSec: 0
+    - _UseShadowThreshold: 0
     - _VertexDataMode: 0
     - _VertexOcclusion: 0
     - _VertexPivotModeFetch: 0
     - _VertexVariationMode: 0
     - _WorldDataMessage: 0
+    - _ZTestDepthEqualForOpaque: 3
+    - _ZTestGBuffer: 3
+    - _ZTestTransparent: 4
     - _ZWrite: 1
     - __dirty: 1
     - _material_batching: 0
@@ -229,6 +261,7 @@ Material:
     - _vertex_pivot_mode: 0
     m_Colors:
     - _Color: {r: 0.16981131, g: 0.11990921, b: 0.0985226, a: 1}
+    - _DoubleSidedConstants: {r: -1, g: -1, b: -1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HorizonColor: {r: 0.745283, g: 0.72161937, b: 0.6784888, a: 0}
     - _LineColor: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
@@ -240,3 +273,4 @@ Material:
     - _ShadowColor: {r: 0.49381453, g: 0.59754825, b: 0.764151, a: 0}
     - _SubsurfaceDiffusion_asset: {r: 0, g: 0, b: 0, a: 0}
     - _render_normals_options: {r: -1, g: -1, b: -1, a: 0}
+  m_BuildTextureStacks: []
