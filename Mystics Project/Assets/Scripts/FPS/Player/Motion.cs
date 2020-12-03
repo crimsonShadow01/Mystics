@@ -18,8 +18,8 @@ namespace Com.CBStudios.Mystics
 
         void FixedUpdate()
         {
-            float t_hmove = Input.GetAxis("Horizontal");
-            float t_vmove = Input.GetAxis("Vertical");
+            float t_hmove = Input.GetAxisRaw("Horizontal");
+            float t_vmove = Input.GetAxisRaw("Vertical");
 
             Vector3 t_direction = new Vector3(t_hmove, 0, t_vmove);
             t_direction.Normalize();
