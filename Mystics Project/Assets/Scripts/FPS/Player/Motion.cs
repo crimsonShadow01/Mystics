@@ -38,7 +38,7 @@ namespace Com.CBStudios.Mystics
             bool jump = Input.GetKeyDown(KeyCode.Space);
 
             //States
-            bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.1f, ground); 
+            bool isGrounded = Physics.Raycast(groundDetector.position, Vector3.down, 0.3f, ground); 
             bool isJumping = jump && isGrounded;
             bool isSprinting = sprint && t_vmove > 0  && !isJumping && isGrounded;
 
