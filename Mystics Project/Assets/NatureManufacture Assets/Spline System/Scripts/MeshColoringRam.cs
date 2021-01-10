@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 public class MeshColoringRam : MonoBehaviour
 {
@@ -117,7 +118,7 @@ public class MeshColoringRam : MonoBehaviour
                 ray.origin = lowestPoint;
 
                 minY = float.MinValue;
-
+                
                 if (Physics.Raycast(ray, out hit, 100, layer))
                 {
                     minY = hit.point.y;

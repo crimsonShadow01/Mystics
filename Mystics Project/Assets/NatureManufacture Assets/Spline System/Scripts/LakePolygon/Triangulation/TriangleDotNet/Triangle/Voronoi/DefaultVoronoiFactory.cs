@@ -1,6 +1,7 @@
 ﻿
 namespace TriangleNet.Voronoi
 {
+    using System;
     using TriangleNet.Topology.DCEL;
 
     /// <summary>

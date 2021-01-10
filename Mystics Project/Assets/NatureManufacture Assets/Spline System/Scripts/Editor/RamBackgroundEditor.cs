@@ -1,5 +1,7 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEditor;
+using System;
+using System.Collections.Generic;
 
 [InitializeOnLoad]
 public class RamBackgroundEditor : MonoBehaviour

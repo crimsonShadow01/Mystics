@@ -8,9 +8,11 @@
 namespace TriangleNet.Voronoi
 {
     using System.Collections.Generic;
-    using TriangleNet.Geometry;
+
     using TriangleNet.Topology;
+    using TriangleNet.Geometry;
     using TriangleNet.Topology.DCEL;
+
     using Vertex = TriangleNet.Topology.DCEL.Vertex;
 
     /// <summary>

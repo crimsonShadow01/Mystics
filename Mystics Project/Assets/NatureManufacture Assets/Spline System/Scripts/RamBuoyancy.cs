@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -63,10 +64,10 @@ public class RamBuoyancy : MonoBehaviour
                         //Debug.DrawLine(closestPoint, vertice, Color.red, 50);
 
 
-                        // Debug.Log(Vector3.Distance(closestPoint, vertice));
+                       // Debug.Log(Vector3.Distance(closestPoint, vertice));
                         if (Vector3.Distance(closestPoint, vertice) < float.Epsilon)
                         {
-                            // Debug.Log(vertice);
+                           // Debug.Log(vertice);
                             volumePoints.Add(transform.InverseTransformPoint(vertice));
                         }
 
@@ -77,7 +78,7 @@ public class RamBuoyancy : MonoBehaviour
 
         volumePointsMatrix = new Vector3[volumePoints.Count];
 
-
+        
 
     }
 

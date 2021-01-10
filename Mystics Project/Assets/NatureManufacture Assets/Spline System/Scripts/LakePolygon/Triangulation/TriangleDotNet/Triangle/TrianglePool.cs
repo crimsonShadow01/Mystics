@@ -8,6 +8,7 @@ namespace TriangleNet
 {
     using System;
     using System.Collections.Generic;
+    using TriangleNet.Geometry;
     using TriangleNet.Topology;
 
     public class TrianglePool : ICollection<Triangle>

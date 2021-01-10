@@ -8,8 +8,8 @@ namespace TriangleNet.Voronoi.Legacy
 {
     using System;
     using System.Collections.Generic;
-    using TriangleNet.Geometry;
     using TriangleNet.Topology;
+    using TriangleNet.Geometry;
 
     /// <summary>
     /// The Bounded Voronoi Diagram is the dual of a PSLG triangulation.

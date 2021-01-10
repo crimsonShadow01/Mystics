@@ -8,8 +8,8 @@
 namespace TriangleNet
 {
     using System;
-    using TriangleNet.Geometry;
     using TriangleNet.Topology;
+    using TriangleNet.Geometry;
 
     public static class MeshValidator
     {

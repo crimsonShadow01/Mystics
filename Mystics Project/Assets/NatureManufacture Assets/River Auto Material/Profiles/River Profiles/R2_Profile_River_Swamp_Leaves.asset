@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d559ec07676f794ea460d4324322121, type: 3}
   m_Name: R2_Profile_River_Swamp_Leaves
   m_EditorClassIdentifier: 
-  splineMaterial: {fileID: 2100000, guid: 2a9c62469791f2c44b53012ae8b58eb1, type: 2}
+  splineMaterial: {fileID: 2100000, guid: 31d4d6d5ddceb3c428921f74b1d1cbf0, type: 2}
   meshCurve:
     serializedVersion: 2
     m_Curve:
@@ -120,8 +120,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.5914403
-      value: 0.11857529
+      time: -0.76926625
+      value: 0.16021653
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -129,17 +129,17 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.47617143
-      value: 0.06433274
-      inSlope: -0.17607503
-      outSlope: -0.17607503
+      time: 0.24072832
+      value: 0.046911016
+      inSlope: -0.35412556
+      outSlope: -0.35412556
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.9121629
     - serializedVersion: 3
-      time: 1.0617832
-      value: -0.11286867
+      time: 1.0456699
+      value: -0.41139925
       inSlope: -0.13393612
       outSlope: -0.13393612
       tangentMode: 0
@@ -204,23 +204,23 @@ MonoBehaviour:
   secondSplatMap: 3
   addCliffSplatMap: 1
   cliffSplatMap: 6
-  cliffAngle: 25
-  cliffBlend: 1
+  cliffAngle: 35
+  cliffBlend: 0.45
   cliffSplatMapOutside: 7
   cliffAngleOutside: 30
-  cliffBlendOutside: 1
+  cliffBlendOutside: 0.45
   distanceClearFoliage: 1
   distanceClearFoliageTrees: 1
   noisePaint: 1
-  noiseMultiplierInsidePaint: 50
-  noiseMultiplierOutsidePaint: 8
+  noiseMultiplierInsidePaint: 4
+  noiseMultiplierOutsidePaint: 4
   noiseSizeXPaint: 0.6
   noiseSizeZPaint: 0.6
-  simulatedRiverLength: 100
+  simulatedRiverLength: 80
   simulatedRiverPoints: 10
   simulatedMinStepSize: 1
-  simulatedNoUp: 0
-  simulatedBreakOnUp: 1
+  simulatedNoUp: 1
+  simulatedBreakOnUp: 0
   noiseWidth: 1
   noiseMultiplierWidth: 4
   noiseSizeWidth: 0.5

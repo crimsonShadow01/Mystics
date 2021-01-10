@@ -8,8 +8,8 @@
 namespace TriangleNet.Meshing.Algorithm
 {
     using System.Collections.Generic;
-    using TriangleNet.Geometry;
     using TriangleNet.Topology;
+    using TriangleNet.Geometry;
 
     /// <summary>
     /// Builds a delaunay triangulation using the incremental algorithm.
