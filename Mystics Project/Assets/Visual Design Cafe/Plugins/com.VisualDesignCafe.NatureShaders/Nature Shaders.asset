@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _displayName: Nature Shaders Essentials
   _version:
-    _bundleIdentifier: com.VisualDesignCafe.NatureShaders-Embedded-HDRP
-    _versionNumber: 0.8.1
-    _buildNumber: 38
+    _bundleIdentifier: com.VisualDesignCafe.NatureShaders-Embedded
+    _versionNumber: 0.9.1
+    _buildNumber: 41
   _downloadInBackground: 1
   _autoUpdate: 0
   _priority: 0
