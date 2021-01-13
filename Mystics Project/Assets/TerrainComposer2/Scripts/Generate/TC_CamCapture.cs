@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -42,18 +43,18 @@ namespace TerrainComposer2
                 rtCapture = new RenderTexture((int)resolution.x, (int)resolution.y, 16, RenderTextureFormat.Depth, RenderTextureReadWrite.Linear);
                 cam.targetTexture = rtCapture;
             }
-
+            
             // Debug.Log("Capture");
             this.collisionMask = collisionMask;
             terrain = TC_Area2D.instance.currentTerrain;
             // this.collisionDirection = collisionDirection;
             cam.cullingMask = collisionMask;
-
+             
             SetCamera(collisionDirection, outputId);
 
             float oldLodBias = QualitySettings.lodBias;
             QualitySettings.lodBias = Mathf.Infinity;
-
+            
             cam.Render();
 
             QualitySettings.lodBias = oldLodBias;
@@ -78,8 +79,8 @@ namespace TerrainComposer2
             {
                 t.position = new Vector3(TC_Area2D.instance.bounds.center.x, TC_Area2D.instance.bounds.center.y + 1 + TC_Settings.instance.generateOffset.y, TC_Area2D.instance.bounds.center.z);
                 t.rotation = Quaternion.Euler(90, 0, 0);
-            }
-
+            } 
+                
             float orthographicSize = TC_Area2D.instance.bounds.extents.x;
 
             if (outputId == TC.heightOutput) orthographicSize += TC_Area2D.instance.resExpandBorderSize;

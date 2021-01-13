@@ -1,32 +1,34 @@
-﻿using TerrainComposer2;
+﻿using System.Collections;
+using System.Collections.Generic;
+using TerrainComposer2;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class ChangeSplatTextures : MonoBehaviour
+public class ChangeSplatTextures : MonoBehaviour 
 {
-    public TC_TerrainArea terrainArea;
-    public Texture2D[] newSplatTextures;
+	public TC_TerrainArea terrainArea;
+	public Texture2D[] newSplatTextures;
 
-    public bool change;
+	public bool change;
 
-    void Update()
-    {
-        if (change)
+	void Update () 
+	{
+		if (change)
         {
-            change = false;
-            ChangeSplatTexture();
+			change = false;
+			ChangeSplatTexture();
         }
-    }
+	}
 
-    void ChangeSplatTexture()
+	void ChangeSplatTexture()
     {
-        TCUnityTerrain unityTerrain = terrainArea.terrains[0];
+		TCUnityTerrain unityTerrain = terrainArea.terrains[0];
 
-        for (int i = 0; i < newSplatTextures.Length; i++)
-        {
-            unityTerrain.splatPrototypes[i].texture = newSplatTextures[i];
-        }
+		for (int i = 0; i < newSplatTextures.Length; i++)
+		{
+			unityTerrain.splatPrototypes[i].texture = newSplatTextures[i];
+		}
 
-        terrainArea.ApplySplatTextures(unityTerrain);
+		terrainArea.ApplySplatTextures(unityTerrain);
     }
 }

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 [ExecuteInEditMode]
-public class NotEditable : MonoBehaviour
-{
+public class NotEditable : MonoBehaviour {
 
     void OnEnable()
     {

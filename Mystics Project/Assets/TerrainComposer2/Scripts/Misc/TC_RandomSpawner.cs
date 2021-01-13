@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -36,7 +37,7 @@ namespace TerrainComposer2
         {
             Gizmos.DrawWireCube(transform.position, new Vector3((posRangeX.y - posRangeX.x) * transform.localScale.x * 2, 100, (posRangeZ.y - posRangeZ.x)) * transform.localScale.z * 2);
         }
-
+        
         float SampleTerrainHeight(Vector3 pos)
         {
             TC_TerrainArea terrainArea = TC_Generate.instance.area2D.terrainAreas[0];

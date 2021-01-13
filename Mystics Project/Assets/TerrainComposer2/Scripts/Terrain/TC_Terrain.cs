@@ -1,7 +1,8 @@
-﻿using System;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using UnityEngine;
+using System;
 
 namespace TerrainComposer2
 {
@@ -19,7 +20,7 @@ namespace TerrainComposer2
         public Texture2D texHeight;
         public Texture2D texColormap;
         public Texture2D texNormalmap;
-
+        
 
         // public Texture2D texHeight;
 
@@ -89,7 +90,7 @@ namespace TerrainComposer2
         // public neighbor_class neighbor = new neighbor_class();
 
         // public Texture2D[] splatmaps;
-
+        
         public Terrain terrain;
 
         public Color[] splatColors;
@@ -118,17 +119,17 @@ namespace TerrainComposer2
 
         public float heightmapPixelError = 5.0f;
         public int heightmapMaximumLOD = 0;
-#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2018_4
+        #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2018_4
         public bool castShadows = false;
-#else
+        #else
         public UnityEngine.Rendering.ShadowCastingMode shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-#endif
+        #endif
         public float basemapDistance = 20000.0f;
         public float treeDistance = 2000.0f;
         public float detailObjectDistance = 80.0f;
         public float detailObjectDensity = 1.0f;
         public int treeMaximumFullLODCount = 50;
-        public float treeBillboardDistance = 50.0f;
+        public float treeBillboardDistance = 50.0f; 
         public float treeCrossFadeLength = 5.0f;
 
         public bool drawTreesAndFoliage = true;
@@ -138,11 +139,11 @@ namespace TerrainComposer2
         public float legacyShininess = 0.7812f;
         public Color legacySpecular = new Color(0.5f, 0.5f, 0.5f, 1);
         public TC_TerrainSettings terrainSettingsScript;
-#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
+        #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
         public Terrain.MaterialType materialType;
-#else
+        #else
         public Material materialTemplate;
-#endif
+        #endif
         public bool drawHeightmap = true;
         public bool collectDetailPatches = true;
 
@@ -161,17 +162,17 @@ namespace TerrainComposer2
             Component c = terrain.GetComponent(t);
 
             if (c == null) return;
-
+            
             FieldInfo fi = t.GetField(texName);
             if (fi == null) return;
-
+            
             fi.SetValue(c, tex);
 
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(c);
-#endif
+            #endif
         }
-
+        
         public bool CheckValidUnityTerrain()
         {
             if (terrain == null) return false;
@@ -188,8 +189,8 @@ namespace TerrainComposer2
         public void EraseSplatTexture(int splat_number)
         {
             if (splatPrototypes.Count > 0) { splatPrototypes.RemoveAt(splat_number); }
-        }
-
+        } 
+         
         public void ClearSplatTextures()
         {
             splatPrototypes.Clear();
@@ -298,7 +299,7 @@ namespace TerrainComposer2
             {
                 // Debug.Log(sTerrain.detailResolution);
                 // Debug.Log(sTerrain.detailResolutionPerPatch);
-
+                
                 terrain.terrainData.SetDetailResolution(sTerrain.detailResolution, sTerrain.detailResolutionPerPatch);
                 sTerrain.appliedResolutionPerPatch = sTerrain.detailResolutionPerPatch;
             }
@@ -319,30 +320,30 @@ namespace TerrainComposer2
         {
             if (!CheckValidUnityTerrain()) return;
 
-#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
+            #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
             materialType = terrain.materialType;
-#else
+            #else
             materialTemplate = terrain.materialTemplate;
-#endif
+            #endif
 
             basemapDistance = terrain.basemapDistance;
-#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2018_4
+            #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2018_4
             castShadows = terrain.castShadows;
-#else
+            #else
             shadowCastingMode = terrain.shadowCastingMode;
-#endif
+            #endif
             treeCrossFadeLength = terrain.treeCrossFadeLength;
 
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             bakeLightProbesForTrees = terrain.bakeLightProbesForTrees;
-#endif
+            #endif
             reflectionProbeUsage = terrain.reflectionProbeUsage;
             // thickness = terrain.terrainData.thickness;
             collectDetailPatches = terrain.collectDetailPatches;
-#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
+            #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
             legacyShininess = terrain.legacyShininess;
             legacySpecular = terrain.legacySpecular;
-#endif
+            #endif
 
             wavingGrassSpeed = terrain.terrainData.wavingGrassSpeed;
             wavingGrassAmount = terrain.terrainData.wavingGrassAmount;
@@ -385,26 +386,26 @@ namespace TerrainComposer2
             if (!CheckValidUnityTerrain()) return;
 
             terrain.drawHeightmap = sTerrain.drawHeightmap;
-#if UNITY_EDITOR
-            terrain.bakeLightProbesForTrees = sTerrain.bakeLightProbesForTrees;
-#endif
+            #if UNITY_EDITOR
+                terrain.bakeLightProbesForTrees = sTerrain.bakeLightProbesForTrees;
+            #endif
             terrain.collectDetailPatches = sTerrain.collectDetailPatches;
             terrain.reflectionProbeUsage = sTerrain.reflectionProbeUsage;
-#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
+            #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2019_1
             terrain.legacyShininess = sTerrain.legacyShininess;
             terrain.legacySpecular = sTerrain.legacySpecular;
             terrain.materialType = sTerrain.materialType;
-#else
+            #else
             terrain.materialTemplate = sTerrain.materialTemplate;
-#endif
+            #endif
 
             // terrain.terrainData.thickness = sTerrain.thickness;
             terrain.basemapDistance = sTerrain.basemapDistance;
-#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2018_4
+            #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2 || UNITY_2018_3 || UNITY_2018_4
             terrain.castShadows = sTerrain.castShadows;
-#else
+            #else
             terrain.shadowCastingMode = sTerrain.shadowCastingMode;
-#endif
+            #endif
             terrain.treeCrossFadeLength = sTerrain.treeCrossFadeLength;
             terrain.terrainData.wavingGrassSpeed = sTerrain.wavingGrassSpeed;
             terrain.terrainData.wavingGrassAmount = sTerrain.wavingGrassAmount;
@@ -417,7 +418,7 @@ namespace TerrainComposer2
 
                 terrain.heightmapPixelError = sTerrain.heightmapPixelError;
                 terrain.heightmapMaximumLOD = sTerrain.heightmapMaximumLOD;
-
+                
                 terrain.detailObjectDistance = sTerrain.detailObjectDistance;
                 terrain.detailObjectDensity = sTerrain.detailObjectDensity;
                 terrain.treeDistance = sTerrain.treeDistance;
@@ -461,8 +462,8 @@ namespace TerrainComposer2
             if (sTerrain == null) sTerrain = this;
 
             // CleanSplatTextures(sTerrain);
-
-#if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2
+            
+            #if UNITY_5 || UNITY_2017 || UNITY_2018_1 || UNITY_2018_2
                 List<SplatPrototype> splatPrototypesCleaned = new List<SplatPrototype>();
                 bool tooManySplatsMessage = false;
 
@@ -493,61 +494,66 @@ namespace TerrainComposer2
             
                 terrain.terrainData.splatPrototypes = splatPrototypesCleaned.ToArray();
 #else
-            List<TerrainLayer> splatPrototypesCleaned = new List<TerrainLayer>();
-            bool tooManySplatsMessage = false;
-
-            for (int i = 0; i < sTerrain.splatPrototypes.Count; i++)
-            {
-                if (splatPrototypesCleaned.Count >= TC.splatLimit) { tooManySplatsMessage = true; break; }
-
-                TC_SplatPrototype s = sTerrain.splatPrototypes[i];
-
-                if (s.texture != null)
+                List<TerrainLayer> splatPrototypesCleaned = new List<TerrainLayer>();
+                bool tooManySplatsMessage = false;
+            
+                for (int i = 0; i < sTerrain.splatPrototypes.Count; i++)
                 {
-                    TerrainLayer d = new TerrainLayer();
-                    d.diffuseTexture = s.texture;
-                    d.normalMapTexture = s.normalMap;
-                    d.normalScale = s.normalScale;
-                    d.metallic = s.metallic;
-                    d.smoothness = s.smoothness;
-                    d.tileOffset = s.tileOffset;
-                    float tileSize = sTerrain.terrain.terrainData.size.x / Mathf.Round(sTerrain.terrain.terrainData.size.x / s.tileSize.x);
-                    d.tileSize = new Vector2(tileSize, tileSize);
+                    if (splatPrototypesCleaned.Count >= TC.splatLimit) { tooManySplatsMessage = true; break; }
 
-                    splatPrototypesCleaned.Add(d);
-                    TC.SetTextureReadWrite(s.texture);
+                    TC_SplatPrototype s = sTerrain.splatPrototypes[i];
+    
+                    if (s.texture != null)
+                    {
+                        TerrainLayer d = new TerrainLayer();
+
+                        d.maskMapTexture = s.maskMap;
+                        // d.diffuseRemapMin = s.diffRemapMin;
+                        // d.diffuseRemapMax = s.diffRemapMax;
+
+                        d.diffuseTexture = s.texture;
+                        d.normalMapTexture = s.normalMap;
+                        d.normalScale = s.normalScale;
+                        d.metallic = s.metallic;
+                        d.smoothness = s.smoothness;
+                        d.tileOffset = s.tileOffset;
+                        float tileSize = sTerrain.terrain.terrainData.size.x / Mathf.Round(sTerrain.terrain.terrainData.size.x / s.tileSize.x);
+                        d.tileSize = new Vector2(tileSize, tileSize);
+                    
+                        splatPrototypesCleaned.Add(d);
+                        TC.SetTextureReadWrite(s.texture);
+                    }
                 }
-            }
 
-            if (tooManySplatsMessage) { TC.AddMessage("TC2 supports generating maximum " + TC.splatLimit + " splat textures."); Debug.Log("TC2 supports generating maximum " + TC.splatLimit + " splat textures."); }
+                if (tooManySplatsMessage) { TC.AddMessage("TC2 supports generating maximum " + TC.splatLimit+ " splat textures."); Debug.Log("TC2 supports generating maximum " + TC.splatLimit +" splat textures."); }
 
-            TerrainLayer[] newTerrainLayers = splatPrototypesCleaned.ToArray();
-
+                TerrainLayer[] newTerrainLayers = splatPrototypesCleaned.ToArray();
+                
 #if UNITY_EDITOR
-            string terrainPath = "Assets" + terrainArea.terrainDataPath.Replace(Application.dataPath, String.Empty);
+                string terrainPath = "Assets" + terrainArea.terrainDataPath.Replace(Application.dataPath, String.Empty);
 
-            for (int i = 0; i < newTerrainLayers.Length; i++)
-            {
-                string path;
-                if (terrainArea.useSameTerrainLayersForAllTerrains) path = terrainPath + "/" + terrainArea.terrainName + "_TerrainLayer_" + i + ".asset";
-                else path = terrainPath + "/" + terrain.name + "_TerrainLayer_" + i + ".asset";
-
-                TerrainLayer terrainLayer = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(TerrainLayer)) as TerrainLayer;
-
-                if (terrainLayer == null)
+                for (int i = 0; i < newTerrainLayers.Length; i++)
                 {
-                    UnityEditor.AssetDatabase.DeleteAsset(path);
-                    UnityEditor.AssetDatabase.CreateAsset(newTerrainLayers[i], path);
+                    string path;
+                    if (terrainArea.useSameTerrainLayersForAllTerrains) path = terrainPath + "/" + terrainArea.terrainName + "_TerrainLayer_" + i + ".asset";
+                    else path = terrainPath + "/" + terrain.name + "_TerrainLayer_" + i + ".asset";
+
+                    TerrainLayer terrainLayer = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(TerrainLayer)) as TerrainLayer;
+                    
+                    if (terrainLayer == null)
+                    {
+                        UnityEditor.AssetDatabase.DeleteAsset(path);
+                        UnityEditor.AssetDatabase.CreateAsset(newTerrainLayers[i], path);
+                    }
+                    else
+                    {
+                        CopyTerrainLayer(newTerrainLayers[i], terrainLayer);
+                        newTerrainLayers[i] = terrainLayer;
+                    }
                 }
-                else
-                {
-                    CopyTerrainLayer(newTerrainLayers[i], terrainLayer);
-                    newTerrainLayers[i] = terrainLayer;
-                }
-            }
 #endif
 
-            terrain.terrainData.terrainLayers = newTerrainLayers;
+                terrain.terrainData.terrainLayers = newTerrainLayers;
 #endif
         }
 
@@ -603,23 +609,28 @@ namespace TerrainComposer2
                     splatPrototypes.Add(d);
                 }
 #else
-            TerrainLayer[] terrainLayers = terrain.terrainData.terrainLayers;
-            if (terrainLayers == null) return;
+                TerrainLayer[] terrainLayers = terrain.terrainData.terrainLayers;
+                if (terrainLayers == null) return;
 
-            for (int i = 0; i < terrainLayers.Length; i++)
-            {
-                TerrainLayer s = terrainLayers[i];
-                if (s == null) continue;
+                for (int i = 0; i < terrainLayers.Length; i++)
+                {
+                    TerrainLayer s = terrainLayers[i];
+                    if (s == null) continue;
 
                 TC_SplatPrototype d = new TC_SplatPrototype();
-                d.texture = s.diffuseTexture;
-                d.normalMap = s.normalMapTexture;
-                d.metallic = s.metallic;
-                d.smoothness = s.smoothness;
-                d.tileOffset = s.tileOffset;
-                d.tileSize = s.tileSize;
-                splatPrototypes.Add(d);
-            }
+
+                    d.maskMap = s.maskMapTexture;
+                    d.diffRemapMin = s.diffuseRemapMin;
+                    d.diffRemapMax = s.diffuseRemapMax;
+
+                    d.texture = s.diffuseTexture;
+                    d.normalMap = s.normalMapTexture;
+                    d.metallic = s.metallic;
+                    d.smoothness = s.smoothness;
+                    d.tileOffset = s.tileOffset;
+                    d.tileSize = s.tileSize;
+                    splatPrototypes.Add(d);
+                }
 #endif
 
             // if (splatColors == null) splatColors = new Color[splatPrototypes.Count];
@@ -642,7 +653,7 @@ namespace TerrainComposer2
             if (!CheckValidUnityTerrain()) return;
             if (sTerrain == null) sTerrain = this;
 
-            if (sTerrain.treePrototypes.Count == 0) ResetTrees();
+            if (sTerrain.treePrototypes.Count == 0) ResetTrees(); 
 
             List<TreePrototype> treePrototypesCleaned = new List<TreePrototype>();
             for (int i = 0; i < sTerrain.treePrototypes.Count; i++)
@@ -656,11 +667,11 @@ namespace TerrainComposer2
                 d.prefab = s.prefab;
                 treePrototypesCleaned.Add(d);
             }
-
+            
             terrain.terrainData.treePrototypes = treePrototypesCleaned.ToArray();
         }
 
-
+        
         public void GetTrees()
         {
             if (!CheckValidUnityTerrain()) return;
@@ -706,7 +717,7 @@ namespace TerrainComposer2
 
                 TC_DetailPrototype s = sTerrain.detailPrototypes[i];
                 DetailPrototype d = new DetailPrototype();
-
+                
                 d.bendFactor = s.bendFactor;
                 d.dryColor = s.dryColor;
                 d.healthyColor = s.healthyColor;
@@ -747,7 +758,7 @@ namespace TerrainComposer2
             {
                 DetailPrototype s = terrainDetailPrototypes[i];
                 TC_DetailPrototype d = new TC_DetailPrototype();
-
+                
                 d.minHeight = s.minHeight / grassScaleMulti;
                 d.minWidth = s.minWidth / grassScaleMulti;
                 d.maxHeight = s.maxHeight / grassScaleMulti;
@@ -760,7 +771,7 @@ namespace TerrainComposer2
                 d.prototype = s.prototype;
                 d.prototypeTexture = s.prototypeTexture;
                 d.renderMode = s.renderMode;
-
+                
                 detailPrototypes.Add(d);
             }
         }
@@ -839,8 +850,8 @@ namespace TerrainComposer2
                 b += colors[i].b / 255.0f;
                 ++total;
             }
-
-            return new Color((float)(r / total), (float)(g / total), (float)(b / total), 1);
+            
+            return new Color((float)(r / total),(float)(g / total),(float)(b / total), 1);
         }
     }
 
@@ -851,6 +862,9 @@ namespace TerrainComposer2
         public Texture2D normalMap;
 #if !UNITY_5 && !UNITY_2017 && !UNITY_2018_1 && !UNITY_2018_2
         public float normalScale = 1;
+        public Texture2D maskMap;
+        public Vector4 diffRemapMin;
+        public Vector4 diffRemapMax;
 #endif
         public float metallic;
         public float smoothness;

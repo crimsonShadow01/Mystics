@@ -1,6 +1,7 @@
 ﻿using System;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
+using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -8,13 +9,13 @@ namespace TerrainComposer2
     {
         static public float input = 0;
         static public float position = 0;
-
+        
         static public void Draw(TC_Node node, bool nodeFoldout, bool drawMethod, Vector2 pos, Color color, float activeMulti)
         {
             // Draw total node
             // startOffset.x -= TD.nodeSpaceWidth;
             // parent.DropDownMenu();
-
+            
             bool isCulled = false;
             Rect rect = TD.DrawNode(node, pos, color, Color.white, ref isCulled, activeMulti, nodeFoldout, drawMethod, false);
 
@@ -43,7 +44,7 @@ namespace TerrainComposer2
         static public void DropDownMenuInput(Rect rect, TC_Node node)
         {
             if (TD.ClickRect(rect) != 0) return;
-
+            
             GenericMenu menu = new GenericMenu();
 
             string instanceID = node.GetInstanceID().ToString();
@@ -58,7 +59,7 @@ namespace TerrainComposer2
             AddMenuItem(node, menu, instanceID, node.inputFile);
             AddMenuItem(node, menu, instanceID, node.inputCurrent);
             menu.AddItem(new GUIContent("Portal"), false, ClickMenuInput, instanceID + ":Portal/Portal");
-
+            
             menu.ShowAsContext();
             Event.current.Use();
         }
@@ -74,7 +75,7 @@ namespace TerrainComposer2
                 string name = Enum.GetName(e.GetType(), i);
                 if ((name == "Convexity" || name == "Collision") && node.outputId != TC.heightOutput) menu.AddSeparator("Terrain/");
                 if (name == "IQ" || name == "Random") menu.AddSeparator("Noise/");
-                menu.AddItem(new GUIContent(inputName + "/" + name), false, ClickMenuInput, instanceID + ":" + inputName + "/" + name);
+                menu.AddItem(new GUIContent(inputName + "/" + name), false, ClickMenuInput, instanceID + ":" + inputName+ "/" + name);
             }
         }
 
@@ -96,7 +97,7 @@ namespace TerrainComposer2
                 node.inputKind = (InputKind)Enum.Parse(typeof(InputKind), inputKind);
 
                 if (node.inputKind != oldInputKind) changed = true;
-
+                
                 if (inputKind == "Terrain")
                 {
                     InputTerrain oldInputTerrain = node.inputTerrain;
@@ -154,7 +155,7 @@ namespace TerrainComposer2
             if (DragAndDrop.objectReferences.Length > 0) return;
 
             Vector2 posMouse = eventCurrent.mousePosition;
-
+            
             if (rect.Contains(posMouse))
             {
                 if (eventCurrent.alt && !eventCurrent.control)
@@ -183,7 +184,7 @@ namespace TerrainComposer2
             if (item.GetType() == typeof(TC_SelectItem)) itemText = "Item"; else itemText = "Node";
 
             GenericMenu menu = new GenericMenu();
-
+            
             string instanceID = item.GetInstanceID().ToString();
 
             if (Event.current.mousePosition.x < rect.x + ((TD.texCardHeader.width / 2) * TD.scale))

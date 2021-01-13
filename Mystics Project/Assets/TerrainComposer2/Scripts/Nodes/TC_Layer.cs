@@ -1,6 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -12,7 +13,7 @@ namespace TerrainComposer2
         // public new TC_LayerGroupResult parentItem;
 
         public List<TC_SelectItem.DistanceRule> distanceRules;
-
+        
         public bool doNormalize;
         public float placeLimit = 0.5f;
         public float selectValue;
@@ -67,7 +68,7 @@ namespace TerrainComposer2
                 didCompute = true;
 
                 TC_Compute.InitPreviewRenderTexture(ref rtPreview, "rtPreview_Layer");
-
+                
                 if (maskNodeGroup.active) maskBuffer = maskNodeGroup.ComputeValue(seedTotal);
 
                 TC_Compute.InitPreviewRenderTexture(ref selectNodeGroup.rtColorPreview, "rtNodeGroupPreview_" + TC.outputNames[outputId]);
@@ -77,7 +78,7 @@ namespace TerrainComposer2
                     if (selectItemGroup.itemList.Count == 1 && selectItemGroup.itemList[0].texColor != null) compute.RunColorTexCompute(selectNodeGroup, selectItemGroup.itemList[0], ref renderTextures[0], ref layerBuffer);
                     else compute.RunColorCompute(selectNodeGroup, selectItemGroup, ref renderTextures[0], ref layerBuffer);
                 }
-                else compute.RunSplatCompute(selectNodeGroup, selectItemGroup, ref renderTextures, ref layerBuffer);
+                else compute.RunSplatCompute(selectNodeGroup, selectItemGroup, ref renderTextures, ref layerBuffer); 
 
                 compute.DisposeBuffer(ref layerBuffer);
 
@@ -154,7 +155,7 @@ namespace TerrainComposer2
         public int CalcPlaced()
         {
             placed = selectItemGroup.CalcPlaced();
-            return placed;
+            return placed; 
         }
 
         public void ResetObjects()
@@ -172,7 +173,7 @@ namespace TerrainComposer2
             bool newBounds = true;
 
             maskNodeGroup = GetGroup<TC_NodeGroup>(0, refresh, resetTextures);
-            if (maskNodeGroup != null)
+            if (maskNodeGroup != null) 
             {
                 maskNodeGroup.type = NodeGroupType.Mask;
                 if (maskNodeGroup.totalActive > 0)
@@ -181,7 +182,7 @@ namespace TerrainComposer2
                     newBounds = false;
                 }
             }
-
+            
             selectNodeGroup = GetGroup<TC_NodeGroup>(1, refresh, resetTextures);
             if (selectNodeGroup != null)
             {
@@ -194,7 +195,7 @@ namespace TerrainComposer2
                 }
             }
             else active = false;
-
+            
             if (outputId != TC.heightOutput)
             {
                 selectItemGroup = GetGroup<TC_SelectItemGroup>(2, refresh, resetTextures);

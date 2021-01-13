@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.44824558, g: 0.4982741, b: 0.57558244, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -123,7 +123,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 769.7793
+      value: 772.499
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
       propertyPath: m_LocalPosition.z
@@ -163,37 +163,15 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
-  m_RootGameObject: {fileID: 765218664}
   m_IsPrefabParent: 0
---- !u!4 &1521619
+--- !u!4 &1521619 stripped
 Transform:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
   m_PrefabInternal: {fileID: 1521618}
-  m_GameObject: {fileID: 1542794931}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 765218665}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1521620
+--- !u!1 &1521620 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 2}
   m_PrefabInternal: {fileID: 1521618}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1521622}
-  - component: {fileID: 1521621}
-  m_Layer: 0
-  m_Name: Missing Prefab (Dummy)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
 --- !u!114 &1521621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,19 +184,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heightOffset: 2
---- !u!4 &1521622
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 1521618}
-  m_GameObject: {fileID: 1521620}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 765218665}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1671703
 GameObject:
   m_ObjectHideFlags: 0
@@ -5881,7 +5846,7 @@ MonoBehaviour:
   resetObjects: 0
   autoGenerate: 0
   scanHeight: 0
-  cmdGenerate: 1
+  cmdGenerate: 0
   autoGenerateRect:
     serializedVersion: 2
     x: 0
@@ -8146,7 +8111,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1616837751}
-  - {fileID: 765218665}
+  - {fileID: 1521619}
   - {fileID: 1920795708}
   - {fileID: 635435980}
   m_Father: {fileID: 0}
@@ -8890,7 +8855,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 0
@@ -8992,9 +8957,9 @@ MonoBehaviour:
   posOffset: {x: 0, y: 0, z: 0}
   controlDown: 0
   instanceID: -78664
-  firstActive: 0
-  lastActive: 4
-  totalActive: 5
+  firstActive: -1
+  lastActive: -1
+  totalActive: 0
   nodeGroupLevel: 0
   type: 0
   rtColorPreview: {fileID: 0}
@@ -9133,8 +9098,8 @@ MonoBehaviour:
     scale: {x: 0, y: 0, z: 0}
     positionYOld: 0
   bounds:
-    m_Center: {x: 255.6287, y: 0, z: 375.02933}
-    m_Extent: {x: 255.6287, y: 73.26314, z: 375.02933}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
   lockTransform: 0
   lockPosParent: 0
   lockPosChildren: 0
@@ -9180,9 +9145,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 517223679}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 274.25867, y: 0, z: 513.05994}
-  m_LocalScale: {x: 0.47399747, y: 1.4652628, z: 0.47399747}
+  m_LocalScale: {x: 0.4635902, y: 1.4652628, z: 0.4635902}
   m_Children: []
   m_Father: {fileID: 1995343583}
   m_RootOrder: 0
@@ -9221,7 +9186,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 0
@@ -9384,7 +9349,7 @@ MonoBehaviour:
   mipmapLevel: 1
   convexityMode: 0
   convexityStrength: 5
-  stampTex: {fileID: 2800000, guid: 9acac3b220285824e9af7152862ae8b7, type: 3}
+  stampTex: {fileID: 0}
   pathTexStamp: Assets/TerrainComposer2/Examples/Stamps/Masks/FlattenMask.Jpg
   isStampInResourcesFolder: 0
   resourcesFolder: 
@@ -13697,7 +13662,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 0
@@ -13860,7 +13825,7 @@ MonoBehaviour:
   mipmapLevel: 1
   convexityMode: 0
   convexityStrength: 0
-  stampTex: {fileID: 2800000, guid: a291689d8f16c984088f2bf26c58485c, type: 3}
+  stampTex: {fileID: 0}
   pathTexStamp: Assets/TerrainComposer2/Examples/Stamps/Mountains/Volcano.Jpg
   isStampInResourcesFolder: 0
   resourcesFolder: 
@@ -14087,36 +14052,6 @@ MonoBehaviour:
   range: {x: 0, y: 0}
   useConstant: 0
   size: {x: 2048, y: 2048, z: 2048}
---- !u!1 &765218664
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 1521618}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 765218665}
-  m_Layer: 0
-  m_Name: Missing Prefab
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &765218665
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 1521618}
-  m_GameObject: {fileID: 765218664}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1521622}
-  - {fileID: 1521619}
-  m_Father: {fileID: 470022129}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &767830480
 GameObject:
   m_ObjectHideFlags: 0
@@ -15820,8 +15755,8 @@ MonoBehaviour:
     scale: {x: 0, y: 0, z: 0}
     positionYOld: 0
   bounds:
-    m_Center: {x: 274.2587, y: 0, z: 431.36072}
-    m_Extent: {x: 349.66162, y: 73.26314, z: 431.36072}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
   lockTransform: 0
   lockPosParent: 0
   lockPosChildren: 0
@@ -18150,7 +18085,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 0
@@ -18313,7 +18248,7 @@ MonoBehaviour:
   mipmapLevel: 1
   convexityMode: 0
   convexityStrength: 0
-  stampTex: {fileID: 2800000, guid: a291689d8f16c984088f2bf26c58485c, type: 3}
+  stampTex: {fileID: 0}
   pathTexStamp: Assets/TerrainComposer2/Examples/Stamps/Mountains/Volcano.Jpg
   isStampInResourcesFolder: 0
   resourcesFolder: 
@@ -21082,7 +21017,7 @@ MonoBehaviour:
   instanceID: -78566
   firstActive: 0
   lastActive: 3
-  totalActive: 4
+  totalActive: 3
   itemList:
   - {fileID: 361462822}
   - {fileID: 1465683782}
@@ -23849,7 +23784,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 0
@@ -24375,7 +24310,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 0
@@ -24538,7 +24473,7 @@ MonoBehaviour:
   mipmapLevel: 1
   convexityMode: 0
   convexityStrength: 0
-  stampTex: {fileID: 2800000, guid: a291689d8f16c984088f2bf26c58485c, type: 3}
+  stampTex: {fileID: 0}
   pathTexStamp: Assets/TerrainComposer2/Examples/Stamps/Mountains/Volcano.Jpg
   isStampInResourcesFolder: 0
   resourcesFolder: 
@@ -25468,21 +25403,6 @@ MonoBehaviour:
   range: {x: 0, y: 0}
   useConstant: 0
   size: {x: 2048, y: 2048, z: 2048}
---- !u!1 &1542794931
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 1521618}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1521619}
-  m_Layer: 0
-  m_Name: Missing Prefab (Dummy)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &1549983739
 GameObject:
   m_ObjectHideFlags: 0
@@ -27378,8 +27298,8 @@ MonoBehaviour:
     scale: {x: 0, y: 0, z: 0}
     positionYOld: 0
   bounds:
-    m_Center: {x: 274.2587, y: 0, z: 431.36072}
-    m_Extent: {x: 349.66162, y: 73.26314, z: 431.36072}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
   lockTransform: 0
   lockPosParent: 0
   lockPosChildren: 0
@@ -27396,8 +27316,8 @@ MonoBehaviour:
   controlDown: 0
   instanceID: -78856
   firstActive: 0
-  lastActive: 1
-  totalActive: 2
+  lastActive: 0
+  totalActive: 1
   nodeGroupLevel: 0
   type: 1
   rtColorPreview: {fileID: 0}
@@ -27838,7 +27758,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 0
@@ -28001,7 +27921,7 @@ MonoBehaviour:
   mipmapLevel: 1
   convexityMode: 0
   convexityStrength: 0
-  stampTex: {fileID: 2800000, guid: 6941003ee00650940bf40883441e84f1, type: 3}
+  stampTex: {fileID: 0}
   pathTexStamp: Assets/TerrainComposer2/Examples/Stamps/Mountains/MountRainier.Jpg
   isStampInResourcesFolder: 0
   resourcesFolder: 
@@ -28318,8 +28238,8 @@ MonoBehaviour:
     scale: {x: 0, y: 0, z: 0}
     positionYOld: 0
   bounds:
-    m_Center: {x: 274.2587, y: 0, z: 431.36072}
-    m_Extent: {x: 349.66162, y: 73.26314, z: 431.36072}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
   lockTransform: 0
   lockPosParent: 0
   lockPosChildren: 0
@@ -29126,7 +29046,7 @@ MonoBehaviour:
   isRTPDetected: 0
   autoNormalmapRTP: 1
   autoColormapRTP: 1
-  global: {fileID: 11400000, guid: c383da42b40ac514fb3413fb28da3abe, type: 2}
+  global: {fileID: 11400000, guid: 83db1806da2f2af4caee1976f4bb23c9, type: 2}
   exportPath: C:/Unity Projects/TerrainComposer2/Assets
 --- !u!1 &1841867073
 GameObject:
@@ -30969,14 +30889,13 @@ MonoBehaviour:
     and 'Stamp' package below.\n     The 'Examples' pack contains free SpeedTrees
     and a building that is setup\n     for TC2 from Unity's free 'Viking Village'.\n
     \    The stamp pack contains high resolution 4k heightmap stamps.\n     These
-    packages are not included with TC2 to keep the size small.\n\n2). Import the Unity
-    'Characters' package.\n     Unity Menu -> Assets -> Import Package -> Characters.\n\n3).
-    Click on the TerrainArea GameObject. In the Inspector choose a folder to \n     save
-    the terrains to (click 'Change' Button). Then click the 'Create' button.\n     3x3
-    terrain tiles will be created.\n\n4). Open the TerrainComposer2 window:\n     Unity
-    Menu -> Window -> Power of Nature Software -> TerrainComposer2\n\n5). In the TC2
-    window click the 'Generate' button.\n\nDone! Everything is generated on the GPU
-    and this gives super fast results.\n\nClick play and enjoy the view...\n----------------------------------------------------------------------------------------\n\nIf
+    packages are not included with TC2 to keep the size small.\n\n2). Click on the
+    TerrainArea GameObject. In the Inspector choose a folder to \n     save the terrains
+    to (click 'Change' Button). Then click the 'Create' button.\n     3x3 terrain
+    tiles will be created.\n\n3). Open the TerrainComposer2 window:\n     Unity Menu
+    -> Window -> Power of Nature Software -> TerrainComposer2\n\n4). In the TC2 window
+    click the 'Generate' button.\n\nDone! Everything is generated on the GPU and this
+    gives super fast results.\n\nClick play and enjoy the view...\n----------------------------------------------------------------------------------------\n\nIf
     you have a high end PC you can higher the terrain resolutions:\n1). Click on the
     TerrainArea GameObject.\n2). Click on the 'Resolutions' tab.\n3). Change heightmap
     to 1025 or 2049, splatmap to 2049 and grass to 1024.\n4). Click the 'Apply' button.\n\nIf
@@ -31201,7 +31120,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 0
@@ -31306,9 +31225,9 @@ MonoBehaviour:
   posOffset: {x: 0, y: 0, z: 0}
   controlDown: 0
   instanceID: -78620
-  firstActive: 0
-  lastActive: 0
-  totalActive: 1
+  firstActive: -1
+  lastActive: -1
+  totalActive: 0
   nodeGroupLevel: 0
   type: 1
   rtColorPreview: {fileID: 0}
@@ -31536,7 +31455,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 0
@@ -31699,7 +31618,7 @@ MonoBehaviour:
   mipmapLevel: 1
   convexityMode: 0
   convexityStrength: 0
-  stampTex: {fileID: 2800000, guid: 6941003ee00650940bf40883441e84f1, type: 3}
+  stampTex: {fileID: 0}
   pathTexStamp: Assets/TerrainComposer2/Examples/Stamps/Mountains/MountRainier.Jpg
   isStampInResourcesFolder: 0
   resourcesFolder: 
@@ -32146,9 +32065,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2040624683}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 274.25867, y: 0, z: 513.05994}
-  m_LocalScale: {x: 0.6993232, y: 1.4652628, z: 0.69932306}
+  m_LocalScale: {x: 0.4635902, y: 1.4652628, z: 0.4635902}
   m_Children: []
   m_Father: {fileID: 1669904366}
   m_RootOrder: 0
@@ -32187,7 +32106,7 @@ MonoBehaviour:
   isLocked: 0
   autoGenerate: 1
   visible: 1
-  active: 1
+  active: 0
   foldout: 2
   nodeFoldout: 1
   outputId: 1
@@ -32350,7 +32269,7 @@ MonoBehaviour:
   mipmapLevel: 1
   convexityMode: 0
   convexityStrength: 5
-  stampTex: {fileID: 2800000, guid: 9acac3b220285824e9af7152862ae8b7, type: 3}
+  stampTex: {fileID: 0}
   pathTexStamp: Assets/TerrainComposer2/Examples/Stamps/Masks/FlattenMask.Jpg
   isStampInResourcesFolder: 0
   resourcesFolder: 
@@ -33055,9 +32974,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2068053235}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 274.25867, y: 0, z: 513.05994}
-  m_LocalScale: {x: 0.47399747, y: 1.4652628, z: 0.47399747}
+  m_LocalScale: {x: 0.4635902, y: 1.4652628, z: 0.4635902}
   m_Children: []
   m_Father: {fileID: 878451703}
   m_RootOrder: 0

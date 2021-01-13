@@ -1,5 +1,7 @@
-﻿using UnityEditor;
+﻿using System;
 using UnityEngine;
+using UnityEditor;
+using System.Collections;
 
 
 namespace TerrainComposer2
@@ -74,16 +76,16 @@ namespace TerrainComposer2
                 {
                     // if (selectItem.splatCustom) DrawSplatCustomPreview(selectItem, rectPreview);
                 }
-
+                
                 GUI.matrix = Matrix4x4.Scale(new Vector3(1, 1, 1));
 
                 TC_NodeGUI.DrawAddItem(rectPreview, pos, selectItem);
                 TC_NodeGUI.LeftClickMenu(rectPreview, selectItem);
             }
-
+            
             if (selectItem.outputId != TC.colorOutput)
             {
-                Rect colorRect = new Rect(rectPreview.x + 0 * TD.scale, rectPreview.y + 0 * TD.scale, 60 * TD.scale, 16f * TD.scale);
+                Rect colorRect = new Rect(rectPreview.x + 0 * TD.scale, rectPreview.y +  0 * TD.scale, 60 * TD.scale, 16f * TD.scale);
                 GUI.color = new Color(selectItem.color.r, selectItem.color.g, selectItem.color.b, 0.75f);
                 GUI.DrawTexture(colorRect, Texture2D.whiteTexture);
                 GUI.color = Color.white;

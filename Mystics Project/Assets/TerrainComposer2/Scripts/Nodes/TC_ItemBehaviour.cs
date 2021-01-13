@@ -1,6 +1,8 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using UnityEngine.Events;
 
 // TODO: Fix method in select and mask node group, make distinct between layer and inside
 
@@ -12,7 +14,7 @@ namespace TerrainComposer2
         [NonSerialized] public TC_ItemBehaviour parentItem;
         static public event RepaintAction DoRepaint;
         public delegate void RepaintAction();
-
+        
         public float versionNumber = 0;
         public bool defaultPreset;
         public bool isLocked;
@@ -27,7 +29,7 @@ namespace TerrainComposer2
         public string notes;
 
         public int listIndex;
-        public bool firstLoad;
+        public bool firstLoad; 
 
         public TexturePreview preview = new TexturePreview();
         public RenderTexture rtDisplay, rtPreview;
@@ -35,7 +37,7 @@ namespace TerrainComposer2
         public int isPortalCount = 0;
         public TC_ItemBehaviour portalNode;
         public List<TC_ItemBehaviour> usedAsPortalList;
-
+        
         public Method method;
 
         public float opacity = 1;
@@ -57,11 +59,11 @@ namespace TerrainComposer2
         public PositionMode positionMode;
         public float posY;
         public Vector3 posOffset;
-
+        
         [NonSerialized] public DropPosition dropPosition;
         public bool controlDown;
 
-        [SerializeField] int instanceID = 0;
+        [SerializeField]int instanceID = 0;
 
 
         public void SetVersionNumber()
@@ -79,7 +81,7 @@ namespace TerrainComposer2
             TC_Compute.InitPreviewRenderTexture(ref rtPreview, name);
             if (assignRtDisplay) rtDisplay = rtPreview;
         }
-
+        
         public virtual void Awake()
         {
             // Debug.Log("Awake");
@@ -87,9 +89,9 @@ namespace TerrainComposer2
             {
 
                 firstLoad = true;
-#if UNITY_EDITOR
-                UnityEditor.EditorUtility.SetDirty(this);
-#endif
+                #if UNITY_EDITOR
+                    UnityEditor.EditorUtility.SetDirty(this);
+                #endif
             }
 
             rtDisplay = null;
@@ -97,7 +99,7 @@ namespace TerrainComposer2
 
             t = transform;
             t.hasChanged = false;
-
+            
             // Debug.Log("Awake " + name);
             // TCGenerate.singleton.AutoGenerate();
             // RemoveCloneText();
@@ -136,7 +138,7 @@ namespace TerrainComposer2
         {
             RemoveCloneText();
         }
-
+       
         public virtual void OnEnable()
         {
             // preview.Create(128);
@@ -180,7 +182,7 @@ namespace TerrainComposer2
         }
 
         public virtual void OnTransformChildrenChanged()
-        {
+        { 
             // Debug.Log("Children " + name + " has changed "+TC.outputNames[outputId]);
             TC.RefreshOutputReferences(outputId, true);
             // GetItems(this);
@@ -244,18 +246,18 @@ namespace TerrainComposer2
         {
             // Debug.Log("Destroy");
 
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             if (undo) UnityEditor.Undo.DestroyObjectImmediate(gameObject); else DestroyImmediate(gameObject);
-#else
+            #else
                 Destroy(gameObject);
-#endif
+            #endif
         }
 
         public virtual MonoBehaviour Add<T>(string label, bool addSameLevel, bool addBefore = false, bool makeSelection = false, int startIndex = 1) where T : TC_ItemBehaviour
         {
             GameObject newItemGo = new GameObject();
             Transform newItemT = newItemGo.transform;
-
+            
             Type type = typeof(T);
 
             if (label == "")
@@ -270,9 +272,9 @@ namespace TerrainComposer2
             // Debug.Log("Add " + label);
             newItemT.name = label;
 
-#if UNITY_EDITOR
-            if (makeSelection) UnityEditor.Selection.activeTransform = newItemT;
-#endif
+            #if UNITY_EDITOR
+                if (makeSelection) UnityEditor.Selection.activeTransform = newItemT;
+            #endif
 
             int index;
             TC_ItemBehaviour item = newItemGo.AddComponent<T>();
@@ -280,7 +282,7 @@ namespace TerrainComposer2
             item.SetVersionNumber();
 
             item.outputId = outputId;
-
+            
             if (addSameLevel)
             {
                 newItemT.parent = t.parent;
@@ -313,13 +315,13 @@ namespace TerrainComposer2
 
             return item;
         }
-
+        
         public void AddLayerNodeGroups(TC_Layer layer)
         {
             layer.Add<TC_NodeGroup>("Mask Group", false);
             TC_NodeGroup selectNodeGroup = (TC_NodeGroup)layer.Add<TC_NodeGroup>("Select Group", false);
             selectNodeGroup.Add<TC_Node>("", false, false, false);
-
+            
             layer.Add<TC_SelectItemGroup>("", false);
         }
 
@@ -346,7 +348,7 @@ namespace TerrainComposer2
                 group.SetParameters(this, index);
                 group.GetItems(refresh, resetTextures, true);
             }
-
+            
             return group;
         }
 
@@ -377,12 +379,12 @@ namespace TerrainComposer2
                 item.portalNode.usedAsPortalList.Add(item);
                 item.portalNode.isPortalCount++;
             }
-
-#if UNITY_EDITOR
-            UnityEditor.Selection.activeObject = newGo;
-            UnityEditor.Undo.RegisterCreatedObjectUndo(newGo, "Duplicate " + newGo.name);
-#endif
-
+            
+            #if UNITY_EDITOR
+                UnityEditor.Selection.activeObject = newGo;
+                UnityEditor.Undo.RegisterCreatedObjectUndo(newGo, "Duplicate " + newGo.name);
+            #endif
+            
             return item;
         }
 
@@ -430,7 +432,7 @@ namespace TerrainComposer2
         public bool active;
         public Vector2 range = new Vector2(0, 1);
         public AnimationCurve curve = AnimationCurve.Linear(0, 0, 1, 1);
-
+        
         public Vector4[] c;
         public float[] curveKeys;
         public int length;

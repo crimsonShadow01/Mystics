@@ -1,6 +1,4 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "CTI/Internal-DeferredShading" {
+Shader "Hidden/CTI/Internal-DeferredShading" {
 Properties {
 	_LightTexture0 ("", any) = "" {}
 	_LightTextureB0 ("", 2D) = "" {}

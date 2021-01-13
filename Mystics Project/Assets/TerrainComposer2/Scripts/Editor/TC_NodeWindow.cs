@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
 using UnityEditor;
-using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 
 namespace TerrainComposer2
 {
@@ -13,7 +15,7 @@ namespace TerrainComposer2
         // bool onFocus;
 
         TC_TerrainLayer terrainLayer;
-
+                
         [MenuItem("Window/Power of Nature Software/TerrainComposer2")]
         public static void ShowWindow()
         {
@@ -24,13 +26,13 @@ namespace TerrainComposer2
         void OnEnable()
         {
             window = this;// GetWindow(typeof(TC_NodeWindow)) as TC_NodeWindow;
-            autoRepaintOnSceneChange = true;
+            autoRepaintOnSceneChange = true; 
             TD.scale = 2;
-
+            
             Undo.undoRedoPerformed += UndoRedoPerformed;
 
             Initialize();
-
+            
             // Debug.Log("Node Window OnEnable");
             // Debug.Log(Application.isPlaying);
 
@@ -67,7 +69,7 @@ namespace TerrainComposer2
                 TC.AutoGenerate();
             }
         }
-
+        
         void Initialize()
         {
             if (TC_Settings.instance == null)
@@ -98,7 +100,7 @@ namespace TerrainComposer2
         bool closeMe;
 
         void OnInspectorUpdate()
-        {
+        { 
             Repaint();
         }
 
@@ -183,7 +185,7 @@ namespace TerrainComposer2
             TD.showSelectRect = false;
 
             CaptureWindowEvents();
-
+             
             TD.scrollMax = Vector2.zero;
 
             TC_TerrainLayerGUI.Draw(terrainLayer);
@@ -193,7 +195,7 @@ namespace TerrainComposer2
 
             TD.DrawCenter(Color.red, 21, 1);
             TD.DrawCenter(Color.red, 11, 3);
-
+             
             DrawMenu();
 
             DropDownMenuMain();
@@ -260,7 +262,7 @@ namespace TerrainComposer2
                     TC_SelectItemGroup selectItemGroup = t.GetComponent<TC_SelectItemGroup>();
                     TC_NodeGroup nodeGroup = t.GetComponent<TC_NodeGroup>();
                     TC_Node node = t.GetComponent<TC_Node>();
-
+                    
                     if (node != null)
                     {
                         if (node.nodeType == NodeGroupType.Select)
@@ -276,7 +278,7 @@ namespace TerrainComposer2
                     else if (groupResult != null) { TC.AddMessage("A Result Node cannot be deleted. The Layer Group itself needs to be deleted."); continue; }
                     else if (selectItemGroup != null) { selectItemGroup.Clear(true); continue; }
                     else if (nodeGroup != null) { nodeGroup.Clear(true); continue; }
-
+                    
                     Undo.DestroyObjectImmediate(Selection.gameObjects[i]);
                     --i;
                 }
@@ -286,7 +288,7 @@ namespace TerrainComposer2
         static public void DuplicateKey()
         {
             Transform[] transforms = (Transform[])Selection.transforms.Clone();
-
+            
             if (transforms != null)
             {
                 List<GameObject> gos = new List<GameObject>();
@@ -322,18 +324,18 @@ namespace TerrainComposer2
             eventCurrent = Event.current;
 
             if (eventCurrent.type == EventType.KeyUp)
-            {
-#if UNITY_EDITOR_OSX
+            {  
+                #if UNITY_EDITOR_OSX
                     if (eventCurrent.keyCode == KeyCode.D && eventCurrent.control) DuplicateKey();
                     if (eventCurrent.keyCode == KeyCode.Backspace) DeleteKey();
-#else
-                if (eventCurrent.keyCode == KeyCode.D && eventCurrent.control) DuplicateKey();
-                if (eventCurrent.keyCode == KeyCode.Delete) DeleteKey();
-#endif
+                #else
+                    if (eventCurrent.keyCode == KeyCode.D && eventCurrent.control) DuplicateKey();
+                    if (eventCurrent.keyCode == KeyCode.Delete) DeleteKey();
+                #endif
                 keyDown = false;
             }
             else if (eventCurrent.type == EventType.KeyDown)
-            {
+            { 
                 if (eventCurrent.control && eventCurrent.shift)
                 {
                     if (eventCurrent.keyCode == KeyCode.D) TC_Settings.instance.drawDefaultInspector = !TC_Settings.instance.drawDefaultInspector;
@@ -353,7 +355,7 @@ namespace TerrainComposer2
             TD.scrollOffset = settings.scrollOffset;
             TD.scale = settings.scale;
 
-            if (TD.scrollOffset.x < 0) TD.scrollOffset.x = 0;
+            if (TD.scrollOffset.x < 0) TD.scrollOffset.x = 0; 
             else if (TD.scrollOffset.x > TD.scrollMax.x + 1000 && TD.scrollMax.x != 0) TD.scrollOffset.x = TD.scrollMax.x + 1000;
 
             if (TD.scrollOffset.y > 0) TD.scrollOffset.y = 0;
@@ -365,20 +367,20 @@ namespace TerrainComposer2
             bool doScroll = false;
             if (eventCurrent.alt && eventCurrent.control && eventCurrent.type == EventType.MouseDrag && eventCurrent.button == 0) doScroll = true;
             else if (eventCurrent.type == EventType.MouseDrag && (eventCurrent.button == 2 || (eventCurrent.button == 0 && eventCurrent.shift))) doScroll = true;
-
+            
             if (doScroll)
             {
                 TD.scrollOffset += (eventCurrent.delta / TD.scale) / TD.mouseSensivity;
                 TC.repaintNodeWindow = true;
                 eventCurrent.Use();
             }
-
+            
             if (eventCurrent.alt && eventCurrent.control && eventCurrent.type == EventType.MouseDown) eventCurrent.Use();
-
+            
             // Debug.Log(TD.scrollOffset.y + " " + TD.scrollMax.y);
-
+            
             Vector2 deltaMouse = eventCurrent.mousePosition - new Vector2(TC_NodeWindow.window.position.width / 2, TC_NodeWindow.window.position.height / 2);
-
+            
             if (eventCurrent.type == EventType.ScrollWheel)
             {
                 if (eventCurrent.delta.y > 0)
@@ -393,7 +395,7 @@ namespace TerrainComposer2
                     TD.scale *= 1 + (-eventCurrent.delta.y / (20f * TD.mouseScrollWheelSensivity));
                     TD.scrollOffset += deltaMouse / (TD.scale);
                 }
-
+                
                 if (TD.scale > 2.4f) TD.scale = 2.4f;
                 else if (TD.scale < 0.05f) TD.scale = 0.05f;
 
@@ -411,10 +413,10 @@ namespace TerrainComposer2
                 if (eventCurrent.keyCode == g.keyZoomIn) TD.scale *= 1.5f;
                 else if (eventCurrent.keyCode == g.keyZoomOut) TD.scale /= 1.5f;
             }
-
+            
             if (eventCurrent.button == 2 && eventCurrent.clickCount == 2) TD.scale = 1;
-
-            settings.scrollOffset = TD.scrollOffset - settings.scrollAdd;
+            
+            settings.scrollOffset = TD.scrollOffset - settings.scrollAdd;  
             settings.scale = TD.scale;
             // mousePositionOld = key.mousePosition;
             // if (TC_Settings.instance.global.scrollOffset.x * (TD.scale * 1.5f) < 680) TC_Settings.instance.global.scrollOffset.x = 680 / (TD.scale * 1.5f);
@@ -425,7 +427,7 @@ namespace TerrainComposer2
         {
             return new Color(Mathf.Abs(Mathf.Sin(Time.realtimeSinceStartup)), Mathf.Abs(Mathf.Cos(Time.realtimeSinceStartup)), 0);
         }
-
+       
         void DrawMenu()
         {
             TC_Settings settings = TC_Settings.instance;
@@ -433,7 +435,7 @@ namespace TerrainComposer2
             float optionalWidth = 0;
 
             GUI.color = EditorGUIUtility.isProSkin ? new Color(0.2f, 0.2f, 0.2f) : new Color(0.5f, 0.5f, 0.5f);
-
+            
             GUI.DrawTexture(new Rect(0, 0, window.position.width, 20), Texture2D.whiteTexture);
             GUI.color = Color.white;
 
@@ -486,7 +488,7 @@ namespace TerrainComposer2
 
                 GUI.color = Color.white;
 
-                if (Application.isPlaying)
+                if (Application.isPlaying) 
                 {
                     GUI.color = GetAnimColor();
                     optionalWidth += 270;
@@ -535,7 +537,7 @@ namespace TerrainComposer2
                 }
                 if (GUILayout.Button(TC.outputNames[i][0].ToString(), EditorStyles.miniButtonMid, GUILayout.Width(25)))
                 {
-                    if (eventCurrent.control)
+                    if (eventCurrent.control) 
                     {
                         settings.scrollOffset = -layerGroup.nodePos;
                     }
@@ -566,9 +568,9 @@ namespace TerrainComposer2
         {
             float x = (TC_NodeWindow.window.position.width / 2) + TD.scrollOffset.x * TD.scale;
             float width = TC_NodeWindow.window.position.width - x;
-
+            
             if (TD.ClickRect(new Rect(x, 0, width, TC_NodeWindow.window.position.height)) != 1) return;
-
+            
             GenericMenu menu = new GenericMenu();
 
             DrawFile(menu, true);
@@ -698,17 +700,17 @@ namespace TerrainComposer2
             string folder = settings.lastPath;
             if (!folder.Contains(Application.dataPath)) folder = "";
             if (folder == "") folder = Application.dataPath + (TC.installPath.Replace("/Assets", "/")) + "/Examples/Presets/TerrainLayer";
-
+            
             string path = EditorUtility.SaveFilePanel("Save TerrainComposer2 project", folder, "TerrainLayer", "prefab");
             if (path.Length != 0)
             {
                 settings.lastPath = TC.GetPath(path);
 
-                string filePath = TC.GetAssetDatabasePath(path);
+                string filePath = TC.GetAssetDatabasePath(path); 
 
                 if (filePath != "")
                 {
-                    TD.CreatePrefab(filePath, TC_Area2D.instance.terrainLayer.gameObject);
+                    TD.CreatePrefab(filePath, TC_Area2D.instance.terrainLayer.gameObject); 
                 }
                 else TC.AddMessage("Can't find path.");
             }
@@ -756,13 +758,13 @@ namespace TerrainComposer2
         static int LoadDefault()
         {
             if (!NewScene()) return -1;
-
+            
             GameObject defaultGo = AssetDatabase.LoadAssetAtPath(TC.installPath + "/Defaults/TerrainComposer2.prefab", typeof(GameObject)) as GameObject;
 
             if (defaultGo != null)
             {
                 GameObject go = Instantiate(defaultGo, Vector3.zero, Quaternion.identity) as GameObject;
-
+                
                 if (go == null) return -2;
                 else
                 {
@@ -796,7 +798,7 @@ namespace TerrainComposer2
                     TC_TerrainLayer terrainLayer = TC_Generate.instance.area2D.terrainLayer;
 
                     terrainLayer.GetItems(false, true, false);
-
+                    
                     // Detect prefab import issue
                     if (terrainLayer.layerGroups[TC.splatOutput].visible)
                     {

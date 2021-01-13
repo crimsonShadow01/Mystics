@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -7,7 +8,7 @@ namespace TerrainComposer2
     {
         public float animateSpeed;
         float time;
-
+        
         void Update()
         {
             MyUpdate();
@@ -27,8 +28,8 @@ namespace TerrainComposer2
             TC.AutoGenerate();
             UnityEditor.EditorApplication.update += MyUpdate;
         }
-
-
+        
+         
         void OnDisable()
         {
             UnityEditor.EditorApplication.update -= MyUpdate;

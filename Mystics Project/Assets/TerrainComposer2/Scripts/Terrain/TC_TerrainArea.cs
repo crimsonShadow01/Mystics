@@ -1,6 +1,10 @@
-﻿using System;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
+using System.IO;
+
+using System.Runtime.Serialization.Formatters.Binary;
 public enum ApplyChanges { Terrain, TerrainArea, AllTerrainAreas }
 
 namespace TerrainComposer2
@@ -82,7 +86,7 @@ namespace TerrainComposer2
             if (terrainShader == null) terrainShader = Shader.Find("Nature/Terrain/Diffuse");
 
             for (int i = 0; i < terrains.Count; i++)
-            {
+            { 
                 terrains[i].materialTemplate = new Material(terrainShader);
                 if (terrains[i].terrain) terrains[i].terrain.materialTemplate = terrains[i].materialTemplate;
             }
@@ -201,7 +205,7 @@ namespace TerrainComposer2
         public void ClearToOne()
         {
             int length = terrains.Count;
-
+            
             if (terrains[0].terrain != null) DestroyImmediate(terrains[0].terrain.gameObject);
 
             for (int i = 1; i < length; ++i)
@@ -268,7 +272,7 @@ namespace TerrainComposer2
                 }
             }
 
-        exit:;
+            exit:;
             // tile_resolution = (int)(tiles.x * size.x);
             SetNeighbors();
         }
@@ -351,6 +355,9 @@ namespace TerrainComposer2
 
         public Int2 IndexToTile(int index)
         {
+            if (tiles.x < 1) tiles.x = 1;
+            if (tiles.y < 1) tiles.y = 1;
+
             Int2 tile = new Int2();
             tile.y = index / tiles.x;
             tile.x = index - (tile.y * tiles.x);
@@ -363,14 +370,14 @@ namespace TerrainComposer2
         }
 
         public void CreateTerrains()
-        {
+        { 
             TerrainData terrainData;
             GameObject terrainObject;
             Terrain terrain;
             TerrainCollider terrainCollider;
 
             string tileName;
-
+            
             ClearToOne();
 
             terrains[0].size = terrainSize;

@@ -1,9 +1,10 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEditor;
+using System.Collections;
 
 namespace TerrainComposer2
 {
-    [CustomEditor(typeof(ReadMe))]
+    [CustomEditor (typeof(ReadMe))]
     public class ReadMeEditor : Editor
     {
         public override void OnInspectorGUI()
@@ -19,7 +20,7 @@ namespace TerrainComposer2
                 r.buttonEdit = !r.buttonEdit;
                 GUI.changed = true;
             }
-
+            
             GUILayout.Space(5);
 
             if (r.buttonEdit)
@@ -34,11 +35,11 @@ namespace TerrainComposer2
                 GUI.backgroundColor = Color.green;
                 if (GUILayout.Button("Download Examples Pack"))
                 {
-                    Application.OpenURL("https://mega.nz/#!7QBj3YzR!yHXkhDY2Njvk0obqSA36vzn5EVcN4biRC15nJSxK4ao");
+                    Application.OpenURL("https://www.dropbox.com/s/ppb2aghegmdu594/TerrainComposer2_Examples.unitypackage?dl=0");
                 }
                 if (GUILayout.Button("Download Stamp Pack"))
                 {
-                    Application.OpenURL("https://mega.nz/#!HNIjxZZA!OQTmlM1jiT5rOCPz7_PZBJ-8UwJOPOsW-ghs25wHAik");
+                    Application.OpenURL("https://www.dropbox.com/s/41pv7g4nahdjhxu/TerrainComposer2_StampPack.unitypackage?dl=0");
                 }
                 if (GUILayout.Button("Documentation"))
                 {
@@ -50,6 +51,6 @@ namespace TerrainComposer2
 
             if (GUI.changed) EditorUtility.SetDirty(target);
         }
-
+    
     }
 }

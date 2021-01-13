@@ -1,6 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 namespace TerrainComposer2
 {
@@ -92,14 +93,14 @@ namespace TerrainComposer2
                     terrainLayer.SetParameters(this, listIndex++);
                     terrainLayer.terrainLevel = terrainLevel + 1;
 
-                    terrainLayer.GetItems(refresh, rebuildGlobalLists, resetTextures);
-                    terrainLayer.GetItem(outputId, rebuildGlobalLists, resetTextures);
+                        terrainLayer.GetItems(refresh, rebuildGlobalLists, resetTextures);
+                        terrainLayer.GetItem(outputId, rebuildGlobalLists, resetTextures);
                     //{
-                    ++totalActive;
-                    itemList.Add(new TerrainLayerGroupItem(null, terrainLayer));
-                    lastActive = itemList.Count - 1;
-                    if (newBounds) { bounds = terrainLayer.bounds; newBounds = false; }
-                    else bounds.Encapsulate(terrainLayer.bounds);
+                        ++totalActive;
+                        itemList.Add(new TerrainLayerGroupItem(null, terrainLayer));
+                        lastActive = itemList.Count - 1;
+                        if (newBounds) { bounds = terrainLayer.bounds; newBounds = false; }
+                        else bounds.Encapsulate(terrainLayer.bounds);
                     //}
                     // else layer.displayRenderTex = null;
                 }
@@ -112,13 +113,13 @@ namespace TerrainComposer2
                         terrainLayerGroup.terrainLevel = terrainLevel + 1;
 
                         terrainLayerGroup.GetItems(refresh, rebuildGlobalLists, resetTextures);
-
-                        ++totalActive;
-                        itemList.Add(new TerrainLayerGroupItem(terrainLayerGroup, null));
-                        lastActive = itemList.Count - 1;
-                        if (newBounds) { bounds = terrainLayerGroup.bounds; newBounds = false; }
-                        else bounds.Encapsulate(terrainLayerGroup.bounds);
-
+                        
+                            ++totalActive;
+                            itemList.Add(new TerrainLayerGroupItem(terrainLayerGroup, null));
+                            lastActive = itemList.Count - 1;
+                            if (newBounds) { bounds = terrainLayerGroup.bounds; newBounds = false; }
+                            else bounds.Encapsulate(terrainLayerGroup.bounds);
+                        
                     }
                 }
             }

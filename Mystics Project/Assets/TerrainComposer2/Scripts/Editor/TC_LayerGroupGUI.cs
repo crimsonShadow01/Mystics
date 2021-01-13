@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -14,7 +16,7 @@ namespace TerrainComposer2
         static public void Add(Rect rect, Texture tex, string tooltip, Color color, int queue = 0)
         {
             var textureCommand = new TextureCommand(rect, tex, tooltip, color);
-
+            
             if (queue == 0) drawTextureList0.Add(textureCommand);
             else if (queue == 1) drawTextureList1.Add(textureCommand);
             else if (queue == 2) drawTextureList2.Add(textureCommand);
@@ -106,7 +108,7 @@ namespace TerrainComposer2
 
     static public class TC_LayerGroupGUI
     {
-        static public Rect DrawLayerOrLayerGroup(TC_ItemBehaviour item, ref Vector2 pos, Color color, ref bool isCulled, float activeMulti, bool drawMethod, bool isFirst, bool isLast)
+        static public Rect DrawLayerOrLayerGroup(TC_ItemBehaviour item, ref Vector2 pos, Color color, ref bool isCulled, float activeMulti, bool drawMethod, bool isFirst, bool isLast) 
         {
             TC_GlobalSettings g = TC_Settings.instance.global; // TODO: Make global static and init
             TC_LayerGroup layerGroup = item as TC_LayerGroup;
@@ -128,7 +130,7 @@ namespace TerrainComposer2
 
             Texture texShelf;
             Texture texLine = null;
-
+            
             if (item.level == 0)
             {
                 if (nodeFoldout) texShelf = TD.texShelfStartOutput; else texShelf = TD.texShelfStartOutputCollapsed;
@@ -146,14 +148,14 @@ namespace TerrainComposer2
 
             TD.DrawTextureScaled(pos.x, pos.y, texShelf, Color.white);
             if (item.level > 0) TD.DrawTextureScaled(pos.x, pos.y, texLine, g.colLayer * activeMulti);
-
+            
             TD.DrawTextureScaled(pos.x - TD.texShelfStartOutput.width, pos.y, nodeFoldout ? TD.texShelfLayer : TD.texShelfLayerCollapsed, Color.white, false, StretchMode.Left);
-
+            
             pos.y += TD.shelfOffsetY;
             pos.x -= TD.texCardBody.width - (item.level == 0 ? 20 : 34);
 
             isCulled = false;
-
+            
             Rect nodeRect = TD.DrawNode(item, pos, color, Color.white, ref isCulled, activeMulti, nodeFoldout, drawMethod);
             if (isCulled) return nodeRect;
 
@@ -169,13 +171,13 @@ namespace TerrainComposer2
 
                 Event.current.Use();
             }
-
+            
             //if (GUI.Button(TD.GetRectScaled(pos.x + 225, pos.y + 2, 40, 25), ""))
             //{
             //    if (layerGroup != null) layerGroup.nodeFoldout = !layerGroup.nodeFoldout;
             //    else layer.nodeFoldout = !layer.nodeFoldout;
             //}
-
+            
             if (item.method == Method.Lerp && drawMethod)
             {
                 // TD.DrawSlider(startOffset, ref item.overlay, 0, 1);
@@ -190,7 +192,7 @@ namespace TerrainComposer2
                     DrawConnectionIndicator(item, new Vector2(pos.x + 289, pos.y + TD.cardHeight + 4), true, nodeFoldout);
                 }
             }
-
+           
             return nodeRect;
         }
 
@@ -223,7 +225,7 @@ namespace TerrainComposer2
             //    TD.repaintNodeWindow = true;
             //}
 
-            if (clickedButton == 0) Undo.RegisterCreatedObjectUndo(item.Add<TC_Layer>("", true, addBefore, true).gameObject, "Created Layer");
+            if (clickedButton == 0) Undo.RegisterCreatedObjectUndo(item.Add<TC_Layer>("", true, addBefore, true).gameObject, "Created Layer"); 
             else if (clickedButton == 1) Undo.RegisterCreatedObjectUndo(item.Add<TC_LayerGroup>("", true, addBefore, true).gameObject, "Created GameObject");
             //}
         }
@@ -235,7 +237,7 @@ namespace TerrainComposer2
             if (layerGroup.level == 0) pos.x -= TD.texShelfStartOutput.width;
 
             float posOldX = pos.x;
-
+            
             bool isCulled = false;
             layerGroup.nodePos = pos - new Vector2(0, TD.cardHeight);
             Rect rect = DrawLayerOrLayerGroup(layerGroup, ref pos, g.colLayerGroup, ref isCulled, activeMulti, drawMethod, isFirst, isLast);
@@ -245,7 +247,7 @@ namespace TerrainComposer2
             // if (GUI.Button(rectFoldout, "")) layerGroup.foldout = !layerGroup.foldout;
 
             shelfLineVerticalStartY = pos.y + (layerGroup.nodeFoldout ? TD.texShelfLayerStart1.height : TD.texShelfLayerCollapsed.height) - TD.shelfOffsetY;
-
+            
             DropDownMenu(rect, layerGroup);
 
             Vector2 bar2 = pos;
@@ -257,7 +259,7 @@ namespace TerrainComposer2
 
             // Draw Result Node
             TC_LayerGroupResultGUI.Draw(layerGroup, ref pos, posOldX, activeMulti, layerGroup.nodeFoldout);
-
+                 
             int layerGroupCount = 0;
             int layerCount = 0;
 
@@ -287,7 +289,7 @@ namespace TerrainComposer2
                         if (!m_isLast)
                         {
                             pos.y += layerGroupChild.nodeFoldout ? 0 : 32;
-
+                            
                             TD.DrawTextureScaledV(pos.x + 64, m_shelfLineVerticalStartY, (pos.y - m_shelfLineVerticalStartY) + 16, TD.texShelfLinesVertical, Color.white);
                             TD.DrawTextureScaledV(pos.x + 64, m_shelfLineVerticalStartY, (pos.y - m_shelfLineVerticalStartY) + 16, TD.texLineVertical, g.colLayer * activeMulti);
                         }
@@ -305,18 +307,18 @@ namespace TerrainComposer2
                     }
                 }
             }
-
+            
             pos.y += 64;
-
+            
             Rect clickRect = TD.GetRectScaled(new Rect(bar2.x + (TD.texCardBody.width * 1.5f) - (2.5f + lineOffsetX), bar2.y - 5f, 10, 10));
             if (TD.ClickRect(clickRect, 0))
             {
                 if (layerGroup.foldout == 0) layerGroup.foldout = 2; else layerGroup.foldout = 0;
             }
-
+            
             pos.x = posOldX;
         }
-
+        
         static void DropDownMenu(Rect rect, TC_LayerGroup layerGroup)
         {
             if (TD.ClickRect(rect) != 1) return;
@@ -346,7 +348,7 @@ namespace TerrainComposer2
                 //    menu.AddItem(new GUIContent("Export Colormap"), false, LeftClickMenu, instanceID + ":Export Colormap");
                 //    menu.AddSeparator("");
                 //}
-
+                
                 menu.AddItem(new GUIContent("Clear Layer Group"), false, LeftClickMenu, instanceID + ":Clear LayerGroup");
             }
             // if (layerGroup.level > 1) menu.AddItem(new GUIContent("Erase Layer Group"), false, LeftClickMenu, instanceID + ":Erase LayerGroup");
@@ -358,7 +360,7 @@ namespace TerrainComposer2
         {
             int instanceID;
             string command = TD.ObjectToCommandAndInstanceID(obj, out instanceID);
-
+            
             TC_LayerGroup layerGroup = EditorUtility.InstanceIDToObject(instanceID) as TC_LayerGroup;
 
             if (layerGroup != null)

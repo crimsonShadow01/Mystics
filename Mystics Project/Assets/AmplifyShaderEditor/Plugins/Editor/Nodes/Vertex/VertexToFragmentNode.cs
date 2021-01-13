@@ -5,118 +5,165 @@
 // Donated by Jason Booth - http://u3d.as/DND
 
 using UnityEngine;
+using UnityEditor;
+using System;
 
 namespace AmplifyShaderEditor
 {
-    [System.Serializable]
-    [NodeAttributes("Vertex To Fragment", "Miscellaneous", "Pass vertex data to the pixel shader", null, KeyCode.None, true, false, null, null, "Jason Booth - http://u3d.as/DND")]
-    public sealed class VertexToFragmentNode : SingleInputOp
-    {
+	[System.Serializable]
+	[NodeAttributes( "Vertex To Fragment", "Miscellaneous", "Pass vertex data to the pixel shader", null, KeyCode.None, true, false, null, null, "Jason Booth - http://u3d.as/DND" )]
+	public sealed class VertexToFragmentNode : SingleInputOp
+	{
+		private const string DisabledInterpolatorMsg = "No Interpolation option cannot be used over Standard Surface type as we must be able to directly control interpolators registry, which does't happen over this shader type. Please disable it.";
+		private const string NoInterpolationUsageMsg = "Please note this option will not work across all API's and can even throw compilation errors on some of them ( p.e. Metal and GLES 2.0 )";
 
-        protected override void CommonInit(int uniqueId)
-        {
-            base.CommonInit(uniqueId);
-            m_inputPorts[0].AddPortForbiddenTypes(WirePortDataType.FLOAT3x3,
-                                                        WirePortDataType.FLOAT4x4,
-                                                        WirePortDataType.SAMPLER1D,
-                                                        WirePortDataType.SAMPLER2D,
-                                                        WirePortDataType.SAMPLER3D,
-                                                        WirePortDataType.SAMPLERCUBE,
-                                                        WirePortDataType.SAMPLER2DARRAY,
-                                                        WirePortDataType.SAMPLERSTATE);
-            m_inputPorts[0].Name = "(VS) In";
-            m_outputPorts[0].Name = "Out";
-            m_useInternalPortData = false;
-            m_previewShaderGUID = "74e4d859fbdb2c0468de3612145f4929";
-        }
+		[SerializeField]
+		private bool m_noInterpolation;
 
-        public override string GenerateShaderForOutput(int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar)
-        {
-            if (m_outputPorts[0].IsLocalValue(dataCollector.PortCategory))
-                return m_outputPorts[0].LocalValue(dataCollector.PortCategory);
+		protected override void CommonInit( int uniqueId )
+		{
+			base.CommonInit( uniqueId );
+			m_inputPorts[ 0 ].AddPortForbiddenTypes(	WirePortDataType.FLOAT3x3,
+														WirePortDataType.FLOAT4x4,
+														WirePortDataType.SAMPLER1D,
+														WirePortDataType.SAMPLER2D,
+														WirePortDataType.SAMPLER3D,
+														WirePortDataType.SAMPLERCUBE,
+														WirePortDataType.SAMPLER2DARRAY,
+														WirePortDataType.SAMPLERSTATE );
+			m_inputPorts[ 0 ].Name = "(VS) In";
+			m_outputPorts[ 0 ].Name = "Out";
+			m_useInternalPortData = false;
+			m_autoWrapProperties = true;
+			m_errorMessageTypeIsError = NodeMessageType.Warning;
+			m_previewShaderGUID = "74e4d859fbdb2c0468de3612145f4929";
+		}
 
-            string varName = GenerateInputInVertex(ref dataCollector, 0, "vertexToFrag" + OutputId, true);
-            m_outputPorts[0].SetLocalValue(varName, dataCollector.PortCategory);
+		public override void DrawProperties()
+		{
+			base.DrawProperties();
+			bool isSurface = ContainerGraph.IsStandardSurface;
+			EditorGUI.BeginDisabledGroup( isSurface && !m_noInterpolation );
+			m_noInterpolation = EditorGUILayoutToggle( "No Interpolation" , m_noInterpolation );
+			EditorGUI.EndDisabledGroup();
+			if( m_noInterpolation  )
+			{
+				if( isSurface )
+				{
+					EditorGUILayout.HelpBox( DisabledInterpolatorMsg, MessageType.Warning );
+				} else
+				{
+					EditorGUILayout.HelpBox( NoInterpolationUsageMsg, MessageType.Info );
+				}
+			}
+		}
 
-            return varName;
+		public override void Draw( DrawInfo drawInfo )
+		{
+			base.Draw( drawInfo );
+			m_showErrorMessage = ContainerGraph.IsStandardSurface && m_noInterpolation;
+		}
 
-            ////TEMPLATES
-            //if( dataCollector.IsTemplate )
-            //{
-            //	if( !dataCollector.IsFragmentCategory )
-            //		return m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
+		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
+		{
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
-            //	string varName = "vertexToFrag" + OutputId;
-            //	if( dataCollector.TemplateDataCollectorInstance.HasCustomInterpolatedData( varName ) )
-            //		return varName;
+			bool noInterpolationFlag = dataCollector.IsTemplate ? m_noInterpolation : false;
+			string varName = GenerateInputInVertex( ref dataCollector, 0, "vertexToFrag" + OutputId,true , noInterpolationFlag );
+			m_outputPorts[ 0 ].SetLocalValue( varName, dataCollector.PortCategory );
 
-            //	MasterNodePortCategory category = dataCollector.PortCategory;
-            //	dataCollector.PortCategory = MasterNodePortCategory.Vertex;
-            //	bool dirtyVertexVarsBefore = dataCollector.DirtyVertexVariables;
-            //	ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Vertex );
+			return varName;
 
-            //	string data = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
+			////TEMPLATES
+			//if( dataCollector.IsTemplate )
+			//{
+			//	if( !dataCollector.IsFragmentCategory )
+			//		return m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
 
-            //	dataCollector.PortCategory = category;
-            //	if( !dirtyVertexVarsBefore && dataCollector.DirtyVertexVariables )
-            //	{
-            //		dataCollector.AddVertexInstruction( dataCollector.VertexLocalVariables, UniqueId, false );
-            //		dataCollector.ClearVertexLocalVariables();
-            //		ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Vertex );
-            //	}
+			//	string varName = "vertexToFrag" + OutputId;
+			//	if( dataCollector.TemplateDataCollectorInstance.HasCustomInterpolatedData( varName ) )
+			//		return varName;
 
-            //	ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Fragment );
+			//	MasterNodePortCategory category = dataCollector.PortCategory;
+			//	dataCollector.PortCategory = MasterNodePortCategory.Vertex;
+			//	bool dirtyVertexVarsBefore = dataCollector.DirtyVertexVariables;
+			//	ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Vertex );
 
-            //	dataCollector.TemplateDataCollectorInstance.RegisterCustomInterpolatedData( varName, m_inputPorts[ 0 ].DataType, m_currentPrecisionType, data );
-            //	//return varName;
+			//	string data = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
 
-            //	m_outputPorts[ 0 ].SetLocalValue( varName );
-            //	return m_outputPorts[ 0 ].LocalValue;
-            //}
+			//	dataCollector.PortCategory = category;
+			//	if( !dirtyVertexVarsBefore && dataCollector.DirtyVertexVariables )
+			//	{
+			//		dataCollector.AddVertexInstruction( dataCollector.VertexLocalVariables, UniqueId, false );
+			//		dataCollector.ClearVertexLocalVariables();
+			//		ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Vertex );
+			//	}
 
-            ////SURFACE 
-            //{
-            //	if( !dataCollector.IsFragmentCategory )
-            //	{
-            //		return m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
-            //	}
+			//	ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Fragment );
 
-            //	if( dataCollector.TesselationActive )
-            //	{
-            //		UIUtils.ShowMessage( "Unable to use Vertex to Frag when Tessellation is active" );
-            //		return m_outputPorts[ 0 ].ErrorValue;
-            //	}
+			//	dataCollector.TemplateDataCollectorInstance.RegisterCustomInterpolatedData( varName, m_inputPorts[ 0 ].DataType, m_currentPrecisionType, data );
+			//	//return varName;
+
+			//	m_outputPorts[ 0 ].SetLocalValue( varName );
+			//	return m_outputPorts[ 0 ].LocalValue;
+			//}
+
+			////SURFACE 
+			//{
+			//	if( !dataCollector.IsFragmentCategory )
+			//	{
+			//		return m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
+			//	}
+
+			//	if( dataCollector.TesselationActive )
+			//	{
+			//		UIUtils.ShowMessage( "Unable to use Vertex to Frag when Tessellation is active" );
+			//		return m_outputPorts[ 0 ].ErrorValue;
+			//	}
 
 
-            //	string interpName = "data" + OutputId;
-            //	dataCollector.AddToInput( UniqueId, interpName, m_inputPorts[ 0 ].DataType, m_currentPrecisionType );
+			//	string interpName = "data" + OutputId;
+			//	dataCollector.AddToInput( UniqueId, interpName, m_inputPorts[ 0 ].DataType, m_currentPrecisionType );
 
-            //	MasterNodePortCategory portCategory = dataCollector.PortCategory;
-            //	dataCollector.PortCategory = MasterNodePortCategory.Vertex;
+			//	MasterNodePortCategory portCategory = dataCollector.PortCategory;
+			//	dataCollector.PortCategory = MasterNodePortCategory.Vertex;
 
-            //	bool dirtyVertexVarsBefore = dataCollector.DirtyVertexVariables;
+			//	bool dirtyVertexVarsBefore = dataCollector.DirtyVertexVariables;
 
-            //	ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Vertex );
+			//	ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Vertex );
 
-            //	string vertexVarValue = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
-            //	dataCollector.AddLocalVariable( UniqueId, Constants.VertexShaderOutputStr + "." + interpName, vertexVarValue + ";" );
+			//	string vertexVarValue = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
+			//	dataCollector.AddLocalVariable( UniqueId, Constants.VertexShaderOutputStr + "." + interpName, vertexVarValue + ";" );
 
-            //	dataCollector.PortCategory = portCategory;
+			//	dataCollector.PortCategory = portCategory;
 
-            //	if( !dirtyVertexVarsBefore && dataCollector.DirtyVertexVariables )
-            //	{
-            //		dataCollector.AddVertexInstruction( dataCollector.VertexLocalVariables, UniqueId, false );
-            //		dataCollector.ClearVertexLocalVariables();
-            //		ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Vertex );
-            //	}
+			//	if( !dirtyVertexVarsBefore && dataCollector.DirtyVertexVariables )
+			//	{
+			//		dataCollector.AddVertexInstruction( dataCollector.VertexLocalVariables, UniqueId, false );
+			//		dataCollector.ClearVertexLocalVariables();
+			//		ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Vertex );
+			//	}
 
-            //	ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Fragment );
+			//	ContainerGraph.ResetNodesLocalVariablesIfNot( this, MasterNodePortCategory.Fragment );
 
-            //	//return Constants.InputVarStr + "." + interpName;
+			//	//return Constants.InputVarStr + "." + interpName;
 
-            //	m_outputPorts[ 0 ].SetLocalValue( Constants.InputVarStr + "." + interpName );
-            //	return m_outputPorts[ 0 ].LocalValue;
-            //}
-        }
-    }
+			//	m_outputPorts[ 0 ].SetLocalValue( Constants.InputVarStr + "." + interpName );
+			//	return m_outputPorts[ 0 ].LocalValue;
+			//}
+		}
+		public override void ReadFromString( ref string[] nodeParams )
+		{
+			base.ReadFromString( ref nodeParams );
+			if( UIUtils.CurrentShaderVersion() > 18707 )
+				m_noInterpolation = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
+		}
+
+		public override void WriteToString( ref string nodeInfo, ref string connectionsInfo )
+		{
+			base.WriteToString( ref nodeInfo, ref connectionsInfo );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_noInterpolation );
+		}
+	}
 }

@@ -1,5 +1,8 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
 
 // using System.Diagnostics;
 
@@ -17,7 +20,7 @@ namespace TerrainComposer2
         [NonSerialized] public MeshTerrain currentMeshTerrain;
         public TC_TerrainArea currentTerrainArea;
         [NonSerialized] public TC_TerrainMeshArea currentMeshTerrainArea;
-
+        
         public TC_PreviewArea previewArea;
         public Rect area, totalArea;
         public Bounds totalTerrainBounds;
@@ -44,18 +47,18 @@ namespace TerrainComposer2
 
         // public List<SpawnObject> spawnObjectList = new List<SpawnObject>();
 
-        void Awake()
-        {
-            if (instance == null) instance = this;
-        }
-        void Start()
-        {
-            if (instance == null) instance = this;
+        void Awake() 
+        { 
+            if (instance == null) instance = this; 
+        } 
+        void Start() 
+        { 
+            if (instance == null) instance = this; 
         }
 
-        void OnDestroy()
-        {
-            if (instance == this) instance = null;
+        void OnDestroy() 
+        { 
+            if (instance == this) instance = null; 
         }
 
         public void CalcProgress()
@@ -182,7 +185,7 @@ namespace TerrainComposer2
                 snapOffsetUV = (new Vector2(terrain.transform.position.x, terrain.transform.position.z) - posSnap);
                 snapOffsetUV.x /= terrain.terrainData.size.x;
                 snapOffsetUV.y /= terrain.terrainData.size.z;
-
+                
                 // Debug.Log(area);
             }
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -15,13 +16,13 @@ namespace TerrainComposer2
             SetSpawnHeight();
         }
 
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         void Update()
         {
             if (Application.isPlaying) return;
             SetSpawnHeight();
         }
-#endif
+        #endif
 
         void SetSpawnHeight()
         {

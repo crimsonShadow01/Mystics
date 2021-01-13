@@ -1,6 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace TerrainComposer2
 {
@@ -12,7 +13,7 @@ namespace TerrainComposer2
         public List<TC_SelectItem> objectSelectItems;
         // [NonSerialized]
         public List<TC_SelectItem> treeSelectItems;
-
+        
         public float treeResolutionPM = 128;
         public float objectResolutionPM = 128;
         public Vector2 objectAreaSize;
@@ -117,7 +118,7 @@ namespace TerrainComposer2
         {
             layerGroups[TC.objectOutput].ResetObjects();
         }
-
+        
         public void Reset()
         {
             TC.DestroyChildrenTransform(t);
@@ -127,7 +128,7 @@ namespace TerrainComposer2
         {
             GetItems(refresh, true, false);
         }
-
+        
         public override void GetItems(bool refresh, bool rebuildGlobalLists, bool resetTextures)
         {
             // current = this;
@@ -139,12 +140,12 @@ namespace TerrainComposer2
                 TC_Area2D.instance.DisposeTextures();
                 TC_Settings.instance.DisposeTextures();
             }
-
+            
             for (int i = 0; i < layerGroups.Length; i++) GetItem(i, rebuildGlobalLists, resetTextures);
             TC.MoveToDustbinChildren(t, 6);
         }
 
-        public void GetItem(int outputId, bool rebuildGlobalLists, bool resetTextures)
+        public void GetItem(int outputId, bool rebuildGlobalLists, bool resetTextures) 
         {
             // Debug.Log("Terrain Layer GetItem " + TC.outputNames[outputId]);
             active = visible;
@@ -165,8 +166,8 @@ namespace TerrainComposer2
                 if (treeSelectItems == null) treeSelectItems = new List<TC_SelectItem>();
                 else treeSelectItems.Clear();
             }
-
-            Transform child = t.GetChild(outputId);
+            
+            Transform child = t.GetChild(outputId); 
             TC_LayerGroup layerGroup = child.GetComponent<TC_LayerGroup>();
             if (layerGroup != null)
             {
@@ -174,7 +175,7 @@ namespace TerrainComposer2
                 layerGroup.outputId = outputId;
                 layerGroup.listIndex = outputId;
                 layerGroup.parentItem = this;
-
+                
                 layerGroup.GetItems(true, rebuildGlobalLists, resetTextures);
                 layerGroups[outputId] = layerGroup;
             }

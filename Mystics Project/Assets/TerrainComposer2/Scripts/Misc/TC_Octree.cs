@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 
 namespace TerrainComposer2
@@ -7,7 +8,7 @@ namespace TerrainComposer2
     public class Octree
     {
         public Cell cell;
-
+        
         public class SpawnedObject
         {
             public int objectIndex;
@@ -32,12 +33,12 @@ namespace TerrainComposer2
                 }
             }
         }
-
+        
         public class MaxCell : Cell
         {
             public List<SpawnedObject> objects = new List<SpawnedObject>();
 
-            public MaxCell(Cell parent, int cellIndex, Bounds bounds) : base(parent, cellIndex, bounds) { }
+            public MaxCell(Cell parent, int cellIndex, Bounds bounds): base(parent, cellIndex, bounds) { }
 
             ~MaxCell()
             {
@@ -87,7 +88,7 @@ namespace TerrainComposer2
                 int z = (int)(localPos.z / bounds.extents.z);
 
                 int index = x + (y * 4) + (z * 2);
-
+                
                 if (cells == null) { cells = new Cell[8]; cellsUsed = new bool[8]; }
 
                 // Reporter.Log("index "+index+" position "+localPos+" x: "+x+" y: "+y+" z: "+z+" extents "+bounds.extents);

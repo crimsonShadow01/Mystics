@@ -1,24 +1,24 @@
-﻿using TerrainComposer2;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
+using TerrainComposer2;
 
-public class LoadTerrainLayer : MonoBehaviour
-{
+public class LoadTerrainLayer : MonoBehaviour {
 
     public GameObject terrainLayerPrefab;
     public bool generateOnStart;
     public bool instantGenerate;
 
-    void Start()
+	void Start ()
     {
         InstantiateTerrainLayer();
         if (generateOnStart) TC_Generate.instance.Generate(instantGenerate);
-    }
+	}
 
     public void InstantiateTerrainLayer()
     {
         if (terrainLayerPrefab == null) return;
         if (terrainLayerPrefab.GetComponent<TC_TerrainLayer>() == null) return;
-
+        
         TC_Area2D area2D = TC_Area2D.instance;
         if (area2D == null) return;
 

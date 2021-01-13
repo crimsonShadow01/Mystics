@@ -149,7 +149,7 @@ namespace Haven.PathPainter
             if (C())
             {
 #if !HAVEN_REL
-                RE(ms_f);
+                RE(ms_f); 
 #endif
                 return true;
             }

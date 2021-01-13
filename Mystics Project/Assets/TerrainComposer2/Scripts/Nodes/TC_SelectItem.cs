@@ -1,13 +1,14 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace TerrainComposer2
 {
     public class TC_SelectItem : TC_ItemBehaviour
     {
         [NonSerialized] public new TC_SelectItemGroup parentItem;
-
+        
         public Vector2 range;
 
         public ImageWrapMode wrapMode = ImageWrapMode.Repeat;
@@ -29,10 +30,10 @@ namespace TerrainComposer2
 
         public int globalListIndex = -1;
         public int placed;
-
+        
         [NonSerialized] TC_Settings settings;
 
-
+        
         public override void Awake()
         {
             // Debug.Log("Awake SelectItem");
@@ -40,7 +41,7 @@ namespace TerrainComposer2
             // t.hideFlags = HideFlags.NotEditable | HideFlags.HideInInspector;
             t.hideFlags = HideFlags.None;
         }
-
+        
         public override void OnEnable()
         {
             base.OnEnable();
@@ -98,7 +99,7 @@ namespace TerrainComposer2
             if (outputId == TC.splatOutput) return TC.GetTerrainSplatTextureLength(localSettings.masterTerrain);
             if (outputId == TC.grassOutput) return localSettings.masterTerrain.terrainData.detailPrototypes.Length;
             if (outputId == TC.treeOutput) return localSettings.masterTerrain.terrainData.treePrototypes.Length;
-
+            
             return 0;
         }
 
@@ -142,7 +143,7 @@ namespace TerrainComposer2
 
         public void SetPreviewTreeTexture()
         {
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             TC_Settings settings = TC_Settings.instance;
 
             if (settings.hasMasterTerrain)
@@ -159,12 +160,12 @@ namespace TerrainComposer2
                 else active = false;
             }
             else preview.tex = null;
-#endif
+            #endif
         }
 
         public void SetPreviewObjectTexture()
         {
-#if UNITY_EDITOR
+            #if UNITY_EDITOR
             if (spawnObject == null) { preview.tex = null; return; }
             if (spawnObject.go == null)
             {
@@ -175,7 +176,7 @@ namespace TerrainComposer2
             // Debug.Log("Yes");
             preview.tex = UnityEditor.AssetPreview.GetAssetPreview(spawnObject.go);
             name = Mathw.CutString(spawnObject.go.name, TC.nodeLabelLength);
-#endif
+            #endif
 
             // Debug.Log("SetPreviewObjectTexture");
         }
@@ -192,9 +193,9 @@ namespace TerrainComposer2
                     DetailPrototype detailPrototype = detailPrototypes[selectIndex];
                     if (detailPrototype.usePrototypeMesh)
                     {
-#if UNITY_EDITOR
+                        #if UNITY_EDITOR
                         preview.tex = UnityEditor.AssetPreview.GetAssetPreview(detailPrototype.prototype);
-#endif
+                        #endif
                     }
                     else preview.tex = detailPrototype.prototypeTexture;
                     if (preview.tex != null) name = Mathw.CutString(preview.tex.name, TC.nodeLabelLength);
@@ -206,17 +207,18 @@ namespace TerrainComposer2
 
         public void SetPreviewColorTexture()
         {
-#if UNITY_EDITOR
-            if (preview.tex != Texture2D.whiteTexture) preview.tex = Texture2D.whiteTexture;
-#endif
+            #if UNITY_EDITOR
+                if (preview.tex != Texture2D.whiteTexture) preview.tex = Texture2D.whiteTexture;
+            #endif
         }
-
+        
         [Serializable]
         public class SpawnObject
         {
             public enum ParentMode { Terrain, Existing, Create };
 
             public GameObject go;
+            public int goLayer;
 
             public bool linkToPrefab = false;
 
@@ -232,12 +234,12 @@ namespace TerrainComposer2
             public float heightOffset = 0;
             public bool includeTerrainHeight = true;
             public bool includeTerrainAngle = false;
-
+            
             public Vector2 rotRangeX = Vector2.zero;
             public Vector2 rotRangeY = Vector2.zero;
             public Vector2 rotRangeZ = Vector2.zero;
             public bool isSnapRot, isSnapRotX = true, isSnapRotY = true, isSnapRotZ = true;
-            public float snapRotX = 45, snapRotY = 45, snapRotZ = 45;
+            public float snapRotX = 45 , snapRotY = 45, snapRotZ = 45;
 
             public bool customScaleRange;
             public Vector2 scaleRangeX = Vector2.one;

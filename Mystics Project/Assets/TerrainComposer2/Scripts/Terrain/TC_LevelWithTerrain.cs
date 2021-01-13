@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 [ExecuteInEditMode]
-public class TC_LevelWithTerrain : MonoBehaviour
-{
+public class TC_LevelWithTerrain : MonoBehaviour {
 
     public bool levelChildren;
 
@@ -16,7 +17,7 @@ public class TC_LevelWithTerrain : MonoBehaviour
     }
 
 
-    void LevelChildren()
+	void LevelChildren()
     {
         Transform child;
         RaycastHit hit;
@@ -38,7 +39,7 @@ public class TC_LevelWithTerrain : MonoBehaviour
                 child.position = new Vector3(child.position.x, hit.point.y, child.position.z);
             }
         }
-    }
-
-
+	}
+	
+	
 }

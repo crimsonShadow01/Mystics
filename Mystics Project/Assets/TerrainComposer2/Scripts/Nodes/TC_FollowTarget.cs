@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 namespace TerrainComposer2
 {
@@ -24,7 +25,7 @@ namespace TerrainComposer2
             item = GetComponent<TC_ItemBehaviour>();
         }
 
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         void OnEnable()
         {
             t = transform;
@@ -37,7 +38,7 @@ namespace TerrainComposer2
         {
             UnityEditor.EditorApplication.update -= Update;
         }
-#endif
+        #endif
 
 
         void Update()

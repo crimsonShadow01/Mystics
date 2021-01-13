@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 [ExecuteInEditMode]
-public class TC_PreviewArea : MonoBehaviour
-{
+public class TC_PreviewArea : MonoBehaviour {
 
     [HideInInspector] public Transform t;
     public bool manual;
-    public Rect area;
+    public Rect area; 
     public float positionY;
-
+    
 
     void Awake()
     {
@@ -28,6 +28,6 @@ public class TC_PreviewArea : MonoBehaviour
         Gizmos.DrawWireCube(new Vector3(area.center.x, positionY, area.center.y), new Vector3(area.width, 500, area.height));
         Gizmos.color = Color.white;
     }
-
-
+	
+	
 }
