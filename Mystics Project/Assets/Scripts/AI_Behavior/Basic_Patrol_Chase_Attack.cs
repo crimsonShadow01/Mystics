@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Basic_Patrol_Chase_Atrack : MonoBehaviour
+public class Basic_Patrol_Chase_Attack : MonoBehaviour
 {
 
     public NavMeshAgent agent;
