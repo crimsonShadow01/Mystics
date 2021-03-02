@@ -7,10 +7,10 @@ TerrainLayer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Prototype_Forest_FPS_TerrainLayer_7
-  m_DiffuseTexture: {fileID: 2800000, guid: 18214e9d6af6248559d501391856f1c7, type: 3}
-  m_NormalMapTexture: {fileID: 0}
+  m_DiffuseTexture: {fileID: 2800000, guid: 08283000a9d2423489f879138ee31094, type: 3}
+  m_NormalMapTexture: {fileID: 2800000, guid: da1586898b43a6140b93270689f53fcc, type: 3}
   m_MaskMapTexture: {fileID: 0}
-  m_TileSize: {x: 40.156864, y: 40.156864}
+  m_TileSize: {x: 14.948905, y: 14.948905}
   m_TileOffset: {x: 0, y: 0}
   m_Specular: {r: 0, g: 0, b: 0, a: 0}
   m_Metallic: 0
