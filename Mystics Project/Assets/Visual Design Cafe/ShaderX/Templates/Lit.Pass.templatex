@@ -22,12 +22,8 @@
     // HDRP renders a depth prepass for materials that use clip.
     // Clipping is disabled for the GBuffer and Forward passes and ZTest Equal is used instead.
     {% if pass.name == "GBuffer" %}
-        // HDRP renders a depth prepass for materials that use clip. 
-        // And disable clipping for the GBuffer pass.
         ZTest [_ZTestGBuffer]
     {% elseif pass.name == "Forward" %}
-        // HDRP renders a depth prepass for materials that use clip. 
-        // And disable clipping for the forward pass.
         ZTest [_ZTestForward]
     {% endif %}
 

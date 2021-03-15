@@ -13,7 +13,4 @@ float4 uv1 : {% semantic TEXCOORD %}; // optional
 float4 uv2 : {% semantic TEXCOORD %}; // optional
 float4 uv3 : {% semantic TEXCOORD %}; // optional
 
-{% standard %} 
-    #define INSTANCEID_SEMANTIC SV_InstanceID 
-{% endstandard %}
-uint instanceID : INSTANCEID_SEMANTIC;
+DEFAULT_UNITY_VERTEX_INPUT_INSTANCE_ID

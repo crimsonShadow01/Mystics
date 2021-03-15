@@ -460,7 +460,7 @@ SubShader {
 	#pragma target 3.0
 	#pragma glsl
 	#pragma exclude_renderers d3d11_9x gles
-	#pragma multi_compile RTP_PM_SHADING RTP_SIMPLE_SHADING
+	#pragma multi_compile RTP_POM_SHADING_HI RTP_POM_SHADING_MED RTP_POM_SHADING_LO RTP_PM_SHADING RTP_SIMPLE_SHADING
 	//#define RTP_SIMPLE_SHADING
 
 	// for geom blend (early exit from surf function)

@@ -4,8 +4,6 @@
 // https://www.visualdesigncafe.com/shaderx
 {% endcomment %}
 
-#include "HLSLSupport.cginc"
-
 // Local keywords are only supported since Unity 2019, 
 // so for earlier versions of Unity we need to use global keywords.
 {% if unity.version.major >= 2019 %}
@@ -17,6 +15,7 @@
 {% endif %}
 
 // Default global keywords for material quality.
+// Don't really need them at the moment since there are no specific quality settings yet.
 // #pragma multi_compile MATERIAL_QUALITY_HIGH MATERIAL_QUALITY_MEDIUM MATERIAL_QUALITY_LOW  
 
 #pragma {{shader_feature_local}} _LIGHTING_QUALITY_HIGH _LIGHTING_QUALITY_LOW 
@@ -30,6 +29,10 @@
 
 #pragma multi_compile_instancing
 
+// Both the environment reflections and specular highlights are combined into a single
+// _SPECULARHIGHLIGHTS_OFF shader feature. This is to reduce shader variants. Since we 
+// currently only use this framework for vegetation rendering, and vegetation rarely needs 
+// these to be enable separately.
 #ifdef _SPECULARHIGHLIGHTS_OFF
     #define _ENVIRONMENTREFLECTIONS_OFF
     #define _GLOSSYREFLECTIONS_OFF
@@ -96,24 +99,9 @@
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
     {% endif %}
 
-    // Attributes and Varyings
-    // These are all the possible settings for the URP shaders.
-
-    //#define _SURFACE_TYPE_TRANSPARENT 1
-    //#define _AlphaClip 1
-    //#define _NORMALMAP 1
-    //#define _SPECULAR_SETUP
-    //#define _BLENDMODE_ADD 1
-    //#define _ALPHAPREMULTIPLY_ON 1
     #define _NORMAL_DROPOFF_TS 1
-    //#define _NORMAL_DROPOFF_OS 1
-    //#define _NORMAL_DROPOFF_WS 1
     #define ATTRIBUTES_NEED_NORMAL
     #define ATTRIBUTES_NEED_TANGENT
-    //#define ATTRIBUTES_NEED_TEXCOORD0
-    //#define ATTRIBUTES_NEED_TEXCOORD1
-    //#define ATTRIBUTES_NEED_TEXCOORD2
-    //#define ATTRIBUTES_NEED_TEXCOORD3
     #define ATTRIBUTES_NEED_COLOR
     #define VARYINGS_NEED_POSITION_WS 
     #define VARYINGS_NEED_NORMAL_WS
@@ -121,27 +109,17 @@
     #define VARYINGS_NEED_TEXCOORD0
     #define VARYINGS_NEED_TEXCOORD1
     #define VARYINGS_NEED_TEXCOORD2
-    //#define VARYINGS_NEED_TEXCOORD3
     #define VARYINGS_NEED_COLOR
-    //#define VARYINGS_NEED_VIEWDIRECTION_WS
-    //#define VARYINGS_NEED_BITANGENT_WS
-    //#define VARYINGS_NEED_SCREENPOSITION
     //#define VARYINGS_NEED_FOG_AND_VERTEX_LIGHT
     #define VARYINGS_NEED_CULLFACE
-
     #ifdef _MAIN_LIGHT_SHADOWS
         #define VARYINGS_NEED_SHADOWCOORDS
     #endif
-    
+
     {% if pass.name == "Universal Forward" %}
-        
         #define ATTRIBUTES_NEED_TEXCOORD1
-        //#define VARYINGS_NEED_POSITION_WS 
-        //#define VARYINGS_NEED_NORMAL_WS
-        //#define VARYINGS_NEED_TANGENT_WS
         #define VARYINGS_NEED_VIEWDIRECTION_WS
         #define VARYINGS_NEED_FOG_AND_VERTEX_LIGHT
-        
         #define SHADERPASS_FORWARD
     {% elseif pass.name == "ShadowCaster" %}
         #define SHADERPASS_SHADOWCASTER
@@ -234,6 +212,7 @@
 
 {% embed "Common.API.templatex" %}
 
+// TODO: Maybe move this to the shader itself so that the user can edit the available variables?
 struct Surface
 {
     float3 Albedo;      // base (diffuse or specular) color

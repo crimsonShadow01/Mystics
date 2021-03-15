@@ -9,8 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Default Grass
   m_Shader: {fileID: 4800000, guid: 8b3898feb1c663b44bd2242beb1f553d, type: 3}
-  m_ShaderKeywords: _ALPHATEST _COLOR_TINT _INTERACTION_OFF _LIGHTING_QUALITY_LOW
-    _TRANSLUCENCY _WIND_BAKED
+  m_ShaderKeywords: MATERIAL_QUALITY_HIGH _ALPHATEST _COLOR_TINT _INTERACTION_OFF
+    _LIGHTING_QUALITY_LOW _TRANSLUCENCY _WIND_BAKED
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -85,7 +85,6 @@ Material:
     - _ColorVariationSpread: 0.2
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DiffusionProfileHash: 0
     - _DoubleSidedMode: 0
     - _DoubleSidedNormalMode: 1
     - _DstBlend: 0
@@ -115,12 +114,6 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _StencilRef: 4
-    - _StencilRefDepth: 0
-    - _StencilRefGBuffer: 6
-    - _StencilWriteMask: 6
-    - _StencilWriteMaskDepth: 8
-    - _StencilWriteMaskGBuffer: 14
     - _SurfaceMapMethod: 0
     - _Translucency: 1
     - _TranslucencyAmbient: 0.5
@@ -134,12 +127,9 @@ Material:
     - _Wind: 1
     - _WindStrength: 1
     - _WindVariation: 0.3
-    - _ZTestForward: 3
-    - _ZTestGBuffer: 3
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GlossRemap: {r: 0, g: 1, b: 0, a: 0}
     - _HSL: {r: 0.02, g: 0.05, b: 0.1, a: 0}
@@ -152,4 +142,3 @@ Material:
     - _TranslucencyColor: {r: 1, g: 1, b: 1, a: 1}
     - _TrunkBendFactor: {r: 1, g: 0, b: 0, a: 0}
     - _WindFade: {r: 50, g: 20, b: 0, a: 0}
-  m_BuildTextureStacks: []

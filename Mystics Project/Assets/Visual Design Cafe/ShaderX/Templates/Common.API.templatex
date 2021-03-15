@@ -4,7 +4,10 @@
 // https://www.visualdesigncafe.com/shaderx
 {% endcomment %}
 
-// Common API to unify the different render pipelines.
+{% comment %}
+// This file is used to add support for the same API in all render pipelines.
+{% endcomment %}
+
 {% standard %}
     #define IS_FRONT_VFACE(VAL, FRONT, BACK) ((VAL > 0.0) ? (FRONT) : (BACK))
     
@@ -35,13 +38,17 @@
         float dp3 = max(FLT_MIN, dot(inVec, inVec));
         return inVec * rsqrt(dp3);
     }
+
+    // TODO: We need more macros here to support all possible texture types. Only the basic version is included here, since we did not (yet) need these for any of our shaders.
+    #define TEXTURE2D(name) Texture2D name
+    #define SAMPLER(name) SamplerState name
+    #define SAMPLE_TEXTURE2D( t, s, uv ) t.Sample(s,uv)
 {% endstandard %}
 
 {% embed "Common.API.SpaceTransforms.templatex" %}
 {% embed "Common.API.Random.templatex" %}
 
 {% standard %}
-    
     // Inserts the bits indicated by 'mask' from 'src' into 'dst'.
     uint BitFieldInsert(uint mask, uint src, uint dst)
     {
@@ -107,24 +114,25 @@
 {% enduniversal %}
 
 {% standard %}
-    // LOD dithering transition helper
-    // LOD0 must use this function with ditherFactor 1..0
-    // LOD1 must use this function with ditherFactor -1..0
-    // This is what is provided by unity_LODFade
-    void LODDitheringTransition(uint2 fadeMaskSeed, float ditherFactor)
-    {
-        // Generate a spatially varying pattern.
-        // Unfortunately, varying the pattern with time confuses the TAA, increasing the amount of noise.
-        float p = GenerateHashedRandomFloat(fadeMaskSeed);
+    #if !defined(SHADER_API_GLES)
+        // LOD dithering transition helper
+        // LOD0 must use this function with ditherFactor 1..0
+        // LOD1 must use this function with ditherFactor -1..0
+        // This is what is provided by unity_LODFade
+        void LODDitheringTransition(uint2 fadeMaskSeed, float ditherFactor)
+        {
+            // Generate a spatially varying pattern.
+            // Unfortunately, varying the pattern with time confuses the TAA, increasing the amount of noise.
+            float p = GenerateHashedRandomFloat(fadeMaskSeed);
 
-        // This preserves the symmetry s.t. if LOD 0 has f = x, LOD 1 has f = -x.
-        float f = ditherFactor - CopySign(p, ditherFactor);
-        clip(f);
-    }
+            // This preserves the symmetry s.t. if LOD 0 has f = x, LOD 1 has f = -x.
+            float f = ditherFactor - CopySign(p, ditherFactor);
+            clip(f);
+        }
+    #endif
 {% endstandard %}
 
 {% universal or hd %}
-
     half3 UnpackScaleNormalRGorAG(half4 packednormal, half bumpScale)
     {
         #if defined(UNITY_NO_DXT5nm)

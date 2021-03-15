@@ -22,7 +22,6 @@ float SplitDistance;
 float CullDistance;
 AppendStructuredBuffer<CompressedFloat4x4> Result;
 AppendStructuredBuffer<CompressedFloat4x4> Result_Split;
-StructuredBuffer<CompressedFloat4x4> Instances;
 
 StructuredBuffer<CompressedFloat4x4> Instances0;
 StructuredBuffer<CompressedFloat4x4> Instances1;

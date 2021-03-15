@@ -46,11 +46,11 @@
 //#define VERTEX_COLOR_CONTROL
 
 // to compute far color basing only on global colormap
-//#define SIMPLE_FAR
+#define SIMPLE_FAR
 
 // uv blending
 #define RTP_UV_BLEND
-//#define RTP_DISTANCE_ONLY_UV_BLEND
+#define RTP_DISTANCE_ONLY_UV_BLEND
 // usage of normals from blended layer at far distance
 //#define RTP_NORMALS_FOR_REPLACE_UV_BLEND
 
@@ -213,9 +213,9 @@
 //#define RTP_VERTICAL_TEXTURE
 
 // we use wet (can't be used with superdetail as globalnormal texture BA channels are shared)
-//#define RTP_WETNESS
+#define RTP_WETNESS
 // water droplets
-//#define RTP_WET_RIPPLE_TEXTURE
+#define RTP_WET_RIPPLE_TEXTURE
 // if defined water won't handle flow nor refractions
 //#define SIMPLE_WATER
 

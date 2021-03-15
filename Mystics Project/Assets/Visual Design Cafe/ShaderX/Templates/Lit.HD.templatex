@@ -28,8 +28,8 @@ SurfaceInput vert( VertexAttributes input )
     output.texCoord0 = input.uv0;
     output.texCoord1 = input.uv1;
     output.texCoord2 = input.uv2;
-    //output.texCoord3 = input.uv3;
     output.color = input.color;
+    // View Direction is calculated in the fragment shader for HDRP.
     // output.viewDirectionWS.xyz = normalize( _WorldSpaceCameraPos.xyz - positionWS );
 
     VertexMethod( input, output );
@@ -161,6 +161,7 @@ void GetSurfaceAndBuiltinData(
         LODDitheringTransition(ComputeFadeMaskSeed(V, posInput.positionSS), unity_LODFade.x);
     #endif
 
+    // TODO: Add support for depth offset. The Surface struct does not have a DepthOffset output at the moment.
     #ifdef _DEPTHOFFSET_ON
         builtinData.depthOffset = surface.DepthOffset;
         ApplyDepthOffsetPositionInput( V, surface.DepthOffset, GetViewForwardDir(), GetWorldToHClipMatrix(), posInput );
@@ -292,15 +293,30 @@ void frag(SurfaceInput input
         float3 diffuseLighting;
         float3 specularLighting;
 
-        LightLoop(
-            V, 
-            posInput, 
-            preLightData, 
-            bsdfData, 
-            builtinData, 
-            featureFlags, 
-            diffuseLighting, 
-            specularLighting);
+        {% if unity.version.major > 2020 or unity.version.major == 2020 and unity.version.minor == 2 %}
+            LightLoopOutput lightLoopOutput;
+            LightLoop(
+                V, 
+                posInput, 
+                preLightData, 
+                bsdfData, 
+                builtinData, 
+                featureFlags, 
+                lightLoopOutput);
+
+            diffuseLighting = lightLoopOutput.diffuseLighting;
+            specularLighting = lightLoopOutput.specularLighting;
+        {% else %}
+            LightLoop(
+                V, 
+                posInput, 
+                preLightData, 
+                bsdfData, 
+                builtinData, 
+                featureFlags, 
+                diffuseLighting, 
+                specularLighting);
+        {% endif %}
 
         diffuseLighting *= GetCurrentExposureMultiplier();
         specularLighting *= GetCurrentExposureMultiplier();
@@ -340,11 +356,11 @@ void frag(SurfaceInput input
                 posInput.positionSS, 
                 outNormalBuffer );
             #ifdef WRITE_MSAA_DEPTH
-                depthColor = packedInput.positionCS.z;
+                depthColor = input.positionCS.z;
             #endif
         #elif defined(WRITE_MSAA_DEPTH)
             outNormalBuffer = float4( 0.0, 0.0, 0.0, 1.0 );
-            depthColor = packedInput.positionCS.z;
+            depthColor = input.positionCS.z;
         #endif
 
     {% elseif pass.name == "Meta" %}

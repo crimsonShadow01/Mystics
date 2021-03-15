@@ -125,7 +125,7 @@ float PerVertexPerlinNoise( float3 objectPivot )
 
 void SampleAlbedo( float2 uv0, out float4 albedo )
 {
-    albedo = UNITY_SAMPLE_TEX2D_SAMPLER( _Albedo, _Albedo, uv0 );
+    albedo = SAMPLE_TEXTURE2D( _Albedo, sampler_Albedo, uv0.xy );
 }
 
 void ApplyColorCorrection( inout float4 albedo, float noise )
@@ -146,7 +146,7 @@ void ApplyColorCorrection( inout float4 albedo, float noise )
     {
         normal = 
             UnpackScaleNormal( 
-                UNITY_SAMPLE_TEX2D_SAMPLER( _NormalMap, _NormalMap, uv0 ), _NormalMapScale ).xyz;
+                SAMPLE_TEXTURE2D( _NormalMap, sampler_Albedo, uv0.xy ), _NormalMapScale ).xyz;
     }
 #endif
 
@@ -155,10 +155,10 @@ void ApplyColorCorrection( inout float4 albedo, float noise )
         void SamplePackedMap(
             float2 uv0, out float metallic, out float smoothness, out float occlusion)
         {
-            float4 packed = UNITY_SAMPLE_TEX2D_SAMPLER(_PackedMap, _PackedMap, uv0);
+            float4 packed = SAMPLE_TEXTURE2D(_PackedMap, sampler_Albedo, uv0.xy);
             metallic = packed.r;
-            smoothness = Remap(packed.a, _GlossRemap);
-            occlusion = Remap(packed.g, _OcclusionRemap);
+            smoothness = Remap(packed.a, _GlossRemap.xy);
+            occlusion = Remap(packed.g, _OcclusionRemap.xy);
         }
     #endif
 
@@ -166,10 +166,10 @@ void ApplyColorCorrection( inout float4 albedo, float noise )
         void SampleMetallicGlossMap(
             float2 uv0, out float metallic, out float smoothness, out float occlusion)
         {
-            float4 metallicGloss = UNITY_SAMPLE_TEX2D_SAMPLER( _MetallicGlossMap, _MetallicGlossMap, uv0 );
+            float4 metallicGloss = SAMPLE_TEXTURE2D( _MetallicGlossMap, sampler_Albedo, uv0.xy );
             metallic = metallicGloss.r;
-            smoothness = Remap(metallicGloss.a, _GlossRemap);
-            occlusion = Remap(UNITY_SAMPLE_TEX2D_SAMPLER( _OcclusionMap, _OcclusionMap, uv0 ).g, _OcclusionRemap);
+            smoothness = Remap(metallicGloss.a, _GlossRemap.xy);
+            occlusion = Remap(SAMPLE_TEXTURE2D( _OcclusionMap, sampler_Albedo, uv0.xy ).g, _OcclusionRemap.xy);
         }
     #endif
 {% endif %}
@@ -179,15 +179,15 @@ void SampleMetallicGlossConstants(
 {
     metallic = _Metallic;
     smoothness = _Glossiness;
-    occlusion = 1;
+    occlusion = 1.0;
 }
 
 {% if translucent %}
     #ifdef _TRANSLUCENCY
         void SampleThickness( float2 uv0, out float thickness )
         {
-            thickness = UNITY_SAMPLE_TEX2D_SAMPLER( _ThicknessMap, _ThicknessMap, uv0 ).r;
-            thickness = Remap( thickness, _ThicknessRemap );
+            thickness = SAMPLE_TEXTURE2D( _ThicknessMap, sampler_Albedo, uv0.xy ).r;
+            thickness = Remap( thickness, _ThicknessRemap.xy );
         }
     #endif
 {% endif %}
@@ -196,7 +196,7 @@ void SampleMetallicGlossConstants(
     #ifdef _EMISSION
         void SampleEmission( float2 uv0, out float3 emission )
         {
-            emission = UNITY_SAMPLE_TEX2D_SAMPLER( _EmissionMap, _EmissionMap, uv0 ).rgb;
+            emission = SAMPLE_TEXTURE2D( _EmissionMap, sampler_Albedo, uv0.xy ).rgb;
             emission *= _EmissionColor.rgb;
             emission *= _EmissionIntensity;
         }

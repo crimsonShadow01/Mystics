@@ -248,9 +248,8 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
 
             {% if config.global.interaction.supported and interaction %}
                 // Uses a global keyword to enable/disable interaction in project quality settings.
-                #pragma multi_compile _INTERACTION_OFF _INTERACTION_PIVOT _INTERACTION_VERTEX
-                #if defined(_INTERACTION_PIVOT) || defined(_INTERACTION_VERTEX)
-                    #define _INTERACTION
+                #pragma multi_compile _INTERACTION_OFF _INTERACTION
+                #if defined(_INTERACTION)
                     #define _INTERACTION_ON
                 #endif
             {% else %}
@@ -294,7 +293,7 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
             struct SurfaceInput
             {
                 {% if config.global.overlay.supported and overlay %}
-                    #ifdef _OVERLAY_ON
+                    #ifdef _OVERLAY
                         float4 overlay : TEXCOORD10;
                     #endif
                 {% endif %}
@@ -413,27 +412,28 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
                 {% endhd %}
             CBUFFER_END
 
-            UNITY_DECLARE_TEX2D( _Albedo );
+            SAMPLER( sampler_Albedo );
+            TEXTURE2D( _Albedo );
             #ifdef _NORMALMAP
-                UNITY_DECLARE_TEX2D( _NormalMap );
+                TEXTURE2D( _NormalMap );
             #endif
             {% if surface_map %}
                 #ifdef _SURFACE_MAP_PACKED
-                    UNITY_DECLARE_TEX2D( _PackedMap );
+                    TEXTURE2D( _PackedMap );
                 #endif
                 #ifdef _SURFACE_MAP_METALLIC_GLOSS
-                    UNITY_DECLARE_TEX2D( _MetallicGlossMap );
-                    UNITY_DECLARE_TEX2D( _OcclusionMap );
+                    TEXTURE2D( _MetallicGlossMap );
+                    TEXTURE2D( _OcclusionMap );
                 #endif
             {% endif %}
             {% if emission %}
                 #ifdef _EMISSION
-                    UNITY_DECLARE_TEX2D( _EmissionMap );
+                    TEXTURE2D( _EmissionMap );
                 #endif
             {% endif %}
              {% if translucent %}
                 #ifdef _TRANSLUCENCY
-                    UNITY_DECLARE_TEX2D( _ThicknessMap );
+                    TEXTURE2D( _ThicknessMap );
                 #endif
             {% endif %}
 
@@ -488,8 +488,6 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
                         vertex.uv0, 
                         vertex.uv1);
                 {% endif %}
-
-                vertex.normalOS = lerp(float3(0,1,0), vertex.normalOS, _VertexNormalStrength);
             }
 
             // The main vertex method. Is used to modify the vertex data and 
@@ -582,6 +580,7 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
                 {% endif %}
 
                 surface.positionWS = GetCameraRelativePositionWS( positionWS );
+                surface.normalWS = lerp(TransformObjectToWorldNormal(float3(0,1,0)), surface.normalWS, _VertexNormalStrength);
             }
 
             void SurfaceMethod(
@@ -590,7 +589,7 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
             {
                 // Albedo
                 float4 albedo;
-                SampleAlbedo( input.texCoord0, albedo );
+                SampleAlbedo( input.texCoord0.xy, albedo );
 
                 // Overlay
                 {% if config.global.overlay.supported and overlay %}
@@ -628,37 +627,37 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
 
                 // Normal Map
                 #ifdef _NORMALMAP
-                    SampleNormalMap( input.texCoord0, output.Normal );
+                    SampleNormalMap( input.texCoord0.xy, output.Normal );
                 #endif
 
                 // Surface Map
                 {% if surface_map %}
                     #if defined(_SURFACE_MAP_PACKED)
                         SamplePackedMap( 
-                            input.texCoord0, output.Metallic, output.Smoothness, output.Occlusion );
+                            input.texCoord0.xy, output.Metallic, output.Smoothness, output.Occlusion );
                     #elif defined(_SURFACE_MAP_METALLIC_GLOSS)
                         SampleMetallicGlossMap( 
-                            input.texCoord0, output.Metallic, output.Smoothness, output.Occlusion );
+                            input.texCoord0.xy, output.Metallic, output.Smoothness, output.Occlusion );
                     #else
                         SampleMetallicGlossConstants( 
-                            input.texCoord0, output.Metallic, output.Smoothness, output.Occlusion );
+                            input.texCoord0.xy, output.Metallic, output.Smoothness, output.Occlusion );
                     #endif
                 {% else %}
                     SampleMetallicGlossConstants( 
-                        input.texCoord0, output.Metallic, output.Smoothness, output.Occlusion );
+                        input.texCoord0.xy, output.Metallic, output.Smoothness, output.Occlusion );
                 {% endif %}
 
                 // Translucency
                 {% if translucent %}
                     #ifdef _TRANSLUCENCY
-                        SampleThickness( input.texCoord0, output.Thickness );
+                        SampleThickness( input.texCoord0.xy, output.Thickness );
                     #endif
                 {% endif %}
 
                 // Emission
                 {% if emission %}
                     #ifdef _EMISSION
-                        SampleEmission( input.texCoord0, output.Emission );
+                        SampleEmission( input.texCoord0.xy, output.Emission );
                     #endif
                 {% endif %}
 
@@ -698,7 +697,7 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
                                     translucencyInput.NormalDistortion = _TranslucencyDistortion;
                                     translucencyInput.Scattering = _TranslucencyScattering;
                                     translucencyInput.Thickness = surface.Thickness;
-                                    translucencyInput.Color = _TranslucencyColor;
+                                    translucencyInput.Color = _TranslucencyColor.rgb;
                                     translucencyInput.Ambient = _TranslucencyAmbient;
 
                                     float3 translucency = 

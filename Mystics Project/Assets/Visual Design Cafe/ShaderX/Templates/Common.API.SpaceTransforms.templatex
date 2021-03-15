@@ -1,3 +1,14 @@
+{% comment %}
+// Copyright 2020 Visual Design Cafe. All rights reserved.
+// This shader was created using ShaderX, a shader framework by Visual Design Cafe.
+// https://www.visualdesigncafe.com/shaderx
+{% endcomment %}
+
+{% comment %}
+// This file is used to add support for the same API in all render pipelines.
+// Code for the "Space Transform" functions from URP and HDRP are included in this file so that they
+// can be used in the built-in render pipeline.
+{% endcomment %}
 
 {% standard %}
 
@@ -221,8 +232,6 @@
         // transform from world to tangent
         return TransformWorldToTangent(normalWS, tangentToWorld);
     }
-
-    
 
     // This function assumes the bitangent flip is encoded in tangentWS.w
     float3x3 BuildTangentToWorld(float4 tangentWS, float3 normalWS)

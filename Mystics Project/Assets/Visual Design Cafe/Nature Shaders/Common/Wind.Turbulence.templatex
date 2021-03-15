@@ -39,7 +39,7 @@ float3 Turbulence(
         float y = (x + z) * 0.5;
 
         #if defined(_TYPE_TREE_LEAVES)
-            return worldNormal * float3(x, y, z) * float3(1, 0.35, 1) * edgeFlutter;
+            return worldNormal * float3(x, y, z) * float3(1, .6, 1) * edgeFlutter;
         #else
             return worldNormal * float3(x, y, z) * float3(1, 0.35, 1);
         #endif
