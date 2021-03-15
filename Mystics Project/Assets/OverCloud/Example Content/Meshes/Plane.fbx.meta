@@ -1,51 +1,137 @@
 fileFormatVersion: 2
 guid: 8c4cc3dc851e806458446e8d8d856405
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: Plane_FlapL
-    100004: Plane_FlapR
-    100006: Plane_FlapRearL
-    100008: Plane_FlapRearR
-    100010: Plane_Fuselage
-    100012: Plane_Propeller
-    100014: Plane_rudder
-    400000: //RootNode
-    400002: Plane_FlapL
-    400004: Plane_FlapR
-    400006: Plane_FlapRearL
-    400008: Plane_FlapRearR
-    400010: Plane_Fuselage
-    400012: Plane_Propeller
-    400014: Plane_rudder
-    2100000: Chrome
-    2100002: Red
-    2100004: Black
-    2100006: Metal
-    2100008: Front Chrome
-    2100010: Glass
-    2300000: Plane_FlapL
-    2300002: Plane_FlapR
-    2300004: Plane_FlapRearL
-    2300006: Plane_FlapRearR
-    2300008: Plane_Fuselage
-    2300010: Plane_Propeller
-    2300012: Plane_rudder
-    3300000: Plane_FlapL
-    3300002: Plane_FlapR
-    3300004: Plane_FlapRearL
-    3300006: Plane_FlapRearR
-    3300008: Plane_Fuselage
-    3300010: Plane_Propeller
-    3300012: Plane_rudder
-    4300000: Plane_FlapL
-    4300002: Plane_FlapRearL
-    4300004: Plane_Propeller
-    4300006: Plane_rudder
-    4300008: Plane_FlapR
-    4300010: Plane_FlapRearR
-    4300012: Plane_Fuselage
+  serializedVersion: 20101
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: Plane_FlapL
+  - first:
+      1: 100004
+    second: Plane_FlapR
+  - first:
+      1: 100006
+    second: Plane_FlapRearL
+  - first:
+      1: 100008
+    second: Plane_FlapRearR
+  - first:
+      1: 100010
+    second: Plane_Fuselage
+  - first:
+      1: 100012
+    second: Plane_Propeller
+  - first:
+      1: 100014
+    second: Plane_rudder
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: Plane_FlapL
+  - first:
+      4: 400004
+    second: Plane_FlapR
+  - first:
+      4: 400006
+    second: Plane_FlapRearL
+  - first:
+      4: 400008
+    second: Plane_FlapRearR
+  - first:
+      4: 400010
+    second: Plane_Fuselage
+  - first:
+      4: 400012
+    second: Plane_Propeller
+  - first:
+      4: 400014
+    second: Plane_rudder
+  - first:
+      21: 2100000
+    second: Chrome
+  - first:
+      21: 2100002
+    second: Red
+  - first:
+      21: 2100004
+    second: Black
+  - first:
+      21: 2100006
+    second: Metal
+  - first:
+      21: 2100008
+    second: Front Chrome
+  - first:
+      21: 2100010
+    second: Glass
+  - first:
+      23: 2300000
+    second: Plane_FlapL
+  - first:
+      23: 2300002
+    second: Plane_FlapR
+  - first:
+      23: 2300004
+    second: Plane_FlapRearL
+  - first:
+      23: 2300006
+    second: Plane_FlapRearR
+  - first:
+      23: 2300008
+    second: Plane_Fuselage
+  - first:
+      23: 2300010
+    second: Plane_Propeller
+  - first:
+      23: 2300012
+    second: Plane_rudder
+  - first:
+      33: 3300000
+    second: Plane_FlapL
+  - first:
+      33: 3300002
+    second: Plane_FlapR
+  - first:
+      33: 3300004
+    second: Plane_FlapRearL
+  - first:
+      33: 3300006
+    second: Plane_FlapRearR
+  - first:
+      33: 3300008
+    second: Plane_Fuselage
+  - first:
+      33: 3300010
+    second: Plane_Propeller
+  - first:
+      33: 3300012
+    second: Plane_rudder
+  - first:
+      43: 4300000
+    second: Plane_FlapL
+  - first:
+      43: 4300002
+    second: Plane_FlapRearL
+  - first:
+      43: 4300004
+    second: Plane_Propeller
+  - first:
+      43: 4300006
+    second: Plane_rudder
+  - first:
+      43: 4300008
+    second: Plane_FlapR
+  - first:
+      43: 4300010
+    second: Plane_FlapRearR
+  - first:
+      43: 4300012
+    second: Plane_Fuselage
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -78,7 +164,7 @@ ModelImporter:
       name: Red
     second: {fileID: 2100000, guid: 7e5b40b13b8f8ea45afa50751942e688, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -111,25 +197,32 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: 1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -138,10 +231,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -151,13 +244,16 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
   additionalBone: 0
   userData: 
   assetBundleName: 
