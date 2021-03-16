@@ -15,8 +15,8 @@ MonoBehaviour:
   _displayName: Nature Shaders Essentials
   _version:
     _bundleIdentifier: com.VisualDesignCafe.NatureShaders-Embedded
-    _versionNumber: 0.9.4
-    _buildNumber: 45
+    _versionNumber: 0.10.1
+    _buildNumber: 51
   _downloadInBackground: 1
   _autoUpdate: 0
   _priority: 0

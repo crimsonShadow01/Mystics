@@ -56,11 +56,7 @@ UNITY_VERTEX_OUTPUT_STEREO
 // VFACE always needs to be the last semantic in the list, otherwise the compiler will throw
 // an error. So we define it here, and let the user add SHADERX_VFACE to the end of 
 // the SurfaceInput struct.
-{% standard %}
-    #define FRONT_FACE_TYPE float
-    #define FRONT_FACE_SEMANTIC VFACE
-{% endstandard %}
-#if defined(SHADER_STAGE_FRAGMENT) //&& defined(VARYINGS_NEED_CULLFACE)
+#if defined(SHADER_STAGE_FRAGMENT)
     #define SHADERX_VFACE FRONT_FACE_TYPE cullFace : FRONT_FACE_SEMANTIC;
 #else
     #define SHADERX_VFACE

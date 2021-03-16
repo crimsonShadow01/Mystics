@@ -15,8 +15,8 @@ MonoBehaviour:
   _displayName: ShaderX
   _version:
     _bundleIdentifier: com.VisualDesignCafe.ShaderX
-    _versionNumber: 0.4.4
-    _buildNumber: 23
+    _versionNumber: 0.4.6
+    _buildNumber: 25
   _downloadInBackground: 1
   _autoUpdate: 0
   _priority: 0

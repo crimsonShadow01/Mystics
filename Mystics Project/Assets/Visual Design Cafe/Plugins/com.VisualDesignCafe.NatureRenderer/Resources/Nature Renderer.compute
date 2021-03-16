@@ -5,6 +5,18 @@
 #pragma kernel AddInstances16 THREADS=64
 #pragma kernel AddInstances32 THREADS=128
 
+#if defined(SHADER_API_GLCORE) \
+    || defined(SHADER_API_GLES) \
+    || defined(SHADER_API_GLES3) \
+    || defined(SHADER_API_METAL) \
+    || defined(SHADER_API_VULKAN) \
+    || defined(SHADER_API_SWITCH) \
+    || defined(SHADER_API_PSSL)
+    #define MAX_BUFFER_COUNT 14
+#else
+    #define MAX_BUFFER_COUNT 32
+#endif
+
 struct CompressedFloat4x4
 {
     uint positionXY;
@@ -35,13 +47,9 @@ StructuredBuffer<CompressedFloat4x4> Instances8;
 StructuredBuffer<CompressedFloat4x4> Instances9;
 StructuredBuffer<CompressedFloat4x4> Instances10;
 StructuredBuffer<CompressedFloat4x4> Instances11;
-StructuredBuffer<CompressedFloat4x4> Instances12;
-StructuredBuffer<CompressedFloat4x4> Instances13;
-#if !defined(SHADER_API_GLCORE) \
-    && !defined(SHADER_API_GLES) \
-    && !defined(SHADER_API_GLES3) \
-    && !defined(SHADER_API_METAL) \
-    && !defined(SHADER_API_VULKAN)
+#if MAX_BUFFER_COUNT > 14
+    StructuredBuffer<CompressedFloat4x4> Instances12;
+    StructuredBuffer<CompressedFloat4x4> Instances13;
     StructuredBuffer<CompressedFloat4x4> Instances14;
     StructuredBuffer<CompressedFloat4x4> Instances15;
     StructuredBuffer<CompressedFloat4x4> Instances16;
@@ -74,13 +82,9 @@ uint Count8;
 uint Count9;
 uint Count10;
 uint Count11;
-uint Count12;
-uint Count13;
-#if !defined(SHADER_API_GLCORE) \
-    && !defined(SHADER_API_GLES) \
-    && !defined(SHADER_API_GLES3) \
-    && !defined(SHADER_API_METAL) \
-    && !defined(SHADER_API_VULKAN)
+#if MAX_BUFFER_COUNT > 14
+    uint Count12;
+    uint Count13;
     uint Count14;
     uint Count15;
     uint Count16;
@@ -218,6 +222,7 @@ void Add( uint id, StructuredBuffer<CompressedFloat4x4> buffer, uint count )
 
     CompressedFloat4x4 m = buffer[id];
 
+    // TODO: Compare compressed position to compressed camera position instead of decompressing the position
     float3 position;
     DecompressPosition( position, m );
     float distance = length(position - CameraPosition.xyz);
@@ -293,13 +298,9 @@ void AddInstances16(uint3 id : SV_DispatchThreadID)
     Add( id.x, Instances9, Count9 );
     Add( id.x, Instances10, Count10 );
     Add( id.x, Instances11, Count11 );
-    Add( id.x, Instances12, Count12 );
-    Add( id.x, Instances13, Count13 );
-    #if !defined(SHADER_API_GLCORE) \
-    && !defined(SHADER_API_GLES) \
-    && !defined(SHADER_API_GLES3) \
-    && !defined(SHADER_API_METAL) \
-    && !defined(SHADER_API_VULKAN)
+    #if MAX_BUFFER_COUNT > 14
+        Add( id.x, Instances12, Count12 );
+        Add( id.x, Instances13, Count13 );
         Add( id.x, Instances14, Count14 );
         Add( id.x, Instances15, Count15 );
     #endif
@@ -308,11 +309,7 @@ void AddInstances16(uint3 id : SV_DispatchThreadID)
 [numthreads(THREADS, 1, 1)]
 void AddInstances32(uint3 id : SV_DispatchThreadID)
 {
-    #if !defined(SHADER_API_GLCORE) \
-    && !defined(SHADER_API_GLES) \
-    && !defined(SHADER_API_GLES3) \
-    && !defined(SHADER_API_METAL) \
-    && !defined(SHADER_API_VULKAN)
+    #if MAX_BUFFER_COUNT > 14
         Add( id.x, Instances0, Count0 );
         Add( id.x, Instances1, Count1 );
         Add( id.x, Instances2, Count2 );

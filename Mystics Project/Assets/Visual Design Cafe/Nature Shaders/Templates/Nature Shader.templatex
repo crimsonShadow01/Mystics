@@ -68,11 +68,14 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
             _EmissionIntensity("Intensity", Float) = 0.0
         {% endif %}
 
+        // Mesh Data
+        [ToggleOff]_BakedMeshData("Baked Mesh Data", Float) = 0
+        _ObjectHeight("Object Height", Float) = 0.5
+        _ObjectRadius("Object Radius", Float) = 0.5
+
         // Wind
-            _ObjectHeight("Grass Height", Float) = 0.5
-            _ObjectRadius("Grass Radius", Float) = 0.5
         {% if wind %}
-            [Enum(Off,0, Baked,1, Automatic,2)]_Wind("Wind Control", Float) = 2
+            _Wind("Wind", Float) = 1
             _WindVariation("Wind Variation", Range(0, 1)) = 0.3
             _WindStrength("Wind Strength", Range(0, 2)) = 1
             _TurbulenceStrength("Turbulence Strength", Range(0, 2)) = 1
@@ -220,10 +223,11 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
 
             #pragma {{shader_feature_local}} _COLOR_TINT _COLOR_HSL
 
+            #pragma {{shader_feature_local}} _BAKED_MESH_DATA
+
             {% if wind %}
-                #pragma {{shader_feature_local}} _WIND_OFF _WIND_AUTO _WIND_BAKED
-                #if defined(_WIND_AUTO) || defined(_WIND_BAKED)
-                    #define _WIND
+                #pragma {{shader_feature_local}} _WIND_OFF _WIND
+                #if defined(_WIND)
                     #define _WIND_ON
                 #endif
             {% else %}
@@ -272,6 +276,10 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
                         #define OUTPUT_SPLIT_LIGHTING
                     {% endif %}
                 #endif
+            {% endif %}
+
+            {% if billboard %}
+                #pragma multi_compile _ BILLBOARD_FACE_CAMERA_POS
             {% endif %}
 
             // Include the default cginc files and configurations 
@@ -412,7 +420,48 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
                 {% endhd %}
             CBUFFER_END
 
-            SAMPLER( sampler_Albedo );
+            {% hd %}
+                #ifdef _ALPHATEST
+                    SAMPLER( sampler_Albedo );
+                    #define SAMPLER_ALBEDO sampler_Albedo
+                    #define SAMPLER_NORMAL sampler_Albedo
+                    #define SAMPLER_PACKED sampler_Albedo
+                    #define SAMPLER_GLOSS sampler_Albedo
+                    #define SAMPLER_OCCLUSION sampler_Albedo
+                    #define SAMPLER_EMISSION sampler_Albedo
+                    #define SAMPLER_THICKNESS sampler_Albedo
+                #else
+                    // BUG:
+                    // The sampler/texture name is not recognized by the shader compiler when 
+                    // using HDRP with forward rendering and no alpha test, if the sampler is
+                    // shared between multiple textures. As a workaround we create a separate
+                    // sampler for each texture.
+                    SAMPLER( sampler_Albedo );
+                    SAMPLER( sampler_NormalMap );
+                    SAMPLER( sampler_PackedMap );
+                    SAMPLER( sampler_MetallicGlossMap );
+                    SAMPLER( sampler_OcclusionMap );
+                    SAMPLER( sampler_EmissionMap );
+                    SAMPLER( sampler_ThicknessMap );
+                    #define SAMPLER_ALBEDO sampler_Albedo
+                    #define SAMPLER_NORMAL sampler_NormalMap
+                    #define SAMPLER_PACKED sampler_PackedMap
+                    #define SAMPLER_GLOSS sampler_MetallicGlossMap
+                    #define SAMPLER_OCCLUSION sampler_OcclusionMap
+                    #define SAMPLER_EMISSION sampler_EmissionMap
+                    #define SAMPLER_THICKNESS sampler_ThicknessMap
+                #endif
+            {% endhd %}
+            {% standard or universal %}
+                SAMPLER( sampler_Albedo );
+                #define SAMPLER_ALBEDO sampler_Albedo
+                #define SAMPLER_NORMAL sampler_Albedo
+                #define SAMPLER_PACKED sampler_Albedo
+                #define SAMPLER_GLOSS sampler_Albedo
+                #define SAMPLER_OCCLUSION sampler_Albedo
+                #define SAMPLER_EMISSION sampler_Albedo
+                #define SAMPLER_THICKNESS sampler_Albedo
+            {% endstandard %}
             TEXTURE2D( _Albedo );
             #ifdef _NORMALMAP
                 TEXTURE2D( _NormalMap );
@@ -431,7 +480,7 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
                     TEXTURE2D( _EmissionMap );
                 #endif
             {% endif %}
-             {% if translucent %}
+            {% if translucent %}
                 #ifdef _TRANSLUCENCY
                     TEXTURE2D( _ThicknessMap );
                 #endif
@@ -568,7 +617,7 @@ Shader "{{name_prefix}}Nature Shaders/{{shader.name}}"
 
                 {% if perspective_correction and config.global.perspective_correction.supported %}
                     {% standard or universal %}
-                        float3 viewDirectionWS = surface.viewDirectionWS;
+                        float3 viewDirectionWS = surface.viewDirectionWS.xyz;
                     {% endstandard %}
                     {% hd %}
                         // HD calculates the view direction in the fragment shader, 

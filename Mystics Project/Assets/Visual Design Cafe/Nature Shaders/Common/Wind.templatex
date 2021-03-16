@@ -211,7 +211,7 @@ float3 ApplyWind(
         return FixStretching( 
                 positionWS + combinedWind * mask * distanceFade, 
                 positionWS, 
-                float3( positionWS.x, objectPivot.y, positionWS.z ) );
+                float3( positionWS.x, objectPivot.y, positionWS.z ) ); // TODO: This does not work correctly if the grass is a larger patch and it is rotated. Ideally we would use  vertexOS.y transformed into world space instead of objectPivot.y.
     #elif defined(_TYPE_TREE_LEAVES) || defined(_TYPE_TREE_BARK)
         return FixStretching( 
                 positionWS + combinedWind * mask * distanceFade * 4, 
@@ -271,7 +271,7 @@ float2 GetTrunkBendFactor()
 float GetTrunkMask( 
     float3 vertex, float2 uv1, float treeHeight, float bendFactor, float baseBendFactor )
 {
-    #ifdef _WIND_BAKED
+    #ifdef _BAKED_MESH_DATA
         float trunkMask = saturate( uv1.x * bendFactor );
     #else
         float trunkMask = pow2(saturate( vertex.y / treeHeight )) * bendFactor;

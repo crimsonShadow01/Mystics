@@ -9,8 +9,45 @@
 {% endcomment %}
 
 {% standard %}
-    #define IS_FRONT_VFACE(VAL, FRONT, BACK) ((VAL > 0.0) ? (FRONT) : (BACK))
-    
+    // These are already defined in "HLSLSupport.cginc" and will be defined again
+    // in the API files below. Let's undef them here to remove the "macro redefinition" warning.
+    #undef UNITY_UV_STARTS_AT_TOP
+    #undef UNITY_NEAR_CLIP_VALUE
+    #undef UNITY_REVERSED_Z
+    #undef UNITY_RAW_FAR_CLIP_VALUE
+    #undef CBUFFER_START
+    #undef CBUFFER_END
+    #undef UNITY_BRANCH
+    #undef UNITY_FLATTEN
+    #undef UNITY_UNROLL
+    #undef UNITY_LOOP
+    #undef SAMPLE_DEPTH_TEXTURE
+    #undef SAMPLE_DEPTH_TEXTURE_LOD
+
+    #if defined(SHADER_API_XBOXONE)
+        {% embed "API/XBoxOne.hlsl" %}
+    #elif defined(SHADER_API_PSSL)
+        {% embed "API/PSSL.hlsl" %}
+    #elif defined(SHADER_API_D3D11)
+        {% embed "API/D3D11.hlsl" %}
+    #elif defined(SHADER_API_METAL)
+        {% embed "API/Metal.hlsl" %}
+    #elif defined(SHADER_API_VULKAN)
+        {% embed "API/Vulkan.hlsl" %}
+    #elif defined(SHADER_API_SWITCH)
+        {% embed "API/Switch.hlsl" %}
+    #elif defined(SHADER_API_GLCORE)
+        {% embed "API/GLCore.hlsl" %}
+    #elif defined(SHADER_API_GLES3)
+        {% embed "API/GLES3.hlsl" %}
+    #elif defined(SHADER_API_GLES)
+        {% embed "API/GLES2.hlsl" %}
+    #else
+        #error unsupported shader api
+    #endif
+{% endstandard %}
+
+{% standard %}
     #define FLT_MIN  1.175494351e-38 // Minimum normalized positive floating-point number
         
     #define PI          3.14159265358979323846
@@ -31,30 +68,17 @@
     #define HALF_MIN 6.103515625e-5  // 2^-14, the same value for 10, 11 and 16-bit: https://www.khronos.org/opengl/wiki/Small_Float_Formats
     #define HALF_MAX 65504.0
     #define UINT_MAX 0xFFFFFFFFu
-
-    // Normalize that account for vectors with zero length
-    float3 SafeNormalize(float3 inVec)
-    {
-        float dp3 = max(FLT_MIN, dot(inVec, inVec));
-        return inVec * rsqrt(dp3);
-    }
-
-    // TODO: We need more macros here to support all possible texture types. Only the basic version is included here, since we did not (yet) need these for any of our shaders.
-    #define TEXTURE2D(name) Texture2D name
-    #define SAMPLER(name) SamplerState name
-    #define SAMPLE_TEXTURE2D( t, s, uv ) t.Sample(s,uv)
 {% endstandard %}
 
-{% embed "Common.API.SpaceTransforms.templatex" %}
-{% embed "Common.API.Random.templatex" %}
-
 {% standard %}
-    // Inserts the bits indicated by 'mask' from 'src' into 'dst'.
-    uint BitFieldInsert(uint mask, uint src, uint dst)
-    {
-        return (src & mask) | (dst & ~mask);
-    }
-    
+    #ifndef INTRINSIC_BITFIELD_INSERT
+        // Inserts the bits indicated by 'mask' from 'src' into 'dst'.
+        uint BitFieldInsert(uint mask, uint src, uint dst)
+        {
+            return (src & mask) | (dst & ~mask);
+        }
+    #endif
+
     // Composes a floating point value with the magnitude of 'x' and the sign of 's'.
     // See the comment about FastSign() below.
     float CopySign(float x, float s, bool ignoreNegZero = true)
@@ -91,7 +115,17 @@
         float t = saturate(-n.z);
         return n.xy + (n.xy >= 0.0 ? t : -t);
     }
+
+    // Normalize that account for vectors with zero length
+    float3 SafeNormalize(float3 inVec)
+    {
+        float dp3 = max(FLT_MIN, dot(inVec, inVec));
+        return inVec * rsqrt(dp3);
+    }
 {% endstandard %}
+
+{% embed "Common.API.SpaceTransforms.templatex" %}
+{% embed "Common.API.Random.templatex" %}
 
 {% universal or standard %}
     uint2 ComputeFadeMaskSeed(float3 V, uint2 positionSS)

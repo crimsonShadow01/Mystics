@@ -15,8 +15,8 @@ MonoBehaviour:
   _displayName: Nature Renderer
   _version:
     _bundleIdentifier: com.VisualDesignCafe.NatureRenderer-HDRP
-    _versionNumber: 1.4.2
-    _buildNumber: 74
+    _versionNumber: 1.4.3
+    _buildNumber: 77
   _downloadInBackground: 1
   _autoUpdate: 0
   _priority: 0
